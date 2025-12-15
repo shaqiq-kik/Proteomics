@@ -1,0 +1,10 @@
+Metric,Value
+Total Proteins,42.0
+Upregulated (FC > 1),21.0
+Downregulated (FC < 1),17.0
+Unchanged (FC ≈ 1),1.0
+Fold Change - Mean,2.2258572208428817
+Fold Change - Median,1.341291557791844
+Fold Change - Std Dev,3.666506024991191
+Fold Change - Min,0.0
+Fold Change - Max,21.401352688881556

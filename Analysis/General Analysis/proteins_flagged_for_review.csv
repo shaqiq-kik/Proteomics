@@ -1,0 +1,18 @@
+Gene,Protein_Description,Issues,Severity,Recommendation,Confidence_Level,FC_Type,Replicate_Completeness
+EGF,epidermal growth factor,Missing 2+ replicates,High,Exclude,Low,Complete_Suppression,Missing_2+
+EREG,epiregulin,Missing 2+ replicates,High,Exclude,Low,Complete_Suppression,Missing_2+
+PENK,proenkephalin,Missing 2+ replicates,High,Exclude,Low,Complete_Suppression,Missing_2+
+CXCL2,C-X-C motif chemokine ligand 2,Missing 2+ replicates,High,Exclude,Low,Complete_Suppression,Missing_2+
+AOC1,amine oxidase copper containing 1,Missing 2+ replicates,High,Exclude,Low,Normal,Missing_2+
+RBP4,retinol binding protein 4,Missing 1 replicate,Medium,Flag,Medium,Normal,Missing_1
+LYZ,lysozyme,Missing 2+ replicates; Cannot calculate fold change,High,Exclude,Low,Cannot_Calculate,Missing_2+
+SERPINH1,serpin family H member 1,Missing 2+ replicates; Cannot calculate fold change,High,Exclude,Low,Cannot_Calculate,Missing_2+
+NAXE,NAD(P)HX epimerase,Missing 2+ replicates; Cannot calculate fold change,High,Exclude,Low,Cannot_Calculate,Missing_2+
+CYRIB,CYFIP related Rac1 interactor B,Missing 2+ replicates; Cannot calculate fold change,High,Exclude,Low,Cannot_Calculate,Missing_2+
+LOXL3,lysyl oxidase like 3,Missing 1 replicate,Medium,Flag,Medium,Normal,Missing_1
+GLB1L,galactosidase beta 1 like,Missing 1 replicate,Medium,Flag,Medium,Normal,Missing_1
+SERPINE2,serpin family E member 2,Missing 1 replicate,Medium,Flag,Medium,Normal,Missing_1
+LUM,lumican,Missing 1 replicate,Medium,Flag,Medium,Normal,Missing_1
+SLIT3,slit guidance ligand 3,Missing 1 replicate,Medium,Flag,Medium,Normal,Missing_1
+GAS6,growth arrest specific 6,Missing 1 replicate,Medium,Flag,Medium,Normal,Missing_1
+FRZB,frizzled related protein,Missing 1 replicate,Medium,Flag,Medium,Normal,Missing_1

@@ -1,0 +1,122 @@
+================================================================================
+DATA QUALITY REPORT - PROTEOMICS ANALYSIS
+================================================================================
+
+SUMMARY
+----------------------------------------
+Total proteins analyzed: 42
+Overall data completeness: 94.35%
+High confidence proteins: 25 (59.5%)
+Flagged for review: 17 (40.5%)
+
+TASK 1: REPLICATE DATA COMPLETENESS
+----------------------------------------
+Complete data (4/4): 25 proteins (59.5%)
+Missing 1 replicate: 8 proteins (19.0%)
+Missing 2+ replicates: 9 proteins (21.4%)
+
+Proteins with incomplete data:
+    Gene Data_Completeness_Status
+    NAXE        Missing All (0/4)
+     LYZ        Missing All (0/4)
+   CYRIB        Missing All (0/4)
+SERPINH1        Missing All (0/4)
+   CXCL2          Missing 3 (1/4)
+    EREG          Missing 2 (2/4)
+     EGF          Missing 2 (2/4)
+    AOC1          Missing 2 (2/4)
+    PENK          Missing 2 (2/4)
+    RBP4          Missing 1 (3/4)
+   LOXL3          Missing 1 (3/4)
+   GLB1L          Missing 1 (3/4)
+SERPINE2          Missing 1 (3/4)
+     LUM          Missing 1 (3/4)
+   SLIT3          Missing 1 (3/4)
+    GAS6          Missing 1 (3/4)
+    FRZB          Missing 1 (3/4)
+
+TASK 2: ZERO FOLD CHANGE PROTEINS
+----------------------------------------
+Proteins with FC = 0: 4
+
+  EGF:
+    Vehicle Mean: 46356150.0
+    Testosterone Mean: 0.0
+    FC Type: Complete_Suppression
+
+  EREG:
+    Vehicle Mean: 27956000.0
+    Testosterone Mean: 0.0
+    FC Type: Complete_Suppression
+
+  PENK:
+    Vehicle Mean: 12799800.0
+    Testosterone Mean: 0.0
+    FC Type: Complete_Suppression
+
+  CXCL2:
+    Vehicle Mean: 22010500.0
+    Testosterone Mean: 0.0
+    FC Type: Complete_Suppression
+
+TASK 3: UNIPROT ID VALIDATION
+----------------------------------------
+Valid UniProt IDs: 42/42 (100.0%)
+  Standard format: 29
+  Extended format: 13
+Invalid/Missing: 0
+
+TASK 4: MISSING DATA STATISTICS
+----------------------------------------
+                 Column  Missing_Count  Missing_Percent  Present_Count
+          Mouse_Gene_ID              8        19.047619             34
+Testosterone_SD_Percent              8        19.047619             34
+     Vehicle_SD_Percent              5        11.904762             37
+     Vehicle_Rep1_31579              4         9.523810             38
+     Vehicle_Rep2_31581              4         9.523810             38
+           Vehicle_Mean              4         9.523810             38
+             Vehicle_SD              4         9.523810             38
+Testosterone_Rep1_31578              4         9.523810             38
+Testosterone_Rep2_31580              4         9.523810             38
+      Testosterone_Mean              4         9.523810             38
+        Testosterone_SD              4         9.523810             38
+            Fold_Change              4         9.523810             38
+
+TASK 5: QUALITY FLAGS
+----------------------------------------
+Replicate Completeness:
+Replicate_Completeness
+Complete      25
+Missing_2+     9
+Missing_1      8
+
+FC Type:
+FC_Type
+Normal                  34
+Complete_Suppression     4
+Cannot_Calculate         4
+
+Confidence Level:
+Confidence_Level
+High      25
+Low        9
+Medium     8
+
+RECOMMENDATIONS
+----------------------------------------
+1. USE FOR ALL ANALYSES: 25 high-confidence proteins
+   - Complete replicate data
+   - Normal fold change calculations
+   - No data quality concerns
+
+2. USE WITH CAUTION: 8 medium-confidence proteins
+   - May have 1 missing replicate OR edge case FC
+   - Include but flag in results
+
+3. EXCLUDE FROM ANALYSIS: 9 low-confidence proteins
+   - Missing 2+ replicates OR cannot calculate FC
+   - Not reliable for statistical analysis
+
+================================================================================
+END OF REPORT
+================================================================================

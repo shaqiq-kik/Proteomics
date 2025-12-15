@@ -1,0 +1,21 @@
+Gene,Protein_Description,Fold_Change,log_2_fold_change,Functional_Class,Confidence_Level,Replicate_Completeness,FC_Type,Regulation
+FRZB,frizzled related protein,21.401352688881556,4.42,other,Medium,Missing_1,Normal,Upregulated
+GAS6,growth arrest specific 6,8.241990376716348,3.043,growth factor,Medium,Missing_1,Normal,Upregulated
+C4A/C4B,complement C4A (Rodgers blood group),6.652260938606876,2.734,other,High,Complete,Normal,Upregulated
+SLIT3,slit guidance ligand 3,3.8591756366500394,1.948,other,Medium,Missing_1,Normal,Upregulated
+VCAN,versican,3.502540001140674,1.808,other,High,Complete,Normal,Upregulated
+LUM,lumican,3.481862183353438,1.8,other,Medium,Missing_1,Normal,Upregulated
+SERPINE2,serpin family E member 2,3.392271899656079,1.762,other,Medium,Missing_1,Normal,Upregulated
+GLB1L,galactosidase beta 1 like,3.270082745364619,1.709,other,Medium,Missing_1,Normal,Upregulated
+LGALS3,galectin 3,2.663628618950386,1.413,other,High,Complete,Normal,Upregulated
+LOXL3,lysyl oxidase like 3,2.3519863791146425,1.234,enzyme,Medium,Missing_1,Normal,Upregulated
+EGF,epidermal growth factor,0.0,-9.965784284662089,growth factor,Low,Missing_2+,Complete_Suppression,Downregulated
+EREG,epiregulin,0.0,-9.965784284662089,growth factor,Low,Missing_2+,Complete_Suppression,Downregulated
+PENK,proenkephalin,0.0,-9.965784284662089,other,Low,Missing_2+,Complete_Suppression,Downregulated
+CXCL2,C-X-C motif chemokine ligand 2,0.0,-3.839,cytokine,Low,Missing_2+,Complete_Suppression,Downregulated
+CCL7,chemokine (C-C motif) ligand 7,0.1378291987400518,-2.859,cytokine,High,Complete,Normal,Downregulated
+TGFB3,transforming growth factor beta 3,0.3228055960676281,-1.631,growth factor,High,Complete,Normal,Downregulated
+GDF15,growth differentiation factor 15,0.3640099703009887,-1.458,growth factor,High,Complete,Normal,Downregulated
+IFT22,intraflagellar transport 22,0.3671517069487967,-1.446,other,High,Complete,Normal,Downregulated
+TGFB1,transforming growth factor beta 1,0.3770525451559934,-1.407,growth factor,High,Complete,Normal,Downregulated
+CCL2,chemokine (C-C motif) ligand 2,0.4022691931117894,-2.352,cytokine,High,Complete,Normal,Downregulated
