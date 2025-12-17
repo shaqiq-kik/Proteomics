@@ -1,0 +1,4 @@
+ID	Vehicle	Testosterone
+CXCL5	0	-1.003
+CCL2	0	-2.352
+CCL7	0	-2.859

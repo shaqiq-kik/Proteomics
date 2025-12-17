@@ -1,0 +1,10 @@
+GAS6	3.043	Protein
+CCL7	-2.859	Protein
+CCL2	-2.352	Protein
+TGFB3	-1.631	Protein
+GDF15	-1.458	Protein
+TGFB1	-1.407	Protein
+NENF	1.153	Protein
+CXCL5	-1.003	Protein
+AMH	0.609	Protein
+AGT	0.578	Protein
