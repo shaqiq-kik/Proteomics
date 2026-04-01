@@ -9,7 +9,7 @@ OUTPUT_FILE = "alligned_proteins.xlsx"
 df_L = pd.read_excel(INPUT_FILE, sheet_name="Protein Report L")
 df_H = pd.read_excel(INPUT_FILE, sheet_name="Protein Report H")
 
-# 2) Keep only the relevant columns from each sheet
+# 2) Keep only the relev    ant columns from each sheet
 cols_L = ["UniProt Accession Number", "Gene names", "Intensity 31578", "Intensity 31580"]
 cols_H = ["UniProt Accession Number", "Gene names", "Intensity 31579", "Intensity 31581"]
 
@@ -60,8 +60,9 @@ df_merged["log2_fold_change"] = np.log2(df_merged["mean_fold_change"])
 
 # Set 'regulated' (UP, DOWN, or Stable)
 df_merged["regulated"] = "NO CHANGE"
-df_merged.loc[df_merged["log2_fold_change"] >= 1, "regulated"] = "UP"
-df_merged.loc[df_merged["log2_fold_change"] <= -1, "regulated"] = "DOWN"
+complete_data = ~df_merged["has_missing_data"]
+df_merged.loc[complete_data & (df_merged["mean_fold_change"] >= 1.5), "regulated"] = "UP"
+df_merged.loc[complete_data & (df_merged["mean_fold_change"] <= 0.5), "regulated"] = "DOWN"
 
 # 7) Print protein regulation counts
 print("UP proteins:", (df_merged["regulated"] == "UP").sum())
@@ -73,7 +74,15 @@ df_merged = df_merged.sort_values("has_missing_data", ascending=True)
 df_merged.to_excel(OUTPUT_FILE, index=False)
 print(f"\nResults saved to {OUTPUT_FILE}")
 
-# 9) Print IPA input row count
+# filter out missing data and update IPA input file
 IPA_FILE = "IPA_input.xlsx"
-df_ipa = pd.read_excel(IPA_FILE)
-print(f"Rows in IPA input file: {len(df_ipa)}")
+
+df_ipa = df_merged[
+    (~df_merged["has_missing_data"]) & (df_merged["regulated"] != "NO CHANGE")
+].copy()
+
+df_ipa.to_excel(IPA_FILE, index=False)
+
+print(f"\nFiltered data saved to {IPA_FILE}")
+print(f"Rown in new IPA input file: {len(df_ipa)}")
+
