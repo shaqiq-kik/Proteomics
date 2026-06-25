@@ -96,19 +96,53 @@ df["regulated"] = "NO CHANGE"
 df.loc[mask & (df["log2FC"] >= LOG2_THRESHOLD), "regulated"] = "UP"
 df.loc[mask & (df["log2FC"] <= -LOG2_THRESHOLD), "regulated"] = "DOWN"
 
+# 7) Bug 4b: "cousin" on/off proteins. A protein present in BOTH sheets but whose
+#    entire control OR treated side is absent (both intensities 0/NaN) is a real
+#    on/off signal, yet the Bug 3 completeness logic parks it as incomplete and it
+#    falls into NO CHANGE — a wrong label. Detect these and relabel them ON_OFF.
+#    A protein absent on BOTH sides is fully empty and stays NO CHANGE.
+CONTROL_COLS = ["Intensity 31578", "Intensity 31580"]  # light / control replicates
+TREATED_COLS = ["Intensity 31579", "Intensity 31581"]  # heavy / treated replicates
+control_absent = (df[CONTROL_COLS].isnull() | (df[CONTROL_COLS] == 0)).all(axis=1)
+treated_absent = (df[TREATED_COLS].isnull() | (df[TREATED_COLS] == 0)).all(axis=1)
+control_off = control_absent & ~treated_absent  # present in treated only -> "on"
+treated_off = treated_absent & ~control_absent  # present in control only -> "off"
+
+df["onoff"] = ""
+df.loc[control_off, "onoff"] = "on_with_treatment"
+df.loc[treated_off, "onoff"] = "off_with_treatment"
+
+# Relabel out of NO CHANGE. No log2FC is computed for on/off proteins (they are
+# incomplete, so log2FC is already NaN).
+df.loc[control_off | treated_off, "regulated"] = "ON_OFF"
+
 # Sanity checks
 n_up = (df["regulated"] == "UP").sum()
 n_down = (df["regulated"] == "DOWN").sum()
 n_nc = (df["regulated"] == "NO CHANGE").sum()
+n_onoff = (df["regulated"] == "ON_OFF").sum()
+n_on = (df["onoff"] == "on_with_treatment").sum()
+n_off = (df["onoff"] == "off_with_treatment").sum()
+print(f"on_with_treatment: {n_on}")
+print(f"off_with_treatment: {n_off}")
+print(f"total on/off: {n_onoff}")
 print(f"UP: {n_up}")
 print(f"DOWN: {n_down}")
 print(f"NO CHANGE: {n_nc}")
+print(f"ON_OFF: {n_onoff}")
 
-# Bug 4 assert: rescuing single-condition proteins must NOT leak any of them into
-# the fold-change logic, so the `both` group's classification must be unchanged.
-assert (n_up, n_down, n_nc) == (206, 509, 1233), (
-    f"Classification on `both` changed to {n_up}/{n_down}/{n_nc}; "
-    "single-condition rows likely leaked into the fold-change split."
+# Bug 4 + Bug 4b asserts: UP/DOWN are untouched, and on/off proteins ONLY move from
+# NO CHANGE to ON_OFF — nothing else should shift between buckets.
+assert n_up == 206, f"UP changed to {n_up}, expected 206"
+assert n_down == 509, f"DOWN changed to {n_down}, expected 509"
+assert n_onoff == n_on + n_off, "ON_OFF total != on_with_treatment + off_with_treatment"
+assert n_nc + n_onoff == 1233, (
+    f"NO CHANGE + ON_OFF = {n_nc + n_onoff}, expected 1233; the NO CHANGE drop "
+    "does not equal the on/off total, so something other than on/off proteins moved."
+)
+# On/off proteins must NOT carry a numeric log2FC.
+assert df.loc[df["regulated"] == "ON_OFF", "log2FC"].isnull().all(), (
+    "An ON_OFF protein has a numeric log2FC."
 )
 
 # Bug 3 assert: no inf or NaN in log2FC for complete rows
@@ -123,7 +157,7 @@ out_cols = [
     "UniProt Accession Number", "Gene names",
     "Intensity 31578", "Intensity 31580", "Intensity 31579", "Intensity 31581",
     "ratio_rep1", "ratio_rep2", "log2_rep1", "log2_rep2", "log2FC",
-    "complete", "regulated",
+    "complete", "regulated", "onoff",
 ]
 foldchange_path = os.path.join(RESULTS_DIR, "foldchange_all.csv")
 df[out_cols].to_csv(foldchange_path, index=False)
@@ -154,3 +188,16 @@ single_cols = [
 single_path = os.path.join(RESULTS_DIR, "single_condition_proteins.csv")
 single_cond[single_cols].to_csv(single_path, index=False, encoding="utf-8")
 print(f"Saved {single_path} ({len(single_cond)} rows)")
+
+# Bug 4b file: "cousin" on/off proteins (present in both sheets, one side absent).
+onoff_df = df[df["regulated"] == "ON_OFF"].copy()
+onoff_df["accession"] = onoff_df["UniProt Accession Number"]
+onoff_df["gene"] = onoff_df["Gene names"]
+onoff_cols = [
+    "accession", "gene", "onoff",
+    "Intensity 31578", "Intensity 31580",  # control replicates
+    "Intensity 31579", "Intensity 31581",  # treated replicates
+]
+onoff_path = os.path.join(RESULTS_DIR, "onoff_proteins.csv")
+onoff_df[onoff_cols].to_csv(onoff_path, index=False, encoding="utf-8")
+print(f"Saved {onoff_path} ({len(onoff_df)} rows)")
