@@ -327,3 +327,19 @@ proteomics_de/
 - The n=2 technical-replicate limitation is fundamental: no statistical method, including limma, converts technical replicates into population-level biological inference. All p-values must be labeled accordingly.
 - QIAGEN IPA's Salesforce KB pages block automated fetching; the format facts (20-observation limit, optional p-value, accepted IDs, tab-delimited recommendation) come from indexed captures of official QIAGEN pages and corroborating manuals, not a live fetch. The verbatim quotes above were cross-checked against multiple captures.
 - Peng et al. 2024's recommendations were derived on spike-in DDA/DIA label-free benchmarks; this dataset is SILAC, so "no normalization" should be verified against the centered-log-ratio QC check rather than assumed.
+
+## Build Log
+
+### Bug 6 — Replicate correlation check ✅ (2026-06-27)
+- New module replicate_check.py. Reports fold-change agreement between runs
+  (Pearson r of log2_rep1 vs log2_rep2 + sign agreement) and raw reproducibility
+  per condition. Verdict on the fold-change r vs REPLICATE_FC_R_MIN=0.50.
+- Result: fold-change r = 0.2703 -> WARN; sign agreement 889/1578 (56.3%).
+  Raw reproducibility good: control r = 0.862 (n=1723), treated r = 0.841 (n=1656).
+- Lesson: raw readings reproduce well, but the fold-change (a difference) is noisy
+  because subtracting two large similar numbers amplifies small wobbles. So
+  per-protein up/down calls at n=2 are not individually trustworthy.
+- This is the on-paper justification for Bug 7: limma borrows information across
+  proteins to stabilize estimates precisely when single-protein replicates wobble.
+- Outputs: qc_replicate_correlation.csv + replicate_correlation.png. Check-only;
+  six protected outputs byte-identical (sha256). Bug numbering canonical.

@@ -208,3 +208,9 @@ if __name__ == "__main__":
     # foldchange_all_centered.csv); the four outputs above are untouched.
     from centering_check import run_centering_check
     run_centering_check(foldchange_path, RESULTS_DIR)
+
+    # Bug 6 — replicate correlation QC. Pure read of foldchange_all.csv; writes
+    # only NEW files (qc_replicate_correlation.csv, replicate_correlation.png).
+    # Local import keeps the module-level import graph acyclic (same as Bug 5).
+    from replicate_check import run_replicate_correlation
+    run_replicate_correlation(foldchange_path, RESULTS_DIR)
