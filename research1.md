@@ -378,3 +378,19 @@ Env: R 4.6.1, limma 3.68.4, imputeLCMD 2.1 (Homebrew site-library, found by plai
 Open follow-up: Re-run with eBayes(trend=TRUE, robust=TRUE) — the field-standard proteomics
 refinement deliberately deferred from the first verified run — before treating "zero
 significant" as final.
+
+### Bug 7 follow-up — trend/robust eBayes experiment ✅ (2026-06-28)
+
+Re-ran limma statistical testing with eBayes(trend=TRUE, robust=TRUE), the
+field-standard proteomics refinement deferred from the first run, to confirm the
+"zero significant" baseline before treating it as final. Parameterized
+limma_test.R/limma_test.py with an optional ebayes_mode arg (default vanilla,
+verified byte-identical to the committed baseline by sha256); experiment reused the
+existing _limma_input.csv so the input is provably identical. Result: still 0/1938
+significant at FDR < 0.05. The refinement sharpened the extremes — smallest
+BH-adjusted p fell 0.305 → 0.116 (top candidate's gap to the 0.05 line roughly
+halved, but still non-significant), raw-p<0.05 count trimmed 63 → 55 as robust
+moderation down-weighted outlier variances. Conclusion: the n=2 technical-replicate
+ceiling dominates regardless of eBayes flavor; trend/robust corroborates the baseline
+rather than overturning it. Output in results/qc_limma_trend.csv (canonical
+qc_limma.csv untouched).

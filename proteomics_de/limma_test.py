@@ -68,7 +68,9 @@ def _missing_to_blank(series):
     return num.where(num > 0)  # keep > 0; everything else (<=0, NaN) -> NaN
 
 
-def run_limma_test(foldchange_csv=DEFAULT_FOLDCHANGE_CSV, outdir=DEFAULT_RESULTS_DIR):
+def run_limma_test(foldchange_csv=DEFAULT_FOLDCHANGE_CSV, outdir=DEFAULT_RESULTS_DIR,
+                   ebayes_mode="vanilla", qc_filename="qc_limma.csv",
+                   output_name=LIMMA_OUTPUT, reuse_input=False, write_ipa=True):
     """Add limma p-values / FDR to the both-condition proteins.
 
     Reads ``foldchange_csv`` (the both-condition group), tests the eligible rows
@@ -76,7 +78,24 @@ def run_limma_test(foldchange_csv=DEFAULT_FOLDCHANGE_CSV, outdir=DEFAULT_RESULTS
     ``outdir``: ``qc_limma.csv`` (full audit) and ``ipa_input_significant.csv``
     (the honest "regulated AND significant" IPA list). Returns a summary-counts
     dict. Raises ``RuntimeError`` if the R worker fails (no partial outputs).
+
+    The default call reproduces the committed baseline exactly. The extra args
+    exist for the trend/robust side experiment and never change the default path:
+      * ``ebayes_mode``  — "vanilla" (default) or "trend_robust"; forwarded to R.
+      * ``qc_filename``  — name of the qc CSV under ``outdir`` (so the experiment
+                           writes ``qc_limma_trend.csv`` instead of ``qc_limma.csv``).
+      * ``output_name``  — name of the R worker's output intermediate in
+                           ``proteomics_de/`` (so the experiment does not clobber
+                           the committed ``_limma_output.csv``).
+      * ``reuse_input``  — if True, reuse the existing ``_limma_input.csv`` instead
+                           of regenerating it (proves identical data going in).
+      * ``write_ipa``    — if False, skip the IPA file entirely (side experiment).
     """
+    if ebayes_mode not in ("vanilla", "trend_robust"):
+        raise ValueError(
+            f"ebayes_mode must be 'vanilla' or 'trend_robust', got: {ebayes_mode!r}"
+        )
+
     # 1) Eligibility (Fork 2). Read everything as strings + keep empty cells empty
     #    so the raw intensities pass through untouched and no NaN literal sneaks in.
     fc = pd.read_csv(foldchange_csv, dtype=str, keep_default_na=False)
@@ -92,20 +111,33 @@ def run_limma_test(foldchange_csv=DEFAULT_FOLDCHANGE_CSV, outdir=DEFAULT_RESULTS
     print(f"  eligible_count : {eligible_count}  "
           f"(both-group {len(fc)} - ON_OFF {n_onoff})")
 
-    # 2) Write the handoff CSV (Fork 1) in the EXACT column order.
-    inp = pd.DataFrame(
-        {
-            "id": eligible["UniProt Accession Number"].values,
-            "gene": eligible["Gene names"].values,
-        }
-    )
-    for handoff_name, raw_col in zip(_HANDOFF_NAMES, _INTENSITY_COLS):
-        inp[handoff_name] = _missing_to_blank(eligible[raw_col])
-
     input_path = os.path.join(_HERE, LIMMA_INPUT)
-    output_path = os.path.join(_HERE, LIMMA_OUTPUT)
-    versions_path = os.path.join(_HERE, LIMMA_VERSIONS)
-    inp[_HANDOFF_COLS].to_csv(input_path, index=False, encoding="utf-8")
+    output_path = os.path.join(_HERE, output_name)
+    # Versions filename is derived from the output name (mirrors the R worker), so a
+    # non-default output writes its own versions file rather than the committed one.
+    versions_name = os.path.splitext(output_name)[0].replace(
+        "_limma_output", "_limma_versions") + ".txt"
+    versions_path = os.path.join(_HERE, versions_name)
+
+    # 2) Write the handoff CSV (Fork 1) in the EXACT column order — unless reusing
+    #    the existing intermediate (so the data going in is provably the same).
+    if reuse_input:
+        if not os.path.exists(input_path):
+            raise RuntimeError(
+                f"BUG7: reuse_input=True but {LIMMA_INPUT} is missing — run the "
+                "baseline first to produce it."
+            )
+        print(f"  reusing existing {LIMMA_INPUT} (not regenerated)")
+    else:
+        inp = pd.DataFrame(
+            {
+                "id": eligible["UniProt Accession Number"].values,
+                "gene": eligible["Gene names"].values,
+            }
+        )
+        for handoff_name, raw_col in zip(_HANDOFF_NAMES, _INTENSITY_COLS):
+            inp[handoff_name] = _missing_to_blank(eligible[raw_col])
+        inp[_HANDOFF_COLS].to_csv(input_path, index=False, encoding="utf-8")
 
     # Remove any stale worker artifacts so a leftover from a previous run can never
     # be mistaken for a fresh success (critical for the fail-loud guarantee).
@@ -117,7 +149,7 @@ def run_limma_test(foldchange_csv=DEFAULT_FOLDCHANGE_CSV, outdir=DEFAULT_RESULTS
     #    and the intermediates land in proteomics_de/.
     try:
         result = subprocess.run(
-            ["Rscript", _R_SCRIPT, LIMMA_INPUT, LIMMA_OUTPUT, str(R_SEED)],
+            ["Rscript", _R_SCRIPT, LIMMA_INPUT, output_name, str(R_SEED), ebayes_mode],
             capture_output=True, text=True, cwd=_HERE,
         )
     except FileNotFoundError as exc:
@@ -140,7 +172,7 @@ def run_limma_test(foldchange_csv=DEFAULT_FOLDCHANGE_CSV, outdir=DEFAULT_RESULTS
     for col in ("p_value", "adj_p_value", "limma_log2FC"):
         vals = pd.to_numeric(res[col], errors="coerce")
         assert vals.notna().all() and np.isfinite(vals).all(), (
-            f"BUG7: non-finite values found in '{col}' of {LIMMA_OUTPUT}"
+            f"BUG7: non-finite values found in '{col}' of {output_name}"
         )
     assert len(res) == eligible_count, (
         f"BUG7: R returned {len(res)} rows, expected eligible_count {eligible_count}"
@@ -176,25 +208,28 @@ def run_limma_test(foldchange_csv=DEFAULT_FOLDCHANGE_CSV, outdir=DEFAULT_RESULTS
             "regulated": merged["regulated"],
         }
     )
-    qc_path = os.path.join(outdir, "qc_limma.csv")
+    qc_path = os.path.join(outdir, qc_filename)
     qc.to_csv(qc_path, index=False, encoding="utf-8")
 
     # 6b) ipa_input_significant.csv — only "regulated AND significant" rows, in the
     #     existing ipa_input.csv column layout (UniProt / Gene / log2FC / regulated)
     #     plus adj_p_value, for drop-in use. log2FC here is the pipeline's existing
-    #     fold-change (UP/DOWN rows are always complete, so it is finite).
-    ipa_sig_rows = merged[merged["regulated_significant"]]
-    ipa_sig = pd.DataFrame(
-        {
-            "UniProt Accession Number": ipa_sig_rows["UniProt Accession Number"],
-            "Gene names": ipa_sig_rows["Gene names"],
-            "log2FC": ipa_sig_rows["log2FC"],
-            "regulated": ipa_sig_rows["regulated"],
-            "adj_p_value": ipa_sig_rows["adj_p_value"],
-        }
-    )
-    ipa_sig_path = os.path.join(outdir, "ipa_input_significant.csv")
-    ipa_sig.to_csv(ipa_sig_path, index=False, encoding="utf-8")
+    #     fold-change (UP/DOWN rows are always complete, so it is finite). Skipped
+    #     entirely when write_ipa is False (the side experiment never touches IPA).
+    ipa_sig_path = None
+    if write_ipa:
+        ipa_sig_rows = merged[merged["regulated_significant"]]
+        ipa_sig = pd.DataFrame(
+            {
+                "UniProt Accession Number": ipa_sig_rows["UniProt Accession Number"],
+                "Gene names": ipa_sig_rows["Gene names"],
+                "log2FC": ipa_sig_rows["log2FC"],
+                "regulated": ipa_sig_rows["regulated"],
+                "adj_p_value": ipa_sig_rows["adj_p_value"],
+            }
+        )
+        ipa_sig_path = os.path.join(outdir, "ipa_input_significant.csv")
+        ipa_sig.to_csv(ipa_sig_path, index=False, encoding="utf-8")
 
     # 7) Summary: of the existing regulated proteins, how many are also significant
     #    (trustworthy) vs not (probably noise)?
@@ -203,19 +238,23 @@ def run_limma_test(foldchange_csv=DEFAULT_FOLDCHANGE_CSV, outdir=DEFAULT_RESULTS
     n_reg_sig = int(merged["regulated_significant"].sum())
     n_reg_not_sig = n_regulated - n_reg_sig
 
+    print(f"  eBayes mode                : {ebayes_mode}")
     print(f"  proteins tested            : {eligible_count}")
     print(f"  significant (adj p < {ADJ_P_THRESHOLD}) : {n_significant}")
     print(f"  of {n_regulated} regulated (+/-0.585) proteins:")
     print(f"    also significant (trustworthy)   : {n_reg_sig}")
     print(f"    not significant (probably noise) : {n_reg_not_sig}")
-    print(f"  wrote: {os.path.relpath(qc_path, _ROOT)}, "
-          f"{os.path.relpath(ipa_sig_path, _ROOT)}")
+    written = os.path.relpath(qc_path, _ROOT)
+    if ipa_sig_path is not None:
+        written += f", {os.path.relpath(ipa_sig_path, _ROOT)}"
+    print(f"  wrote: {written}")
     if os.path.exists(versions_path):
         print(f"  versions: {os.path.relpath(versions_path, _ROOT)}")
 
     return {
         "eligible_count": eligible_count,
         "n_tested": eligible_count,
+        "ebayes_mode": ebayes_mode,
         "n_significant": n_significant,
         "n_regulated": n_regulated,
         "n_regulated_significant": n_reg_sig,

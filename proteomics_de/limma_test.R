@@ -5,7 +5,10 @@
 # orchestrator (limma_test.py) owns the subprocess boundary and the file handoff.
 #
 # Invocation:
-#   Rscript limma_test.R <input_csv> <output_csv> <seed>
+#   Rscript limma_test.R <input_csv> <output_csv> <seed> [ebayes_mode]
+#   ebayes_mode (optional): "vanilla" (default) or "trend_robust". The mode only
+#   switches the eBayes call; everything upstream/downstream is identical, so the
+#   default invocation reproduces the committed baseline exactly.
 #
 # Input  (written by Python): columns id, gene, ctrl_31578, ctrl_31580,
 #         trt_31579, trt_31581 — raw intensities; blank cell == missing.
@@ -31,6 +34,12 @@ output_csv <- args[[2L]]
 seed       <- suppressWarnings(as.integer(args[[3L]]))
 if (is.na(seed)) {
   stop("BUG7 R ERROR: seed must be an integer, got: ", args[[3L]])
+}
+# Optional 4th arg: eBayes mode. Default keeps the committed baseline behavior.
+ebayes_mode <- if (length(args) >= 4L) args[[4L]] else "vanilla"
+if (!ebayes_mode %in% c("vanilla", "trend_robust")) {
+  stop("BUG7 R ERROR: ebayes_mode must be 'vanilla' or 'trend_robust', got: ",
+       ebayes_mode)
 }
 
 # Required packages: limma (Bioconductor), imputeLCMD (CRAN).
@@ -87,12 +96,17 @@ run <- function() {
   design <- model.matrix(~ factor(group, levels = c("control", "treated")))
 
   fit <- limma::lmFit(mat, design)
-  # Plain eBayes for this first verified run, so results are reproducible. A common
-  # proteomics refinement is eBayes(fit, trend = TRUE, robust = TRUE) (intensity-
-  # dependent prior variance + outlier-robust moderation); leave it as a future
-  # toggle rather than changing the baseline. (renv for full R-environment pinning
-  # is likewise a future refinement; _limma_versions.txt is enough for now.)
-  fit <- limma::eBayes(fit)
+  # eBayes mode toggle. "vanilla" (the committed baseline) keeps the plain call so
+  # results stay reproducible. "trend_robust" applies the common proteomics
+  # refinement: intensity-dependent prior variance (trend) + outlier-robust
+  # moderation (robust). Only this call differs between the two modes.
+  # (renv for full R-environment pinning remains a future refinement;
+  # _limma_versions.txt is enough for now.)
+  if (ebayes_mode == "trend_robust") {
+    fit <- limma::eBayes(fit, trend = TRUE, robust = TRUE)
+  } else {
+    fit <- limma::eBayes(fit)
+  }
   tt <- limma::topTable(
     fit, coef = 2L, number = Inf, sort.by = "none", adjust.method = "BH"
   )
@@ -115,8 +129,17 @@ run <- function() {
   )
   write.csv(out, output_csv, row.names = FALSE)
 
-  # Reproducibility record, next to the output file.
-  versions_path <- file.path(dirname(output_csv), "_limma_versions.txt")
+  # Reproducibility record, next to the output file. The versions filename is
+  # derived from the output filename (s/_limma_output/_limma_versions/) so a
+  # non-default output (e.g. the trend/robust experiment) writes its own versions
+  # file instead of overwriting the committed _limma_versions.txt. For the default
+  # output (_limma_output.csv) this resolves to _limma_versions.txt unchanged.
+  out_base <- tools::file_path_sans_ext(basename(output_csv))
+  ver_name <- sub("_limma_output", "_limma_versions", out_base)
+  versions_path <- file.path(dirname(output_csv), paste0(ver_name, ".txt"))
+  # Content stays exactly as the committed baseline (4 lines) so a default re-run
+  # reproduces _limma_versions.txt byte-for-byte; the mode is captured by the
+  # filename instead.
   writeLines(
     c(
       R.version.string,
