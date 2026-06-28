@@ -343,3 +343,38 @@ proteomics_de/
   proteins to stabilize estimates precisely when single-protein replicates wobble.
 - Outputs: qc_replicate_correlation.csv + replicate_correlation.png. Check-only;
   six protected outputs byte-identical (sha256). Bug numbering canonical.
+
+### Bug 7 — Statistical testing via limma + MinProb ✅ (2026-06-27)
+
+What: Per-protein significance. limma (R) called from Python over a CSV/subprocess
+file handoff; MinProb imputation for missing cells. Adds raw p-value, BH-adjusted
+p-value, and a combined "regulated AND significant" call.
+
+Design (locked before spec):
+- Fork 1 — file/CSV handoff; auditable intermediates kept; R fails loud; versions pinned.
+- Fork 3 — input = 4 raw intensities (31578/31580 control, 31579/31581 treated),
+  log2, un-centered (per Peng).
+- Fork 2 — limma on the both-group only. Eligible = 1938 (1948 − 10 ON_OFF). 606
+  single-condition + 10 ON_OFF stay in their own CSVs, untested (an entire condition
+  would be imputed = manufactured data).
+
+Files: limma_test.R (worker), limma_test.py (orchestrator), foldchange.py (acyclic
+wiring after Bug 5/6). Outputs: results/qc_limma.csv (1938 rows),
+results/ipa_input_significant.csv; intermediates _limma_input.csv / _limma_output.csv
++ _limma_versions.txt in proteomics_de/.
+
+Result: 0/1938 significant at FDR<0.05. Smallest raw p = 1.6e-4 (63 at raw p<0.05);
+smallest BH-adjusted p = 0.305. corr(limma_log2FC, pipeline log2FC) = 1.0000 → contrast
+correct, not a wiring error. All 715 fold-change "regulated" calls land in probably-noise
+→ ipa_input_significant.csv is header-only by design.
+
+Lesson: This is the finding Bug 7 was built to surface, not a failure. At n=2 with
+technical-only replicates (no biological replicates), large fold-changes do not survive
+multiple-testing correction; the ±0.585 list overstated confidence. Consistent with Bug 6
+(replicate FC r=0.27, WARN).
+
+Env: R 4.6.1, limma 3.68.4, imputeLCMD 2.1 (Homebrew site-library, found by plain Rscript).
+
+Open follow-up: Re-run with eBayes(trend=TRUE, robust=TRUE) — the field-standard proteomics
+refinement deliberately deferred from the first verified run — before treating "zero
+significant" as final.

@@ -214,3 +214,11 @@ if __name__ == "__main__":
     # Local import keeps the module-level import graph acyclic (same as Bug 5).
     from replicate_check import run_replicate_correlation
     run_replicate_correlation(foldchange_path, RESULTS_DIR)
+
+    # Bug 7 — per-protein statistical testing via limma (R) + MinProb imputation.
+    # Reads foldchange_all.csv from disk, shells out to limma_test.R for the stats,
+    # and writes only NEW files (qc_limma.csv, ipa_input_significant.csv). The local
+    # import keeps the module graph acyclic (same as Bug 5/6); limma_test.py does
+    # not import from foldchange.
+    from limma_test import run_limma_test
+    run_limma_test()
