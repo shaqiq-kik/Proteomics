@@ -26,6 +26,7 @@ import base64
 import html
 import json
 import re
+import struct
 import sys
 from pathlib import Path
 
@@ -55,6 +56,29 @@ def load_facts() -> dict:
 
 def b64(path: Path) -> str:
     return base64.b64encode(path.read_bytes()).decode("ascii")
+
+
+def get_dims(path: Path, fmt: str) -> tuple[int, int]:
+    """Return the intrinsic (width, height) in integer pixels for a figure.
+
+    Used to set explicit width/height attributes on the <img> so the browser
+    can reserve layout space (aspect-ratio inferred from the attributes) and
+    avoid content jump when eagerly-loaded plates paint — without hardcoding
+    any figure's dimensions here.
+    """
+    if fmt == "png":
+        data = path.read_bytes()
+        if data[:8] != b"\x89PNG\r\n\x1a\n":
+            raise SystemExit(f"not a valid PNG: {path}")
+        w, h = struct.unpack(">II", data[16:24])
+        return w, h
+    if fmt == "svg":
+        text = path.read_text()
+        m = re.search(r'viewBox="[-\d.]+\s+[-\d.]+\s+([\d.]+)\s+([\d.]+)"', text)
+        if not m:
+            raise SystemExit(f"no viewBox found in {path}")
+        return round(float(m.group(1))), round(float(m.group(2)))
+    raise SystemExit(f"unknown figure format: {fmt}")
 
 
 # ---- font tokens ------------------------------------------------------------
@@ -98,6 +122,7 @@ def make_plate(key, fmt, num, tag, hypo, meta) -> str:
     src_path = FIGDIR / f"{key}.{fmt}"
     if not src_path.exists():
         raise SystemExit(f"missing figure file: {src_path}")
+    w, h = get_dims(src_path, fmt)
     data_uri = f"data:{MIME[fmt]};base64,{b64(src_path)}"
     title = html.escape(meta["title"])
     caption = html.escape(meta["caption"])
@@ -105,7 +130,7 @@ def make_plate(key, fmt, num, tag, hypo, meta) -> str:
     return (
         '<div class="plate">\n'
         '  <figure>\n'
-        f'    <div class="imgwrap"><img loading="lazy" decoding="async" alt="{title}" src="{data_uri}"></div>\n'
+        f'    <div class="imgwrap"><img loading="eager" decoding="async" width="{w}" height="{h}" alt="{title}" src="{data_uri}"></div>\n'
         '    <figcaption>\n'
         f'      <div class="ftag"><span>Figure&nbsp;{num:02d}</span><span>{html.escape(tag)}</span>{warn}</div>\n'
         f'      <div class="fttl">{title}</div>\n'

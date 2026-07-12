@@ -129,6 +129,13 @@ sup{font-size:.62em;line-height:0}
     text-transform:uppercase;border:1px solid var(--rule-2);background:var(--plate);color:var(--ink-2);
     padding:7px 12px;cursor:pointer}
 }
+@media(max-width:430px){
+  .utility .uwrap{flex-wrap:wrap;row-gap:8px;column-gap:10px}
+  .utility .spacer{flex-basis:100%;height:0}
+  .wordmark{font-size:.84rem}
+  .tracktoggle button{padding:6px 9px;font-size:.6rem}
+  .contents-btn{padding:6px 9px;font-size:.6rem}
+}
 
 /* ============================================================ SHELL ===== */
 main{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter)}
@@ -344,7 +351,7 @@ table.candidates tr:hover td{background:color-mix(in srgb,var(--paper-2) 60%,tra
 .trapbar .tk{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-top:9px;line-height:1.45}
 
 /* skip registry */
-.registry{width:100%;border-collapse:collapse;margin:26px 0;font-size:.88rem}
+.registry{width:100%;border-collapse:collapse;font-size:.88rem}
 .registry th{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;text-align:left;
   padding:10px 12px;border-bottom:1px solid var(--ink);color:var(--ink-3);font-weight:500}
 .registry td{padding:11px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
@@ -752,17 +759,19 @@ section{transition:opacity .4s,filter .4s}
     %%PLATE_sample_dendrogram%%
   </div>
 
-  <table class="registry reveal">
-    <thead><tr><th>Analysis</th><th>Needs</th><th>Have</th><th>Status</th><th>Why</th></tr></thead>
-    <tbody>
-      <tr><td class="an">PCA</td><td class="rn">6</td><td class="rn">4</td><td><span class="st qc">QC only</span></td><td class="why">Rank-deficient covariance; eigenvalues biased; PC1 can be one sample.</td></tr>
-      <tr><td class="an">Hierarchical clustering</td><td class="rn">6</td><td class="rn">4</td><td><span class="st qc">QC only</span></td><td class="why">No bootstrap support possible; dendrogram topology not stable.</td></tr>
-      <tr><td class="an">WGCNA</td><td class="rn">15</td><td class="rn">4</td><td><span class="st skip">Skip</span></td><td class="why">Co-expression modules need ≥15 (ideally ≥20) samples for stable topology.</td></tr>
-      <tr><td class="an">UMAP / t-SNE</td><td class="rn">24</td><td class="rn">4</td><td><span class="st skip">Skip</span></td><td class="why">Embeddings need dozens of samples to be stable.</td></tr>
-      <tr><td class="an">mixOmics sPLS-DA</td><td class="rn">20</td><td class="rn">4</td><td><span class="st skip">Skip</span></td><td class="why">Multivariate CV needs samples ≫ classes.</td></tr>
-      <tr><td class="an">VAE / GNN</td><td class="rn">1000</td><td class="rn">4</td><td><span class="st skip">Skip</span></td><td class="why">Thousands of samples required to train without overfitting.</td></tr>
-    </tbody>
-  </table>
+  <div class="tablewrap reveal">
+    <table class="registry">
+      <thead><tr><th>Analysis</th><th>Needs</th><th>Have</th><th>Status</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td class="an">PCA</td><td class="rn">6</td><td class="rn">4</td><td><span class="st qc">QC only</span></td><td class="why">Rank-deficient covariance; eigenvalues biased; PC1 can be one sample.</td></tr>
+        <tr><td class="an">Hierarchical clustering</td><td class="rn">6</td><td class="rn">4</td><td><span class="st qc">QC only</span></td><td class="why">No bootstrap support possible; dendrogram topology not stable.</td></tr>
+        <tr><td class="an">WGCNA</td><td class="rn">15</td><td class="rn">4</td><td><span class="st skip">Skip</span></td><td class="why">Co-expression modules need ≥15 (ideally ≥20) samples for stable topology.</td></tr>
+        <tr><td class="an">UMAP / t-SNE</td><td class="rn">24</td><td class="rn">4</td><td><span class="st skip">Skip</span></td><td class="why">Embeddings need dozens of samples to be stable.</td></tr>
+        <tr><td class="an">mixOmics sPLS-DA</td><td class="rn">20</td><td class="rn">4</td><td><span class="st skip">Skip</span></td><td class="why">Multivariate CV needs samples ≫ classes.</td></tr>
+        <tr><td class="an">VAE / GNN</td><td class="rn">1000</td><td class="rn">4</td><td><span class="st skip">Skip</span></td><td class="why">Thousands of samples required to train without overfitting.</td></tr>
+      </tbody>
+    </table>
+  </div>
 </section>
 
 <!-- ==================================================== §09 REPRODUCIBLE === -->
