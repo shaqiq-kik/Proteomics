@@ -1,0 +1,7 @@
+analysis,min_samples,have_samples,status,reason
+pca,6,4,QC_ONLY,"n=4 < trustworthy gate n>=6 (research1.md SS5): the sample covariance matrix is rank-deficient (rank<=n-1=3, exactly 3 PCs exist by construction), eigenvalues are biased, and PC1 can be driven by a single sample. Runs for QC purposes only (e.g. do technical replicate pairs land near each other); NOT evidence of biological structure."
+hierarchical_clustering,6,4,QC_ONLY,n=4 < trustworthy gate n>=6 (research1.md SS5): hierarchical clustering of 4 samples has no bootstrap support possible -- dendrogram topology is not statistically stable. Runs for QC purposes only; NOT a claim of reproducible sample clusters.
+wgcna,15,4,SKIP,WGCNA co-expression modules require >=15 samples (ideally >=20) for stable network topology; have 4.
+umap_tsne,24,4,SKIP,UMAP/t-SNE require 'dozens+' samples for a stable low-dimensional embedding (approximated here as >=24); have 4.
+mixomics_splsda,20,4,SKIP,mixOmics sPLS-DA requires samples >> classes (approximated here as >=10x the 2 classes = 20); have 4.
+vae_gnn,1000,4,SKIP,VAE/GNN architectures require thousands of samples to train without overfitting (approximated here as >=1000); have 4.
