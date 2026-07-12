@@ -1,0 +1,243 @@
+[
+  {
+    "file": "figures/volcano.png",
+    "title": "Volcano plot \u2014 treated vs. control (SILAC)",
+    "caption": "limma log2 fold change vs. -log10(raw p-value) for the 1938 proteins tested in both conditions, colored UP/DOWN/NO CHANGE at |log2FC| >= 0.585. With n=2 technical replicates per condition (no biological replication), 0 of 1938 proteins pass FDR < 0.05 (minimum adjusted p = 0.305) \u2014 no dashed FDR line is drawn because nothing crosses it; the raw p = 0.05 line is shown instead for orientation only. Top 10 proteins by smallest raw p-value are labeled; treat all calls here as hypothesis-generating, not confirmed significant.",
+    "key_numbers": {
+      "n_points": 1938,
+      "n_up": 206,
+      "n_down": 509,
+      "n_no_change": 1223,
+      "n_raw_p_lt_0.05": 63,
+      "n_significant_fdr_lt_0.05": 0,
+      "min_adj_p_value": 0.304713,
+      "fc_threshold": 0.585,
+      "top_10_by_p_value_genes": [
+        "Hist1h2bc;Hist2h2bb;Hist1h2bh;Hist1h2bm",
+        "Tuba1a",
+        "Gspt1;Gspt2",
+        "Abhd14b",
+        "Memo1",
+        "Hist1h2ba",
+        "Ndufv2",
+        "Khsrp",
+        "Arglu1",
+        "Ech1"
+      ],
+      "top_10_by_p_value_p": [
+        0.000157,
+        0.001158,
+        0.001819,
+        0.002036,
+        0.002303,
+        0.003141,
+        0.004868,
+        0.005698,
+        0.005921,
+        0.006598
+      ]
+    }
+  },
+  {
+    "file": "figures/ma_plot.png",
+    "title": "MA plot \u2014 treated vs. control (SILAC)",
+    "caption": "Mean log2 intensity across the 4 raw samples (x) vs. limma log2 fold change (y) for the 1938 both-condition proteins; per-sample zero/absent intensities are treated as missing before averaging. Colored UP/DOWN/NO CHANGE at |log2FC| >= 0.585, dashed reference lines at 0 and +/-0.585. Same n=2 technical-replicate caveat as the volcano plot applies \u2014 no FDR-significant calls exist in this dataset.",
+    "key_numbers": {
+      "n_points_total": 1938,
+      "n_points_plotted": 1938,
+      "n_excluded_all_samples_missing": 0,
+      "n_up": 206,
+      "n_down": 509,
+      "n_no_change": 1223,
+      "fc_threshold": 0.585,
+      "mean_log2_intensity_range": [
+        21.451,
+        38.334
+      ]
+    }
+  },
+  {
+    "file": "figures/heatmap_top_de.png",
+    "title": "Clustered heatmap \u2014 top 40 DE proteins by raw p-value",
+    "caption": "Row-standardized (z-scored) log2 intensities for the 40 proteins with the smallest raw limma p-values (not the largest |log2FC| \u2014 see script docstring for rationale), clustered by protein only; sample columns stay in a fixed control/treated order. The row-color sidebar marks each protein's UP/DOWN call. As with all statistical figures here, n=2 technical replicates means none of these proteins are FDR-significant; this view is for pattern inspection only.",
+    "key_numbers": {
+      "n_proteins": 40,
+      "selection_method": "smallest raw p_value (limma), NOT largest |log2FC|",
+      "n_up": 9,
+      "n_down": 24,
+      "n_missing_intensity_cells": 7,
+      "z_score_abs_max": 1.463,
+      "p_value_range": [
+        0.000157,
+        0.027869
+      ],
+      "genes": [
+        "Hist1h2bc (+3)",
+        "Tuba1a",
+        "Gspt1 (+1)",
+        "Abhd14b",
+        "Memo1",
+        "Hist1h2ba",
+        "Ndufv2",
+        "Khsrp",
+        "Arglu1",
+        "Ech1",
+        "Ppp2cb",
+        "Frzb",
+        "Rbm3",
+        "Gsta3",
+        "Ppm1a",
+        "Ybx3",
+        "Npnt",
+        "Pde6d",
+        "Nudt16l1",
+        "Col16a1",
+        "Gtf2a2",
+        "Pdap1",
+        "Ppp1cb",
+        "Snx12",
+        "Chmp4b",
+        "Asf1a",
+        "Nat2",
+        "Ppm1b",
+        "Aif1l",
+        "Isoc2a",
+        "Naca",
+        "Zadh2",
+        "Eif3a",
+        "Rab18",
+        "Mob4",
+        "Cryab",
+        "Ppp2ca",
+        "Eif4h",
+        "P4ha1",
+        "Nes"
+      ]
+    }
+  },
+  {
+    "file": "figures/sample_correlation.png",
+    "title": "Sample correlation matrix (log2 intensity)",
+    "caption": "Pairwise Pearson correlation of log2 intensity across the 4 raw samples, computed over the full 2554-protein identified universe (pairwise-complete, zero/absent treated as missing). Within-condition replicate pairs (control_1 vs control_2; treated_1 vs treated_2) are the QC check for technical reproducibility; cf. qc_replicate_correlation.csv, which reports a similar check on the derived fold-change ratios rather than raw intensities.",
+    "key_numbers": {
+      "n_proteins_used": 1578,
+      "n_proteins_universe": 2554,
+      "control1_vs_control2_r": 0.8697,
+      "treated1_vs_treated2_r": 0.8449,
+      "control_vs_treated_r_range": [
+        0.8311,
+        0.9163
+      ],
+      "full_matrix": {
+        "control_1": {
+          "control_1": 1.0,
+          "control_2": 0.8697,
+          "treated_1": 0.9136,
+          "treated_2": 0.8311
+        },
+        "control_2": {
+          "control_1": 0.8697,
+          "control_2": 1.0,
+          "treated_1": 0.8398,
+          "treated_2": 0.9163
+        },
+        "treated_1": {
+          "control_1": 0.9136,
+          "control_2": 0.8398,
+          "treated_1": 1.0,
+          "treated_2": 0.8449
+        },
+        "treated_2": {
+          "control_1": 0.8311,
+          "control_2": 0.9163,
+          "treated_1": 0.8449,
+          "treated_2": 1.0
+        }
+      }
+    }
+  },
+  {
+    "file": "figures/intensity_distributions.png",
+    "title": "Per-sample log2 intensity distributions",
+    "caption": "Violin + box plots of log2 intensity for each of the 4 raw samples (zero/absent values excluded), colored by condition (control = blue, treated = red). Medians and spread are similar across all 4 samples, which is the QC basis for not applying an additional cross-sample normalization step upstream.",
+    "key_numbers": {
+      "n_values_per_sample": {
+        "control_1": 2113,
+        "control_2": 2085,
+        "treated_1": 1939,
+        "treated_2": 1994
+      },
+      "median_log2_intensity": {
+        "control_1": 27.627,
+        "control_2": 27.657,
+        "treated_1": 27.406,
+        "treated_2": 27.812
+      },
+      "mean_log2_intensity": {
+        "control_1": 27.865,
+        "control_2": 27.86,
+        "treated_1": 27.681,
+        "treated_2": 27.984
+      }
+    }
+  },
+  {
+    "file": "figures/missing_values.png",
+    "title": "Missingness summary",
+    "caption": "Left: count of missing/zero-intensity proteins per sample across the full 2554-protein identified universe. Right: % of proteins present (non-zero) per sample, broken out by protein category \u2014 complete both-condition (n=1578), partial both-condition (n=360), ON/OFF (n=10), and single-condition-only (n=606) \u2014 showing that most 'missingness' is structural (proteins genuinely absent from one condition) rather than random dropout.",
+    "key_numbers": {
+      "n_total_universe": 2554,
+      "missing_or_zero_per_sample": {
+        "control_1": 441,
+        "control_2": 469,
+        "treated_1": 615,
+        "treated_2": 560
+      },
+      "group_sizes": {
+        "complete": 1578,
+        "partial": 360,
+        "on_off": 10,
+        "single_condition": 606
+      },
+      "pct_present_matrix": {
+        "complete": {
+          "control_1": 100.0,
+          "control_2": 100.0,
+          "treated_1": 100.0,
+          "treated_2": 100.0
+        },
+        "partial": {
+          "control_1": 69.7,
+          "control_2": 69.4,
+          "treated_1": 55.3,
+          "treated_2": 66.1
+        },
+        "on_off": {
+          "control_1": 50.0,
+          "control_2": 60.0,
+          "treated_1": 30.0,
+          "treated_2": 10.0
+        },
+        "single_condition": {
+          "control_1": 46.0,
+          "control_2": 41.4,
+          "treated_1": 26.2,
+          "treated_2": 29.2
+        }
+      }
+    }
+  },
+  {
+    "file": "figures/rank_abundance.png",
+    "title": "Rank-abundance plot",
+    "caption": "Mean log2 intensity (across up to 4 samples, zero/absent excluded) sorted from most to least abundant, showing the proteome's dynamic range (~19 log2 units, i.e. several orders of magnitude) \u2014 context for interpreting fold-change estimates, which are noisier near the low-abundance tail.",
+    "key_numbers": {
+      "n_points": 2531,
+      "max_mean_log2_intensity": 38.334,
+      "min_mean_log2_intensity": 19.484,
+      "dynamic_range_log2_units": 18.849,
+      "most_abundant_gene": "Clu",
+      "least_abundant_gene": "Ccl9"
+    }
+  }
+]
