@@ -45,3 +45,38 @@ The pipeline produces `ipa_input.csv` (715 regulated) and header-only
 `ipa_input_significant.csv` (0 significant, by design). Actually uploading to IPA
 and running Core/Pathway/Upstream analyses is a step only you can perform (licensed
 Salesforce app; blocks automation). No code can close this loop.
+
+---
+
+## Enrichment layer (2026-07-12)
+
+**⚪ D5 — CORRECTION: the organism is MOUSE, not human.** research1.md §"Details"
+and Section 4 (STRING) assume *Homo sapiens* / taxid **9606**. The actual data is
+**Mus musculus / taxid 10090**: 1924/1930 gene symbols (99.7%) are title-case MGI
+nomenclature (Lama1, Sptan1, Cryab…), and `H2-K1` is a mouse MHC class-I gene.
+All enrichment is organism-specific, so I am building the layer for **mouse**:
+STRING species=10090, g:Profiler organism=`mmusculus`, Enrichr mouse libraries /
+R `org.Mm.eg.db` (NOT `org.Hs.eg.db`). Using human parameters would return
+meaningless mappings. Flagging so the professor sees this was caught and corrected;
+please confirm the experiment is indeed a mouse system (testosterone vs vehicle).
+
+**🟢 D3 (DECIDED 2026-07-12) — enrichment data source = external web APIs.**
+You chose web APIs over the offline R Bioconductor install. Built with STRING REST
+(species 10090), g:Profiler g:GOSt (organism `mmusculus`, custom background), and
+gseapy prerank against Enrichr mouse libraries. Only gene/protein IDs are sent —
+never raw intensities. Item 17 (py4cytoscape live network) needs a running
+Cytoscape desktop app (unavailable headless), so the network is delivered as a
+static networkx figure instead. Raw API responses are cached under
+`results/enrichment/raw/` for auditability.
+
+**⚪ D6 — FINDING: enrichment is null with the correct background (and the report
+should feature *why*).** With a CUSTOM background of the 2554 detected proteins,
+**0 GO/KEGG/Reactome terms pass g:Profiler g:SCS significance** in either direction
+(best corrected p ≈ 0.70), and **0/568 GSEA terms pass FDR<0.05** — consistent with
+the 0/1938 per-protein result. Critically, the same UP query against g:Profiler's
+DEFAULT whole-genome background returns **196 "significant" terms** (top p=1.9e-23,
+"cytoplasm") — a textbook background-inflation artifact. The pipeline uses the
+detected-proteome background and therefore does NOT fall into that trap. This is a
+strong, defensible teaching point for the professor: the honest answer at n=2 is
+"no enrichment survives correction," and the naive background would have manufactured
+a false pathway story. (Independently reproduced by a fresh live re-query.)
