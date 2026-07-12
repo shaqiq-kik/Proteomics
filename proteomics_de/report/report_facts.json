@@ -1,0 +1,1209 @@
+{
+  "dataset": {
+    "organism": "Mus musculus (taxid 10090)",
+    "assay": "SILAC label-free",
+    "design": "testosterone-treated (Heavy: 31579,31581) vs vehicle control (Light: 31578,31580)",
+    "replicates": "n=2 TECHNICAL replicates per group (no biological replication)"
+  },
+  "counts": {
+    "both_condition": 1948,
+    "single_condition": 606,
+    "on_off": 10,
+    "detected_universe": 2554,
+    "regulated_UP": 206,
+    "regulated_DOWN": 509,
+    "no_change": 1223,
+    "regulated_total": 715
+  },
+  "qc": {
+    "centering": {
+      "n_complete": 1578.0,
+      "mean_log2FC": -0.2768,
+      "median_log2FC": -0.2834,
+      "tolerance": 0.1,
+      "verdict": "WARN",
+      "centered_copy_written": 1.0
+    },
+    "replicate": {
+      "n_fc": 1578.0,
+      "fc_pearson_r": 0.2703,
+      "fc_sign_agree_n": 889.0,
+      "fc_sign_agree_pct": 56.3,
+      "control_raw_r": 0.8624,
+      "control_raw_n": 1723.0,
+      "treated_raw_r": 0.8407,
+      "treated_raw_n": 1656.0,
+      "fc_r_min": 0.5,
+      "verdict": "WARN"
+    }
+  },
+  "limma": {
+    "n_tested": 1938,
+    "n_sig_fdr005": 0,
+    "min_raw_p": 0.0001572308874346,
+    "n_raw_p_lt05": 63,
+    "min_adj_p": 0.304713459848272,
+    "trend_min_adj_p": 0.116075908668446,
+    "trend_n_raw_p_lt05": 55,
+    "corr_limma_vs_pipeline_log2FC": NaN
+  },
+  "top_candidates": [
+    {
+      "gene": "Hist1h2bc;Hist2h2bb;Hist1h2bh;Hist1h2bm",
+      "acc": "Q6ZWY9;Q64525;Q64478;P10854",
+      "log2FC": -10.098,
+      "p": 0.0001572308874346,
+      "regulated": "DOWN"
+    },
+    {
+      "gene": "Tuba1a",
+      "acc": "P68369",
+      "log2FC": -10.548,
+      "p": 0.0011577358389241,
+      "regulated": "NO CHANGE"
+    },
+    {
+      "gene": "Gspt1;Gspt2",
+      "acc": "Q8R050;Q149F3",
+      "log2FC": -4.157,
+      "p": 0.0018191863774243,
+      "regulated": "DOWN"
+    },
+    {
+      "gene": "Abhd14b",
+      "acc": "Q8VCR7",
+      "log2FC": 4.576,
+      "p": 0.0020357261800598,
+      "regulated": "UP"
+    },
+    {
+      "gene": "Memo1",
+      "acc": "Q91VH6",
+      "log2FC": -3.941,
+      "p": 0.0023034089394216,
+      "regulated": "DOWN"
+    },
+    {
+      "gene": "Hist1h2ba",
+      "acc": "P70696",
+      "log2FC": 6.834,
+      "p": 0.0031413834274683,
+      "regulated": "UP"
+    },
+    {
+      "gene": "Ndufv2",
+      "acc": "Q9D6J6",
+      "log2FC": -3.386,
+      "p": 0.0048684933063987,
+      "regulated": "DOWN"
+    },
+    {
+      "gene": "Khsrp",
+      "acc": "Q3U0V1",
+      "log2FC": 3.064,
+      "p": 0.0056977926615756,
+      "regulated": "UP"
+    },
+    {
+      "gene": "Arglu1",
+      "acc": "Q3UL36",
+      "log2FC": 4.804,
+      "p": 0.0059209486176888,
+      "regulated": "UP"
+    },
+    {
+      "gene": "Ech1",
+      "acc": "O35459",
+      "log2FC": -2.994,
+      "p": 0.0065976303533705,
+      "regulated": "DOWN"
+    }
+  ],
+  "string": {
+    "string_version": "12.0",
+    "species": 10090,
+    "species_name": "Mus musculus",
+    "required_score": 400,
+    "n_seeds": 715,
+    "n_seeds_up": 206,
+    "n_seeds_down": 509,
+    "n_mapped": 694,
+    "mapping_rate": 0.9706,
+    "n_nodes_in_network": 694,
+    "n_edges": 5963,
+    "n_communities": 57,
+    "get_string_ids_batched": false,
+    "get_string_ids_n_batches": 1,
+    "network_batched": false,
+    "network_n_batches": 1,
+    "rate_limit_seconds_between_calls": 1.2,
+    "caveat": "n=2 technical replicates per condition (no biological replication); 0/1938 proteins survive FDR<0.05 (limma). The 715 seed proteins are the |log2FC|>=0.585 HYPOTHESIS-GENERATING set, not confirmed significant hits. This PPI network shows structure among candidate proteins and is exploratory."
+  },
+  "ora": {
+    "gprofiler_version": "e114_eg62_p19_27110d83",
+    "organism": "mmusculus",
+    "sources": [
+      "GO:BP",
+      "GO:MF",
+      "GO:CC",
+      "KEGG",
+      "REAC"
+    ],
+    "user_threshold": 0.05,
+    "significance_threshold_method": "g_SCS",
+    "domain_scope": "custom",
+    "background_size_unique_symbols": 2532,
+    "background_size_row_union": 2554,
+    "n_terms_up": 0,
+    "n_terms_down": 0,
+    "note": "0 terms pass g:SCS-corrected significance (user_threshold=0.05) in either direction using the correct CUSTOM background (detected proteome, n=2554 rows / 2532 unique symbols). For comparison, the SAME UP query against g:Profiler's default whole-genome background returns 196 nominally 'significant' terms (e.g. GO:CC 'cytoplasm', p=1.9e-23) -- an artifact of comparing detected proteins to the whole genome rather than to what could have been detected. This 0/0 result is a SEPARATE statistical test from per-protein FDR (0/1938 significant, limma) and should not be conflated with it; reported honestly as a null finding, not an error.",
+    "best_subthreshold_term_up": {
+      "source": "GO:BP",
+      "term_id": "GO:0016311",
+      "term_name": "dephosphorylation",
+      "p_value": 0.7029801000701202,
+      "term_size": 31,
+      "query_size": 196,
+      "intersection_size": 11,
+      "intersecting_genes": "",
+      "significant": false
+    },
+    "best_subthreshold_term_down": {
+      "source": "GO:MF",
+      "term_id": "GO:0000030",
+      "term_name": "mannosyltransferase activity",
+      "p_value": 1.0,
+      "term_size": 1,
+      "query_size": 473,
+      "intersection_size": 1,
+      "intersecting_genes": "",
+      "significant": false
+    },
+    "top5_subthreshold_terms_up": [
+      {
+        "source": "GO:BP",
+        "term_id": "GO:0016311",
+        "term_name": "dephosphorylation",
+        "p_value": 0.7029801000701202,
+        "term_size": 31,
+        "query_size": 196,
+        "intersection_size": 11,
+        "intersecting_genes": "",
+        "significant": false
+      },
+      {
+        "source": "REAC",
+        "term_id": "REAC:R-MMU-372708",
+        "term_name": "p130Cas linkage to MAPK signaling for integrins",
+        "p_value": 1.0,
+        "term_size": 7,
+        "query_size": 196,
+        "intersection_size": 2,
+        "intersecting_genes": "",
+        "significant": false
+      },
+      {
+        "source": "REAC",
+        "term_id": "REAC:R-MMU-430039",
+        "term_name": "mRNA decay by 5' to 3' exoribonuclease",
+        "p_value": 1.0,
+        "term_size": 6,
+        "query_size": 196,
+        "intersection_size": 2,
+        "intersecting_genes": "",
+        "significant": false
+      },
+      {
+        "source": "REAC",
+        "term_id": "REAC:R-MMU-72165",
+        "term_name": "mRNA Splicing - Minor Pathway",
+        "p_value": 1.0,
+        "term_size": 25,
+        "query_size": 196,
+        "intersection_size": 1,
+        "intersecting_genes": "",
+        "significant": false
+      },
+      {
+        "source": "REAC",
+        "term_id": "REAC:R-MMU-72163",
+        "term_name": "mRNA Splicing - Major Pathway",
+        "p_value": 1.0,
+        "term_size": 81,
+        "query_size": 196,
+        "intersection_size": 7,
+        "intersecting_genes": "",
+        "significant": false
+      }
+    ],
+    "top5_subthreshold_terms_down": [
+      {
+        "source": "GO:MF",
+        "term_id": "GO:0000030",
+        "term_name": "mannosyltransferase activity",
+        "p_value": 1.0,
+        "term_size": 1,
+        "query_size": 473,
+        "intersection_size": 1,
+        "intersecting_genes": "",
+        "significant": false
+      },
+      {
+        "source": "GO:MF",
+        "term_id": "GO:0000049",
+        "term_name": "tRNA binding",
+        "p_value": 1.0,
+        "term_size": 17,
+        "query_size": 473,
+        "intersection_size": 3,
+        "intersecting_genes": "",
+        "significant": false
+      },
+      {
+        "source": "GO:MF",
+        "term_id": "GO:0000104",
+        "term_name": "succinate dehydrogenase activity",
+        "p_value": 1.0,
+        "term_size": 1,
+        "query_size": 473,
+        "intersection_size": 1,
+        "intersecting_genes": "",
+        "significant": false
+      },
+      {
+        "source": "GO:MF",
+        "term_id": "GO:0000146",
+        "term_name": "microfilament motor activity",
+        "p_value": 1.0,
+        "term_size": 6,
+        "query_size": 473,
+        "intersection_size": 1,
+        "intersecting_genes": "",
+        "significant": false
+      },
+      {
+        "source": "GO:MF",
+        "term_id": "GO:0000149",
+        "term_name": "SNARE binding",
+        "p_value": 1.0,
+        "term_size": 5,
+        "query_size": 473,
+        "intersection_size": 1,
+        "intersecting_genes": "",
+        "significant": false
+      }
+    ],
+    "background_rows_foldchange_all": 1948,
+    "background_rows_single_condition": 606,
+    "background_row_union_n": 2554,
+    "background_unique_symbols_n": 2532,
+    "foldchange_all_semicolon_split_n": 45,
+    "foldchange_all_accession_fallback_n": 8,
+    "single_condition_semicolon_split_n": 65,
+    "single_condition_accession_fallback_n": 15,
+    "up_n": 206,
+    "up_semicolon_split_n": 8,
+    "up_accession_fallback_n": 1,
+    "down_n": 509,
+    "down_semicolon_split_n": 11,
+    "down_accession_fallback_n": 1
+  },
+  "gsea": {
+    "libraries": {
+      "GO_Biological_Process_2021": "Enrichr shared GO-BP library (single 'Enrichr' database; listed as mouse-usable by gseapy.get_library_name(organism='Mouse')). Gene symbols are uppercase; matched to our mixed-case mouse symbols via gseapy's automatic case-insensitive matching, relying on 1:1 mouse<->human ortholog symbol correspondence.",
+      "KEGG_2019_Mouse": "Enrichr's Mus-musculus-specific KEGG pathway library (distinct from KEGG_2019_Human/KEGG_2021_Human)."
+    },
+    "n_terms_per_library_before_filtering": {
+      "GO_Biological_Process_2021": 6034,
+      "KEGG_2019_Mouse": 303
+    },
+    "n_terms_tested_after_size_filter": 568,
+    "n_genes_ranked": 1938,
+    "score_range": [
+      -3.8034621343479396,
+      2.6912806381655368
+    ],
+    "seed": 42,
+    "permutation_num": 1000,
+    "min_size": 15,
+    "max_size": 500,
+    "gseapy_version": "1.1.11",
+    "n_fdr_lt_0.05": 0,
+    "n_fdr_lt_0.25": 17,
+    "n_nom_p_lt_0.05": 40,
+    "min_fdr_q_value": 0.12484434625426792,
+    "note": "No gene set passes FDR q < 0.05 (min FDR q = 0.125), consistent with the weak per-protein signal (0/1938 proteins at limma FDR<0.05). This is expected given n=2 technical replicates and is reported honestly, not tuned away. 40 terms have nominal (uncorrected) NOM p-value < 0.05 and are listed as hypothesis-generating leads only -- this GSEA FDR is a SEPARATE test from per-protein FDR and neither should be read as confirming the other.",
+    "score_min": -3.8034621343479396,
+    "score_max": 2.6912806381655368,
+    "semicolon_split_n": 45,
+    "accession_fallback_n": 8,
+    "duplicate_symbol_n": 1
+  },
+  "pca_variance": [
+    {
+      "PC": "PC1",
+      "variance_explained": 0.4287919377295903
+    },
+    {
+      "PC": "PC2",
+      "variance_explained": 0.3302904118732437
+    },
+    {
+      "PC": "PC3",
+      "variance_explained": 0.2409176503971655
+    }
+  ],
+  "gate_skips": [
+    {
+      "analysis": "pca",
+      "min_samples": 6,
+      "have_samples": 4,
+      "status": "QC_ONLY",
+      "reason": "n=4 < trustworthy gate n>=6 (research1.md SS5): the sample covariance matrix is rank-deficient (rank<=n-1=3, exactly 3 PCs exist by construction), eigenvalues are biased, and PC1 can be driven by a single sample. Runs for QC purposes only (e.g. do technical replicate pairs land near each other); NOT evidence of biological structure."
+    },
+    {
+      "analysis": "hierarchical_clustering",
+      "min_samples": 6,
+      "have_samples": 4,
+      "status": "QC_ONLY",
+      "reason": "n=4 < trustworthy gate n>=6 (research1.md SS5): hierarchical clustering of 4 samples has no bootstrap support possible -- dendrogram topology is not statistically stable. Runs for QC purposes only; NOT a claim of reproducible sample clusters."
+    },
+    {
+      "analysis": "wgcna",
+      "min_samples": 15,
+      "have_samples": 4,
+      "status": "SKIP",
+      "reason": "WGCNA co-expression modules require >=15 samples (ideally >=20) for stable network topology; have 4."
+    },
+    {
+      "analysis": "umap_tsne",
+      "min_samples": 24,
+      "have_samples": 4,
+      "status": "SKIP",
+      "reason": "UMAP/t-SNE require 'dozens+' samples for a stable low-dimensional embedding (approximated here as >=24); have 4."
+    },
+    {
+      "analysis": "mixomics_splsda",
+      "min_samples": 20,
+      "have_samples": 4,
+      "status": "SKIP",
+      "reason": "mixOmics sPLS-DA requires samples >> classes (approximated here as >=10x the 2 classes = 20); have 4."
+    },
+    {
+      "analysis": "vae_gnn",
+      "min_samples": 1000,
+      "have_samples": 4,
+      "status": "SKIP",
+      "reason": "VAE/GNN architectures require thousands of samples to train without overfitting (approximated here as >=1000); have 4."
+    }
+  ],
+  "figures": [
+    {
+      "file": "figures/volcano.png",
+      "title": "Volcano plot \u2014 treated vs. control (SILAC)",
+      "caption": "limma log2 fold change vs. -log10(raw p-value) for the 1938 proteins tested in both conditions, colored UP/DOWN/NO CHANGE at |log2FC| >= 0.585. With n=2 technical replicates per condition (no biological replication), 0 of 1938 proteins pass FDR < 0.05 (minimum adjusted p = 0.305) \u2014 no dashed FDR line is drawn because nothing crosses it; the raw p = 0.05 line is shown instead for orientation only. Top 10 proteins by smallest raw p-value are labeled; treat all calls here as hypothesis-generating, not confirmed significant.",
+      "key_numbers": {
+        "n_points": 1938,
+        "n_up": 206,
+        "n_down": 509,
+        "n_no_change": 1223,
+        "n_raw_p_lt_0.05": 63,
+        "n_significant_fdr_lt_0.05": 0,
+        "min_adj_p_value": 0.304713,
+        "fc_threshold": 0.585,
+        "top_10_by_p_value_genes": [
+          "Hist1h2bc;Hist2h2bb;Hist1h2bh;Hist1h2bm",
+          "Tuba1a",
+          "Gspt1;Gspt2",
+          "Abhd14b",
+          "Memo1",
+          "Hist1h2ba",
+          "Ndufv2",
+          "Khsrp",
+          "Arglu1",
+          "Ech1"
+        ],
+        "top_10_by_p_value_p": [
+          0.000157,
+          0.001158,
+          0.001819,
+          0.002036,
+          0.002303,
+          0.003141,
+          0.004868,
+          0.005698,
+          0.005921,
+          0.006598
+        ]
+      }
+    },
+    {
+      "file": "figures/ma_plot.png",
+      "title": "MA plot \u2014 treated vs. control (SILAC)",
+      "caption": "Mean log2 intensity across the 4 raw samples (x) vs. limma log2 fold change (y) for the 1938 both-condition proteins; per-sample zero/absent intensities are treated as missing before averaging. Colored UP/DOWN/NO CHANGE at |log2FC| >= 0.585, dashed reference lines at 0 and +/-0.585. Same n=2 technical-replicate caveat as the volcano plot applies \u2014 no FDR-significant calls exist in this dataset.",
+      "key_numbers": {
+        "n_points_total": 1938,
+        "n_points_plotted": 1938,
+        "n_excluded_all_samples_missing": 0,
+        "n_up": 206,
+        "n_down": 509,
+        "n_no_change": 1223,
+        "fc_threshold": 0.585,
+        "mean_log2_intensity_range": [
+          21.451,
+          38.334
+        ]
+      }
+    },
+    {
+      "file": "figures/heatmap_top_de.png",
+      "title": "Clustered heatmap \u2014 top 40 DE proteins by raw p-value",
+      "caption": "Row-standardized (z-scored) log2 intensities for the 40 proteins with the smallest raw limma p-values (not the largest |log2FC| \u2014 see script docstring for rationale), clustered by protein only; sample columns stay in a fixed control/treated order. The row-color sidebar marks each protein's UP/DOWN call. As with all statistical figures here, n=2 technical replicates means none of these proteins are FDR-significant; this view is for pattern inspection only.",
+      "key_numbers": {
+        "n_proteins": 40,
+        "selection_method": "smallest raw p_value (limma), NOT largest |log2FC|",
+        "n_up": 9,
+        "n_down": 24,
+        "n_missing_intensity_cells": 7,
+        "z_score_abs_max": 1.463,
+        "p_value_range": [
+          0.000157,
+          0.027869
+        ],
+        "genes": [
+          "Hist1h2bc (+3)",
+          "Tuba1a",
+          "Gspt1 (+1)",
+          "Abhd14b",
+          "Memo1",
+          "Hist1h2ba",
+          "Ndufv2",
+          "Khsrp",
+          "Arglu1",
+          "Ech1",
+          "Ppp2cb",
+          "Frzb",
+          "Rbm3",
+          "Gsta3",
+          "Ppm1a",
+          "Ybx3",
+          "Npnt",
+          "Pde6d",
+          "Nudt16l1",
+          "Col16a1",
+          "Gtf2a2",
+          "Pdap1",
+          "Ppp1cb",
+          "Snx12",
+          "Chmp4b",
+          "Asf1a",
+          "Nat2",
+          "Ppm1b",
+          "Aif1l",
+          "Isoc2a",
+          "Naca",
+          "Zadh2",
+          "Eif3a",
+          "Rab18",
+          "Mob4",
+          "Cryab",
+          "Ppp2ca",
+          "Eif4h",
+          "P4ha1",
+          "Nes"
+        ]
+      }
+    },
+    {
+      "file": "figures/sample_correlation.png",
+      "title": "Sample correlation matrix (log2 intensity)",
+      "caption": "Pairwise Pearson correlation of log2 intensity across the 4 raw samples, computed over the full 2554-protein identified universe (pairwise-complete, zero/absent treated as missing). Within-condition replicate pairs (control_1 vs control_2; treated_1 vs treated_2) are the QC check for technical reproducibility; cf. qc_replicate_correlation.csv, which reports a similar check on the derived fold-change ratios rather than raw intensities.",
+      "key_numbers": {
+        "n_proteins_used": 1578,
+        "n_proteins_universe": 2554,
+        "control1_vs_control2_r": 0.8697,
+        "treated1_vs_treated2_r": 0.8449,
+        "control_vs_treated_r_range": [
+          0.8311,
+          0.9163
+        ],
+        "full_matrix": {
+          "control_1": {
+            "control_1": 1.0,
+            "control_2": 0.8697,
+            "treated_1": 0.9136,
+            "treated_2": 0.8311
+          },
+          "control_2": {
+            "control_1": 0.8697,
+            "control_2": 1.0,
+            "treated_1": 0.8398,
+            "treated_2": 0.9163
+          },
+          "treated_1": {
+            "control_1": 0.9136,
+            "control_2": 0.8398,
+            "treated_1": 1.0,
+            "treated_2": 0.8449
+          },
+          "treated_2": {
+            "control_1": 0.8311,
+            "control_2": 0.9163,
+            "treated_1": 0.8449,
+            "treated_2": 1.0
+          }
+        }
+      }
+    },
+    {
+      "file": "figures/intensity_distributions.png",
+      "title": "Per-sample log2 intensity distributions",
+      "caption": "Violin + box plots of log2 intensity for each of the 4 raw samples (zero/absent values excluded), colored by condition (control = blue, treated = red). Medians and spread are similar across all 4 samples, which is the QC basis for not applying an additional cross-sample normalization step upstream.",
+      "key_numbers": {
+        "n_values_per_sample": {
+          "control_1": 2113,
+          "control_2": 2085,
+          "treated_1": 1939,
+          "treated_2": 1994
+        },
+        "median_log2_intensity": {
+          "control_1": 27.627,
+          "control_2": 27.657,
+          "treated_1": 27.406,
+          "treated_2": 27.812
+        },
+        "mean_log2_intensity": {
+          "control_1": 27.865,
+          "control_2": 27.86,
+          "treated_1": 27.681,
+          "treated_2": 27.984
+        }
+      }
+    },
+    {
+      "file": "figures/missing_values.png",
+      "title": "Missingness summary",
+      "caption": "Left: count of missing/zero-intensity proteins per sample across the full 2554-protein identified universe. Right: % of proteins present (non-zero) per sample, broken out by protein category \u2014 complete both-condition (n=1578), partial both-condition (n=360), ON/OFF (n=10), and single-condition-only (n=606) \u2014 showing that most 'missingness' is structural (proteins genuinely absent from one condition) rather than random dropout.",
+      "key_numbers": {
+        "n_total_universe": 2554,
+        "missing_or_zero_per_sample": {
+          "control_1": 441,
+          "control_2": 469,
+          "treated_1": 615,
+          "treated_2": 560
+        },
+        "group_sizes": {
+          "complete": 1578,
+          "partial": 360,
+          "on_off": 10,
+          "single_condition": 606
+        },
+        "pct_present_matrix": {
+          "complete": {
+            "control_1": 100.0,
+            "control_2": 100.0,
+            "treated_1": 100.0,
+            "treated_2": 100.0
+          },
+          "partial": {
+            "control_1": 69.7,
+            "control_2": 69.4,
+            "treated_1": 55.3,
+            "treated_2": 66.1
+          },
+          "on_off": {
+            "control_1": 50.0,
+            "control_2": 60.0,
+            "treated_1": 30.0,
+            "treated_2": 10.0
+          },
+          "single_condition": {
+            "control_1": 46.0,
+            "control_2": 41.4,
+            "treated_1": 26.2,
+            "treated_2": 29.2
+          }
+        }
+      }
+    },
+    {
+      "file": "figures/rank_abundance.png",
+      "title": "Rank-abundance plot",
+      "caption": "Mean log2 intensity (across up to 4 samples, zero/absent excluded) sorted from most to least abundant, showing the proteome's dynamic range (~19 log2 units, i.e. several orders of magnitude) \u2014 context for interpreting fold-change estimates, which are noisier near the low-abundance tail.",
+      "key_numbers": {
+        "n_points": 2531,
+        "max_mean_log2_intensity": 38.334,
+        "min_mean_log2_intensity": 19.484,
+        "dynamic_range_log2_units": 18.849,
+        "most_abundant_gene": "Clu",
+        "least_abundant_gene": "Ccl9"
+      }
+    },
+    {
+      "file": "figures/ora_dotplot.png",
+      "title": "ORA top terms \u2014 UP vs. DOWN (g:Profiler, custom background)",
+      "caption": "Top 5 GO/KEGG/Reactome terms per direction from g:Profiler g:GOSt (organism=mmusculus, sources=GO:BP/MF/CC+KEGG+REAC, custom background = the 2554-row detected proteome, g:SCS-corrected p-values, user_threshold=0.05). 0/0 terms pass significance in either direction (dashed line = the p=0.05 cutoff nothing reaches); dot size = intersection_size. Shown as the best available leads for hypothesis generation, NOT as significant pathway enrichment. This is a separate statistical test from the non-significant per-protein FDR (0/1938 at FDR<0.05).",
+      "key_numbers": {
+        "n_significant_up": 0,
+        "n_significant_down": 0,
+        "background_size": 2532,
+        "up_query_size": 206,
+        "down_query_size": 509,
+        "best_p_up": 0.7029801000701202,
+        "best_p_down": 1.0,
+        "top_terms_shown": [
+          {
+            "term_name": "SNARE binding",
+            "source": "GO:MF",
+            "direction": "DOWN",
+            "p_value": 1.0,
+            "intersection_size": 1
+          },
+          {
+            "term_name": "microfilament motor activity",
+            "source": "GO:MF",
+            "direction": "DOWN",
+            "p_value": 1.0,
+            "intersection_size": 1
+          },
+          {
+            "term_name": "succinate dehydrogenase activity",
+            "source": "GO:MF",
+            "direction": "DOWN",
+            "p_value": 1.0,
+            "intersection_size": 1
+          },
+          {
+            "term_name": "tRNA binding",
+            "source": "GO:MF",
+            "direction": "DOWN",
+            "p_value": 1.0,
+            "intersection_size": 3
+          },
+          {
+            "term_name": "mannosyltransferase activity",
+            "source": "GO:MF",
+            "direction": "DOWN",
+            "p_value": 1.0,
+            "intersection_size": 1
+          },
+          {
+            "term_name": "mRNA Splicing - Major Pathway",
+            "source": "REAC",
+            "direction": "UP",
+            "p_value": 1.0,
+            "intersection_size": 7
+          },
+          {
+            "term_name": "mRNA Splicing - Minor Pathway",
+            "source": "REAC",
+            "direction": "UP",
+            "p_value": 1.0,
+            "intersection_size": 1
+          },
+          {
+            "term_name": "mRNA decay by 5' to 3' exoribonuclease",
+            "source": "REAC",
+            "direction": "UP",
+            "p_value": 1.0,
+            "intersection_size": 2
+          },
+          {
+            "term_name": "p130Cas linkage to MAPK signaling for integrins",
+            "source": "REAC",
+            "direction": "UP",
+            "p_value": 1.0,
+            "intersection_size": 2
+          },
+          {
+            "term_name": "dephosphorylation",
+            "source": "GO:BP",
+            "direction": "UP",
+            "p_value": 0.7029801000701202,
+            "intersection_size": 11
+          }
+        ]
+      }
+    },
+    {
+      "file": "figures/gsea_top.png",
+      "title": "GSEA prerank \u2014 top pathways by NES (mouse GO-BP + KEGG)",
+      "caption": "Preranked GSEA (gseapy 1.1.11, seed=42, 1000 permutations) over all 1938 qc_limma.csv proteins ranked by sign(limma_log2FC) * -log10(p_value), against GO_Biological_Process_2021 + KEGG_2019_Mouse (mouse Enrichr libraries; 568 gene sets tested after min_size=15/max_size=500 filtering). Top 10 pathways by NES on each side shown (red = NES>0, enriched toward the UP-scoring end; blue = NES<0, toward the DOWN-scoring end). Minimum FDR q-value = 0.125 -- NO pathway passes FDR<0.05; 40 pass an uncorrected nominal p<0.05 and are shown as hypothesis-generating leads only. This GSEA FDR is a separate statistical test from the non-significant per-protein FDR (0/1938 at FDR<0.05, limma) and must not be conflated with it.",
+      "key_numbers": {
+        "n_terms_tested": 568,
+        "n_fdr_lt_0.05": 0,
+        "n_fdr_lt_0.25": 17,
+        "n_nom_p_lt_0.05": 40,
+        "min_fdr_q_value": 0.1248,
+        "top_terms_shown": [
+          {
+            "term": "mitotic cell cycle phase transition (GO:0044772)",
+            "source": "GO_Biological_Process_2021",
+            "nes": -1.6308475748861135,
+            "nom_p_value": 0.006321112515802781,
+            "fdr_q_value": 1.0
+          },
+          {
+            "term": "Chemical carcinogenesis",
+            "source": "KEGG_2019_Mouse",
+            "nes": -1.5897643392950234,
+            "nom_p_value": 0.024896265560165973,
+            "fdr_q_value": 1.0
+          },
+          {
+            "term": "chromosome organization (GO:0051276)",
+            "source": "GO_Biological_Process_2021",
+            "nes": -1.5092062097708532,
+            "nom_p_value": 0.028225806451612902,
+            "fdr_q_value": 1.0
+          },
+          {
+            "term": "Tight junction",
+            "source": "KEGG_2019_Mouse",
+            "nes": -1.4918782855023824,
+            "nom_p_value": 0.02729528535980149,
+            "fdr_q_value": 1.0
+          },
+          {
+            "term": "post-Golgi vesicle-mediated transport (GO:0006892)",
+            "source": "GO_Biological_Process_2021",
+            "nes": -1.4647093122442905,
+            "nom_p_value": 0.041720990873533245,
+            "fdr_q_value": 1.0
+          },
+          {
+            "term": "cell cycle G2/M phase transition (GO:0044839)",
+            "source": "GO_Biological_Process_2021",
+            "nes": -1.4571117274064933,
+            "nom_p_value": 0.048366013071895426,
+            "fdr_q_value": 1.0
+          },
+          {
+            "term": "G2/M transition of mitotic cell cycle (GO:0000086)",
+            "source": "GO_Biological_Process_2021",
+            "nes": -1.4571117274064933,
+            "nom_p_value": 0.048366013071895426,
+            "fdr_q_value": 1.0
+          },
+          {
+            "term": "Pyruvate metabolism",
+            "source": "KEGG_2019_Mouse",
+            "nes": -1.4526168964086414,
+            "nom_p_value": 0.04155495978552279,
+            "fdr_q_value": 1.0
+          },
+          {
+            "term": "gene expression (GO:0010467)",
+            "source": "GO_Biological_Process_2021",
+            "nes": -1.4184121239916494,
+            "nom_p_value": 0.019318181818181818,
+            "fdr_q_value": 1.0
+          },
+          {
+            "term": "endoplasmic reticulum organization (GO:0007029)",
+            "source": "GO_Biological_Process_2021",
+            "nes": -1.3982518153539971,
+            "nom_p_value": 0.08183079056865465,
+            "fdr_q_value": 1.0
+          },
+          {
+            "term": "iron ion homeostasis (GO:0055072)",
+            "source": "GO_Biological_Process_2021",
+            "nes": 1.6768004547171678,
+            "nom_p_value": 0.012,
+            "fdr_q_value": 0.20881703153243622
+          },
+          {
+            "term": "Rheumatoid arthritis",
+            "source": "KEGG_2019_Mouse",
+            "nes": 1.6894124324291886,
+            "nom_p_value": 0.012345679012345678,
+            "fdr_q_value": 0.21203722300328043
+          },
+          {
+            "term": "regulation of GTPase activity (GO:0043087)",
+            "source": "GO_Biological_Process_2021",
+            "nes": 1.7250975910355273,
+            "nom_p_value": 0.008,
+            "fdr_q_value": 0.18689495882707371
+          },
+          {
+            "term": "positive regulation of protein localization to nucleus (GO:1900182)",
+            "source": "GO_Biological_Process_2021",
+            "nes": 1.7340606895240853,
+            "nom_p_value": 0.019305019305019305,
+            "fdr_q_value": 0.1959716523685192
+          },
+          {
+            "term": "positive regulation of protein transport (GO:0051222)",
+            "source": "GO_Biological_Process_2021",
+            "nes": 1.7439351436663633,
+            "nom_p_value": 0.011904761904761904,
+            "fdr_q_value": 0.21476200040168708
+          },
+          {
+            "term": "negative regulation of transmembrane receptor protein serine/threonine kinase signaling pathway (GO:0090101)",
+            "source": "GO_Biological_Process_2021",
+            "nes": 1.7543211177063973,
+            "nom_p_value": 0.010752688172043012,
+            "fdr_q_value": 0.2383932516569592
+          },
+          {
+            "term": "positive regulation of protein secretion (GO:0050714)",
+            "source": "GO_Biological_Process_2021",
+            "nes": 1.7733591602744012,
+            "nom_p_value": 0.004166666666666667,
+            "fdr_q_value": 0.2574914641494276
+          },
+          {
+            "term": "positive regulation of transmembrane receptor protein serine/threonine kinase signaling pathway (GO:0090100)",
+            "source": "GO_Biological_Process_2021",
+            "nes": 1.8798609563174036,
+            "nom_p_value": 0.0,
+            "fdr_q_value": 0.13673428399276963
+          },
+          {
+            "term": "regulation of protein secretion (GO:0050708)",
+            "source": "GO_Biological_Process_2021",
+            "nes": 1.9327176946798088,
+            "nom_p_value": 0.0,
+            "fdr_q_value": 0.12484434625426792
+          },
+          {
+            "term": "positive regulation of secretion by cell (GO:1903532)",
+            "source": "GO_Biological_Process_2021",
+            "nes": 1.9939703205552186,
+            "nom_p_value": 0.0,
+            "fdr_q_value": 0.13673428399276963
+          }
+        ]
+      }
+    },
+    {
+      "file": "figures/upset.png",
+      "title": "UpSet plot \u2014 gene overlap across top ORA leads (UP + DOWN)",
+      "caption": "UpSet plot of gene-level overlap across the top 5 UP-side + top 5 DOWN-side g:Profiler ORA terms (by g:SCS-corrected p-value; NONE pass significance at 0.05 -- see enrich/ora.py). Chosen as the most defensible set-intersection view available since there are no significant pathways to rank by: these are the best (still non-significant) leads per direction, widened from a literal top-3+3 (which had zero overlap of any kind) so the one genuine within-direction overlap is visible. Per-pathway total bars are colored by direction (red = UP-side term, blue = DOWN-side term). UP-side and DOWN-side terms never share genes here by construction (UP/DOWN are mutually exclusive protein calls), so the plot shows two disjoint intersection clusters, not a display error; real overlap WITHIN a direction is visible (e.g. the two UP-side Reactome mRNA terms share Prosc and Tpd52l2). Hypothesis-generating only.",
+      "key_numbers": {
+        "n_sets_shown": 10,
+        "n_up_terms": 5,
+        "n_down_terms": 5,
+        "n_unique_genes": 27,
+        "up_down_cross_overlap_n": 0,
+        "terms": [
+          {
+            "direction": "UP",
+            "source": "GO:BP",
+            "term_name": "dephosphorylation",
+            "n_genes": 11,
+            "genes": [
+              "Fbp1",
+              "Ppp2ca",
+              "Ppp1cc",
+              "Ppp1ca",
+              "Nid2",
+              "Ppif",
+              "Sh3bgrl3",
+              "Lsm8",
+              "Tsc22d1",
+              "Aldh1l1",
+              "Galnt1"
+            ],
+            "p_value_g_SCS": 0.7029801000701202
+          },
+          {
+            "direction": "UP",
+            "source": "REAC",
+            "term_name": "p130Cas linkage to MAPK signaling for integrins",
+            "n_genes": 2,
+            "genes": [
+              "Fga",
+              "Col18a1"
+            ],
+            "p_value_g_SCS": 1.0
+          },
+          {
+            "direction": "UP",
+            "source": "REAC",
+            "term_name": "mRNA decay by 5' to 3' exoribonuclease",
+            "n_genes": 2,
+            "genes": [
+              "Prosc",
+              "Tpd52l2"
+            ],
+            "p_value_g_SCS": 1.0
+          },
+          {
+            "direction": "UP",
+            "source": "REAC",
+            "term_name": "mRNA Splicing - Minor Pathway",
+            "n_genes": 1,
+            "genes": [
+              "Fabp4"
+            ],
+            "p_value_g_SCS": 1.0
+          },
+          {
+            "direction": "UP",
+            "source": "REAC",
+            "term_name": "mRNA Splicing - Major Pathway",
+            "n_genes": 7,
+            "genes": [
+              "Prosc",
+              "Tpd52l2",
+              "Sec22b",
+              "Fabp4",
+              "Sephs1",
+              "Heph",
+              "Mdp1"
+            ],
+            "p_value_g_SCS": 1.0
+          },
+          {
+            "direction": "DOWN",
+            "source": "GO:MF",
+            "term_name": "mannosyltransferase activity",
+            "n_genes": 1,
+            "genes": [
+              "Snrpd1"
+            ],
+            "p_value_g_SCS": 1.0
+          },
+          {
+            "direction": "DOWN",
+            "source": "GO:MF",
+            "term_name": "tRNA binding",
+            "n_genes": 3,
+            "genes": [
+              "Ubr2",
+              "Ptx3",
+              "P4ha1"
+            ],
+            "p_value_g_SCS": 1.0
+          },
+          {
+            "direction": "DOWN",
+            "source": "GO:MF",
+            "term_name": "succinate dehydrogenase activity",
+            "n_genes": 1,
+            "genes": [
+              "Ybx3"
+            ],
+            "p_value_g_SCS": 1.0
+          },
+          {
+            "direction": "DOWN",
+            "source": "GO:MF",
+            "term_name": "microfilament motor activity",
+            "n_genes": 1,
+            "genes": [
+              "Hadh"
+            ],
+            "p_value_g_SCS": 1.0
+          },
+          {
+            "direction": "DOWN",
+            "source": "GO:MF",
+            "term_name": "SNARE binding",
+            "n_genes": 1,
+            "genes": [
+              "Clybl"
+            ],
+            "p_value_g_SCS": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "file": "figures/pca_qc.png",
+      "title": "PCA of 4 samples (QC only)",
+      "caption": "PC1 vs PC2 from PCA on the 4 SILAC samples (2 control, 2 treated), standardized per-protein across samples before decomposition. QC-ONLY / NOT INTERPRETABLE AS BIOLOGICAL STRUCTURE: at n=4 the sample covariance matrix is rank-deficient (rank<=n-1=3, exactly 3 PCs exist by construction), eigenvalues are biased, and PC1 can be driven by a single sample (research1.md SS5). The trustworthy gate is n>=6 samples; this dataset is below it, so PCA is shown only as a QC sanity check (do technical replicate pairs sit near each other), not as evidence of biological grouping.",
+      "key_numbers": {
+        "n_proteins_used": 1578,
+        "n_proteins_total_qc_limma": 1938,
+        "pc_variance_explained_pct": {
+          "PC1": 42.88,
+          "PC2": 33.03,
+          "PC3": 24.09
+        },
+        "gate_status": "QC_ONLY",
+        "trustworthy_min_samples": 6,
+        "have_samples": 4,
+        "skip_list": [
+          "wgcna",
+          "umap_tsne",
+          "mixomics_splsda",
+          "vae_gnn"
+        ],
+        "qc_only_list": [
+          "pca",
+          "hierarchical_clustering"
+        ]
+      }
+    },
+    {
+      "file": "figures/sample_dendrogram.png",
+      "title": "Hierarchical clustering of 4 samples (QC only)",
+      "caption": "Dendrogram of the 4 SILAC samples, average-linkage clustering on 1-minus-Pearson-correlation distance of log2 intensity (complete proteins only). QC-ONLY / NOT INTERPRETABLE: no bootstrap support is possible with 4 observations, so dendrogram topology is not statistically stable (research1.md SS5). The trustworthy gate is n>=6 samples; shown only as a QC sanity check that technical replicate pairs are each other's nearest neighbor, not as a claim of reproducible clusters.",
+      "key_numbers": {
+        "n_proteins_used": 1578,
+        "n_proteins_total_qc_limma": 1938,
+        "distance_metric": "1 - Pearson correlation (log2 intensity)",
+        "linkage_method": "average",
+        "pairwise_correlation_distance": {
+          "control_1": {
+            "control_1": 0.0,
+            "control_2": 0.1253,
+            "treated_1": 0.0884,
+            "treated_2": 0.1667
+          },
+          "control_2": {
+            "control_1": 0.1253,
+            "control_2": 0.0,
+            "treated_1": 0.1602,
+            "treated_2": 0.0833
+          },
+          "treated_1": {
+            "control_1": 0.0884,
+            "control_2": 0.1602,
+            "treated_1": 0.0,
+            "treated_2": 0.1539
+          },
+          "treated_2": {
+            "control_1": 0.1667,
+            "control_2": 0.0833,
+            "treated_1": 0.1539,
+            "treated_2": 0.0
+          }
+        },
+        "gate_status": "QC_ONLY",
+        "trustworthy_min_samples": 6,
+        "have_samples": 4,
+        "skip_list": [
+          "wgcna",
+          "umap_tsne",
+          "mixomics_splsda",
+          "vae_gnn"
+        ],
+        "qc_only_list": [
+          "pca",
+          "hierarchical_clustering"
+        ]
+      }
+    },
+    {
+      "file": "figures/ppi_network.png",
+      "title": "STRING PPI network of DE-regulated proteins (mouse) \u2014 largest connected component",
+      "caption": "Protein-protein interaction network from STRING v12.0 (species=10090, Mus musculus, required_score=400) built from the 715 DE-\"regulated\" seed proteins (206 UP, 509 DOWN; |log2FC|>=0.585). 694/715 seeds (97.1%) mapped to a STRING identifier, yielding a 694-node / 5963-edge network with 57 greedy-modularity communities. Only the largest connected component (645 nodes, 5960 edges) is drawn for legibility; 49 nodes across 46 smaller components are omitted. Node color = log2 fold change (blue = down, red = up); node size is proportional to STRING degree; the top 15 hub genes by degree are labeled. IMPORTANT: this is an exploratory network over the hypothesis-generating |log2FC|>=0.585 candidate set from an n=2 technical-replicate SILAC design (no biological replication) in which 0/1938 proteins pass FDR<0.05 (limma) \u2014 network structure reflects STRING's curated evidence, not statistical significance in this dataset, and should not be read as confirmed findings.",
+      "key_numbers": {
+        "n_seeds": 715,
+        "n_seeds_up": 206,
+        "n_seeds_down": 509,
+        "n_mapped": 694,
+        "mapping_rate": 0.9706,
+        "required_score": 400,
+        "n_nodes_full_network": 694,
+        "n_edges_full_network": 5963,
+        "n_nodes_plotted": 645,
+        "n_edges_plotted": 5960,
+        "n_omitted": 49,
+        "n_edges_omitted": 3,
+        "n_components_omitted": 46,
+        "n_communities": 57,
+        "string_version": "12.0",
+        "top_hub_genes": [
+          {
+            "symbol": "Actb",
+            "degree": 137,
+            "log2FC": 0.87,
+            "regulated": "UP"
+          },
+          {
+            "symbol": "Rps3",
+            "degree": 100,
+            "log2FC": -0.67,
+            "regulated": "DOWN"
+          },
+          {
+            "symbol": "Hsp90aa1",
+            "degree": 97,
+            "log2FC": -1.624,
+            "regulated": "DOWN"
+          },
+          {
+            "symbol": "Gnb2l1",
+            "degree": 93,
+            "log2FC": -0.993,
+            "regulated": "DOWN"
+          },
+          {
+            "symbol": "Cct7",
+            "degree": 86,
+            "log2FC": 0.63,
+            "regulated": "UP"
+          },
+          {
+            "symbol": "Gart",
+            "degree": 83,
+            "log2FC": -0.888,
+            "regulated": "DOWN"
+          },
+          {
+            "symbol": "Rps20",
+            "degree": 82,
+            "log2FC": -2.19,
+            "regulated": "DOWN"
+          },
+          {
+            "symbol": "Tcp1",
+            "degree": 81,
+            "log2FC": 2.32,
+            "regulated": "UP"
+          },
+          {
+            "symbol": "Nedd8",
+            "degree": 81,
+            "log2FC": 2.709,
+            "regulated": "UP"
+          },
+          {
+            "symbol": "Psmd14",
+            "degree": 80,
+            "log2FC": -0.652,
+            "regulated": "DOWN"
+          },
+          {
+            "symbol": "Eftud2",
+            "degree": 79,
+            "log2FC": -0.906,
+            "regulated": "DOWN"
+          },
+          {
+            "symbol": "Rplp0",
+            "degree": 77,
+            "log2FC": -1.54,
+            "regulated": "DOWN"
+          },
+          {
+            "symbol": "Cct5",
+            "degree": 77,
+            "log2FC": 0.594,
+            "regulated": "UP"
+          },
+          {
+            "symbol": "Rpsa",
+            "degree": 77,
+            "log2FC": -0.628,
+            "regulated": "DOWN"
+          },
+          {
+            "symbol": "Rps16",
+            "degree": 72,
+            "log2FC": -1.264,
+            "regulated": "DOWN"
+          }
+        ]
+      }
+    }
+  ],
+  "n_figures": 13
+}
