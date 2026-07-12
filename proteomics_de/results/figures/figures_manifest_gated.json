@@ -1,0 +1,79 @@
+[
+  {
+    "file": "figures/pca_qc.png",
+    "title": "PCA of 4 samples (QC only)",
+    "caption": "PC1 vs PC2 from PCA on the 4 SILAC samples (2 control, 2 treated), standardized per-protein across samples before decomposition. QC-ONLY / NOT INTERPRETABLE AS BIOLOGICAL STRUCTURE: at n=4 the sample covariance matrix is rank-deficient (rank<=n-1=3, exactly 3 PCs exist by construction), eigenvalues are biased, and PC1 can be driven by a single sample (research1.md SS5). The trustworthy gate is n>=6 samples; this dataset is below it, so PCA is shown only as a QC sanity check (do technical replicate pairs sit near each other), not as evidence of biological grouping.",
+    "key_numbers": {
+      "n_proteins_used": 1578,
+      "n_proteins_total_qc_limma": 1938,
+      "pc_variance_explained_pct": {
+        "PC1": 42.88,
+        "PC2": 33.03,
+        "PC3": 24.09
+      },
+      "gate_status": "QC_ONLY",
+      "trustworthy_min_samples": 6,
+      "have_samples": 4,
+      "skip_list": [
+        "wgcna",
+        "umap_tsne",
+        "mixomics_splsda",
+        "vae_gnn"
+      ],
+      "qc_only_list": [
+        "pca",
+        "hierarchical_clustering"
+      ]
+    }
+  },
+  {
+    "file": "figures/sample_dendrogram.png",
+    "title": "Hierarchical clustering of 4 samples (QC only)",
+    "caption": "Dendrogram of the 4 SILAC samples, average-linkage clustering on 1-minus-Pearson-correlation distance of log2 intensity (complete proteins only). QC-ONLY / NOT INTERPRETABLE: no bootstrap support is possible with 4 observations, so dendrogram topology is not statistically stable (research1.md SS5). The trustworthy gate is n>=6 samples; shown only as a QC sanity check that technical replicate pairs are each other's nearest neighbor, not as a claim of reproducible clusters.",
+    "key_numbers": {
+      "n_proteins_used": 1578,
+      "n_proteins_total_qc_limma": 1938,
+      "distance_metric": "1 - Pearson correlation (log2 intensity)",
+      "linkage_method": "average",
+      "pairwise_correlation_distance": {
+        "control_1": {
+          "control_1": 0.0,
+          "control_2": 0.1253,
+          "treated_1": 0.0884,
+          "treated_2": 0.1667
+        },
+        "control_2": {
+          "control_1": 0.1253,
+          "control_2": 0.0,
+          "treated_1": 0.1602,
+          "treated_2": 0.0833
+        },
+        "treated_1": {
+          "control_1": 0.0884,
+          "control_2": 0.1602,
+          "treated_1": 0.0,
+          "treated_2": 0.1539
+        },
+        "treated_2": {
+          "control_1": 0.1667,
+          "control_2": 0.0833,
+          "treated_1": 0.1539,
+          "treated_2": 0.0
+        }
+      },
+      "gate_status": "QC_ONLY",
+      "trustworthy_min_samples": 6,
+      "have_samples": 4,
+      "skip_list": [
+        "wgcna",
+        "umap_tsne",
+        "mixomics_splsda",
+        "vae_gnn"
+      ],
+      "qc_only_list": [
+        "pca",
+        "hierarchical_clustering"
+      ]
+    }
+  }
+]
