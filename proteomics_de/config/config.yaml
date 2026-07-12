@@ -1,0 +1,150 @@
+# =============================================================================
+# proteomics_de/config/config.yaml
+#
+# WHAT THIS IS: a single declarative source of truth for the mouse SILAC
+# proteomics DE pipeline's design, thresholds, file contracts, and downstream
+# enrichment parameters (research1.md Section 6, item 1).
+#
+# WHAT THIS IS NOT: the existing flat scripts (foldchange.py, replicate_check.py,
+# centering_check.py, limma_test.py/.R, enrich/*.py, viz/*.py) do NOT read this
+# file. They are frozen, individually verified, and out of scope for this
+# reproducibility layer (see DECISIONS_LOG.md, D1). This file is DESCRIPTIVE
+# documentation of the design those scripts already implement, encoded
+# declaratively so it can be (a) validated against the committed outputs by
+# proteomics_de/qc/schema.py + validate.py, and (b) read by a human or a future
+# script without re-deriving the design from source code.
+#
+# FORWARD-PATH PIVOT POINT: per research1.md's "FORWARD-PATH SECTION — If
+# biological replicates arrive", the design is meant to become a config change,
+# not a rewrite. The mechanism is `config/sample_sheet.tsv`: it is
+# replicate-count-agnostic by construction (sample, group, channel, replicate).
+# Adding biological replicates means appending rows to that sheet (new sample
+# IDs, replicate index 3, 4, ...) and regenerating `design.tsv` / the limma
+# `model.matrix(~group)` from it — not editing this file's structure or the
+# scripts' logic by hand. When that happens, thresholds.n_technical_replicates
+# below changes from 2 to reflect the new design, and the
+# "technical-replicates-only" caveat (see notes.caveat) is lifted.
+# =============================================================================
+
+organism:
+  common_name: "mouse"
+  scientific_name: "Mus musculus"
+  ncbi_taxid: 10090
+  gene_symbol_convention: "title-case MGI symbols (e.g. Lama1, Sptan1, Cryab)"
+  note: >
+    Corrected from an initial human/9606 assumption in research1.md (see
+    DECISIONS_LOG.md D5): 99.7% of gene symbols in the committed data are
+    title-case MGI nomenclature, and H2-K1 is a mouse MHC class-I gene, not
+    the human ortholog HLA. All organism-specific parameters below (STRING,
+    g:Profiler) use the mouse identifiers.
+
+design:
+  assay: "SILAC (Stable Isotope Labeling by Amino acids in Cell culture)"
+  # n=2 TECHNICAL replicates per group; NOT biological replicates. This is a
+  # hard ceiling on statistical inference (see notes.caveat) until the sample
+  # sheet grows per the FORWARD-PATH note above.
+  n_technical_replicates_per_group: 2
+  n_biological_replicates_per_group: 1
+  sample_sheet: "proteomics_de/config/sample_sheet.tsv"
+  groups:
+    control:
+      label: "Light (control)"
+      channels: ["Intensity 31578", "Intensity 31580"]
+    treated:
+      label: "Heavy (treated)"
+      channels: ["Intensity 31579", "Intensity 31581"]
+  contrast:
+    name: "treated_vs_control"
+    numerator: "treated"
+    denominator: "control"
+    description: "log2(treated / control); positive log2FC = UP in treated"
+
+thresholds:
+  # |log2FC| >= log2(1.5) = 0.584962500721156, rounded to 0.585 in reporting.
+  log2fc_regulation_cutoff: 0.585
+  fold_change_linear_equivalent: 1.5
+  significance:
+    metric: "adj.P.Val (Benjamini-Hochberg FDR)"
+    alpha: 0.05
+  imputation:
+    method: "MinProb"
+    q: 0.01
+    package: "imputeLCMD 2.1 (R)"
+  rng_seed: 42
+
+statistics:
+  engine: "limma 3.68.4 (R 4.6.1)"
+  design_matrix: "~group (two-group contrast; no batch/covariate terms at n=2 technical replicates)"
+  eBayes_variants_tested: ["vanilla (default)", "trend", "robust"]
+  eBayes_default: "vanilla"
+
+enrichment:
+  string:
+    species_taxid: 10090
+    source: "STRING REST API"
+  gprofiler:
+    organism: "mmusculus"
+    background: "custom: the detected proteome"
+    background_n: 2554
+    background_derivation: >
+      Union of foldchange_all.csv (1948 rows) and single_condition_proteins.csv
+      (606 rows) = 2554 rows (the full set of proteins with at least one
+      non-missing intensity in either raw SILAC sheet). Using this custom
+      background instead of g:Profiler's default whole-genome background is
+      the deliberate methodological choice documented in DECISIONS_LOG.md D6:
+      the same UP query against the default background returns 196 spuriously
+      "significant" terms, an artifact of comparing detected proteins to the
+      whole genome rather than to what could have been detected.
+    correction_method: "g:SCS"
+    sources: ["GO:BP", "GO:MF", "GO:CC", "KEGG", "REAC"]
+    user_threshold: 0.05
+  gsea:
+    tool: "gseapy prerank"
+    gene_sets: "Enrichr mouse libraries"
+    rng_seed: 42
+
+file_contracts:
+  # Read-only, committed pipeline outputs. Column lists and row counts are the
+  # REAL observed contracts (see proteomics_de/qc/schema.py for the enforced
+  # pandera schemas and proteomics_de/results/qc/qc_report.md for the last
+  # validation run against these exact files).
+  foldchange_all:
+    path: "proteomics_de/results/foldchange_all.csv"
+    expected_rows: 1948
+    key_columns:
+      ["UniProt Accession Number", "Gene names", "Intensity 31578",
+       "Intensity 31580", "Intensity 31579", "Intensity 31581",
+       "ratio_rep1", "ratio_rep2", "log2_rep1", "log2_rep2", "log2FC",
+       "complete", "regulated", "onoff"]
+  qc_limma:
+    path: "proteomics_de/results/qc_limma.csv"
+    expected_rows: 1938
+    key_columns:
+      ["id", "gene", "Intensity 31578", "Intensity 31580",
+       "Intensity 31579", "Intensity 31581", "limma_log2FC", "p_value",
+       "adj_p_value", "significant", "regulated"]
+  ipa_input:
+    path: "proteomics_de/results/ipa_input.csv"
+    expected_rows: 715
+    key_columns: ["UniProt Accession Number", "Gene names", "log2FC", "regulated"]
+  single_condition_proteins:
+    path: "proteomics_de/results/single_condition_proteins.csv"
+    expected_rows: 606
+    key_columns:
+      ["accession", "gene", "detected_in", "Intensity 31578",
+       "Intensity 31580", "Intensity 31579", "Intensity 31581"]
+  onoff_proteins:
+    path: "proteomics_de/results/onoff_proteins.csv"
+    expected_rows: 10
+    key_columns:
+      ["accession", "gene", "onoff", "Intensity 31578", "Intensity 31580",
+       "Intensity 31579", "Intensity 31581"]
+
+notes:
+  caveat: >
+    n=2 is a TECHNICAL, not biological, replicate count. Per research1.md and
+    DECISIONS_LOG.md D2, 0/1938 proteins survive adj.P.Val<0.05 (min adj.p =
+    0.305) -- the expected ceiling at this replicate count, not a bug (corr of
+    limma log2FC vs. pipeline log2FC = 1.0000). Every downstream figure/table
+    must carry a "technical replicates -> hypothesis-generating only" caveat
+    until biological replicates are added per the FORWARD-PATH section.
