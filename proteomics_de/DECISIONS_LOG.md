@@ -80,3 +80,27 @@ detected-proteome background and therefore does NOT fall into that trap. This is
 strong, defensible teaching point for the professor: the honest answer at n=2 is
 "no enrichment survives correction," and the naive background would have manufactured
 a false pathway story. (Independently reproduced by a fresh live re-query.)
+
+---
+
+## Build complete (2026-07-12)
+
+All Section-6 roadmap layers are built, independently verified, and merged to `main`:
+viz (11–14), enrichment (15–18), gated PCA (19), config+pandera (1,3 / D1 resolved),
+and the final interactive HTML report (20). Every layer: an author worker + a
+separate fresh-context verifier; protected/frozen outputs proven byte-identical
+(sha256) after every layer. The report (`proteomics_de/report/report.html`) is a
+single self-contained file, passed a dedicated correctness pass (all numbers trace
+to source) and a dedicated visual-quality pass, and is mobile-hardened.
+
+**🔵 Still needs YOU (nothing code can close):**
+- **Confirm the organism** is mouse (D5) — I inferred it from the gene symbols; please
+  verify the experiment is a mouse system so the enrichment parameters are right.
+- **D4 — run QIAGEN IPA** yourself if desired: upload `results/ipa_input.csv` (715
+  regulated leads). `ipa_input_significant.csv` is header-only by design (0 pass FDR).
+- **Optional:** publish the report as a shareable Artifact / present it to the professor.
+
+**🟢 Owned defaults you may override:** D1 (kept the flat verified scripts, added
+config/pandera additively rather than refactoring), D3 (web APIs), the balanced
+dual-track report framing, and delivering item 17 as a static network figure
+(no headless Cytoscape).
