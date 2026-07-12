@@ -1,0 +1,20 @@
+{
+  "string_version": "12.0",
+  "species": 10090,
+  "species_name": "Mus musculus",
+  "required_score": 400,
+  "n_seeds": 715,
+  "n_seeds_up": 206,
+  "n_seeds_down": 509,
+  "n_mapped": 694,
+  "mapping_rate": 0.9706,
+  "n_nodes_in_network": 694,
+  "n_edges": 5963,
+  "n_communities": 57,
+  "get_string_ids_batched": false,
+  "get_string_ids_n_batches": 1,
+  "network_batched": false,
+  "network_n_batches": 1,
+  "rate_limit_seconds_between_calls": 1.2,
+  "caveat": "n=2 technical replicates per condition (no biological replication); 0/1938 proteins survive FDR<0.05 (limma). The 715 seed proteins are the |log2FC|>=0.585 HYPOTHESIS-GENERATING set, not confirmed significant hits. This PPI network shows structure among candidate proteins and is exploratory."
+}

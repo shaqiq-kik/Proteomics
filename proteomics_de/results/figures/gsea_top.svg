@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="880.055437pt" height="748.798187pt" viewBox="0 0 880.055437 748.798187" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-07-12T17:34:15.096057</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.10.7, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 748.798187 
+L 880.055437 748.798187 
+L 880.055437 0 
+L 0 0 
+z
+" style="fill: #fcfcfb"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 531.424188 659.894187 
+L 729.354188 659.894187 
+L 729.354188 28.702187 
+L 531.424188 28.702187 
+z
+" style="fill: #fcfcfb"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <path d="M 571.736349 659.894187 
+L 571.736349 28.702187 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_2">
+      <defs>
+       <path id="mbb8c1c94e3" d="M 0 0 
+L 0 3.5 
+" style="stroke: #898781; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#mbb8c1c94e3" x="571.736349" y="659.894187" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_1">
+      <text style="font-size: 9.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #898781" x="571.736349" y="673.677781" transform="rotate(-0 571.736349 673.677781)">−1</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_3">
+      <path d="M 621.376461 659.894187 
+L 621.376461 28.702187 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_4">
+      <g>
+       <use xlink:href="#mbb8c1c94e3" x="621.376461" y="659.894187" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <text style="font-size: 9.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #898781" x="621.376461" y="673.677781" transform="rotate(-0 621.376461 673.677781)">0</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_5">
+      <path d="M 671.016572 659.894187 
+L 671.016572 28.702187 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_6">
+      <g>
+       <use xlink:href="#mbb8c1c94e3" x="671.016572" y="659.894187" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <text style="font-size: 9.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #898781" x="671.016572" y="673.677781" transform="rotate(-0 671.016572 673.677781)">1</text>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_7">
+      <path d="M 720.656683 659.894187 
+L 720.656683 28.702187 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_8">
+      <g>
+       <use xlink:href="#mbb8c1c94e3" x="720.656683" y="659.894187" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_4">
+      <text style="font-size: 9.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #898781" x="720.656683" y="673.677781" transform="rotate(-0 720.656683 673.677781)">2</text>
+     </g>
+    </g>
+    <g id="text_5">
+     <text style="font-size: 10.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #52514e" x="630.389188" y="687.224422" transform="rotate(-0 630.389188 687.224422)">Normalized Enrichment Score (NES)</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_9">
+      <path d="M 531.424188 622.137313 
+L 729.354188 622.137313 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_10">
+      <defs>
+       <path id="mefb022b4cc" d="M 0 0 
+L -3.5 0 
+" style="stroke: #898781; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#mefb022b4cc" x="531.424188" y="622.137313" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_6">
+      <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #898781" x="524.424188" y="625.061063" transform="rotate(-0 524.424188 625.061063)">mitotic cell cycle phase transition (GO:0044772)  (FDR q=1.00, NOM p=0.006)</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_11">
+      <path d="M 531.424188 592.891089 
+L 729.354188 592.891089 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_12">
+      <g>
+       <use xlink:href="#mefb022b4cc" x="531.424188" y="592.891089" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_7">
+      <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #898781" x="524.424188" y="595.814839" transform="rotate(-0 524.424188 595.814839)">Chemical carcinogenesis  (FDR q=1.00, NOM p=0.025)</text>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_13">
+      <path d="M 531.424188 563.644865 
+L 729.354188 563.644865 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_14">
+      <g>
+       <use xlink:href="#mefb022b4cc" x="531.424188" y="563.644865" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_8">
+      <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #898781" x="524.424188" y="566.568615" transform="rotate(-0 524.424188 566.568615)">chromosome organization (GO:0051276)  (FDR q=1.00, NOM p=0.028)</text>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_15">
+      <path d="M 531.424188 534.398642 
+L 729.354188 534.398642 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_16">
+      <g>
+       <use xlink:href="#mefb022b4cc" x="531.424188" y="534.398642" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_9">
+      <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #898781" x="524.424188" y="537.322392" transform="rotate(-0 524.424188 537.322392)">Tight junction  (FDR q=1.00, NOM p=0.027)</text>
+     </g>
+    </g>
+    <g id="ytick_5">
+     <g id="line2d_17">
+      <path d="M 531.424188 505.152418 
+L 729.354188 505.152418 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_18">
+      <g>
+       <use xlink:href="#mefb022b4cc" x="531.424188" y="505.152418" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_10">
+      <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #898781" x="524.424188" y="508.076168" transform="rotate(-0 524.424188 508.076168)">post-Golgi vesicle-mediated transport (GO:0006892)  (FDR q=1.00, NOM p=0.042)</text>
+     </g>
+    </g>
+    <g id="ytick_6">
+     <g id="line2d_19">
+      <path d="M 531.424188 475.906194 
+L 729.354188 475.906194 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_20">
+      <g>
+       <use xlink:href="#mefb022b4cc" x="531.424188" y="475.906194" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_11">
+      <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #898781" x="524.424188" y="478.829944" transform="rotate(-0 524.424188 478.829944)">cell cycle G2/M phase transition (GO:0044839)  (FDR q=1.00, NOM p=0.048)</text>
+     </g>
+    </g>
+    <g id="ytick_7">
+     <g id="line2d_21">
+      <path d="M 531.424188 446.65997 
+L 729.354188 446.65997 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_22">
+      <g>
+       <use xlink:href="#mefb022b4cc" x="531.424188" y="446.65997" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_12">
+      <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #898781" x="524.424188" y="449.58372" transform="rotate(-0 524.424188 449.58372)">G2/M transition of mitotic cell cycle (GO:0000086)  (FDR q=1.00, NOM p=0.048)</text>
+     </g>
+    </g>
+    <g id="ytick_8">
+     <g id="line2d_23">
+      <path d="M 531.424188 417.413747 
+L 729.354188 417.413747 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_24">
+      <g>
+       <use xlink:href="#mefb022b4cc" x="531.424188" y="417.413747" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_13">
+      <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #898781" x="524.424188" y="420.337497" transform="rotate(-0 524.424188 420.337497)">Pyruvate metabolism  (FDR q=1.00, NOM p=0.042)</text>
+     </g>
+    </g>
+    <g id="ytick_9">
+     <g id="line2d_25">
+      <path d="M 531.424188 388.167523 
+L 729.354188 388.167523 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_26">
+      <g>
+       <use xlink:href="#mefb022b4cc" x="531.424188" y="388.167523" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_14">
+      <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #898781" x="524.424188" y="391.091273" transform="rotate(-0 524.424188 391.091273)">gene expression (GO:0010467)  (FDR q=1.00, NOM p=0.019)</text>
+     </g>
+    </g>
+    <g id="ytick_10">
+     <g id="line2d_27">
+      <path d="M 531.424188 358.921299 
+L 729.354188 358.921299 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_28">
+      <g>
+       <use xlink:href="#mefb022b4cc" x="531.424188" y="358.921299" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_15">
+      <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #898781" x="524.424188" y="361.845049" transform="rotate(-0 524.424188 361.845049)">endoplasmic reticulum organization (GO:0007029)  (FDR q=1.00, NOM p=0.082)</text>
+     </g>
+    </g>
+    <g id="ytick_11">
+     <g id="line2d_29">
+      <path d="M 531.424188 329.675076 
+L 729.354188 329.675076 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_30">
+      <g>
+       <use xlink:href="#mefb022b4cc" x="531.424188" y="329.675076" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_16">
+      <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #898781" x="524.424188" y="332.598826" transform="rotate(-0 524.424188 332.598826)">iron ion homeostasis (GO:0055072)  (FDR q=0.21, NOM p=0.012)</text>
+     </g>
+    </g>
+    <g id="ytick_12">
+     <g id="line2d_31">
+      <path d="M 531.424188 300.428852 
+L 729.354188 300.428852 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_32">
+      <g>
+       <use xlink:href="#mefb022b4cc" x="531.424188" y="300.428852" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_17">
+      <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #898781" x="524.424188" y="303.352602" transform="rotate(-0 524.424188 303.352602)">Rheumatoid arthritis  (FDR q=0.21, NOM p=0.012)</text>
+     </g>
+    </g>
+    <g id="ytick_13">
+     <g id="line2d_33">
+      <path d="M 531.424188 271.182628 
+L 729.354188 271.182628 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_34">
+      <g>
+       <use xlink:href="#mefb022b4cc" x="531.424188" y="271.182628" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_18">
+      <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #898781" x="524.424188" y="274.106378" transform="rotate(-0 524.424188 274.106378)">regulation of GTPase activity (GO:0043087)  (FDR q=0.19, NOM p=0.008)</text>
+     </g>
+    </g>
+    <g id="ytick_14">
+     <g id="line2d_35">
+      <path d="M 531.424188 241.936405 
+L 729.354188 241.936405 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_36">
+      <g>
+       <use xlink:href="#mefb022b4cc" x="531.424188" y="241.936405" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_19">
+      <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #898781" x="524.424188" y="244.860155" transform="rotate(-0 524.424188 244.860155)">positive regulation of protein localization to nucleus (GO:1900182)  (FDR q=0.20, NOM p=0.019)</text>
+     </g>
+    </g>
+    <g id="ytick_15">
+     <g id="line2d_37">
+      <path d="M 531.424188 212.690181 
+L 729.354188 212.690181 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_38">
+      <g>
+       <use xlink:href="#mefb022b4cc" x="531.424188" y="212.690181" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_20">
+      <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #898781" x="524.424188" y="215.613931" transform="rotate(-0 524.424188 215.613931)">positive regulation of protein transport (GO:0051222)  (FDR q=0.21, NOM p=0.012)</text>
+     </g>
+    </g>
+    <g id="ytick_16">
+     <g id="line2d_39">
+      <path d="M 531.424188 183.443957 
+L 729.354188 183.443957 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_40">
+      <g>
+       <use xlink:href="#mefb022b4cc" x="531.424188" y="183.443957" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_21">
+      <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #898781" x="524.424188" y="186.367707" transform="rotate(-0 524.424188 186.367707)">negative regulation of transmembrane receptor protein serine/threonine kinase signaling pathway (GO:0090101)  (FDR q=0.24, NOM p=0.011)</text>
+     </g>
+    </g>
+    <g id="ytick_17">
+     <g id="line2d_41">
+      <path d="M 531.424188 154.197733 
+L 729.354188 154.197733 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_42">
+      <g>
+       <use xlink:href="#mefb022b4cc" x="531.424188" y="154.197733" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_22">
+      <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #898781" x="524.424188" y="157.121483" transform="rotate(-0 524.424188 157.121483)">positive regulation of protein secretion (GO:0050714)  (FDR q=0.26, NOM p=0.004)</text>
+     </g>
+    </g>
+    <g id="ytick_18">
+     <g id="line2d_43">
+      <path d="M 531.424188 124.95151 
+L 729.354188 124.95151 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_44">
+      <g>
+       <use xlink:href="#mefb022b4cc" x="531.424188" y="124.95151" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_23">
+      <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #898781" x="524.424188" y="127.87526" transform="rotate(-0 524.424188 127.87526)">positive regulation of transmembrane receptor protein serine/threonine kinase signaling pathway (GO:0090100)  (FDR q=0.14, NOM p=0.000)</text>
+     </g>
+    </g>
+    <g id="ytick_19">
+     <g id="line2d_45">
+      <path d="M 531.424188 95.705286 
+L 729.354188 95.705286 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_46">
+      <g>
+       <use xlink:href="#mefb022b4cc" x="531.424188" y="95.705286" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_24">
+      <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #898781" x="524.424188" y="98.629036" transform="rotate(-0 524.424188 98.629036)">regulation of protein secretion (GO:0050708)  (FDR q=0.12, NOM p=0.000)</text>
+     </g>
+    </g>
+    <g id="ytick_20">
+     <g id="line2d_47">
+      <path d="M 531.424188 66.459062 
+L 729.354188 66.459062 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #e1e0d9; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_48">
+      <g>
+       <use xlink:href="#mefb022b4cc" x="531.424188" y="66.459062" style="fill: #898781; stroke: #898781; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_25">
+      <text style="font-size: 8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #898781" x="524.424188" y="69.382812" transform="rotate(-0 524.424188 69.382812)">positive regulation of secretion by cell (GO:1903532)  (FDR q=0.14, NOM p=0.000)</text>
+     </g>
+    </g>
+   </g>
+   <g id="line2d_49">
+    <path d="M 621.376461 659.894187 
+L 621.376461 28.702187 
+" clip-path="url(#p8654cf0e9d)" style="fill: none; stroke: #c3c2b7; stroke-linecap: square"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 531.424188 659.894187 
+L 531.424188 28.702187 
+" style="fill: none; stroke: #c3c2b7; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 531.424188 659.894187 
+L 729.354188 659.894187 
+" style="fill: none; stroke: #c3c2b7; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 621.376461 631.203642 
+L 540.421006 631.203642 
+L 540.421006 613.070983 
+L 621.376461 613.070983 
+z
+" clip-path="url(#p8654cf0e9d)" style="fill: #2a78d6; opacity: 0.85"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 621.376461 601.957418 
+L 542.460382 601.957418 
+L 542.460382 583.82476 
+L 621.376461 583.82476 
+z
+" clip-path="url(#p8654cf0e9d)" style="fill: #2a78d6; opacity: 0.85"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 621.376461 572.711195 
+L 546.459297 572.711195 
+L 546.459297 554.578536 
+L 621.376461 554.578536 
+z
+" clip-path="url(#p8654cf0e9d)" style="fill: #2a78d6; opacity: 0.85"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 621.376461 543.464971 
+L 547.319457 543.464971 
+L 547.319457 525.332312 
+L 621.376461 525.332312 
+z
+" clip-path="url(#p8654cf0e9d)" style="fill: #2a78d6; opacity: 0.85"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 621.376461 514.218747 
+L 548.668128 514.218747 
+L 548.668128 496.086089 
+L 621.376461 496.086089 
+z
+" clip-path="url(#p8654cf0e9d)" style="fill: #2a78d6; opacity: 0.85"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 621.376461 484.972524 
+L 549.045272 484.972524 
+L 549.045272 466.839865 
+L 621.376461 466.839865 
+z
+" clip-path="url(#p8654cf0e9d)" style="fill: #2a78d6; opacity: 0.85"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 621.376461 455.7263 
+L 549.045272 455.7263 
+L 549.045272 437.593641 
+L 621.376461 437.593641 
+z
+" clip-path="url(#p8654cf0e9d)" style="fill: #2a78d6; opacity: 0.85"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 621.376461 426.480076 
+L 549.268396 426.480076 
+L 549.268396 408.347417 
+L 621.376461 408.347417 
+z
+" clip-path="url(#p8654cf0e9d)" style="fill: #2a78d6; opacity: 0.85"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 621.376461 397.233852 
+L 550.966325 397.233852 
+L 550.966325 379.101194 
+L 621.376461 379.101194 
+z
+" clip-path="url(#p8654cf0e9d)" style="fill: #2a78d6; opacity: 0.85"/>
+   </g>
+   <g id="patch_14">
+    <path d="M 621.376461 367.987629 
+L 551.967085 367.987629 
+L 551.967085 349.85497 
+L 621.376461 349.85497 
+z
+" clip-path="url(#p8654cf0e9d)" style="fill: #2a78d6; opacity: 0.85"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 621.376461 338.741405 
+L 704.613022 338.741405 
+L 704.613022 320.608746 
+L 621.376461 320.608746 
+z
+" clip-path="url(#p8654cf0e9d)" style="fill: #e34948; opacity: 0.85"/>
+   </g>
+   <g id="patch_16">
+    <path d="M 621.376461 309.495181 
+L 705.239082 309.495181 
+L 705.239082 291.362523 
+L 621.376461 291.362523 
+z
+" clip-path="url(#p8654cf0e9d)" style="fill: #e34948; opacity: 0.85"/>
+   </g>
+   <g id="patch_17">
+    <path d="M 621.376461 280.248958 
+L 707.010497 280.248958 
+L 707.010497 262.116299 
+L 621.376461 262.116299 
+z
+" clip-path="url(#p8654cf0e9d)" style="fill: #e34948; opacity: 0.85"/>
+   </g>
+   <g id="patch_18">
+    <path d="M 621.376461 251.002734 
+L 707.455426 251.002734 
+L 707.455426 232.870075 
+L 621.376461 232.870075 
+z
+" clip-path="url(#p8654cf0e9d)" style="fill: #e34948; opacity: 0.85"/>
+   </g>
+   <g id="patch_19">
+    <path d="M 621.376461 221.75651 
+L 707.945595 221.75651 
+L 707.945595 203.623851 
+L 621.376461 203.623851 
+z
+" clip-path="url(#p8654cf0e9d)" style="fill: #e34948; opacity: 0.85"/>
+   </g>
+   <g id="patch_20">
+    <path d="M 621.376461 192.510286 
+L 708.461156 192.510286 
+L 708.461156 174.377628 
+L 621.376461 174.377628 
+z
+" clip-path="url(#p8654cf0e9d)" style="fill: #e34948; opacity: 0.85"/>
+   </g>
+   <g id="patch_21">
+    <path d="M 621.376461 163.264063 
+L 709.406207 163.264063 
+L 709.406207 145.131404 
+L 621.376461 145.131404 
+z
+" clip-path="url(#p8654cf0e9d)" style="fill: #e34948; opacity: 0.85"/>
+   </g>
+   <g id="patch_22">
+    <path d="M 621.376461 134.017839 
+L 714.692968 134.017839 
+L 714.692968 115.88518 
+L 621.376461 115.88518 
+z
+" clip-path="url(#p8654cf0e9d)" style="fill: #e34948; opacity: 0.85"/>
+   </g>
+   <g id="patch_23">
+    <path d="M 621.376461 104.771615 
+L 717.316782 104.771615 
+L 717.316782 86.638957 
+L 621.376461 86.638957 
+z
+" clip-path="url(#p8654cf0e9d)" style="fill: #e34948; opacity: 0.85"/>
+   </g>
+   <g id="patch_24">
+    <path d="M 621.376461 75.525392 
+L 720.357369 75.525392 
+L 720.357369 57.392733 
+L 621.376461 57.392733 
+z
+" clip-path="url(#p8654cf0e9d)" style="fill: #e34948; opacity: 0.85"/>
+   </g>
+   <g id="text_26">
+    <text style="font-weight: 600; font-size: 13px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #0b0b0b" x="630.389188" y="16.702187" transform="rotate(-0 630.389188 16.702187)">GSEA prerank — top pathways by NES (min FDR q = 0.125; none pass FDR &lt; 0.05)</text>
+   </g>
+   <g id="legend_1">
+    <g id="line2d_50">
+     <path d="M 521.3645 635.252156 
+L 529.8645 635.252156 
+L 538.3645 635.252156 
+" style="fill: none; stroke: #000000; stroke-opacity: 0; stroke-width: 1.5; stroke-linecap: square"/>
+     <defs>
+      <path id="mdc8a1ab51d" d="M -5 5 
+L 5 5 
+L 5 -5 
+L -5 -5 
+z
+" style="stroke: #000000; stroke-linejoin: miter"/>
+     </defs>
+     <g>
+      <use xlink:href="#mdc8a1ab51d" x="529.8645" y="635.252156" style="fill: #e34948; stroke: #000000; stroke-linejoin: miter"/>
+     </g>
+    </g>
+    <g id="text_27">
+     <text style="font-size: 8.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #0b0b0b" x="545.1645" y="638.227156" transform="rotate(-0 545.1645 638.227156)">NES &gt; 0 (enriched toward UP-scoring end)</text>
+    </g>
+    <g id="line2d_51">
+     <path d="M 521.3645 647.492156 
+L 529.8645 647.492156 
+L 538.3645 647.492156 
+" style="fill: none; stroke: #000000; stroke-opacity: 0; stroke-width: 1.5; stroke-linecap: square"/>
+     <defs>
+      <path id="m50ffafe926" d="M -5 5 
+L 5 5 
+L 5 -5 
+L -5 -5 
+z
+" style="stroke: #000000; stroke-linejoin: miter"/>
+     </defs>
+     <g>
+      <use xlink:href="#m50ffafe926" x="529.8645" y="647.492156" style="fill: #2a78d6; stroke: #000000; stroke-linejoin: miter"/>
+     </g>
+    </g>
+    <g id="text_28">
+     <text style="font-size: 8.5px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #0b0b0b" x="545.1645" y="650.467156" transform="rotate(-0 545.1645 650.467156)">NES &lt; 0 (enriched toward DOWN-scoring end)</text>
+    </g>
+   </g>
+  </g>
+  <g id="text_29">
+   <text style="font-style: italic; font-size: 7.8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; fill: #898781" transform="translate(18.600188 723.106337)">n=2 technical replicates; 0/1938 proteins survive per-protein FDR&lt;0.05 (limma). ORA/GSEA below are HYPOTHESIS-GENERATING: pathway-level enrichment p-values (g:Profiler g:SCS / GSEA FDR) are a</text>
+   <text style="font-style: italic; font-size: 7.8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; fill: #898781" transform="translate(7.2 731.5786)">SEPARATE statistical test from the non-significant per-protein FDR -- a pathway can show up here among nominally-regulated proteins even though no single protein passes protein-level FDR. This is not a claim</text>
+   <text style="font-style: italic; font-size: 7.8px; font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; fill: #898781" transform="translate(321.952547 739.9675)">that any protein is significant.</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p8654cf0e9d">
+   <rect x="531.424188" y="28.702187" width="197.93" height="631.192"/>
+  </clipPath>
+ </defs>
+</svg>
