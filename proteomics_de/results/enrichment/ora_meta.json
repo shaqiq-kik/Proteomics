@@ -1,0 +1,169 @@
+{
+  "gprofiler_version": "e114_eg62_p19_27110d83",
+  "organism": "mmusculus",
+  "sources": [
+    "GO:BP",
+    "GO:MF",
+    "GO:CC",
+    "KEGG",
+    "REAC"
+  ],
+  "user_threshold": 0.05,
+  "significance_threshold_method": "g_SCS",
+  "domain_scope": "custom",
+  "background_size_unique_symbols": 2532,
+  "background_size_row_union": 2554,
+  "n_terms_up": 0,
+  "n_terms_down": 0,
+  "note": "0 terms pass g:SCS-corrected significance (user_threshold=0.05) in either direction using the correct CUSTOM background (detected proteome, n=2554 rows / 2532 unique symbols). For comparison, the SAME UP query against g:Profiler's default whole-genome background returns 196 nominally 'significant' terms (e.g. GO:CC 'cytoplasm', p=1.9e-23) -- an artifact of comparing detected proteins to the whole genome rather than to what could have been detected. This 0/0 result is a SEPARATE statistical test from per-protein FDR (0/1938 significant, limma) and should not be conflated with it; reported honestly as a null finding, not an error.",
+  "best_subthreshold_term_up": {
+    "source": "GO:BP",
+    "term_id": "GO:0016311",
+    "term_name": "dephosphorylation",
+    "p_value": 0.7029801000701202,
+    "term_size": 31,
+    "query_size": 196,
+    "intersection_size": 11,
+    "intersecting_genes": "",
+    "significant": false
+  },
+  "best_subthreshold_term_down": {
+    "source": "GO:MF",
+    "term_id": "GO:0000030",
+    "term_name": "mannosyltransferase activity",
+    "p_value": 1.0,
+    "term_size": 1,
+    "query_size": 473,
+    "intersection_size": 1,
+    "intersecting_genes": "",
+    "significant": false
+  },
+  "top5_subthreshold_terms_up": [
+    {
+      "source": "GO:BP",
+      "term_id": "GO:0016311",
+      "term_name": "dephosphorylation",
+      "p_value": 0.7029801000701202,
+      "term_size": 31,
+      "query_size": 196,
+      "intersection_size": 11,
+      "intersecting_genes": "",
+      "significant": false
+    },
+    {
+      "source": "REAC",
+      "term_id": "REAC:R-MMU-372708",
+      "term_name": "p130Cas linkage to MAPK signaling for integrins",
+      "p_value": 1.0,
+      "term_size": 7,
+      "query_size": 196,
+      "intersection_size": 2,
+      "intersecting_genes": "",
+      "significant": false
+    },
+    {
+      "source": "REAC",
+      "term_id": "REAC:R-MMU-430039",
+      "term_name": "mRNA decay by 5' to 3' exoribonuclease",
+      "p_value": 1.0,
+      "term_size": 6,
+      "query_size": 196,
+      "intersection_size": 2,
+      "intersecting_genes": "",
+      "significant": false
+    },
+    {
+      "source": "REAC",
+      "term_id": "REAC:R-MMU-72165",
+      "term_name": "mRNA Splicing - Minor Pathway",
+      "p_value": 1.0,
+      "term_size": 25,
+      "query_size": 196,
+      "intersection_size": 1,
+      "intersecting_genes": "",
+      "significant": false
+    },
+    {
+      "source": "REAC",
+      "term_id": "REAC:R-MMU-72163",
+      "term_name": "mRNA Splicing - Major Pathway",
+      "p_value": 1.0,
+      "term_size": 81,
+      "query_size": 196,
+      "intersection_size": 7,
+      "intersecting_genes": "",
+      "significant": false
+    }
+  ],
+  "top5_subthreshold_terms_down": [
+    {
+      "source": "GO:MF",
+      "term_id": "GO:0000030",
+      "term_name": "mannosyltransferase activity",
+      "p_value": 1.0,
+      "term_size": 1,
+      "query_size": 473,
+      "intersection_size": 1,
+      "intersecting_genes": "",
+      "significant": false
+    },
+    {
+      "source": "GO:MF",
+      "term_id": "GO:0000049",
+      "term_name": "tRNA binding",
+      "p_value": 1.0,
+      "term_size": 17,
+      "query_size": 473,
+      "intersection_size": 3,
+      "intersecting_genes": "",
+      "significant": false
+    },
+    {
+      "source": "GO:MF",
+      "term_id": "GO:0000104",
+      "term_name": "succinate dehydrogenase activity",
+      "p_value": 1.0,
+      "term_size": 1,
+      "query_size": 473,
+      "intersection_size": 1,
+      "intersecting_genes": "",
+      "significant": false
+    },
+    {
+      "source": "GO:MF",
+      "term_id": "GO:0000146",
+      "term_name": "microfilament motor activity",
+      "p_value": 1.0,
+      "term_size": 6,
+      "query_size": 473,
+      "intersection_size": 1,
+      "intersecting_genes": "",
+      "significant": false
+    },
+    {
+      "source": "GO:MF",
+      "term_id": "GO:0000149",
+      "term_name": "SNARE binding",
+      "p_value": 1.0,
+      "term_size": 5,
+      "query_size": 473,
+      "intersection_size": 1,
+      "intersecting_genes": "",
+      "significant": false
+    }
+  ],
+  "background_rows_foldchange_all": 1948,
+  "background_rows_single_condition": 606,
+  "background_row_union_n": 2554,
+  "background_unique_symbols_n": 2532,
+  "foldchange_all_semicolon_split_n": 45,
+  "foldchange_all_accession_fallback_n": 8,
+  "single_condition_semicolon_split_n": 65,
+  "single_condition_accession_fallback_n": 15,
+  "up_n": 206,
+  "up_semicolon_split_n": 8,
+  "up_accession_fallback_n": 1,
+  "down_n": 509,
+  "down_semicolon_split_n": 11,
+  "down_accession_fallback_n": 1
+}
