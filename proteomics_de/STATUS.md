@@ -3,8 +3,8 @@
 > **This file is GENERATED. Do not hand-edit.**
 > Regenerate with `.venv/bin/python tools/status.py` (source: `tools/status.py`). Every number below is read off the filesystem at generation time, so it cannot silently go stale.
 
-* Generated: **2026-07-31 23:59:19 EDT**
-* Git HEAD: **`c0d3b04`**
+* Generated: **2026-08-01 00:02:48 EDT**
+* Git HEAD: **`0b3758c`**
 * Repo root: `/Users/abrarshakik/Documents/Proteomics`
 
 Companions: `DECISIONS_LOG.md` (human decisions D1–D6) · `BUILD_LOG.md` (per-work-package history) · `../research1.md` §Build Log (per-bug narrative).
@@ -118,9 +118,9 @@ All 7 headline row counts match the contract in `config/config.yaml`.
 
 ## c) Byte-freeze drift
 
-Manifest: `proteomics_de/tests/expected/outputs.sha256` (62 files).
+Manifest: `proteomics_de/tests/expected/outputs.sha256` (64 files).
 
-**62 OK · 0 CHANGED · 0 MISSING**
+**64 OK · 0 CHANGED · 0 MISSING**
 
 ✅ **No drift.** Every frozen file is byte-identical to its baseline.
 
@@ -132,14 +132,16 @@ Manifest: `proteomics_de/tests/expected/outputs.sha256` (62 files).
 |---|---|
 | `tests/test_accessions.py` | 14 |
 | `tests/test_build_matrix.py` | 11 |
-| `tests/test_design.py` | 20 |
+| `tests/test_design.py` | 23 |
+| `tests/test_foldchange_core.py` | 28 |
 | `tests/test_freeze.py` | 7 |
 | `tests/test_limma_contract.py` | 11 |
 | `tests/test_limma_r.py` | 26 |
+| `tests/test_merge_guard.py` | 16 |
 | `tests/test_run_pipeline.py` | 40 |
 | `tests/test_style_samples.py` | 18 |
 
-**8 test files · 147 test functions.**
+**10 test files · 194 test functions.**
 
 Module coverage — a module counts as covered if a test file is named after it (`test_<module>.py`) or mentions it in its filename:
 
@@ -154,8 +156,10 @@ Module coverage — a module counts as covered if a test file is named after it 
 | `enrich/upset.py` | ❌ none |
 | `etl/accessions.py` | ✅ yes |
 | `etl/build_matrix.py` | ✅ yes |
+| `etl/foldchange_core.py` | ✅ yes |
+| `etl/merge_guard.py` | ✅ yes |
 | `export/ipa_export.py` | ❌ none |
-| `foldchange.py` | ❌ none |
+| `foldchange.py` | ✅ yes |
 | `gated/pca_cluster.py` | ❌ none |
 | `limma_test.py` | ❌ none |
 | `provenance.py` | ❌ none |
@@ -170,7 +174,7 @@ Module coverage — a module counts as covered if a test file is named after it 
 | `viz/style.py` | ✅ yes |
 | `viz/volcano.py` | ❌ none |
 
-**3/24 pipeline modules have a matching test file.**
+**6/26 pipeline modules have a matching test file.**
 
 ---
 
