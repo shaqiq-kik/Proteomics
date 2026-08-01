@@ -9,8 +9,11 @@ Design notes (see style.py for the shared system):
     red = UP, blue = DOWN, recessive gray = NO CHANGE.
   - Dashed vertical lines at the |log2FC| = 0.585 up/down call boundary.
   - Dashed horizontal line at raw p = 0.05 (uncorrected). No FDR<0.05 line is
-    drawn because nothing crosses it (min adj. p = 0.305 here) - that fact is
-    stated explicitly in an annotation instead of a misleading absent line.
+    drawn because nothing crosses it - that fact is stated explicitly in an
+    annotation instead of a misleading absent line. The minimum adjusted p is
+    read from the data every time rather than quoted as a literal: it used to be
+    hardcoded as 0.305, which silently went stale the moment DECISIONS_LOG D9
+    made eBayes(trend, robust) the default (it is 0.116 under that model).
   - Top 10 proteins by smallest p_value are labeled with gene names using a
     small deterministic manual-offset scheme (no adjustText dependency).
   - Carries the n=2 technical-replicate caveat (style.add_caveat).
@@ -139,13 +142,17 @@ def main():
     style.record_manifest([{
         "file": png,
         "title": "Volcano plot — treated vs. control (SILAC)",
+        # Every number in this caption is interpolated from the data. The
+        # minimum adjusted p and the row count used to be typed in as literals
+        # (0.305 / 1938); the first of those went stale under DECISIONS_LOG D9.
         "caption": (
-            "limma log2 fold change vs. -log10(raw p-value) for the 1938 "
+            f"limma log2 fold change vs. -log10(raw p-value) for the {len(df)} "
             "proteins tested in both conditions, colored UP/DOWN/NO CHANGE at "
-            "|log2FC| >= 0.585. With n=2 technical replicates per condition "
-            "(no biological replication), 0 of 1938 proteins pass FDR < 0.05 "
-            "(minimum adjusted p = 0.305) — no dashed FDR line is drawn because "
-            "nothing crosses it; the raw p = 0.05 line is shown instead for "
+            f"|log2FC| >= {style.FC_THRESHOLD}. With n=2 technical replicates "
+            f"per condition (no biological replication), {n_fdr_sig} of "
+            f"{len(df)} proteins pass FDR < 0.05 (minimum adjusted p = "
+            f"{min_adj_p:.3f}) — no dashed FDR line is drawn because nothing "
+            "crosses it; the raw p = 0.05 line is shown instead for "
             "orientation only. Top 10 proteins by smallest raw p-value are "
             "labeled; treat all calls here as hypothesis-generating, not "
             "confirmed significant."

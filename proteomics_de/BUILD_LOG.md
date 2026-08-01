@@ -848,3 +848,90 @@ seeds 715 → 715; edges 5963 → 5963.
 orchestrator finished `test_string_ppi.py` (it needed one missing `import ast`)
 and wrote this entry. No further live STRING calls were made — the re-run itself
 was already complete and independently verified before the interruption.
+
+---
+
+## P-STATS — D9 (trend/robust default) + D10 (restored limma columns) (2026-08-01)
+**Wave:** 2 · **Commit:** see below · **Status:** ✅ done
+**Closes:** DECISIONS_LOG **D9** and **D10**.
+
+**What changed.**
+- `limma_test.R` / `limma_test.py`: the default eBayes flavour is now
+  `eBayes(trend=TRUE, robust=TRUE)` (research1.md line 124), declared once per
+  language as `DEFAULT_EBAYES_MODE` and cross-checked by a test so the two
+  cannot drift.
+- Vanilla is **not** retired: `run_limma_test()` runs it as a companion on every
+  invocation, over the byte-identical `_limma_input.csv`, and preserves it as
+  `results/qc_limma_vanilla.csv` (+ `_limma_output_vanilla.csv`,
+  `_limma_versions_vanilla.txt`). The companion is not decoration — the function
+  then *asserts* `logFC_trend == logFC_vanilla` bitwise and raises if it ever
+  moves. D9 rests entirely on the change being confined to the variance model,
+  so that claim is now a standing check rather than a one-time measurement.
+- D10: `n_imputed, AveExpr, t, B` restored, **appended** to both the R worker's
+  output and `qc_limma.csv` — the original 4 / 11 columns keep their exact names
+  and positions (asserted separately from the exact-schema test, so a failure
+  says which rule broke).
+- New contract file `results/de/limma_results.tsv` carrying research1.md line
+  169's schema verbatim: `accession, gene, logFC, fold_change, AveExpr, t,
+  P.Value, adj.P.Val, B, n_imputed, direction`. Additive; nothing reads it yet.
+- `_limma_versions.txt` gained an `ebayes_mode` line. With two flavours in play,
+  a provenance record that does not name the variance model is a footgun.
+- `viz/volcano.py`: the hardcoded `min adj. p = 0.305` in the docstring and the
+  manifest caption now reads from the data. That literal went stale the instant
+  D9 landed (it is 0.116 under trend/robust) — which is exactly why it should
+  never have been a literal.
+
+**`n_imputed` is the consequential one.** MinProb is stochastic and this study is
+n=2: before this column, nothing in any output distinguished a **measured**
+intensity from one the imputer **invented**. It is counted in R as
+`rowSums(is.na(logM))` immediately before `impute.MinProb` — one line later every
+cell is finite and the information is gone. Python independently recomputes the
+same count from `foldchange_all.csv` and fails loudly if the two sides disagree,
+so the column cannot be plausible-but-wrong.
+
+**Verification (run, not assumed).**
+- Predicted numbers hit exactly: min adj.p **0.304713 → 0.116076**, raw p<0.05
+  **63 → 55**, significant at FDR<0.05 **0 → 0** (1938 proteins).
+- `logFC` **bit-identical** across flavours (`np.array_equal`, not a tolerance).
+  Every non-p-value column of `qc_limma.csv` is likewise unchanged: intensities,
+  `significant`, `regulated`, `n_imputed`, `AveExpr`.
+- `qc_limma_vanilla.csv` reproduces the previously committed `qc_limma.csv`
+  **exactly on all 11 original columns** — the old baseline is preserved, not
+  approximated.
+- `n_imputed` distribution: **1578 / 218 / 142** rows with 0 / 1 / 2 imputed
+  values; max 2, never 3-4. Validated row-by-row against `foldchange_all.csv`'s
+  raw intensity cells (blank, non-numeric and `<=0` all count as missing).
+- `fold_change == 2**logFC` to 8.1e-15 relative; `direction` is **all NS**, as it
+  must be at 0/1938 significant — the doc's rule requires significance AND the
+  ±0.585 boundary, and it was not softened into an effect-size-only call.
+- Tests: `test_limma_r.py` **37 passing** (was 30), `test_limma_contract.py`
+  **28 passing** (was 12). Full suite **332 passing**, 1 expected freeze failure.
+  No assertion was weakened; the one tolerance that looked too tight
+  (`limma_results.tsv` logFC vs `qc_limma.csv`'s 6-dp rounding) was replaced with
+  the *exact* relationship (`.round(6)` equality) rather than a looser `atol`.
+
+**Deleted: `results/qc_limma_trend.csv`.** It was a **pre-D7 artifact** — its
+logFC is the exact negation of the current values (`max |a+b| = 0.0` on all 1578
+fully-observed proteins), i.e. it described the inverted experiment and had never
+been re-run after the D7 flip. Under D9 the trend/robust result *is*
+`qc_limma.csv`, so keeping it would have meant shipping a third file whose fold
+changes point the wrong way. `README.md` (lines ~275, ~288) and `STATUS.md`
+(line ~116) still reference it and need updating by their owners.
+
+**For the orchestrator — three things I did not touch.**
+1. `qc/schema.py`'s `QC_LIMMA_SCHEMA` is `strict=True` and now **rejects**
+   `qc_limma.csv`: the four appended columns fail `column_in_schema`. Verified
+   directly. `qc/` is another agent's this wave.
+2. **Downstream artifacts derived from p-values are now stale** (logFC-derived
+   ones are not): `viz/heatmap.py`'s top-40-by-p set changes in **17 of 40**
+   rows; `viz/volcano.py`'s top-10 labels change in 2; `enrich/gsea.py`'s ranking
+   (`sign(logFC) * -log10(p)`) moves for **1907 of 1938** proteins
+   (Spearman 0.9865) so the GSEA output will differ. `ipa_input_significant.csv`
+   is unaffected (still header-only, 0 significant).
+3. `tools/freeze.py --write` **not run**. Expected manifest drift, and nothing
+   else: changed `_limma_output.csv`, `_limma_versions.txt`,
+   `results/qc_limma.csv`; missing `results/qc_limma_trend.csv`; new
+   `results/de/limma_results.tsv`, `results/qc_limma_vanilla.csv`,
+   `_limma_output_vanilla.csv`, `_limma_versions_vanilla.txt`.
+   `.gitignore`'s entries for `_limma_output_trend.csv` /
+   `_limma_versions_trend.txt` are now dead.
