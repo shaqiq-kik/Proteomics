@@ -185,6 +185,26 @@ STAGES: tuple[Stage, ...] = (
         ),
     ),
     Stage(
+        id="ipa_export",
+        description=(
+            "IPA deliverables with limma p-values/FDR + provenance sidecars "
+            "(research1.md section 3)"
+        ),
+        # Its absence from this table is exactly why ipa_input_full.csv went
+        # stale: --all refreshed qc_limma.csv under D9 and never rebuilt the
+        # file that quotes it, so the QIAGEN deliverable carried vanilla
+        # p-values while the report quoted trend/robust. Caught by
+        # test_golden_outputs.py, not by the byte-freeze -- the manifest is
+        # happy to freeze a self-consistent but stale file.
+        script="proteomics_de/export/ipa_export.py",
+        depends_on=("foldchange",),
+        outputs=(
+            Output("proteomics_de/results/ipa_input_full.csv",
+                   kind="table", expected_rows="ipa_input_rows"),
+            Output("proteomics_de/results/ipa_input_full.txt", kind="text"),
+        ),
+    ),
+    Stage(
         id="qc_validate",
         description="pandera schema validation of the DE outputs; writes results/qc/qc_report.{json,md}",
         script="proteomics_de/qc/validate.py",

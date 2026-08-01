@@ -3,8 +3,8 @@
 > **This file is GENERATED. Do not hand-edit.**
 > Regenerate with `.venv/bin/python tools/status.py` (source: `tools/status.py`). Every number below is read off the filesystem at generation time, so it cannot silently go stale.
 
-* Generated: **2026-08-01 02:00:08 EDT**
-* Git HEAD: **`ca2c53c`**
+* Generated: **2026-08-01 02:08:01 EDT**
+* Git HEAD: **`924199b`**
 * Repo root: `/Users/abrarshakik/Documents/Proteomics`
 
 Companions: `DECISIONS_LOG.md` (human decisions D1–D6) · `BUILD_LOG.md` (per-work-package history) · `../research1.md` §Build Log (per-bug narrative).
@@ -110,9 +110,9 @@ Row counts EXCLUDE the header. Three files are header-only **by design** — the
 | `results/gated/skip_log.csv` | 1.2 KB | 6 |  |
 | `results/ipa_input.csv` | 25.3 KB | 715 | matches expected 715 |
 | `results/ipa_input.csv.provenance.json` | 800 B | — |  |
-| `results/ipa_input_full.csv` | 49.8 KB | 715 |  |
+| `results/ipa_input_full.csv` | 50.5 KB | 715 |  |
 | `results/ipa_input_full.csv.provenance.json` | 805 B | — |  |
-| `results/ipa_input_full.txt` | 49.8 KB | — |  |
+| `results/ipa_input_full.txt` | 50.5 KB | — |  |
 | `results/ipa_input_significant.csv` | 65 B | **0 rows (expected -- 0/1938 proteins pass FDR<0.05 at n=2 technical replicates (DECISIONS_LOG D2))** |  |
 | `results/onoff_proteins.csv` | 620 B | 10 | matches expected 10 |
 | `results/qc/qc_boundaries.json` | 4.6 KB | — |  |
@@ -150,10 +150,12 @@ Manifest: `proteomics_de/tests/expected/outputs.sha256` (79 files).
 | `tests/test_build_matrix.py` | 11 |
 | `tests/test_build_report.py` | 21 |
 | `tests/test_design.py` | 23 |
+| `tests/test_e2e_smoke.py` | 22 |
 | `tests/test_enrich_common.py` | 27 |
 | `tests/test_foldchange_core.py` | 29 |
 | `tests/test_freeze.py` | 7 |
 | `tests/test_gating.py` | 22 |
+| `tests/test_golden_outputs.py` | 27 |
 | `tests/test_ipa_export.py` | 41 |
 | `tests/test_limma_contract.py` | 28 |
 | `tests/test_limma_r.py` | 37 |
@@ -165,7 +167,7 @@ Manifest: `proteomics_de/tests/expected/outputs.sha256` (79 files).
 | `tests/test_string_ppi.py` | 36 |
 | `tests/test_style_samples.py` | 18 |
 
-**19 test files · 478 test functions.**
+**21 test files · 527 test functions.**
 
 Module coverage — a module counts as covered if a test file is named after it (`test_<module>.py`) or mentions it in its filename:
 

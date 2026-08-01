@@ -387,25 +387,6 @@ def test_ipa_input_full_selects_the_same_proteins(results_dir, ipa_input):
     assert list(full["regulated"]) == list(ipa_input["regulated"])
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "KNOWN DEFECT, found by this test: results/ipa_input_full.csv is STALE. "
-        "Its p_value/adj_p_value columns are the VANILLA eBayes numbers "
-        "(they match results/qc_limma_vanilla.csv exactly) rather than the "
-        "trend/robust ones in results/qc_limma.csv that DECISIONS_LOG D9 made "
-        "the default. The CODE is correct -- export/ipa_export.py:514 reads "
-        "qc_limma.csv, and rebuilding the file from the committed inputs "
-        "reproduces log2FC byte-identically while changing the p-values -- so "
-        "the artifact simply was never regenerated after D9 landed. Root cause: "
-        "export/ipa_export.py is NOT one of run_pipeline.py's 13 stages, so "
-        "`--all` refreshes qc_limma.csv and never refreshes ipa_input_full.csv. "
-        "Fix by re-running `python -m proteomics_de.export.ipa_export` and "
-        "re-baselining the freeze manifest, then DELETE this xfail marker. "
-        "strict=True means a fix cannot land silently: the test will XPASS and "
-        "fail the run until the marker is removed."
-    ),
-)
 def test_ipa_input_full_carries_the_default_flavours_p_values(
     results_dir, qc_limma
 ):
@@ -433,28 +414,28 @@ def test_ipa_input_full_carries_the_default_flavours_p_values(
     )
 
 
-def test_stale_ipa_full_pvalues_are_the_vanilla_run(results_dir):
-    """Pins the *diagnosis* of the defect above, not just its symptom.
+def test_ipa_full_pvalues_are_not_the_vanilla_run(results_dir):
+    """The complement of the test above: rule out the specific way this broke.
 
-    Asserting only "the two disagree" would leave open whether the p-values are
-    corrupt, truncated, or from somewhere else entirely. They are none of those:
-    they are exactly ``qc_limma_vanilla.csv``. Naming the source is what turns
-    the failure into a one-line fix.
+    ``ipa_input_full.csv`` shipped for one commit carrying the VANILLA eBayes
+    p-values -- they matched ``qc_limma_vanilla.csv`` to the bit -- while the
+    report and every figure quoted the trend/robust numbers D9 made the default.
+    The code was correct; ``export/ipa_export.py`` simply was not one of
+    ``run_pipeline.py``'s stages, so ``--all`` refreshed ``qc_limma.csv`` and
+    never rebuilt the file that quotes it. It is a stage now.
 
-    This test is expected to go RED at the same moment the xfail above goes
-    green -- both are pointers at one stale file, and both are removed by the
-    same regeneration.
+    Asserting only "matches qc_limma.csv" would not catch a revert that ALSO
+    reverted qc_limma. Naming the wrong source is what makes this specific.
     """
     full = _read(results_dir / "ipa_input_full.csv")
     vanilla = _read(results_dir / "qc_limma_vanilla.csv").set_index("id")
-    assert np.allclose(
-        full["adj_p_value"],
-        vanilla.loc[full["UniProt Accession Number"], "adj_p_value"].to_numpy(float),
-        rtol=0, atol=0,
-    ), (
-        "ipa_input_full.csv no longer matches qc_limma_vanilla.csv either. If it "
-        "was just regenerated, delete this test AND the xfail marker on "
-        "test_ipa_input_full_carries_the_default_flavours_p_values."
+    merged = full.join(vanilla["adj_p_value"], on="UniProt Accession Number",
+                       rsuffix="_vanilla")
+    delta = (merged["adj_p_value"] - merged["adj_p_value_vanilla"]).abs().max()
+    assert delta > 1e-6, (
+        "ipa_input_full.csv's adj_p_value matches qc_limma_vanilla.csv, meaning "
+        "the QIAGEN deliverable has reverted to the non-default eBayes flavour. "
+        "Rebuild with `python -m proteomics_de.export.ipa_export`."
     )
 
 

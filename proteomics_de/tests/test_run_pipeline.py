@@ -80,10 +80,11 @@ class _FakeCompleted:
 # --------------------------------------------------------------------------
 # Stage table integrity
 # --------------------------------------------------------------------------
-def test_thirteen_stages_in_the_documented_order():
+def test_fourteen_stages_in_the_documented_order():
     """The order is the deliverable; pin it explicitly so a reorder is visible."""
     assert [s.id for s in rp.STAGES] == [
         "foldchange",
+        "ipa_export",
         "qc_validate",
         "viz_qc_plots",
         "viz_volcano",
@@ -324,8 +325,13 @@ def test_unparsable_json_output_fails(tmp_path, frozen):
 def test_from_selects_the_correct_suffix():
     selected = [s.id for s in rp.select_stages(from_="viz_volcano")]
     assert selected[0] == "viz_volcano"
-    assert selected == [s.id for s in rp.STAGES][3:]
-    assert len(selected) == 10
+    # Derive the offset from the table rather than pinning an index: adding a
+    # stage upstream (ipa_export was added after this test was written) should
+    # not require editing an unrelated slice literal.
+    ids = [s.id for s in rp.STAGES]
+    start = ids.index("viz_volcano")
+    assert selected == ids[start:]
+    assert len(selected) == len(ids) - start
     assert "foldchange" not in selected and selected[-1] == "report"
 
 
@@ -360,14 +366,14 @@ def test_no_selection_returns_nothing():
 # --------------------------------------------------------------------------
 # --list
 # --------------------------------------------------------------------------
-def test_list_enumerates_all_thirteen_stages(capsys, no_subprocess):
+def test_list_enumerates_all_fourteen_stages(capsys, no_subprocess):
     code, out = _run_cli(["--list"], capsys)
     assert code == 0
     for stage in rp.STAGES:
         assert stage.id in out, f"--list omitted {stage.id}"
         assert stage.script in out
     assert f"{len(rp.STAGES)} stages" in out
-    assert "13 stages" in out
+    assert "14 stages" in out
     # Numbered 1..13.
     for n in range(1, len(rp.STAGES) + 1):
         assert f"{n:>2}. " in out
