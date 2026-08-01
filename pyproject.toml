@@ -1,0 +1,19 @@
+# This repo is an analysis project, not a distributable Python package.
+# Deliberately NO [build-system] / [project] table: nothing here is meant to be
+# `pip install`-ed. This file exists solely to configure pytest.
+
+[tool.pytest.ini_options]
+# Scoped on purpose. The repo also contains "Pilot Project/", which holds loose
+# legacy scripts that execute/fail on import; pytest must never collect from it.
+testpaths = ["proteomics_de/tests"]
+
+# Default run is the fast, offline, deterministic subset.
+addopts = "-m 'not network and not slow'"
+
+markers = [
+    "network: makes live outbound HTTP calls (STRING / g:Profiler / Enrichr)",
+    "slow: takes more than ~10 seconds",
+    "r: requires Rscript + limma + imputeLCMD on PATH",
+    "golden: byte-identity / sha256 freeze checks; LOCAL ONLY, must not run in CI (different BLAS/R builds differ in the last float digit)",
+    "e2e: end-to-end pipeline run",
+]

@@ -6,3 +6,7 @@ __pycache__/
 # is committed; these regenerable worker intermediates are not tracked).
 proteomics_de/_limma_output_trend.csv
 proteomics_de/_limma_versions_trend.txt
+
+# Test tooling (see ENVIRONMENT.md)
+.venv/
+.pytest_cache/
