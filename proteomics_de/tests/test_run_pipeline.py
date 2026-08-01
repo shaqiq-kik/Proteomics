@@ -34,6 +34,16 @@ if str(_REPO_ROOT) not in sys.path:
 import run_pipeline as rp  # noqa: E402
 
 
+def _freeze_module():
+    """Import tools/freeze.py, the single definition of the freeze gate."""
+    tools = _REPO_ROOT / "tools"
+    if str(tools) not in sys.path:
+        sys.path.insert(0, str(tools))
+    import freeze
+
+    return freeze
+
+
 # --------------------------------------------------------------------------
 # Helpers
 # --------------------------------------------------------------------------
@@ -534,7 +544,17 @@ def test_verify_frozen_delegates_to_tools_status(monkeypatch):
     """The runner must not reimplement the sha256 bookkeeping."""
     module = rp._load_status_tool()
     assert hasattr(module, "freeze_check")
-    assert module.PROTECTED_MANIFEST == rp.PDE / "tests" / "expected" / "protected.sha256"
+    # Assert against tools/freeze.py's own default rather than a literal
+    # filename, so renaming the manifest can't silently break the delegation.
+    # The gate deliberately covers scientific OUTPUTS only -- freezing source
+    # files made it fail on any refactor. See tools/freeze.py.
+    assert module.PROTECTED_MANIFEST.name == "outputs.sha256"
+    assert module.PROTECTED_MANIFEST.parent == rp.PDE / "tests" / "expected"
+    entries = _freeze_module().read_manifest(module.PROTECTED_MANIFEST)
+    assert entries, "outputs manifest is empty"
+    assert not any(rel.endswith((".py", ".R")) for rel in entries), (
+        "the freeze gate must not cover source files"
+    )
 
     fake_rows = [("a.csv", "OK"), ("b.csv", "CHANGED"), ("c.csv", "MISSING")]
     fake_counts = {"OK": 1, "CHANGED": 1, "MISSING": 1}
