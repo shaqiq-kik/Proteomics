@@ -263,29 +263,29 @@ The committed baseline uses vanilla `eBayes()`. research1.md specifies
 `trend=TRUE, robust=TRUE`, and D9 makes that the intended default; the vanilla
 run is kept as the byte-reproducible baseline so the two stay comparable.
 
-`limma_test.run_limma_test()` takes the variant as keyword arguments, each
-chosen so the experiment cannot clobber a committed file:
+Since **D9** (2026-08-01) `trend_robust` is the DEFAULT, so the field-standard
+variant is simply what `qc_limma.csv` now contains. What was the experiment is
+now the shipped result, and the roles are reversed: it is *vanilla* that is
+carried as the comparison.
 
-```python
-import sys; sys.path.insert(0, "proteomics_de")   # or run from proteomics_de/
-from limma_test import run_limma_test
+`run_limma_test()` runs both on every invocation. Vanilla is written to
+`results/qc_limma_vanilla.csv`, and the two are cross-checked in-process:
 
-run_limma_test(
-    ebayes_mode="trend_robust",       # forwarded to limma_test.R
-    qc_filename="qc_limma_trend.csv", # not qc_limma.csv
-    output_name="_limma_output_trend.csv",  # versions file name is derived from this
-    reuse_input=True,                 # reuse _limma_input.csv: proves identical data in
-    write_ipa=False,                  # do not touch ipa_input_significant.csv
-)
-```
+    logFC must be BIT-IDENTICAL between the flavours; only p-values may move.
 
-`reuse_input=True` is what makes it a controlled experiment rather than a rerun:
-the same matrix goes into R both times, so any difference is attributable to the
-`eBayes` flags alone.
+That is D9's whole justification — `eBayes` moderates variances, it does not
+refit coefficients — so it is asserted on every run rather than trusted. If
+logFC ever moves, the run raises.
 
-The conclusion does not change — still 0/1938 significant; minimum adjusted
-p-value moves 0.305 → 0.116. The result is committed as
-`results/qc_limma_trend.csv`.
+The conclusion does not change under either flavour: still **0/1938 significant**
+at FDR<0.05. The minimum adjusted p-value is **0.116** (trend/robust, shipped)
+versus **0.305** (vanilla), and the raw-p<0.05 count 55 versus 63 — the
+refinement sharpens the extremes without crossing the line.
+
+> The former `results/qc_limma_trend.csv` was **deleted**, not renamed. It
+> predated the **D7** correction: its logFC is the exact negation of current
+> values, so it described the inverted experiment. Under D9 the trend/robust
+> result *is* `qc_limma.csv`.
 
 ---
 

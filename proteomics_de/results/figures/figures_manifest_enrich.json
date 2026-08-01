@@ -88,152 +88,152 @@
   {
     "file": "figures/gsea_top.png",
     "title": "GSEA prerank \u2014 top pathways by NES (mouse GO-BP + KEGG)",
-    "caption": "Preranked GSEA (gseapy 1.1.11, seed=42, 1000 permutations) over all 1938 qc_limma.csv proteins ranked by sign(limma_log2FC) * -log10(p_value), against GO_Biological_Process_2021 + KEGG_2019_Mouse (mouse Enrichr libraries; 568 gene sets tested after min_size=15/max_size=500 filtering). Top 10 pathways by NES on each side shown (red = NES>0, enriched toward the UP-scoring end; blue = NES<0, toward the DOWN-scoring end). Minimum FDR q-value = 0.116 -- NO pathway passes FDR<0.05; 37 pass an uncorrected nominal p<0.05 and are shown as hypothesis-generating leads only. This GSEA FDR is a separate statistical test from the non-significant per-protein FDR (0/1938 at FDR<0.05, limma) and must not be conflated with it.",
+    "caption": "Preranked GSEA (gseapy 1.1.11, seed=42, 1000 permutations) over all 1938 qc_limma.csv proteins ranked by sign(limma_log2FC) * -log10(p_value), against GO_Biological_Process_2021 + KEGG_2019_Mouse (mouse Enrichr libraries; 568 gene sets tested after min_size=15/max_size=500 filtering). Top 10 pathways by NES on each side shown (red = NES>0, enriched toward the UP-scoring end; blue = NES<0, toward the DOWN-scoring end). Minimum FDR q-value = 0.127 -- NO pathway passes FDR<0.05; 38 pass an uncorrected nominal p<0.05 and are shown as hypothesis-generating leads only. This GSEA FDR is a separate statistical test from the non-significant per-protein FDR (0/1938 at FDR<0.05, limma) and must not be conflated with it.",
     "key_numbers": {
       "n_terms_tested": 568,
       "n_fdr_lt_0.05": 0,
-      "n_fdr_lt_0.25": 15,
-      "n_nom_p_lt_0.05": 37,
-      "min_fdr_q_value": 0.1157,
+      "n_fdr_lt_0.25": 6,
+      "n_nom_p_lt_0.05": 38,
+      "min_fdr_q_value": 0.1267,
       "top_terms_shown": [
+        {
+          "term": "positive regulation of protein localization to nucleus (GO:1900182)",
+          "source": "GO_Biological_Process_2021",
+          "nes": -1.9950397583801267,
+          "nom_p_value": 0.004545454545454545,
+          "fdr_q_value": 0.1892442114460463
+        },
         {
           "term": "positive regulation of secretion by cell (GO:1903532)",
           "source": "GO_Biological_Process_2021",
-          "nes": -2.026291906667093,
+          "nes": -1.9612263660432732,
           "nom_p_value": 0.0,
-          "fdr_q_value": 0.11574037410710042
+          "fdr_q_value": 0.12668414154652688
         },
         {
           "term": "regulation of protein secretion (GO:0050708)",
           "source": "GO_Biological_Process_2021",
-          "nes": -1.9213565593368287,
+          "nes": -1.885449840918712,
           "nom_p_value": 0.0,
-          "fdr_q_value": 0.1479718706938879
-        },
-        {
-          "term": "positive regulation of transmembrane receptor protein serine/threonine kinase signaling pathway (GO:0090100)",
-          "source": "GO_Biological_Process_2021",
-          "nes": -1.8341550202015517,
-          "nom_p_value": 0.011538461538461539,
-          "fdr_q_value": 0.2226903400541679
-        },
-        {
-          "term": "positive regulation of protein secretion (GO:0050714)",
-          "source": "GO_Biological_Process_2021",
-          "nes": -1.7866404478728342,
-          "nom_p_value": 0.007936507936507936,
-          "fdr_q_value": 0.2545555696342873
+          "fdr_q_value": 0.16943352264453182
         },
         {
           "term": "positive regulation of protein transport (GO:0051222)",
           "source": "GO_Biological_Process_2021",
-          "nes": -1.766038732753257,
-          "nom_p_value": 0.003703703703703704,
-          "fdr_q_value": 0.2402711563742338
-        },
-        {
-          "term": "regulation of GTPase activity (GO:0043087)",
-          "source": "GO_Biological_Process_2021",
-          "nes": -1.735117739304315,
-          "nom_p_value": 0.004048582995951417,
-          "fdr_q_value": 0.24661978448981314
-        },
-        {
-          "term": "positive regulation of protein localization to nucleus (GO:1900182)",
-          "source": "GO_Biological_Process_2021",
-          "nes": -1.721436979928352,
-          "nom_p_value": 0.007692307692307693,
-          "fdr_q_value": 0.23252722537610956
+          "nes": -1.8047742010404273,
+          "nom_p_value": 0.004132231404958678,
+          "fdr_q_value": 0.24789427697684577
         },
         {
           "term": "Rheumatoid arthritis",
           "source": "KEGG_2019_Mouse",
-          "nes": -1.7132546723489064,
-          "nom_p_value": 0.00819672131147541,
-          "fdr_q_value": 0.21463246590747107
+          "nes": -1.7977588426313835,
+          "nom_p_value": 0.008620689655172414,
+          "fdr_q_value": 0.20863783311489734
         },
         {
-          "term": "positive regulation of GTPase activity (GO:0043547)",
+          "term": "iron ion homeostasis (GO:0055072)",
           "source": "GO_Biological_Process_2021",
-          "nes": -1.6794493839802276,
-          "nom_p_value": 0.01824817518248175,
-          "fdr_q_value": 0.24580585780832861
+          "nes": -1.7673252316964314,
+          "nom_p_value": 0.0044444444444444444,
+          "fdr_q_value": 0.21583224115334207
         },
         {
-          "term": "negative regulation of transmembrane receptor protein serine/threonine kinase signaling pathway (GO:0090101)",
+          "term": "regulation of GTPase activity (GO:0043087)",
           "source": "GO_Biological_Process_2021",
-          "nes": -1.671716840286949,
-          "nom_p_value": 0.011235955056179775,
-          "fdr_q_value": 0.2327993094382058
+          "nes": -1.7170790207119357,
+          "nom_p_value": 0.008547008547008548,
+          "fdr_q_value": 0.26856144292579415
         },
         {
-          "term": "endoplasmic reticulum organization (GO:0007029)",
+          "term": "positive regulation of protein secretion (GO:0050714)",
           "source": "GO_Biological_Process_2021",
-          "nes": 1.4136053559630204,
-          "nom_p_value": 0.06703146374829001,
+          "nes": -1.6789060920523091,
+          "nom_p_value": 0.0078125,
+          "fdr_q_value": 0.3110408475316732
+        },
+        {
+          "term": "positive regulation of transmembrane receptor protein serine/threonine kinase signaling pathway (GO:0090100)",
+          "source": "GO_Biological_Process_2021",
+          "nes": -1.6460543992519776,
+          "nom_p_value": 0.022556390977443608,
+          "fdr_q_value": 0.3451230522790156
+        },
+        {
+          "term": "regulation of focal adhesion assembly (GO:0051893)",
+          "source": "GO_Biological_Process_2021",
+          "nes": -1.6363967805290698,
+          "nom_p_value": 0.016666666666666666,
+          "fdr_q_value": 0.33203757099169945
+        },
+        {
+          "term": "Tight junction",
+          "source": "KEGG_2019_Mouse",
+          "nes": 1.459700830090815,
+          "nom_p_value": 0.04,
           "fdr_q_value": 1.0
         },
         {
-          "term": "gene expression (GO:0010467)",
+          "term": "regulation of cell cycle G2/M phase transition (GO:1902749)",
           "source": "GO_Biological_Process_2021",
-          "nes": 1.4181287923980566,
-          "nom_p_value": 0.025583982202447165,
+          "nes": 1.4797044351133517,
+          "nom_p_value": 0.03430079155672823,
+          "fdr_q_value": 1.0
+        },
+        {
+          "term": "positive regulation of proteasomal protein catabolic process (GO:1901800)",
+          "source": "GO_Biological_Process_2021",
+          "nes": 1.4806765705737648,
+          "nom_p_value": 0.03116883116883117,
           "fdr_q_value": 1.0
         },
         {
           "term": "Pyruvate metabolism",
           "source": "KEGG_2019_Mouse",
-          "nes": 1.4398562325750361,
-          "nom_p_value": 0.04933333333333333,
+          "nes": 1.5288091557808607,
+          "nom_p_value": 0.023715415019762844,
           "fdr_q_value": 1.0
         },
         {
-          "term": "G2/M transition of mitotic cell cycle (GO:0000086)",
+          "term": "glycosaminoglycan metabolic process (GO:0030203)",
           "source": "GO_Biological_Process_2021",
-          "nes": 1.4551310106073327,
-          "nom_p_value": 0.04247104247104247,
-          "fdr_q_value": 1.0
-        },
-        {
-          "term": "cell cycle G2/M phase transition (GO:0044839)",
-          "source": "GO_Biological_Process_2021",
-          "nes": 1.4551310106073327,
-          "nom_p_value": 0.04247104247104247,
-          "fdr_q_value": 1.0
-        },
-        {
-          "term": "Tight junction",
-          "source": "KEGG_2019_Mouse",
-          "nes": 1.4932990578778813,
-          "nom_p_value": 0.023255813953488372,
-          "fdr_q_value": 1.0
-        },
-        {
-          "term": "post-Golgi vesicle-mediated transport (GO:0006892)",
-          "source": "GO_Biological_Process_2021",
-          "nes": 1.503978646610255,
-          "nom_p_value": 0.03648648648648649,
+          "nes": 1.5339817177134965,
+          "nom_p_value": 0.023778071334214,
           "fdr_q_value": 1.0
         },
         {
           "term": "chromosome organization (GO:0051276)",
           "source": "GO_Biological_Process_2021",
-          "nes": 1.507031666694856,
-          "nom_p_value": 0.023743016759776536,
+          "nes": 1.5385935941525708,
+          "nom_p_value": 0.02119205298013245,
           "fdr_q_value": 1.0
         },
         {
-          "term": "Chemical carcinogenesis",
-          "source": "KEGG_2019_Mouse",
-          "nes": 1.5816631572538151,
-          "nom_p_value": 0.019858156028368795,
+          "term": "carbohydrate catabolic process (GO:0016052)",
+          "source": "GO_Biological_Process_2021",
+          "nes": 1.5445468270350413,
+          "nom_p_value": 0.027096774193548386,
+          "fdr_q_value": 1.0
+        },
+        {
+          "term": "G2/M transition of mitotic cell cycle (GO:0000086)",
+          "source": "GO_Biological_Process_2021",
+          "nes": 1.5792747732025665,
+          "nom_p_value": 0.015228426395939087,
+          "fdr_q_value": 1.0
+        },
+        {
+          "term": "cell cycle G2/M phase transition (GO:0044839)",
+          "source": "GO_Biological_Process_2021",
+          "nes": 1.5792747732025665,
+          "nom_p_value": 0.015228426395939087,
           "fdr_q_value": 1.0
         },
         {
           "term": "mitotic cell cycle phase transition (GO:0044772)",
           "source": "GO_Biological_Process_2021",
-          "nes": 1.6311874553935832,
-          "nom_p_value": 0.0,
+          "nes": 1.6907065694741794,
+          "nom_p_value": 0.004866180048661801,
           "fdr_q_value": 1.0
         }
       ]
