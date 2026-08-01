@@ -83,15 +83,31 @@ from proteomics_de.qc import boundaries  # noqa: E402
 INPUT_FILE = str(_ROOT / "Copy of General Sheet.xlsx")
 RESULTS_DIR = str(_HERE / "results")
 
-CONTROL_COLS = ["Intensity 31578", "Intensity 31580"]  # light / control replicates
-TREATED_COLS = ["Intensity 31579", "Intensity 31581"]  # heavy / treated replicates
-INTENSITY_COLS = ["Intensity 31578", "Intensity 31580", "Intensity 31579", "Intensity 31581"]
+# Two different things used to be conflated in one pair of constants, and
+# separating them is what makes DECISIONS_LOG D7 a one-line change:
+#
+#   * WHICH SHEET a sample lives in is a fact about the workbook. Samples 31578
+#     and 31580 are in "Protein Report L", 31579 and 31581 are in "Protein
+#     Report H". No experimental relabelling can move them, so COLS_L/COLS_H
+#     stay literal.
+#   * WHICH CONDITION a sample is is an experimental fact, and it belongs to
+#     config/sample_sheet.tsv. D7 records that this assignment shipped
+#     inverted, so it must be derivable, not typed in here.
+#
+# PHYSICAL_COLS is the acquisition order and is used only for file I/O, so
+# output column order is stable across a relabelling -- a D7-style flip changes
+# the sign of log2FC and the UP/DOWN labels, not the shape of any CSV.
+PHYSICAL_COLS = ["Intensity 31578", "Intensity 31580", "Intensity 31579", "Intensity 31581"]
+INTENSITY_COLS = PHYSICAL_COLS  # back-compat alias for importers
 
 SHEET_L = "Protein Report L"
 SHEET_H = "Protein Report H"
 
-COLS_L = ["UniProt Accession Number", "Gene names", "Intensity 31578", "Intensity 31580"]
-COLS_H = ["UniProt Accession Number", "Gene names", "Intensity 31579", "Intensity 31581"]
+SHEET_L_COLS = ["Intensity 31578", "Intensity 31580"]  # channels living in sheet L
+SHEET_H_COLS = ["Intensity 31579", "Intensity 31581"]  # channels living in sheet H
+
+COLS_L = ["UniProt Accession Number", "Gene names"] + SHEET_L_COLS
+COLS_H = ["UniProt Accession Number", "Gene names"] + SHEET_H_COLS
 
 OUT_COLS = [
     "UniProt Accession Number", "Gene names",
@@ -143,16 +159,32 @@ def main(argv=None) -> int:
     input_file = args.input
     results_dir = args.results_dir
 
-    # 0) The hardcoded column list must still describe the sample sheet. This
-    #    stage is NOT made design-driven: the L/H sheet split and the
-    #    left-order/Heavy-dtype restore below are inherently 2-channel SILAC, so
-    #    a new design means regenerating this stage, not re-deriving its columns.
-    #    assert_matches turns "silently analysing the wrong four columns" into a
-    #    loud, actionable failure.
-    design.assert_matches(INTENSITY_COLS, sheet=args.sample_sheet, stage="foldchange.py")
-    assert INTENSITY_COLS == CONTROL_COLS + TREATED_COLS, (
-        "INTENSITY_COLS must be control replicates followed by treated replicates"
-    )
+    # 0) Resolve the condition assignment from config/sample_sheet.tsv. The
+    #    SHAPE of this stage is still not design-driven -- the L/H sheet split
+    #    and the left-order/Heavy-dtype restore below are inherently 2-channel
+    #    SILAC, so a genuinely new design means regenerating this stage. But
+    #    WHICH samples are control and which are treated is read from the sheet,
+    #    which is what makes the D7 correction a one-line edit to that TSV.
+    sheet = design.read_sample_sheet(args.sample_sheet)
+    control_cols = design.control_columns(sheet)
+    treated_cols = design.treated_columns(sheet)
+
+    # The sheet must still describe THIS workbook: same four channels, and two
+    # per group so the ratio pairing below is well defined. assert_matches turns
+    # "silently analysing the wrong four columns" into a loud, actionable failure.
+    if sorted(control_cols + treated_cols) != sorted(PHYSICAL_COLS):
+        raise ValueError(
+            f"design drift in foldchange.py: sample sheet resolves to "
+            f"{control_cols + treated_cols}, workbook provides {PHYSICAL_COLS}"
+        )
+    if len(control_cols) != 2 or len(treated_cols) != 2:
+        raise ValueError(
+            "foldchange.py is 2-channel SILAC-specific: it pairs replicate i of "
+            f"control with replicate i of treated, so it needs exactly 2 samples "
+            f"per group, got {len(control_cols)} control / {len(treated_cols)} treated."
+        )
+    print(f"Control replicates: {control_cols}")
+    print(f"Treated replicates: {treated_cols}")
 
     # 1) Read both protein report sheets, keeping only the relevant columns
     df_L, df_H = core.read_sheets(input_file, COLS_L, COLS_H,
@@ -195,7 +227,7 @@ def main(argv=None) -> int:
     df = core.restore_left_order(
         both, df_L, df_H,
         out_cols=["UniProt Accession Number", "Gene names"] + INTENSITY_COLS,
-        dtype_cols=TREATED_COLS,  # Heavy/treated replicates
+        dtype_cols=SHEET_H_COLS,  # sheet-H channels: dtype, not condition
     )
 
     # 3) Completeness: a row is INCOMPLETE if any of the 4 intensities is 0 or NaN
@@ -206,7 +238,7 @@ def main(argv=None) -> int:
     #    Restricting to complete rows means denominators are never 0, so no inf can
     #    be produced (Bug 3).
     mask = df["complete"]
-    df, ratio_cols = core.compute_ratios(df, CONTROL_COLS, TREATED_COLS, mask)
+    df, ratio_cols = core.compute_ratios(df, control_cols, treated_cols, mask)
 
     # 5) Bug 1 fix: log2 each ratio first, THEN average the logs.
     df, _log_cols = core.compute_log2fc(df, ratio_cols)
@@ -219,7 +251,7 @@ def main(argv=None) -> int:
     #    on/off signal, yet the Bug 3 completeness logic parks it as incomplete and it
     #    falls into NO CHANGE — a wrong label. Detect these and relabel them ON_OFF.
     #    A protein absent on BOTH sides is fully empty and stays NO CHANGE.
-    df, _control_off, _treated_off = core.detect_onoff(df, CONTROL_COLS, TREATED_COLS)
+    df, _control_off, _treated_off = core.detect_onoff(df, control_cols, treated_cols)
     boundaries.check("after_foldchange", df)
 
     # Sanity checks
