@@ -330,3 +330,137 @@ deliberate re-baseline of the 13 SVG entries in `protected.sha256`.
   CI and a *sources* inventory that does not.
 * `DECISIONS_LOG.md`'s manifest row is stale and will keep failing the gate until
   someone re-baselines that single entry.
+## P4 — one-command pipeline runner + the missing READMEs (2026-07-31)
+
+**Wave:** 1 · **Commit:** see this entry's commit · **Status:** ✅ done
+**Closes:** the Wave-0 open follow-up *"Still no runner: the stage order lives in
+comments, not in code."* Also closes the documentation gap — the repo had no
+`README.md` at any level.
+
+**What changed.** Four new files, no existing pipeline file touched.
+
+* **`run_pipeline.py`** (repo root) — the runner. `STAGES` is a declarative table
+  of 13 stages: id, description, script path, declared outputs *with their
+  expected shapes*, `network`/`slow`/`requires_r` flags, and dependencies. CLI:
+  `--all`, `--from <stage>`, `--only a,b,c`, `--list`, `--dry-run`,
+  `--skip-network`, `--verify-frozen` (+ `--allow-drift`). Per-stage timing, a
+  summary table, nonzero exit on any FAIL.
+* **`README.md`** (repo root) — what the experiment is, the one-command
+  quickstart, where results live, the n=2 caveat stated plainly, and the two
+  open human questions (D7, D8). Points at `ENVIRONMENT.md` for setup.
+* **`proteomics_de/README.md`** — the module map: every script's inputs and
+  outputs, the dependency graph, the run order, the support modules, how to
+  reproduce the trend/robust limma variant, and an explicit section on the three
+  by-design header-only outputs.
+* **`proteomics_de/tests/test_run_pipeline.py`** — 40 tests, all offline, none
+  of which executes a pipeline stage.
+
+**Why.** Three design points are worth stating, because each was a fork.
+
+1. **Emptiness is not failure.** Three outputs are header-only *on purpose*
+   (`ipa_input_significant.csv` per D2; `ora_up.csv` / `ora_down.csv` per D6),
+   and a naive "non-empty output = success" check false-positives on all three —
+   it would report a failure on every single run and train everyone to ignore
+   the runner. So every output declares its own expected shape and each stage
+   resolves to `PASS` / `PASS_EMPTY_EXPECTED` / `FAIL`. A table contracted to 0
+   rows that has 0 rows is `PASS_EMPTY_EXPECTED`, printed distinctly with its
+   reason. The inverse is enforced too: 0 → non-zero is a **FAIL**, because that
+   is a scientific event a human must sign off on, not a silent improvement.
+2. **Serial on purpose.** Stages 3–6 are mutually independent and would
+   parallelise cleanly, saving ~20 s on a multi-minute run. Execution is
+   nevertheless strictly serial: a linear log where a traceback belongs to
+   obviously one stage, and where stage N demonstrably wrote before stage N+1
+   read, is worth more than 20 s on a pipeline a human runs a handful of times.
+   `--jobs` is documented in the module docstring as a deliberate non-goal.
+3. **Row counts are read, never hardcoded.** All seven headline counts resolve
+   from `tests/expected/frozen_counts.json` by key. A test
+   (`test_row_counts_come_from_frozen_counts_not_hardcoded_literals`) fails the
+   build if anyone inlines a non-zero literal. Zero is the one permitted literal
+   — the ORA term counts have no key in `frozen_counts.json`, and that 0 is the
+   D6 assertion itself.
+
+`--verify-frozen` **imports `tools/status.py` and calls its `freeze_check()`**
+rather than reimplementing the manifest parsing and hashing, so the runner and
+`STATUS.md` cannot drift into disagreeing. (`tools/` is not a package, so it is
+loaded via `importlib.util.spec_from_file_location`.) Verdict semantics match
+`tools/status.py --check` exactly: CHANGED *or* MISSING is a failure, downgraded
+to a warning by `--allow-drift`.
+
+Two smaller decisions worth recording. A **FAILED** dependency marks downstream
+stages `BLOCKED` and refuses to run them (their inputs may be wrong); a
+deliberately **SKIPPED** one (`--skip-network`) does *not* block downstream,
+because the committed artifacts are still on disk and still valid. And stages are
+launched with `sys.executable` and `cwd=<repo root>` — never bare `python3`
+(four exist on PATH, one has pandas) and never the caller's cwd, because
+`foldchange.py` is still cwd-locked to the repo root.
+
+**Files touched.** All new except this log. Observed on disk at the time of
+writing (parallel wave — siblings are concurrently editing `foldchange.py`,
+`limma_test.py/.R`, `viz/style.py` and `enrich/*.py` in their own worktrees;
+nothing of theirs was touched here):
+
+* `run_pipeline.py`, `README.md`, `proteomics_de/README.md`,
+  `proteomics_de/tests/test_run_pipeline.py`, and this entry.
+
+**Verification.** What I ran, and what it printed:
+
+* `.venv/bin/pytest` (whole default suite) → **91 passed in 0.35s**. My file
+  alone: **40 passed**. No test spawns a subprocess, makes a network call, or
+  writes into `results/`.
+* `.venv/bin/python run_pipeline.py --list` → all 13 stages, numbered, with 34
+  declared outputs and exactly **3** marked `0 rows EXPECTED`.
+* `.venv/bin/python run_pipeline.py --from viz_volcano --dry-run --skip-network`
+  → `10 stage(s) selected`, the three network stages shown as SKIPPED, and
+  `No subprocess was spawned`. A test snapshots every mtime+size under
+  `results/` around a dry run and asserts nothing moved.
+* Contract check against the **committed** artifacts — `check_output()` run over
+  all 34 declared outputs without executing any stage: **0 FAIL**, and exactly
+  the three expected `PASS_EMPTY_EXPECTED`
+  (`ipa_input_significant.csv`, `ora_up.csv`, `ora_down.csv`). The declared
+  expectations therefore match reality as built, not as remembered.
+* `.venv/bin/python run_pipeline.py --verify-frozen` → `92 OK · 1 CHANGED ·
+  0 MISSING (of 93 frozen files)`, **exit 1**. With `--allow-drift`, exit 0.
+  `.venv/bin/python tools/status.py --check` independently printed `freeze: 92
+  OK, 1 CHANGED, 0 MISSING` and exit 1 — the two agree exactly, which is the
+  point of sharing `freeze_check()`.
+* cwd-independence: `--list` run from an unrelated directory with an absolute
+  path produces identical output; a test asserts it under `monkeypatch.chdir`.
+* **Not run by me:** any live pipeline stage. Stages 7/9/11 make live outbound
+  calls to STRING / g:Profiler / Enrichr and the user has not approved a live
+  run, so the runner's logic was validated entirely through `--list`,
+  `--dry-run`, and direct calls into the verification layer.
+
+**Counts before → after.**
+
+| | before | after (P4) |
+|---|---|---|
+| Documented stage order | prose + comments only | `run_pipeline.py:STAGES`, executable, 13 stages |
+| Commands to run the pipeline | 13, by hand, order written down nowhere | **1** |
+| `README.md` files | 0 | 2 (repo root, `proteomics_de/`) |
+| Test files / collected tests | 2 / 51 | 3 / 91 (mine: +40) |
+| Pipeline files modified | — | **0** |
+| Frozen outputs drifted by this work | — | **0** (the 1 CHANGED predates it; see below) |
+
+**Open follow-ups.**
+
+* ⚠️ **Pre-existing freeze drift, not caused by this work.**
+  `proteomics_de/DECISIONS_LOG.md` reports **CHANGED** against
+  `tests/expected/protected.sha256`. The manifest was generated at `421814c`;
+  commit `96d16fd` then added D7–D11 to `DECISIONS_LOG.md` without regenerating
+  it. So `--verify-frozen` and `tools/status.py --check` both exit 1 on a clean
+  tree today. Either regenerate the manifest entry or drop hand-written docs
+  from the freeze — a doc that is *expected* to grow does not belong in a
+  byte-freeze whose whole job is to make change alarming.
+* The runner cannot verify a stage that no-ops while exiting 0. It records a
+  staleness NOTE when a declared output's mtime predates the stage that
+  supposedly wrote it, but deliberately does not fail on it. A real
+  content-dependency model would be needed to do better.
+* `--from` is the manual answer to "resume after a crash". Automatic staleness
+  resolution is not implemented and is not obviously worth it.
+* No CI still invokes anything. `run_pipeline.py --verify-frozen` and
+  `tools/status.py --check` are both usable as gates; nothing calls them.
+* When D7's flip lands, the UP/DOWN counts swap (206/509 → 509/206). Nothing in
+  the runner's contracts asserts direction — `foldchange_all.csv` is still 1948
+  rows and `ipa_input.csv` still 715 — so the flip will not trip a false FAIL.
+  Both READMEs describe the current state and defer to D7 rather than asserting
+  the present orientation as settled.
