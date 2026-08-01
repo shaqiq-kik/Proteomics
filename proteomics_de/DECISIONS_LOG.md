@@ -104,3 +104,65 @@ to source) and a dedicated visual-quality pass, and is mobile-hardened.
 config/pandera additively rather than refactoring), D3 (web APIs), the balanced
 dual-track report framing, and delivering item 17 as a static network figure
 (no headless Cytoscape).
+
+---
+
+## Test & execution hardening (2026-07-31)
+
+**🔴 D7 — CORRECTION: the control/treated assignment was INVERTED. Now flipped.**
+`proteomics_de/` had `31578, 31580 = control (Light)` and `31579, 31581 = treated
+(Heavy)`, inherited from research1.md line 10. The lab's own earlier Pilot Project
+says the opposite: `Pilot Project/CLEANED Silac Proteomics Soluble Factors.xlsx`
+and `.../General Analysis/step1_data_cleaning.py:63-66` name the columns
+**`Vehicle_Rep1_31579`, `Vehicle_Rep2_31581`, `Testosterone_Rep1_31578`,
+`Testosterone_Rep2_31580`**.
+Empirical confirmation on the 30 proteins shared between the pilot's cleaned table
+and `results/foldchange_all.csv`: corr(pilot log2FC, pipeline log2FC) = **-0.82**,
+sign agreement **2/30 (6.7%)** — mirror images.
+The replicate PAIRING is unaffected (Rep1 = 31578/31579, Rep2 = 31580/31581,
+exactly as already implemented); only the DIRECTION inverts.
+Consequences: every log2FC negates; **UP/DOWN swap → 509 UP, 206 DOWN** (was 206
+UP / 509 DOWN); the 715-row IPA total is unchanged; limma **p-values are
+unchanged** (swapping group labels negates logFC and t but leaves |t| and p
+invariant); ORA up/down term lists swap; the GSEA ranking reverses.
+*Decided by you (2026-07-31): the pilot is right — flip the pipeline.* The fix is a
+one-line change to `config/sample_sheet.tsv` once the config-driven refactor lands,
+which is precisely the payoff of making that sheet load-bearing.
+
+**🔵 D8 — OPEN, needs the professor: is the pipeline analysing the right quantity?**
+Each of the four samples is a complete SILAC experiment carrying its own
+`Intensity L`, `Intensity H` and `Ratio H/L` columns — verified that
+`Intensity L + Intensity H == Intensity` exactly (median ratio 1.0000). The
+pipeline uses the combined `Intensity`, i.e. the **sum of both isotope channels**,
+and never touches the SILAC ratios.
+All four samples show median log2(H/L normalized) between -1.05 and -1.53 — the
+same direction in every run, so this is **not** a reciprocal label-swap design.
+The pipeline's log2FC correlates with the mean native log2(H/L) at **r = 0.066**:
+the two approaches answer different questions.
+If Heavy is a common spike-in reference (super-SILAC), the correct per-sample
+abundance is the ratio to that reference, not summed intensity, and every result
+would change. If the SILAC labelling is incidental to this comparison, the current
+approach is fine.
+*Status: flagged, not acted on.* The pipeline continues to use `Intensity` as
+built. **This needs a human answer from the lab before the results are presented.**
+
+**🟢 D9 — eBayes default becomes `trend=TRUE, robust=TRUE`.** research1.md line 124
+specifies it; the build shipped vanilla as a byte-reproducible baseline. The
+experiment already proved the conclusion is unchanged (still 0/1938 significant;
+min adj.p 0.305 → 0.116). Vanilla results are preserved as `qc_limma_vanilla.csv`
+so both flavours stay comparable. *Decided by you (2026-07-31).*
+
+**🟢 D10 — limma output regains `n_imputed`, `AveExpr`, `t`, `B`** (research1.md
+line 169). `n_imputed` matters most: with stochastic MinProb at n=2, nothing
+currently tells a consumer which values were measured and which were invented.
+*Decided by you (2026-07-31).*
+
+**🟢 D11 — the 2 junk accessions are quarantined.** Two rows of
+`single_condition_proteins.csv` carry a bare-integer MaxQuant row-index list as an
+accession (32,759 and 681 characters). `qc/schema.py` currently carves an
+exception to let them PASS validation. They move to a quarantine file instead.
+Two OTHER long accessions (69 chars, e.g. `P08752;P20612;…`) are legitimate protein
+groups and stay. *Decided by you (2026-07-31).*
+
+**⚪ D5 CLOSED — organism confirmed as mouse** by you (2026-07-31). All enrichment
+parameters (STRING 10090, g:Profiler `mmusculus`, Enrichr mouse libraries) stand.
