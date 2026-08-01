@@ -3,8 +3,8 @@
 > **This file is GENERATED. Do not hand-edit.**
 > Regenerate with `.venv/bin/python tools/status.py` (source: `tools/status.py`). Every number below is read off the filesystem at generation time, so it cannot silently go stale.
 
-* Generated: **2026-08-01 02:08:01 EDT**
-* Git HEAD: **`924199b`**
+* Generated: **2026-08-01 02:12:11 EDT**
+* Git HEAD: **`ea86ea6`**
 * Repo root: `/Users/abrarshakik/Documents/Proteomics`
 
 Companions: `DECISIONS_LOG.md` (human decisions D1–D6) · `BUILD_LOG.md` (per-work-package history) · `../research1.md` §Build Log (per-bug narrative).
@@ -133,9 +133,9 @@ All 7 headline row counts match the contract in `config/config.yaml`.
 
 ## c) Byte-freeze drift
 
-Manifest: `proteomics_de/tests/expected/outputs.sha256` (79 files).
+Manifest: `proteomics_de/tests/expected/outputs.sha256` (75 files).
 
-**79 OK · 0 CHANGED · 0 MISSING**
+**75 OK · 0 CHANGED · 0 MISSING**
 
 ✅ **No drift.** Every frozen file is byte-identical to its baseline.
 

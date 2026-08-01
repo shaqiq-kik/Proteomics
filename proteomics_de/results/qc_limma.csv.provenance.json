@@ -2,11 +2,11 @@
   "describes": "proteomics_de/results/qc_limma.csv",
   "caveat": "SILAC design: n = 2 technical replicates per condition (no biological replication) — 0 / 1938 proteins pass FDR < 0.05 (limma); results below are hypothesis-generating only, not confirmed significant.",
   "caveat_source": "proteomics_de/config/constants.py::CAVEAT_TEXT",
-  "git_commit": "924199beb4de9d4da02daf75a2d90abec874b587",
+  "git_commit": "ea86ea6099b8e623b6325bd364aec92c206e3f7f",
   "git_dirty": true,
   "sha256": "a93b6f96814805282122a84a12656e19eb8fbeabd6a6f5fa183ac85e2e6db794",
   "n_rows": 1938,
-  "generated_at": "2026-08-01T06:04:48+00:00",
+  "generated_at": "2026-08-01T06:10:19+00:00",
   "tool_versions": {
     "python": "3.13.7",
     "pandas": "2.3.3",

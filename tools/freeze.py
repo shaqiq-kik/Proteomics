@@ -47,33 +47,80 @@ FROZEN_GLOBS = (
     "proteomics_de/_limma_versions.txt",
 )
 
-# matplotlib's SVG volatility, in the two forms it takes.
+#: Deliberately NOT frozen: provenance sidecars.
+#
+# A sidecar records WHEN a deliverable was generated and FROM WHAT STATE
+# (git_commit, git_dirty, generated_at). Those are the point of the file, and
+# they legitimately differ between runs -- freezing them would mean the gate
+# reported drift after every single run, which is how a gate gets ignored.
+#
+# They are not left unverified. `test_provenance.py` enforces the property that
+# actually matters: each sidecar's recorded sha256 must equal the current hash
+# of the file it describes. That is strictly stronger than byte-freezing the
+# sidecar, because it fails when the DESCRIBED file changes -- which is the
+# failure anyone cares about, and it caught exactly that during D9.
+FROZEN_EXCLUDE_SUFFIXES = (".provenance.json",)
+
+# matplotlib's SVG volatility.
 _SVG_DATE = re.compile(rb"<dc:date>[^<]*</dc:date>")
-_SVG_SALTED_ID = re.compile(rb"\b((?:p|m|image|DejaVu|Fraunces|Newsreader)[0-9a-f]{10})\b")
+
+#: Every id matplotlib DECLARES, whatever its prefix.
+#
+# This used to enumerate prefixes (`p`, `m`, `image`, the font names). That was
+# a guess dressed as a rule, and it silently missed upsetplot's marker
+# collections, which declare ids like `C0_0_cc31541d2c` -- so upset.svg reported
+# as drifted after every run and the gate could not verify it at all.
+#
+# Reading the declarations instead of guessing their shape is exact: an id that
+# matplotlib salts must appear in an id="..." attribute, so the rename map is
+# built from what the file actually declares. The 10-hex-suffix requirement is
+# what distinguishes a salted id from a stable one (e.g. the `id1` clip paths).
+_SVG_DECLARED_ID = re.compile(rb'id="([^"]*[0-9a-f]{10})"')
+
+#: Fields whose value is a wall-clock stamp: real provenance, but not content.
+_TIMESTAMP_KEYS = ("generated_at", "generated", "timestamp", "created_at", "run_at")
+_JSON_TIMESTAMP = re.compile(
+    rb'("(?:' + b"|".join(k.encode() for k in _TIMESTAMP_KEYS) + rb')"\s*:\s*)"[^"]*"'
+)
+_MD_TIMESTAMP = re.compile(
+    rb"(?im)^(.*(?:generated|timestamp|run at)[^\n]*?)\d{4}-\d{2}-\d{2}[T ][0-9:.+Z-]*"
+)
 
 
 def canonical_bytes(path: Path) -> tuple[bytes, str]:
     """Return (bytes_to_hash, mode) for *path*.
 
-    ``mode`` is ``"raw"`` for everything except SVG, which uses ``"svg-canon"``.
+    Three modes. ``raw`` hashes the bytes. ``svg-canon`` drops matplotlib's
+    ``<dc:date>`` and renumbers its salted element ids. ``ts-canon`` blanks
+    wall-clock stamps in files that record when they were generated -- those
+    stamps are genuine provenance and are kept IN the file, but hashing them
+    would mean every re-run reports drift, which trains people to ignore the
+    gate. Everything else in those files is still hashed verbatim.
     """
     data = path.read_bytes()
-    if path.suffix.lower() != ".svg":
-        return data, "raw"
+    suffix = path.suffix.lower()
 
-    data = _SVG_DATE.sub(b"<dc:date></dc:date>", data)
+    if suffix == ".svg":
+        data = _SVG_DATE.sub(b"<dc:date></dc:date>", data)
+        # Renumber by first appearance so distinct ids stay distinct: a blanket
+        # substitution would collapse them and could mask a real change.
+        mapping: dict[bytes, bytes] = {}
+        for m in _SVG_DECLARED_ID.finditer(data):
+            token = m.group(1)
+            if token not in mapping:
+                mapping[token] = b"canonid%d" % len(mapping)
+        # Longest-first so a shorter id cannot corrupt a longer one containing it.
+        for token in sorted(mapping, key=len, reverse=True):
+            data = data.replace(token, mapping[token])
+        return data, "svg-canon"
 
-    # Renumber salted ids by first appearance so distinct ids stay distinct
-    # (a blanket substitution would collapse them and could mask a real change).
-    mapping: dict[bytes, bytes] = {}
+    if suffix == ".json" and _JSON_TIMESTAMP.search(data):
+        return _JSON_TIMESTAMP.sub(rb'\1"<ts>"', data), "ts-canon"
 
-    def _renumber(match: re.Match) -> bytes:
-        token = match.group(1)
-        if token not in mapping:
-            mapping[token] = b"id%d" % len(mapping)
-        return mapping[token]
+    if suffix == ".md" and _MD_TIMESTAMP.search(data):
+        return _MD_TIMESTAMP.sub(rb"\1<ts>", data), "ts-canon"
 
-    return _SVG_SALTED_ID.sub(_renumber, data), "svg-canon"
+    return data, "raw"
 
 
 def digest(path: Path) -> tuple[str, str]:
@@ -88,7 +135,7 @@ def frozen_files(root: Path | None = None) -> list[Path]:
     found: set[Path] = set()
     for pattern in FROZEN_GLOBS:
         for p in root.glob(pattern):
-            if p.is_file():
+            if p.is_file() and not p.name.endswith(FROZEN_EXCLUDE_SUFFIXES):
                 found.add(p)
     return sorted(found)
 
