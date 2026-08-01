@@ -1291,3 +1291,144 @@ rather than retyping a literal. **No assertion was weakened.**
 **Still stale, not owned here:** `report/report_facts.json` and the generated
 report carry 606 / 2554 / "detected_universe" and need regenerating after the
 enrichment re-query.
+
+---
+
+## P9 — `report_facts.json` becomes generated; report re-narrated for D7/D9/D10/D11
+
+The largest remaining reproducibility gap was that `report/report_facts.json`
+was **hand-authored**. No script produced it, so a full pipeline re-run updated
+the report's *figures* but could not update its *numbers* — and they had rotted
+badly: pre-D7 orientation (206 UP / 509 DOWN), 606 single-condition rows, a 2554
+background, and vanilla p-values presented as the baseline.
+
+### 1. `report/build_facts.py` (new) — the whole digest is now derived
+
+Verified against the committed artifacts before writing anything, rather than
+taken on trust:
+
+- **`figures`** is exactly the union of the four `results/figures/figures_manifest*.json`
+  files, concatenated viz(7) → enrich(3) → gated(2) → network(1). Confirmed all
+  13 `file` keys and all 13 `title` strings already matched byte-for-byte; only
+  captions and `key_numbers` had drifted, which is precisely the staleness. The
+  manifests are copied **verbatim** — a caption can only change by re-running the
+  layer that draws it.
+- **Every numeric block** recomputes 1:1 from its source: `counts` from the three
+  CSVs, `qc` from the two check-records, `limma` from `qc_limma.csv` +
+  `qc_limma_vanilla.csv`, `top_candidates` as the 10 smallest raw p, `string` /
+  `ora` / `gsea` as verbatim copies of the three meta JSONs, `pca_variance` and
+  `gate_skips` as CSV records. No dataset literal appears in the generator.
+- `--check` mode exits non-zero if the committed file is not current.
+
+**Strict JSON.** The old line 48 held a bare `NaN`. Measured, not assumed: node's
+`JSON.parse` hard-rejects it (`SyntaxError: Unexpected token 'N'`), while **jq 1.7
+accepts it and silently coerces it to `null`** — quieter, and worse, than a hard
+error. The generator writes with `allow_nan=False`, so a non-finite value is now
+a build failure rather than a corrupt artifact.
+
+**The NaN was not a result.** `np.corrcoef` was run over the raw columns; 360 of
+the 1,938 both-condition rows are *partial* (limma imputes them, so they have a
+`limma_log2FC`, but no complete-case pipeline `log2FC`), and one NaN poisons the
+whole coefficient. On the paired, fully-observed subset (n = 1,578) the answer is
+**0.9999999999999573**. Both the value and the two n's are now emitted.
+
+### 2. The false forward-path claim
+
+The report told the reader the design matrix "regenerates automatically" and the
+contract is "replicate-count-agnostic by construction". Checked each half:
+
+- **Genuinely automatic** — `etl/build_matrix.py` + `limma_test.R --design`
+  (`model.matrix(~ factor(group, levels=...))` really is built from the sheet),
+  `viz/style.py` (sample maps read from the sheet), `gated/pca_cluster.py`
+  (`N_SAMPLES`/`N_REPLICATES_PER_GROUP` come from `config.design`; nothing about
+  sample count is hardcoded).
+- **Guarded, NOT automatic** — `foldchange.py` (explicit `ValueError`: "foldchange.py
+  is 2-channel SILAC-specific… needs exactly 2 samples per group"), `qc/schema.py`
+  (hardcoded 4-entry `INTENSITY_COLS`; `DESIGN_SCHEMA` asserts exactly two balanced
+  groups). The paragraph now separates the two and names all three stages.
+
+One correction to the brief's own framing: **`replicate_check.py` does not
+assert-match the sheet — it never reads it.** It hardcodes `CONTROL_RAW` /
+`TREATED_RAW` tuples, and `design.assert_matches` has no caller there despite its
+docstring listing it. See the finding below.
+
+### 3. Three builder bugs in `build_report.py`
+
+1. A dead **absolute scratchpad path** (`…/258a4089-…/report_facts.json`) was
+   checked *before* the committed file. Removed. It worked only by absence: a
+   session landing on that UUID would have built from a foreign digest silently.
+2. The unresolved-token check used `%%[A-Z0-9_]+%%`, which **cannot match
+   lowercase**. Widened to `[A-Za-z0-9_]`. Every real token is upper-case, which
+   is exactly why the hole was invisible.
+3. Found while testing: `main()` **mutated the module-global `FACTS_CANDIDATES`**
+   by inserting `sys.argv[1]`, so a second call in one process inherited the
+   first call's path — under pytest it read the *test file* as the digest.
+   `load_facts(override)` now takes the path as an argument, and a named-but-
+   missing facts file is an **error, not a silent fallback** (same failure class
+   as bug 1).
+
+### 4. Narrative, re-derived
+
+509/206 (was 206/509) everywhere including the STRING hub tiles, whose log2FCs
+all negate; single-condition 604 and background 2,552; the two stat tiles swap
+roles so trend/robust (min adj.p **0.116**) is the default and vanilla (0.305) the
+comparison; the top-10 table is rebuilt from the trend fit (different membership,
+not just signs) and gains an **`n_imputed`** column (D10) that makes the existing
+*Tuba1a* footnote concrete. The headline is unchanged and stays unchanged:
+**0 / 1,938 at FDR < 0.05**, and D6 still holds (0 enrichment terms). The caveat
+ribbon is untouched and equally prominent.
+
+Added an honest note that the treatment assignment was found **inverted and
+corrected**, with the evidence (pilot r = −0.82, sign agreement 2/30) and the
+three consequences that matter: pairing unchanged, **p-values exactly invariant**,
+fix was one line in `sample_sheet.tsv`. Also removed the Light/Heavy ⇄ condition
+conflation: `Protein Report L/H` is sheet residency, not condition
+(`foldchange.py`: "sheet-H channels: dtype, not condition"), and per D8 every
+sample is a complete SILAC run.
+
+### Findings for the orchestrator — not fixed here, not my files
+
+1. **`replicate_check.py` still carries the pre-D7 mapping.** It hardcodes
+   `CONTROL_RAW = (31578, 31580)` / `TREATED_RAW = (31579, 31581)`; the sheet says
+   the opposite. So `results/qc_replicate_correlation.csv` has `control_raw_r` and
+   `treated_raw_r` **swapped**. Verified by recomputation: pair (31578, 31580) →
+   r = 0.8624 / n = 1723, pair (31579, 31581) → r = 0.8407 / n = 1656, exactly
+   inverted vs the CSV. The fold-change columns are sign-invariant and unaffected.
+   `build_facts.py` emits the CSV 1:1 **and** a `replicate_raw_r_by_group` block
+   recomputed against the corrected sheet, so the discrepancy is visible rather
+   than inherited; the report states it plainly.
+2. **`config/config.yaml` `design.groups` is also pre-D7** (control ↔ 31578/31580).
+   Documentation only — `config/__init__.py` states it is not parsed — but it
+   contradicts the load-bearing sheet. `qc/schema.py:114-117` has the same
+   inverted comments.
+3. **Two QC figures are D11-stale.** `missing_values` and `sample_correlation`
+   captions still say a 2554-protein universe / 606 single-condition. `build_facts.py`
+   copies manifests verbatim by design, so this is only fixable by re-running the
+   viz layer. Nothing statistical moves (those rows are single-condition and absent
+   from the 1,578 complete proteins the correlations use). The report **says so
+   explicitly** rather than editing a caption the code did not produce.
+4. **`frozen_counts.json`'s `_d11_note` is now stale** in one sentence: it says the
+   ORA/GSEA artifacts "still record 2554 and must be re-queried". They have been —
+   `ora_meta.json` records 2552 / 2530, and `test_enrich_common.py`'s known-red
+   background test now passes.
+5. **`tests/expected/protected.sha256` needs re-baselining.** 4 entries are stale
+   from this work; **68 were already stale** beforehand (every figure, every enrich
+   artifact, `DECISIONS_LOG.md`, `sample_sheet.tsv`, …) and 1 file is missing
+   (`qc_limma_trend.csv`, renamed). No test consumes it — the `protected_sha256`
+   fixture in `conftest.py` has **zero callers**, so the manifest is currently
+   unenforced. `tools/freeze.py --check` covers only `outputs.sha256` and passes
+   (79 OK). `tools/freeze.py --write` was NOT run.
+
+### Verification (run, not assumed)
+
+- `build_facts.py --check` → current. Output parses under `jq` and node
+  `JSON.parse`; the old file does not.
+- `build_report.py` → 13/13 figures embedded, 0 external refs, 3.55 MB.
+- **59 new tests** (38 `test_report_facts.py` + 21 `test_build_report.py`),
+  including the lowercase-token case end-to-end. Full suite: **567 passed**,
+  2 deselected (network/slow), **0 failures** — the two previously known-red
+  tests now pass.
+- Rendered check in a browser: caveat ribbon intact, hero ledger 509/206, limma
+  tiles swapped, forward-path section reads correctly, **0 px** body horizontal
+  overflow at 375 px (the 7-column candidates table scrolls inside its own
+  `overflow-x:auto` wrapper).
