@@ -271,6 +271,15 @@ def test_the_real_merge_passes_the_guard(real_sheets, frozen_counts):
     stats = merge_guard.assert_merge_safe(df_L, df_H, merged, both)
 
     assert stats["n_both"] == frozen_counts["foldchange_all_rows"]
-    assert len(single) == frozen_counts["single_condition_rows"]
+    # PRE-quarantine on purpose: the merge yields 606 single-condition rows,
+    # and DECISIONS_LOG D11 drops 2 of them (junk MaxQuant row-index lists)
+    # further downstream, so the shipped file has 604. Comparing the merge's
+    # output to the shipped count would conflate two different quantities.
+    assert len(single) == frozen_counts["single_condition_rows_pre_quarantine"]
+    assert (
+        frozen_counts["single_condition_rows_pre_quarantine"]
+        - frozen_counts["quarantined_accessions"]
+        == frozen_counts["single_condition_rows"]
+    )
     assert stats["n_both"] <= stats["max_both"]
     assert stats["n_merged"] == stats["n_both"] + len(single)

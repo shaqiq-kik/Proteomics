@@ -200,7 +200,9 @@ def test_headline_counts_resolve_to_the_verified_values(frozen):
         for stage in rp.STAGES for out in stage.outputs
     }
     assert resolved["proteomics_de/results/foldchange_all.csv"] == 1948
-    assert resolved["proteomics_de/results/single_condition_proteins.csv"] == 606
+    # 604, not 606: DECISIONS_LOG D11 quarantines the 2 junk MaxQuant
+    # row-index-list accessions to results/qc/quarantine_accessions.csv.
+    assert resolved["proteomics_de/results/single_condition_proteins.csv"] == 604
     assert resolved["proteomics_de/results/onoff_proteins.csv"] == 10
     assert resolved["proteomics_de/results/qc_limma.csv"] == 1938
     assert resolved["proteomics_de/results/ipa_input.csv"] == 715

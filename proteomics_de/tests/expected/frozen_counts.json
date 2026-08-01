@@ -4,16 +4,19 @@
   "raw_sheet_L_rows": 2315,
   "raw_sheet_H_rows": 2187,
   "foldchange_all_rows": 1948,
-  "single_condition_rows": 606,
+  "single_condition_rows": 604,
+  "single_condition_rows_pre_quarantine": 606,
+  "quarantined_accessions": 2,
   "onoff_rows": 10,
   "qc_limma_rows": 1938,
   "ipa_input_rows": 715,
   "n_up": 509,
   "n_down": 206,
   "n_nochange_plus_onoff": 1233,
-  "background_union": 2554,
+  "background_union": 2552,
   "n_significant_fdr05": 0,
   "gsea_terms": 568,
   "string_nodes": 694,
-  "_d7_note": "n_up/n_down swapped from 206/509 to 509/206 by the DECISIONS_LOG D7 correction (2026-08-01): the control/treated assignment shipped inverted relative to the lab's own Pilot Project labelling. Verified a pure sign inversion -- limma logFC max|new+old| = 0.0, p-values invariant to 1e-15, NO CHANGE (1223), ON_OFF (10) and the 715-row IPA total all unchanged."
+  "_d7_note": "n_up/n_down swapped from 206/509 to 509/206 by the DECISIONS_LOG D7 correction (2026-08-01): the control/treated assignment shipped inverted relative to the lab's own Pilot Project labelling. Verified a pure sign inversion -- limma logFC max|new+old| = 0.0, p-values invariant to 1e-15, NO CHANGE (1223), ON_OFF (10) and the 715-row IPA total all unchanged.",
+  "_d11_note": "single_condition_rows 606 -> 604 and background_union 2554 -> 2552 by the DECISIONS_LOG D11 correction (2026-08-01): two rows of the raw Light sheet carried a ';'-joined list of bare MaxQuant row indices (32,759 and 681 characters) where an accession belongs. qc/schema.py used to carve an exception so they PASSED validation; they are now quarantined to results/qc/quarantine_accessions.csv and dropped from single_condition_proteins.csv. Discrimination is on token shape (all tokens are bare integers), never length -- the two 69-character 'P08752;P20612;...' rows are legitimate protein groups and are retained. NOTHING ELSE MOVES: the quarantined rows are single-condition, so they never had a fold change, never entered limma, and never reached the IPA export. foldchange_all_rows (1948), qc_limma_rows (1938), ipa_input_rows (715), n_up (509), n_down (206) and onoff_rows (10) are all unchanged; only the enrichment background shrinks, and enrich/enrich_common.py reads background_union from THIS file rather than hardcoding it. The ORA/GSEA artifacts under results/enrichment/ still record 2554 and must be re-queried against the 2552-row background."
 }

@@ -159,6 +159,12 @@ def main(argv=None) -> int:
     input_file = args.input
     results_dir = args.results_dir
 
+    # The boundary hooks below are called as `check(stage, df)` -- the Wave-0
+    # two-argument contract, unchanged. This is how they learn about
+    # --results-dir, so a run into a temp directory does not write its QC
+    # records into the committed tree.
+    boundaries.set_results_dir(results_dir)
+
     # 0) Resolve the condition assignment from config/sample_sheet.tsv. The
     #    SHAPE of this stage is still not design-driven -- the L/H sheet split
     #    and the left-order/Heavy-dtype restore below are inherently 2-channel
@@ -333,6 +339,31 @@ def main(argv=None) -> int:
     single_cond = core.build_single_condition_frame(
         single_cond, left_condition=left_condition, right_condition=right_condition
     )
+
+    # DECISIONS_LOG D11 — quarantine, don't ship. Two rows of the raw Light
+    # sheet carry a ';'-joined list of bare MaxQuant row indices where an
+    # accession belongs (32,759 and 681 characters). They are not accessions,
+    # and qc/schema.py used to carve an exception so they would PASS
+    # validation; they are now written, in full and with a reason, to
+    # results/qc/quarantine_accessions.csv and dropped from this file
+    # (606 -> 604 rows).
+    #
+    # No numeric logic above changes: these rows are single-condition, so they
+    # never had a fold change, never entered limma, and never reached the IPA
+    # export. Only the enrichment BACKGROUND shrinks with them (2554 -> 2552),
+    # which is read from tests/expected/frozen_counts.json, not from here.
+    single_cond, quarantined = boundaries.quarantine_junk_accessions(
+        single_cond,
+        "accession",
+        source="single_condition_proteins.csv",
+        results_dir=results_dir,
+    )
+    if len(quarantined):
+        print(
+            f"Quarantined {len(quarantined)} junk accession(s) -> "
+            f"{_display(boundaries.quarantine_path(results_dir))}"
+        )
+
     single_path = os.path.join(results_dir, "single_condition_proteins.csv")
     single_cond[SINGLE_COLS].to_csv(single_path, index=False, encoding="utf-8")
     print(f"Saved {_display(single_path)} ({len(single_cond)} rows)")

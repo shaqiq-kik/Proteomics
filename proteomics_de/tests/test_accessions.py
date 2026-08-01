@@ -22,6 +22,7 @@ from proteomics_de.etl import accessions  # noqa: E402
 _RESULTS = _REPO_ROOT / "proteomics_de" / "results"
 FOLDCHANGE_CSV = _RESULTS / "foldchange_all.csv"
 SINGLE_CONDITION_CSV = _RESULTS / "single_condition_proteins.csv"
+QUARANTINE_CSV = _RESULTS / "qc" / "quarantine_accessions.csv"
 
 
 # ---------------------------------------------------------------------------
@@ -137,24 +138,39 @@ def test_is_junk_index_list_units():
 
 
 def test_junk_index_lists_in_the_real_single_condition_file():
-    """Exactly 2 junk rows; the 2 long legitimate protein groups are NOT flagged."""
+    """The junk rows are OUT of the shipped file; the protein groups stayed IN.
+
+    Rewritten at DECISIONS_LOG D11. This used to assert the 2 junk rows were
+    *present* in single_condition_proteins.csv -- true when qc/schema.py carved
+    an exception so they passed validation. They are now quarantined to
+    results/qc/quarantine_accessions.csv and dropped from the shipped file, so
+    the assertion inverts: the shipped file must be clean, and the quarantine
+    file must hold exactly the 2, with their full values intact.
+    """
     df = pd.read_csv(SINGLE_CONDITION_CSV)
     acc = df["accession"].astype(str)
-    flagged = acc[acc.map(accessions.is_junk_index_list)]
 
-    assert len(flagged) == 2, f"expected exactly 2 junk rows, got {len(flagged)}"
-    # The two known junk rows: 32,759 and 681 characters.
-    assert sorted(flagged.str.len()) == [681, 32759]
+    assert not acc.map(accessions.is_junk_index_list).any(), (
+        "a junk MaxQuant row-index list is still shipped in "
+        "single_condition_proteins.csv"
+    )
+    assert acc.map(accessions.is_valid_group).all()
 
-    # The two 69-character legitimate protein groups must NOT be flagged.
-    long_legit = acc[(acc.str.len() == 69)]
-    assert len(long_legit) == 2, "the 2 known 69-char protein groups are missing"
+    # The two 69-character legitimate protein groups must have SURVIVED. This
+    # is the over-quarantining guard: a length-based rule would have taken them
+    # too, leaving 602 rows instead of 604.
+    long_legit = acc[acc.str.len() == 69]
+    assert len(long_legit) == 2, "the 2 known 69-char protein groups were dropped"
     assert not long_legit.map(accessions.is_junk_index_list).any()
     assert long_legit.map(accessions.is_valid_group).all()
 
-    # Length is not the discriminator: the longest legitimate accession is a
-    # valid protein group, the junk rows are not accessions at all.
-    assert not flagged.map(accessions.is_valid_group).any()
+    # The junk is set aside with a reason, not deleted: 32,759 and 681 chars.
+    quarantined = pd.read_csv(QUARANTINE_CSV)
+    assert len(quarantined) == 2
+    assert sorted(quarantined["value"].str.len()) == [681, 32759]
+    assert quarantined["value"].map(accessions.is_junk_index_list).all()
+    assert not quarantined["value"].map(accessions.is_valid_group).any()
+    assert quarantined["reason"].notna().all()
 
 
 def test_regex_is_the_same_pattern_qc_schema_settled_on():

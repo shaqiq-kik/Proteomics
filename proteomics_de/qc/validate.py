@@ -42,19 +42,38 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import schema as qc_schema  # noqa: E402
 
 QC_DIR = Path(__file__).resolve().parent
-RESULTS_DIR = QC_DIR.parent / "results"
+PKG_DIR = QC_DIR.parent
+RESULTS_DIR = PKG_DIR / "results"
 QC_OUT_DIR = RESULTS_DIR / "qc"
+FROZEN_COUNTS_PATH = PKG_DIR / "tests" / "expected" / "frozen_counts.json"
 
-# Validation order mirrors the task's file-contract list.
+# Validation order mirrors the task's file-contract list, then the contract
+# files added by later layers (the DE handoff and the full IPA export), which
+# previously had no schema and so could drift unobserved.
 FILE_ORDER = [
     "foldchange_all.csv",
     "qc_limma.csv",
     "ipa_input.csv",
     "single_condition_proteins.csv",
     "onoff_proteins.csv",
+    "de/intensity_matrix.tsv",
+    "de/design.tsv",
+    "de/limma_results.tsv",
+    "ipa_input_full.csv",
 ]
 
 MAX_FAILURE_CASES_REPORTED = 50
+
+
+def load_frozen_counts() -> dict:
+    """Dataset-specific counts, from the single place they are recorded.
+
+    ``background_union`` used to be the literal ``2554`` in this file. That is
+    the same hardcoding that made the D7 correction a multi-file edit, and D11
+    moved the number again (2554 -> 2552 when the 2 junk accessions were
+    quarantined). It is read, not typed.
+    """
+    return json.loads(FROZEN_COUNTS_PATH.read_text(encoding="utf-8"))
 
 
 def _failure_cases_to_records(failure_cases: pd.DataFrame) -> list[dict]:
@@ -87,7 +106,7 @@ def validate_file(filename: str) -> dict:
         )
         return entry
 
-    df = pd.read_csv(path)
+    df = pd.read_csv(path, sep=qc_schema.SEPARATORS[filename])
     entry["exists"] = True
     entry["rows"] = int(len(df))
     entry["columns"] = list(df.columns)
@@ -134,15 +153,44 @@ def cross_file_checks(results_by_file: dict[str, dict]) -> list[dict]:
         )
 
     if fc_rows is not None and scp_rows is not None:
+        expected_background = load_frozen_counts()["background_union"]
         total = fc_rows + scp_rows
-        ok = total == 2554
+        ok = total == expected_background
         checks.append(
             {
                 "name": "foldchange_all.csv rows plus single_condition_proteins.csv rows equals the "
-                "detected-proteome background size used by enrichment (config.yaml "
-                "enrichment.gprofiler.background_n)",
-                "detail": f"{fc_rows} + {scp_rows} == {total} (expected 2554)",
+                "detected-proteome background size used by enrichment "
+                "(tests/expected/frozen_counts.json background_union)",
+                "detail": f"{fc_rows} + {scp_rows} == {total} (expected {expected_background})",
                 "passed": bool(ok),
+            }
+        )
+
+    # The quarantine is part of the contract, not a side file: D11 says the 2
+    # junk accessions are set aside WITH A REASON, so an empty or absent
+    # quarantine record alongside a 604-row single_condition_proteins.csv would
+    # mean rows were simply dropped.
+    quarantine_path = QC_OUT_DIR / "quarantine_accessions.csv"
+    if quarantine_path.exists():
+        quarantined = pd.read_csv(quarantine_path)
+        n_quarantined = int(len(quarantined))
+        has_reasons = bool(
+            n_quarantined > 0 and quarantined["reason"].notna().all()
+        )
+        checks.append(
+            {
+                "name": "every quarantined accession carries a reason "
+                "(results/qc/quarantine_accessions.csv, DECISIONS_LOG D11)",
+                "detail": f"{n_quarantined} quarantined row(s), all with a reason: {has_reasons}",
+                "passed": has_reasons,
+            }
+        )
+    else:
+        checks.append(
+            {
+                "name": "results/qc/quarantine_accessions.csv exists (DECISIONS_LOG D11)",
+                "detail": f"not found: {quarantine_path}",
+                "passed": False,
             }
         )
 
@@ -229,13 +277,29 @@ def build_markdown_report(report: dict) -> str:
         "or ambiguous UniProt entries. Gene columns are nullable."
     )
     lines.append(
-        "- **2 numeric-junk 'accession' rows in single_condition_proteins.csv** "
-        "(long ';'-joined lists of bare integers, paired with NaN gene and "
-        "NaN in all 4 intensity columns) are an upstream raw-data artifact "
-        "passed through unmodified by the frozen pipeline. The schema accepts "
-        "them via a narrowly-scoped exception requiring ALL of: accession "
-        "matches `^[0-9;]+$`, gene is NaN, and all 4 intensities are NaN -- "
-        "see `schema.py::_single_condition_accession_ok`."
+        "- **2 numeric-junk 'accession' rows are QUARANTINED, not excepted** "
+        "(DECISIONS_LOG D11). They are ';'-joined lists of bare MaxQuant row "
+        "indices (32,759 and 681 characters), an upstream raw-data artifact. "
+        "An earlier version of `schema.py` carved an exception so they would "
+        "PASS validation; that exception is deleted. They are now removed from "
+        "`single_condition_proteins.csv` (606 -> 604) and recorded in full, "
+        "with a reason, in `results/qc/quarantine_accessions.csv`. "
+        "Discrimination is by TOKEN SHAPE (every ';'-token is a bare integer) "
+        "via `etl/accessions.py::is_junk_index_list`, never by length -- the "
+        "two 69-character `P08752;P20612;...` rows are legitimate protein "
+        "groups and are retained."
+    )
+    lines.append("")
+    lines.append("## Stage-boundary validation")
+    lines.append("")
+    lines.append(
+        "`qc/boundaries.py` validates the frames crossing each pipeline stage "
+        "and records the outcome in `results/qc/qc_boundaries.json`. "
+        "`after_load` and `after_merge` are PERMISSIVE (they see raw MaxQuant "
+        "data, where a malformed accession is a fact about the input and is "
+        "routed to quarantine); `after_foldchange` and `before_ipa_export` are "
+        "STRICT (they see frames this repo produced, where a schema failure is "
+        "a bug and stops the run)."
     )
     lines.append("")
     return "\n".join(lines)

@@ -75,8 +75,13 @@ thresholds:
 statistics:
   engine: "limma 3.68.4 (R 4.6.1)"
   design_matrix: "~group (two-group contrast; no batch/covariate terms at n=2 technical replicates)"
-  eBayes_variants_tested: ["vanilla (default)", "trend", "robust"]
-  eBayes_default: "vanilla"
+  # DECISIONS_LOG D9: the default is trend=TRUE, robust=TRUE (research1.md
+  # line 124). The vanilla run is retained as results/qc_limma_vanilla.csv so
+  # the two flavours stay comparable; the conclusion is unchanged either way
+  # (still 0/1938 significant, min adj.p 0.305 -> 0.116).
+  eBayes_variants_tested: ["vanilla", "trend+robust"]
+  eBayes_default: "trend+robust"
+  eBayes_mode_recorded_in: "proteomics_de/_limma_versions.txt (ebayes_mode)"
 
 enrichment:
   string:
@@ -85,11 +90,20 @@ enrichment:
   gprofiler:
     organism: "mmusculus"
     background: "custom: the detected proteome"
-    background_n: 2554
+    # 2552 since DECISIONS_LOG D11 (was 2554). The 2 quarantined junk
+    # accessions were never real proteins, so they were never legitimate
+    # background either. The authoritative copy of this number is
+    # tests/expected/frozen_counts.json:background_union, which
+    # enrich/enrich_common.py reads at run time; the value here is
+    # documentation and is asserted to agree in tests/test_schemas.py.
+    background_n: 2552
     background_derivation: >
       Union of foldchange_all.csv (1948 rows) and single_condition_proteins.csv
-      (606 rows) = 2554 rows (the full set of proteins with at least one
-      non-missing intensity in either raw SILAC sheet). Using this custom
+      (604 rows) = 2552 rows (the full set of proteins with at least one
+      non-missing intensity in either raw SILAC sheet, less the 2 rows
+      quarantined by D11 whose "accession" was a MaxQuant row-index list
+      rather than an accession -- see results/qc/quarantine_accessions.csv).
+      Using this custom
       background instead of g:Profiler's default whole-genome background is
       the deliberate methodological choice documented in DECISIONS_LOG.md D6:
       the same UP query against the default background returns 196 spuriously
@@ -119,17 +133,26 @@ file_contracts:
   qc_limma:
     path: "proteomics_de/results/qc_limma.csv"
     expected_rows: 1938
+    # n_imputed / AveExpr / t / B appended by DECISIONS_LOG D10. Their absence
+    # here (and in qc/schema.py's QC_LIMMA_SCHEMA, which is strict=True) is
+    # what made every validation run fail with `column_in_schema` until this
+    # was corrected -- the schema-drift test in tests/test_schemas.py now
+    # fails loudly the moment this list falls behind the file again.
     key_columns:
       ["id", "gene", "Intensity 31578", "Intensity 31580",
        "Intensity 31579", "Intensity 31581", "limma_log2FC", "p_value",
-       "adj_p_value", "significant", "regulated"]
+       "adj_p_value", "significant", "regulated",
+       "n_imputed", "AveExpr", "t", "B"]
   ipa_input:
     path: "proteomics_de/results/ipa_input.csv"
     expected_rows: 715
     key_columns: ["UniProt Accession Number", "Gene names", "log2FC", "regulated"]
   single_condition_proteins:
     path: "proteomics_de/results/single_condition_proteins.csv"
-    expected_rows: 606
+    # 606 -> 604 at DECISIONS_LOG D11: the 2 rows whose "accession" was a
+    # ';'-joined list of bare MaxQuant row indices are quarantined to
+    # results/qc/quarantine_accessions.csv instead of being shipped.
+    expected_rows: 604
     key_columns:
       ["accession", "gene", "detected_in", "Intensity 31578",
        "Intensity 31580", "Intensity 31579", "Intensity 31581"]
@@ -139,6 +162,46 @@ file_contracts:
     key_columns:
       ["accession", "gene", "onoff", "Intensity 31578", "Intensity 31580",
        "Intensity 31579", "Intensity 31581"]
+  # --- contract files added by later layers -------------------------------
+  # These had no schema at all until now, which is the same silent-drift
+  # exposure that D10 turned into a hard failure on qc_limma.csv.
+  intensity_matrix:
+    path: "proteomics_de/results/de/intensity_matrix.tsv"
+    separator: "tab"
+    expected_rows: 1938
+    key_columns:
+      ["accession", "gene", "Intensity 31579", "Intensity 31581",
+       "Intensity 31578", "Intensity 31580"]
+  design_matrix:
+    path: "proteomics_de/results/de/design.tsv"
+    separator: "tab"
+    expected_rows: 4
+    key_columns: ["sample", "group"]
+  limma_results:
+    path: "proteomics_de/results/de/limma_results.tsv"
+    separator: "tab"
+    expected_rows: 1938
+    key_columns:
+      ["accession", "gene", "logFC", "fold_change", "AveExpr", "t",
+       "P.Value", "adj.P.Val", "B", "n_imputed", "direction"]
+  ipa_input_full:
+    path: "proteomics_de/results/ipa_input_full.csv"
+    expected_rows: 715
+    key_columns:
+      ["UniProt Accession Number", "Gene names", "log2FC", "regulated",
+       "p_value", "adj_p_value"]
+
+qc:
+  # Written by qc/validate.py and qc/boundaries.py; read-only over everything else.
+  validation_report: "proteomics_de/results/qc/qc_report.json"
+  boundary_records: "proteomics_de/results/qc/qc_boundaries.json"
+  quarantine: "proteomics_de/results/qc/quarantine_accessions.csv"
+  boundary_stages:
+    # Permissive stages see raw MaxQuant data, where a malformed accession is a
+    # fact about the input, not a bug: they record and route to quarantine.
+    # Strict stages see frames this repo produced: a failure there stops the run.
+    permissive: ["after_load", "after_merge"]
+    strict: ["after_foldchange", "before_ipa_export"]
 
 notes:
   caveat: >

@@ -261,7 +261,9 @@ EXPECTED_EMPTY = {
 # verified build. A mismatch here means an artifact moved and is flagged loudly.
 EXPECTED_ROWS = {
     "results/foldchange_all.csv": 1948,
-    "results/single_condition_proteins.csv": 606,
+    # 604 since DECISIONS_LOG D11: the 2 junk MaxQuant row-index-list
+    # accessions are quarantined to results/qc/quarantine_accessions.csv.
+    "results/single_condition_proteins.csv": 604,
     "results/onoff_proteins.csv": 10,
     "results/qc_limma.csv": 1938,
     "results/ipa_input.csv": 715,
