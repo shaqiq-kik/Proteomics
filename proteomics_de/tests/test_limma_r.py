@@ -72,8 +72,20 @@ SD_PLANTED = 0.01       # tiny within-group variance -> unmistakable signal
 SD_NOISE = 0.30
 
 # Missing values at positions known to the test, all inside NOISE proteins so
-# they cannot muddy the planted-effect recovery.
+# they cannot muddy the planted-effect recovery. Row 30 deliberately carries
+# TWO, so n_imputed has to distinguish 0 / 1 / 2 rather than just "any".
 NA_POSITIONS = [(10, 0), (20, 3), (30, 1), (30, 2)]
+
+#: The eBayes flavour the worker uses when --mode is absent. DECISIONS_LOG D9
+#: flipped this from "vanilla" to "trend_robust"; the tests below run the
+#: DEFAULT unless they are specifically about the other flavour, so the path the
+#: pipeline actually takes is the path under test.
+DEFAULT_MODE = "trend_robust"
+
+#: The R worker's output schema. The first four are the original contract and
+#: are position-pinned; D10 appends the rest (research1.md line 169).
+R_OUTPUT_ORIGINAL_COLUMNS = ["id", "limma_log2FC", "p_value", "adj_p_value"]
+R_OUTPUT_D10_COLUMNS = ["n_imputed", "AveExpr", "t", "B"]
 
 _NO_RSCRIPT = shutil.which("Rscript") is None
 
@@ -139,7 +151,7 @@ def _run_r(tmp_path, *args):
     )
 
 
-def _run_flags(tmp_path, inp, out, seed=42, mode="vanilla", design=None):
+def _run_flags(tmp_path, inp, out, seed=42, mode=DEFAULT_MODE, design=None):
     args = ["--in", inp, "--out", out, "--seed", seed, "--mode", mode]
     if design is not None:
         args += ["--design", design]
@@ -458,6 +470,187 @@ def test_design_flag_reproduces_committed_output(tmp_path):
 
 
 # ---------------------------------------------------------------------------
+# D9 -- eBayes(trend=TRUE, robust=TRUE) is the default flavour
+# ---------------------------------------------------------------------------
+@requires_r
+def test_omitting_mode_gives_the_trend_robust_default(tmp_path, synthetic):
+    """No --mode must mean trend/robust, not vanilla. (D9)
+
+    The worker shipped with "vanilla" as its default because that was the
+    byte-reproducible baseline. research1.md line 124 specifies
+    ``eBayes(trend=TRUE, robust=TRUE)`` and it is the proteomics field standard,
+    so D9 flipped the default. Pinned here because the default is what
+    ``limma_test.py`` -- and therefore the whole pipeline -- actually gets.
+    """
+    inp, dsn = synthetic
+    args = ["--in", inp, "--out", tmp_path / "implicit.csv", "--seed", 42,
+            "--design", dsn]
+    proc = _run_r(tmp_path, *args)
+    assert proc.returncode == 0, f"R failed:\n{proc.stderr}"
+    implicit = pd.read_csv(tmp_path / "implicit.csv")
+
+    explicit_tr = _run_flags(tmp_path, inp, tmp_path / "tr.csv",
+                             mode="trend_robust", design=dsn)
+    explicit_van = _run_flags(tmp_path, inp, tmp_path / "van.csv",
+                              mode="vanilla", design=dsn)
+
+    assert np.allclose(implicit["p_value"], explicit_tr["p_value"], rtol=0, atol=0), (
+        "omitting --mode did not run trend/robust"
+    )
+    assert not np.array_equal(implicit["p_value"], explicit_van["p_value"]), (
+        "trend/robust and vanilla produced identical p-values -- the mode "
+        "toggle is not reaching eBayes"
+    )
+
+
+@requires_r
+def test_the_two_flavours_differ_only_in_the_variance_model(tmp_path, synthetic):
+    """logFC bit-identical, p-values not. (D9)
+
+    ``eBayes`` moderates residual variances; it does not refit the linear model,
+    so the fitted coefficients -- and therefore every fold change -- are
+    untouched. This is the entire argument for changing the default without
+    re-litigating any biological conclusion, so it is asserted rather than
+    assumed. Run on the synthetic fixture, where the ground truth is known, in
+    addition to the real-data check in test_limma_contract.py.
+    """
+    inp, dsn = synthetic
+    van = _run_flags(tmp_path, inp, tmp_path / "v.csv", mode="vanilla", design=dsn)
+    tr = _run_flags(tmp_path, inp, tmp_path / "t.csv", mode="trend_robust", design=dsn)
+
+    assert van["id"].tolist() == tr["id"].tolist()
+    assert np.array_equal(
+        van["limma_log2FC"].to_numpy(), tr["limma_log2FC"].to_numpy()
+    ), (
+        "eBayes moved logFC between flavours; max |diff| = "
+        f"{np.abs(van['limma_log2FC'] - tr['limma_log2FC']).max():.3e}"
+    )
+    # AveExpr is a property of the data, not of the moderation, so it must not
+    # move either. B and t are moderation outputs and are expected to.
+    assert np.array_equal(van["AveExpr"].to_numpy(), tr["AveExpr"].to_numpy())
+    assert np.array_equal(van["n_imputed"].to_numpy(), tr["n_imputed"].to_numpy())
+    assert not np.array_equal(van["p_value"].to_numpy(), tr["p_value"].to_numpy())
+
+
+@requires_r
+def test_both_flavours_still_recover_the_planted_effect(tmp_path, synthetic):
+    """Changing the default must not cost the worker its known-truth recovery."""
+    inp, dsn = synthetic
+    for mode in ("vanilla", "trend_robust"):
+        res = _run_flags(tmp_path, inp, tmp_path / f"{mode}.csv", mode=mode,
+                         design=dsn)
+        planted = res.iloc[:N_PLANTED]
+        assert np.allclose(planted["limma_log2FC"], PLANTED_LOG2FC, atol=0.1), (
+            f"{mode}: {planted['limma_log2FC'].tolist()}"
+        )
+        top5 = set(res["p_value"].nsmallest(N_PLANTED).index)
+        assert top5 == set(range(N_PLANTED)), f"{mode}: ranked rows {sorted(top5)}"
+
+
+@requires_r
+@pytest.mark.skipif(not REAL_INPUT.exists(), reason="_limma_input.csv not present")
+def test_vanilla_companion_reproduces_its_committed_intermediate(tmp_path):
+    """results/qc_limma_vanilla.csv's worker output is reproducible. (D9)
+
+    D9 keeps vanilla alive so both flavours stay comparable. A preserved file
+    nobody can regenerate is not a baseline, so the committed
+    ``_limma_output_vanilla.csv`` is re-derived here from the same input, seed
+    and design -- byte-for-byte.
+    """
+    committed = _PKG_DIR / "_limma_output_vanilla.csv"
+    if not (committed.exists() and REAL_DESIGN.exists()):
+        pytest.skip("committed vanilla intermediate not present")
+
+    out = tmp_path / "_limma_output_vanilla.csv"
+    _run_flags(tmp_path, REAL_INPUT, out, mode="vanilla", design=REAL_DESIGN)
+    assert out.read_bytes() == committed.read_bytes()
+
+
+# ---------------------------------------------------------------------------
+# D10 -- the restored output columns
+# ---------------------------------------------------------------------------
+@requires_r
+def test_output_columns_are_the_original_four_plus_the_d10_four(tmp_path, synthetic):
+    """D10 APPENDS to the worker's contract; it must not reorder or rename."""
+    inp, dsn = synthetic
+    res = _run_flags(tmp_path, inp, tmp_path / "out.csv", design=dsn)
+    assert list(res.columns) == R_OUTPUT_ORIGINAL_COLUMNS + R_OUTPUT_D10_COLUMNS
+
+
+@requires_r
+def test_n_imputed_counts_the_planted_missing_values(tmp_path, synthetic):
+    """Ground truth: the fixture knows exactly which cells it blanked.
+
+    ``n_imputed`` must be counted on the log2 matrix BEFORE ``impute.MinProb``
+    runs -- one line later every cell is finite and the distinction between a
+    measured value and an invented one no longer exists anywhere. This is the
+    column's whole reason to exist at n=2 with a stochastic imputer, so it is
+    checked against the fixture's own NA_POSITIONS rather than range-checked.
+    """
+    inp, dsn = synthetic
+    res = _run_flags(tmp_path, inp, tmp_path / "out.csv", design=dsn)
+
+    expected = [0] * N_PROTEINS
+    for row, _col in NA_POSITIONS:
+        expected[row] += 1
+    assert res["n_imputed"].tolist() == expected
+    # The fixture plants a 2-NA row on purpose; if that ever stops being true
+    # the test degenerates into "0 or 1" and stops proving anything.
+    assert max(expected) == 2
+    assert res["n_imputed"].between(0, 4).all()
+
+
+@requires_r
+def test_n_imputed_is_all_zero_when_nothing_is_missing(tmp_path):
+    """The control: no NAs in, no imputation claimed."""
+    inp = _write_input(tmp_path, _synthetic_frame(with_nas=False), name="complete.csv")
+    dsn = _write_design(tmp_path)
+    res = _run_flags(tmp_path, inp, tmp_path / "out.csv", design=dsn)
+    assert (res["n_imputed"] == 0).all()
+
+
+@requires_r
+def test_n_imputed_survives_a_zero_intensity_not_just_a_blank(tmp_path):
+    """<= 0 is missing too, and must be counted as such.
+
+    ``etl.build_matrix.intensity_series`` treats a 0 intensity as "below the
+    detection limit" (MNAR), identically to a blank cell; the R worker maps
+    ``<= 0 -> NA`` for the same reason. A zero that slipped through as a
+    measurement would log2 to -Inf and be counted as observed.
+    """
+    df = _synthetic_frame(with_nas=False)
+    df.loc[3, HANDOFF_COLS[1]] = 0.0
+    df.loc[7, HANDOFF_COLS[0]] = 0.0
+    df.loc[7, HANDOFF_COLS[2]] = 0.0
+    inp = _write_input(tmp_path, df, name="zeros.csv")
+    dsn = _write_design(tmp_path)
+    res = _run_flags(tmp_path, inp, tmp_path / "out.csv", design=dsn)
+
+    assert res["n_imputed"].iloc[3] == 1
+    assert res["n_imputed"].iloc[7] == 2
+    assert res["n_imputed"].drop(index=[3, 7]).eq(0).all()
+
+
+@requires_r
+def test_avexpr_t_and_b_are_finite_and_consistent(tmp_path, synthetic):
+    inp, dsn = synthetic
+    res = _run_flags(tmp_path, inp, tmp_path / "out.csv", design=dsn)
+
+    for col in ("AveExpr", "t", "B"):
+        assert np.isfinite(res[col]).all(), f"{col} has non-finite entries"
+    # AveExpr is the row mean of the imputed log2 matrix; the fixture sits at
+    # ~BASE_LOG2, with the planted rows pulled up by half the planted effect.
+    assert np.allclose(
+        res["AveExpr"].iloc[N_PLANTED:], BASE_LOG2, atol=1.0
+    ), res["AveExpr"].iloc[N_PLANTED:].tolist()
+    # t and logFC are the same contrast: the signs cannot disagree.
+    same_sign = np.sign(res["t"]) == np.sign(res["limma_log2FC"])
+    assert same_sign[res["limma_log2FC"] != 0].all()
+    # B (log-odds of differential expression) must rank the planted effect top.
+    assert set(res["B"].nlargest(N_PLANTED).index) == set(range(N_PLANTED))
+
+
+# ---------------------------------------------------------------------------
 # Fail-loud contract (no limma work needed -- these are fast)
 # ---------------------------------------------------------------------------
 def _assert_bug7_error(proc):
@@ -599,4 +792,28 @@ def test_run_limma_test_signature_is_stable():
     assert list(sig.parameters) == [
         "foldchange_csv", "outdir", "ebayes_mode", "qc_filename",
         "output_name", "reuse_input", "write_ipa",
+        # D9/D10 additions; both default to the pipeline's behaviour, so
+        # foldchange.py's zero-argument call keeps producing the full output set.
+        "write_contract", "vanilla_companion",
     ]
+    assert sig.parameters["ebayes_mode"].default == "trend_robust", (
+        "DECISIONS_LOG D9: the default eBayes flavour must be trend/robust"
+    )
+    assert sig.parameters["vanilla_companion"].default is True
+
+
+def test_default_ebayes_mode_agrees_between_python_and_r():
+    """One default, two languages -- assert they cannot drift apart.
+
+    ``limma_test.py`` forwards its default as ``--mode``, so a divergence here
+    would be invisible in the pipeline but would change what a bare
+    ``Rscript limma_test.R`` produces.
+    """
+    import limma_test
+
+    r_source = R_SCRIPT.read_text(encoding="utf-8")
+    assert f'DEFAULT_EBAYES_MODE <- "{limma_test.DEFAULT_EBAYES_MODE}"' in r_source, (
+        "limma_test.R's DEFAULT_EBAYES_MODE does not match limma_test.py's "
+        f"{limma_test.DEFAULT_EBAYES_MODE!r}"
+    )
+    assert limma_test.DEFAULT_EBAYES_MODE == DEFAULT_MODE

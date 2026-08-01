@@ -14,9 +14,17 @@
 #   instead of being hardcoded here, so adding replicates is an edit to
 #   config/sample_sheet.tsv and nothing else.
 #
-#   ebayes_mode / --mode (optional): "vanilla" (default) or "trend_robust". The
+#   ebayes_mode / --mode (optional): "trend_robust" (DEFAULT) or "vanilla". The
 #   mode only switches the eBayes call; everything upstream/downstream is
-#   identical, so the default invocation reproduces the committed baseline exactly.
+#   identical, so the two flavours differ in the moderated t / p-values and in
+#   NOTHING else (logFC is bit-identical between them -- asserted by the tests).
+#
+#   DECISIONS_LOG D9 made trend/robust the default: research1.md line 124
+#   specifies eBayes(trend=TRUE, robust=TRUE) and it is the proteomics field
+#   standard (intensity-dependent prior variance + outlier-robust moderation).
+#   "vanilla" is retained, and still run on every pipeline invocation, so the
+#   original byte-reproducible baseline stays available for comparison
+#   (results/qc_limma_vanilla.csv).
 #
 #   Flags are parsed by hand (below) rather than with optparse: optparse is not
 #   installed here, and five flags do not justify a new dependency in a script
@@ -28,7 +36,16 @@
 # Design (optional, --design): TAB-separated, columns sample, group. `sample`
 #         names the INPUT CSV's intensity columns (i.e. the handoff names), in
 #         the order the design matrix expects: control group first.
-# Output (read by Python):    columns id, limma_log2FC, p_value, adj_p_value.
+# Output (read by Python):    columns id, limma_log2FC, p_value, adj_p_value,
+#         then (DECISIONS_LOG D10, research1.md line 169) n_imputed, AveExpr,
+#         t, B. The first four are the original contract and keep their exact
+#         names and order; the four new ones are APPENDED.
+#
+#         n_imputed is the load-bearing one: MinProb is stochastic and this
+#         study is n=2, so without it nothing downstream can tell a MEASURED
+#         value from one this script INVENTED. It is counted on the log2 matrix
+#         immediately before impute.MinProb runs -- afterwards every cell is
+#         finite and the information no longer exists.
 #
 # Pipeline (Peng et al. 2024, Nat Commun, DOI 10.1038/s41467-024-47899-w):
 #   raw intensity -> (<=0 -> NA) -> log2 (un-centered, no normalization)
@@ -52,6 +69,10 @@ bug7_abort <- function(...) {
   quit(save = "no", status = 1L)
 }
 
+#: eBayes flavour used when --mode / the 4th positional arg is absent.
+#: DECISIONS_LOG D9 flipped this from "vanilla" to "trend_robust".
+DEFAULT_EBAYES_MODE <- "trend_robust"
+
 args <- commandArgs(trailingOnly = TRUE)
 
 # --- Argument parsing: flag form if any arg starts with "--", else positional --
@@ -61,7 +82,7 @@ parse_flags <- function(args) {
             "--seed" = "seed", "--mode" = "ebayes_mode")
   opt <- list(input_csv = NA_character_, output_csv = NA_character_,
               design_tsv = NA_character_, seed = NA_character_,
-              ebayes_mode = "vanilla")
+              ebayes_mode = DEFAULT_EBAYES_MODE)
   i <- 1L
   while (i <= length(args)) {
     key <- args[[i]]
@@ -96,8 +117,8 @@ if (any(startsWith(args, "--"))) {
   input_csv  <- args[[1L]]
   output_csv <- args[[2L]]
   seed_arg   <- args[[3L]]
-  # Optional 4th arg: eBayes mode. Default keeps the committed baseline behavior.
-  ebayes_mode <- if (length(args) >= 4L) args[[4L]] else "vanilla"
+  # Optional 4th arg: eBayes mode. Defaults to the D9 default, same as --mode.
+  ebayes_mode <- if (length(args) >= 4L) args[[4L]] else DEFAULT_EBAYES_MODE
   design_tsv <- NA_character_
 }
 
@@ -217,6 +238,16 @@ run <- function() {
   mat[!is.na(mat) & mat <= 0] <- NA
   mat <- log2(mat)
 
+  # n_imputed: how many of this protein's values MinProb is about to invent.
+  # research1.md line 138 (`n_imputed = rowSums(is.na(logM))`), restored by
+  # DECISIONS_LOG D10. It MUST be counted here, on the log2 matrix, before
+  # impute.MinProb runs -- one line later every cell is finite and the
+  # distinction between "measured" and "imputed" is unrecoverable. At n=2 per
+  # group with a stochastic imputer, a protein with n_imputed = 2 has a logFC
+  # that is half draw and half data, and a consumer has no way to know that
+  # without this column.
+  n_imputed <- as.integer(rowSums(is.na(mat)))
+
   # MinProb imputation on the log2 matrix. set.seed() immediately before it,
   # because MinProb draws random values (reproducibility hinges on this).
   # impute.MinProb prints an internal value to stdout; capture.output swallows it
@@ -236,10 +267,12 @@ run <- function() {
   design <- model.matrix(~ factor(group, levels = group_levels))
 
   fit <- limma::lmFit(mat, design)
-  # eBayes mode toggle. "vanilla" (the committed baseline) keeps the plain call so
-  # results stay reproducible. "trend_robust" applies the common proteomics
-  # refinement: intensity-dependent prior variance (trend) + outlier-robust
-  # moderation (robust). Only this call differs between the two modes.
+  # eBayes mode toggle -- the ONLY line that differs between the two flavours,
+  # which is why logFC is bit-identical across them (eBayes moderates the
+  # variance; it never touches the fitted coefficients).
+  # "trend_robust" (D9 default) applies the proteomics standard: an
+  # intensity-dependent prior variance (trend) plus outlier-robust moderation
+  # (robust). "vanilla" is the plain call, kept as the comparison baseline.
   # (renv for full R-environment pinning remains a future refinement;
   # _limma_versions.txt is enough for now.)
   if (ebayes_mode == "trend_robust") {
@@ -259,12 +292,35 @@ run <- function() {
       any(!is.finite(tt$logFC))) {
     stop("BUG7 R ERROR: non-finite logFC/p-value/adj-p produced.")
   }
+  # The D10 columns get the same treatment: a silent NA/NaN in AveExpr, t or B
+  # would otherwise reach qc_limma.csv and results/de/limma_results.tsv.
+  for (nm in c("AveExpr", "t", "B")) {
+    if (is.null(tt[[nm]])) {
+      stop("BUG7 R ERROR: topTable did not return column '", nm, "'.")
+    }
+    if (any(!is.finite(tt[[nm]]))) {
+      stop("BUG7 R ERROR: non-finite values in topTable column '", nm, "'.")
+    }
+  }
+  if (length(n_imputed) != nrow(df) || any(is.na(n_imputed)) ||
+      any(n_imputed < 0L) || any(n_imputed > length(intensity_cols))) {
+    stop("BUG7 R ERROR: n_imputed is not a per-protein count in [0, ",
+         length(intensity_cols), "].")
+  }
 
+  # Column order: the four original columns keep their exact names and
+  # positions (downstream consumers select by name, but the byte layout of
+  # _limma_output.csv is also a reviewed artifact); the D10 columns are
+  # APPENDED, never interleaved.
   out <- data.frame(
     id           = df$id,
     limma_log2FC = tt$logFC,
     p_value      = tt$P.Value,
     adj_p_value  = tt$adj.P.Val,
+    n_imputed    = n_imputed,
+    AveExpr      = tt$AveExpr,
+    t            = tt$t,
+    B            = tt$B,
     stringsAsFactors = FALSE
   )
   write.csv(out, output_csv, row.names = FALSE)
@@ -277,15 +333,17 @@ run <- function() {
   out_base <- tools::file_path_sans_ext(basename(output_csv))
   ver_name <- sub("_limma_output", "_limma_versions", out_base)
   versions_path <- file.path(dirname(output_csv), paste0(ver_name, ".txt"))
-  # Content stays exactly as the committed baseline (4 lines) so a default re-run
-  # reproduces _limma_versions.txt byte-for-byte; the mode is captured by the
-  # filename instead.
+  # The eBayes mode is recorded explicitly since D9: with two flavours in play
+  # (qc_limma.csv = trend_robust, qc_limma_vanilla.csv = vanilla) a provenance
+  # record that does not name the variance model is a footgun -- the filename
+  # alone only distinguishes the NON-default run.
   writeLines(
     c(
       R.version.string,
       paste0("limma ", as.character(utils::packageVersion("limma"))),
       paste0("imputeLCMD ", as.character(utils::packageVersion("imputeLCMD"))),
-      paste0("seed ", seed)
+      paste0("seed ", seed),
+      paste0("ebayes_mode ", ebayes_mode)
     ),
     versions_path
   )
