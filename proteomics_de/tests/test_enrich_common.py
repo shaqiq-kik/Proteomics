@@ -111,7 +111,12 @@ def test_first_token_matches_inline_logic_on_every_committed_accession():
     fc = pd.read_csv(_RESULTS / "foldchange_all.csv")
     scp = pd.read_csv(_RESULTS / "single_condition_proteins.csv")
     values = list(fc["UniProt Accession Number"]) + list(scp["accession"])
-    assert len(values) == 2554, "expected the full 2554-row detected proteome"
+    # Read, not typed: DECISIONS_LOG D11 moved this from 2554 to 2552 when the
+    # 2 junk accessions were quarantined out of single_condition_proteins.csv.
+    expected = ec.load_frozen_counts()["background_union"]
+    assert len(values) == expected, (
+        f"expected the full {expected}-row detected proteome, got {len(values)}"
+    )
     mismatches = [
         v for v in values if accessions.first_token(v) != _old_inline_first_token(v)
     ]
@@ -186,7 +191,9 @@ def test_query_and_background_sizes_match_frozen_counts(frozen_counts):
     assert len(up) == frozen_counts["n_up"] == 509
     assert len(down) == frozen_counts["n_down"] == 206
     assert list_meta["background_row_union_n"] == frozen_counts["background_union"]
-    assert list_meta["background_row_union_n"] == 2554
+    # 2552 since DECISIONS_LOG D11 (was 2554): the 2 quarantined junk
+    # accessions were never real proteins and so were never real background.
+    assert list_meta["background_row_union_n"] == 2552
     # The background is a deduplicated symbol list, so it is necessarily
     # smaller than the row union it is built from.
     assert len(background) < list_meta["background_row_union_n"]

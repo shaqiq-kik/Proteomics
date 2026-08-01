@@ -1132,3 +1132,162 @@ writes `ipa_input.csv` *before* calling `run_limma_test`, so at that moment
 `qc_limma.csv` is still the previous run's. The correct wiring is a stage after
 `de`, running `python -m proteomics_de.export.ipa_export`, which builds both full
 files, validates all four IPA outputs and emits all four sidecars in one command.
+
+---
+
+## P6 — pandera at the boundaries: schema drift fixed, junk quarantined (D10, D11)
+
+Three things, in dependency order: the schema layer could not run at all, it was
+excusing its own known-bad input, and it was not wired into the pipeline.
+
+### 1. `qc/schema.py` was REJECTING `qc_limma.csv`
+
+Verified before touching anything: `validate.py` exited 1 with 4
+`column_in_schema` failures. DECISIONS_LOG **D10** appended `n_imputed`,
+`AveExpr`, `t` and `B` to `results/qc_limma.csv`; `QC_LIMMA_SCHEMA` is
+`strict=True` and had never been told. The schema was doing its job — nothing
+was *checking* that it still described its file.
+
+The four columns are declared. `n_imputed` gets `in_range(0, 4)` — the
+structural bound (one per sample), not `in_range(0, 2)` describing today's
+1578/218/142 distribution, which would fail on a legitimately sparser protein.
+`AveExpr`/`t`/`B` are float and finite.
+
+**The real fix is the test, not the four columns.**
+`test_schemas.py::test_schema_columns_match_the_file` is parametrised over every
+entry in `FILE_SCHEMAS` and asserts declared columns == actual columns, naming
+the delta in both directions. That is the failure this package was blocked on,
+and it now cannot recur silently. A second test pins the D10 four *by name*, so
+deleting them from both file and schema does not quietly go green.
+
+While there: `config.yaml`'s `eBayes_default` still said `"vanilla"` after D9
+made it `trend+robust` (confirmed against `_limma_versions.txt`:
+`ebayes_mode trend_robust`). Corrected.
+
+### 2. The junk accessions are quarantined, not excused (D11)
+
+`_single_condition_accession_ok` forgave an accession-regex failure when it came
+paired with a NaN gene and all-NaN intensities. That is a validator taught to
+accept its own known-bad input. Deleted — and `test_a_junk_accession_now_fails_
+the_single_condition_schema` feeds the schema a row of exactly that shape and
+requires it to FAIL, because deleting a helper proves nothing on its own.
+
+Discrimination is delegated to `etl/accessions.is_junk_index_list` (Wave 0), not
+reimplemented: D11 turns entirely on **token shape**, and a length rule anywhere
+between the 69-character legitimate protein groups and the 681-character junk
+list would work on today's data and be wrong in principle. Both directions are
+pinned, including the guard against over-quarantining (604, not 602).
+
+The 2 rows are written **in full, with a reason**, to
+`results/qc/quarantine_accessions.csv` and dropped from
+`single_condition_proteins.csv`. Quarantine is set-aside-with-a-reason, not
+delete: the 32,759- and 681-character values stay recoverable.
+
+`foldchange.py` gets one quarantine call before the single-condition write. No
+numeric logic touched.
+
+**Ripple, verified rather than assumed.** 606 → 604; background union 2554 →
+2552. `enrich_common.py` already reads `background_union` from
+`frozen_counts.json`, and calling `load_background_and_queries()` returns 2552
+with no assertion firing — confirmed by running it, not by reading it. Unique
+background symbols went 2532 → 2530, which surfaced something worth recording:
+because both junk rows have a NaN gene, the accession-fallback path was sending
+their first tokens — the literal strings **`"73"` and `"81"`** — to g:Profiler as
+background identifiers.
+
+### 3. `qc/boundaries.py` was a no-op shim; it now validates
+
+The Wave-0 `check(stage, df, schema=None) -> df` is filled in. Its contract is
+preserved exactly — same object returned, nothing copied, nothing mutated (a
+test asserts dtypes too, since the stage schemas use `coerce=True` and the Heavy
+channels arrive as int64) — so the four `foldchange.py` call sites are unchanged,
+and a test greps for them verbatim.
+
+**Two policies, because one would be wrong.** `after_load`/`after_merge` see raw
+MaxQuant sheets where the junk rows genuinely live: they record and route to
+quarantine. Raising there would mean the pipeline cannot read its own input.
+`after_foldchange`/`before_ipa_export` see frames this repo produced, where a
+failure is a bug: they raise `BoundaryValidationError`. The same junk accession
+that is merely *recorded* at `after_load` *stops the run* at `after_foldchange` —
+asserted as a pair, since a validator that only ever passes and one that always
+raises are equally useless.
+
+On the real data: `after_load`(L) 2 failures routed to quarantine, `after_load`(H)
+clean, `after_merge` 2 routed, `after_foldchange` **passes strict**.
+
+Stage schemas are `strict=False` (in-flight frames legitimately carry `_merge`,
+`Gene names_L/_H`, ratio intermediates) and carry **no row-count checks** —
+1948/606/715 are frozen facts about one dataset and belong in
+`frozen_counts.json`. Missing declared columns still fail.
+
+Writing them surfaced a genuine in-flight/on-disk difference: `onoff` is the
+empty string in flight (`detect_onoff` seeds `df[column] = ""`) and NaN on disk.
+Declared accurately rather than made nullable, plus a stricter dataframe check
+the file schema cannot express — the label must be set on **exactly** the ON_OFF
+rows.
+
+New schemas for the previously-unschema'd contract files: `INTENSITY_MATRIX_
+SCHEMA`, `DESIGN_SCHEMA`, `LIMMA_RESULTS_SCHEMA`, `IPA_INPUT_FULL_SCHEMA`, with
+real cross-column checks (`fold_change == 2**logFC`, `adj.P.Val >= P.Value`,
+balanced design). `validate.py` now covers **9 files, not 5**, reads TSV vs CSV
+per file, and reads the background union from `frozen_counts.json` instead of the
+literal `2554` it used to carry (an AST test keeps it that way).
+
+`qc_boundaries.json` deliberately carries **no timestamp**: it lives under the
+freeze gate, and a wall clock would drift it every run for no gain.
+`qc_report.json` does stamp a time and does drift — the behaviour not copied.
+
+### A bug found by running it
+
+Running `foldchange.py --results-dir /tmp/...` wrote every output to the temp
+directory **except** the boundary record, which landed in the committed
+`proteomics_de/results/qc/`. The call sites pass only `(stage, df)`, so `check`
+was falling back to the package default. Fixed with `set_results_dir`, called
+once in `main` — the four call sites stay two-argument calls. Regression test
+added. This was caught by an actual `--results-dir` run, not by reading the code.
+
+### Verification (run, not assumed)
+
+- **`validate.py` overall verdict: PASS** — 9/9 files, 3/3 cross-file checks.
+- `single_condition_proteins.csv` **606 → 604**, and the 604 retained rows are
+  **byte-identical** to the committed file. Proven by building the result two
+  independent ways (raw-text line surgery, and the real
+  `quarantine_junk_accessions` → `to_csv` path) and requiring identical bytes.
+- **Full pipeline re-run** with the patched `foldchange.py`: all **16** produced
+  files byte-identical to the committed tree, including `replicate_correlation.png`
+  and every limma output. The only new file is `qc/qc_boundaries.json`. The frozen
+  `_limma_*` handoff intermediates did not move.
+- **78 new tests** (42 `test_schemas.py` + 36 `test_boundaries.py`). Full suite:
+  **506 passed**, 2 known failures below.
+
+### Known-red, for the orchestrator — do not "fix" by weakening
+
+1. `test_enrich_common.py::test_ora_meta_records_the_custom_detected_proteome_
+   background` — `results/enrichment/ora_meta.json` still records 2554. Correct
+   detection of a stale artifact: **ORA/GSEA must be re-queried** against the
+   2552-row background. Not run here (live API calls, per instruction).
+2. `test_freeze.py::test_tree_matches_manifest` — `single_condition_proteins.csv`
+   and the two `qc_report` files changed, and 2 new artifacts are untracked.
+   `tools/freeze.py --write` was NOT run.
+
+**After re-baselining, `test_freeze.py::test_manifest_exists_and_parses` will
+need `77` → `79`.** Its comment says adding an artifact should be a conscious
+act; `qc_boundaries.json` and `quarantine_accessions.csv` are those two.
+
+### Files touched outside P6's declared set
+
+Forced by the D11 count change; each de-hardcodes toward `frozen_counts.json`
+rather than retyping a literal. **No assertion was weakened.**
+
+- `tests/test_accessions.py` — inverted: the shipped file must now be *clean* and
+  the quarantine file must hold the 2. Strictly stronger.
+- `tests/test_merge_guard.py` — the merge yields 606 *pre*-quarantine; compared
+  against the new `single_condition_rows_pre_quarantine` key, plus the invariant
+  `606 - 2 == 604`. The old test conflated two different quantities.
+- `tests/test_enrich_common.py` — two literal `2554`s.
+- `tests/test_run_pipeline.py` — one literal `606`.
+- `tools/status.py` — `EXPECTED_ROWS` 606 → 604 (now reports "matches expected").
+
+**Still stale, not owned here:** `report/report_facts.json` and the generated
+report carry 606 / 2554 / "detected_universe" and need regenerating after the
+enrichment re-query.
