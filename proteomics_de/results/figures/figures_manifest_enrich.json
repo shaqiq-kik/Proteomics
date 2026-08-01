@@ -2,11 +2,11 @@
   {
     "file": "figures/ora_dotplot.png",
     "title": "ORA top terms \u2014 UP vs. DOWN (g:Profiler, custom background)",
-    "caption": "Top 5 GO/KEGG/Reactome terms per direction from g:Profiler g:GOSt (organism=mmusculus, sources=GO:BP/MF/CC+KEGG+REAC, custom background = the 2554-row detected proteome, g:SCS-corrected p-values, user_threshold=0.05). 0/0 terms pass significance in either direction (dashed line = the p=0.05 cutoff nothing reaches); dot size = intersection_size. The same two queries against g:Profiler's DEFAULT whole-genome background would return 326 (UP) and 196 (DOWN) 'significant' terms -- background inflation this pipeline deliberately avoids. Shown as the best available leads for hypothesis generation, NOT as significant pathway enrichment. This is a separate statistical test from the non-significant per-protein FDR (0/1938 at FDR<0.05).",
+    "caption": "Top 5 GO/KEGG/Reactome terms per direction from g:Profiler g:GOSt (organism=mmusculus, sources=GO:BP/MF/CC+KEGG+REAC, custom background = the 2552-row detected proteome, g:SCS-corrected p-values, user_threshold=0.05). 0/0 terms pass significance in either direction (dashed line = the p=0.05 cutoff nothing reaches); dot size = intersection_size. The same two queries against g:Profiler's DEFAULT whole-genome background would return 326 (UP) and 196 (DOWN) 'significant' terms -- background inflation this pipeline deliberately avoids. Shown as the best available leads for hypothesis generation, NOT as significant pathway enrichment. This is a separate statistical test from the non-significant per-protein FDR (0/1938 at FDR<0.05).",
     "key_numbers": {
       "n_significant_up": 0,
       "n_significant_down": 0,
-      "background_size": 2532,
+      "background_size": 2530,
       "up_query_size": 509,
       "down_query_size": 206,
       "best_p_up": 1.0,

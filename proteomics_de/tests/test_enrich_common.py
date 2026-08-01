@@ -249,8 +249,10 @@ def test_ora_meta_records_the_custom_detected_proteome_background(
     artifact. ``domain_scope`` must stay ``"custom"``.
     """
     assert ora_meta["domain_scope"] == "custom"
+    # Only the frozen_counts key -- a duplicate literal beside it is exactly the
+    # staleness this suite exists to prevent. It was 2554 before the D11
+    # quarantine dropped 2 junk accessions; the key tracks that, a literal does not.
     assert ora_meta["background_size_row_union"] == frozen_counts["background_union"]
-    assert ora_meta["background_size_row_union"] == 2554
     assert ora_meta["background_size_unique_symbols"] < 2554
 
 
