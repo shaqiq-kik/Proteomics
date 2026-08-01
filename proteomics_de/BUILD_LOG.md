@@ -1008,3 +1008,127 @@ changes point the wrong way. `README.md` (lines ~275, ~288) and `STATUS.md`
    `_limma_output_vanilla.csv`, `_limma_versions_vanilla.txt`.
    `.gitignore`'s entries for `_limma_output_trend.csv` /
    `_limma_versions_trend.txt` are now dead.
+## P7 — IPA p-values in the upload file, and the n=2 caveat on the CSVs (2026-08-01)
+**Wave:** 2 · **Commit:** see below · **Status:** ✅ done
+**Closes:** two gaps from `research1.md` — §3 line 210 (ship fold change **plus**
+`adj.P.Val`) and line 245 (the n=2 caveat "must be stated on **every** output").
+**Files:** `export/ipa_export.py`, `provenance.py` (both were Wave-0 shims),
+`tests/test_ipa_export.py`, `tests/test_provenance.py` (both new).
+
+### Gap 1 — `ipa_input.csv` had no p-values
+
+`results/ipa_input.csv` carries only `UniProt Accession Number, Gene names,
+log2FC, regulated`, even though limma computed a p-value and an FDR for every one
+of its 715 rows. research1.md line 210 is explicit that fold change alone runs
+every IPA module (all z-scores are driven by *direction*), but that the FDR is
+what unlocks IPA's **expression cutoffs** — Standard/Bonferroni/FDR filtering.
+
+The file could not simply gain two columns: it is byte-frozen and the user may
+already have uploaded it. So the p-values ship in a **new** file:
+
+* `results/ipa_input_full.csv` — 715 rows × 6 columns
+  (`UniProt Accession Number, Gene names, log2FC, regulated, p_value, adj_p_value`),
+  joined from `qc_limma.csv` on accession.
+* `results/ipa_input_full.txt` — the same table, tab-delimited, because QIAGEN
+  "strongly recommend that the dataset files be in tab-delimited text format
+  (.txt, rather than Excel-based formats) for faster upload" (research1.md line 195).
+
+The join is total by construction and **checked**, not assumed: every IPA row is
+`complete & regulated in {UP, DOWN}`, and limma tests every complete row (only
+ON_OFF proteins are excluded, and those never carry a directional label). A NaN
+p-value therefore means the eligibility invariant broke upstream, and
+`build_ipa_full` raises rather than shipping blank measurement cells that IPA
+would silently drop. Verified on the real data: **0 NaN in 715 rows**.
+
+`write_ipa` itself was left byte-identical. `results/ipa_input.csv` re-hashes to
+`0b55122b78912a7f439491cfe9e53ba4dbdec1ab79cab166dc7e11b187dbfeb5`, unchanged
+from `git show HEAD:`.
+
+### A float-precision landmine, found the hard way
+
+Reading `ipa_input.csv` with pandas and writing it straight back **does not
+round-trip**: 87 of the 715 `log2FC` values shift by one ULP
+(`1.0633144767505383` → `...385`). The cause is `read_csv`'s default float parser
+(`float_precision="high"`), which is not correctly rounded — not the writer. Left
+unaddressed, `ipa_input_full.csv` would have disagreed in the last digit with the
+`ipa_input.csv` already sitting in QIAGEN, for rows that are numerically
+identical. Every read in `ipa_export.py` now passes
+`float_precision="round_trip"`, which reproduces the frozen file byte for byte.
+This is pinned two ways: a textual comparison of the production output against
+both source files, and a source-level check that no `pd.read_csv` in the module
+omits the parameter.
+
+### `validate_ipa` — research1.md line 187, implemented
+
+The only export validation the pipeline had was a bare
+`assert len(df_ipa) == 715` on an in-memory frame, which says nothing about the
+bytes that reach QIAGEN. `validate_ipa(path)` now checks the file: no UTF-8 BOM
+(a BOM turns the first header cell into `"﻿UniProt Accession Number"`, the
+exact "IPA does not recognize the column headers" failure the earlier Excel→CSV
+fix was chasing); valid UTF-8; exactly one header row with uniform field counts
+and no repeated header; identifier column leftmost; identifiers free of stray
+characters (`;` explicitly allowed — 21 of the 715 accessions are legitimate
+protein groups like `P05132;P68181`); no NA or inf in any measurement column; and
+row count equal to `(complete & regulated in {UP,DOWN}).sum()`, **recomputed from
+`foldchange_all.csv`** rather than compared to a literal. All 9 checks pass on
+`ipa_input.csv`, `ipa_input_full.csv` and `ipa_input_full.txt`.
+
+`ipa_input_significant.csv` is asserted as a **contract**, not repaired:
+`validate_ipa_significant` requires the correct 5-column header and exactly
+`frozen_counts["n_significant_fdr05"]` = **0** data rows. 0/1938 passing FDR<0.05
+is the headline finding (DECISIONS_LOG D2), and the test carries an explicit note
+that the response to a failure is to check the data, never to relax
+`ADJ_P_THRESHOLD` until the file fills up. No dataset count is inlined anywhere;
+a test greps the module source to keep it that way.
+
+### Gap 2 — the caveat was on every figure and no CSV
+
+`CAVEAT_TEXT` is stamped onto 10+ committed figures. The CSVs — which are what
+actually leave the repo — carried nothing. A `#` comment header is unavailable:
+IPA reads the first line as the header, so a comment line breaks the upload.
+
+So the caveat travels in a **sidecar**. `provenance.sidecar(path, **facts)` writes
+`<path>.provenance.json` next to a deliverable carrying `CAVEAT_TEXT` **verbatim**
+(same string as the figures, em dash included — a test asserts the exact
+characters), the git commit + tracked-dirty flag, the file's own sha256, the row
+count, a UTC timestamp, and tool versions (python/pandas/numpy/scipy/matplotlib
+live, plus R 4.6.1 / limma 3.68.4 / imputeLCMD 2.1 / seed 42 read from the
+`_limma_versions.txt` handoff). Emitted for the four deliverables:
+`ipa_input.csv`, `ipa_input_full.csv`, `qc_limma.csv`, `foldchange_all.csv`.
+
+Two details worth recording. Sidecars are named off the **full filename**
+(`ipa_input_full.csv.provenance.json`), not the stem, so the `.csv` and `.txt`
+twins do not overwrite each other and misreport their own digests. And
+`git_dirty` uses `--untracked-files=no`: the sidecars are themselves untracked, so
+counting untracked paths would make every sidecar report `dirty: true` because of
+its own existence.
+
+### Verification (run, not assumed)
+
+- `ipa_input.csv` sha256 **identical** to `git show HEAD:` — the frozen file did
+  not move.
+- **75 new tests** (45 `test_ipa_export.py` + 30 `test_provenance.py`), all
+  passing. Full suite: **381 passed**, 2 deselected.
+- Mutation-checked rather than assumed. Removing `float_precision="round_trip"`
+  from the `ipa_input.csv` read, renaming sidecars off the stem, counting the
+  header as a data row, replacing the em dash in the caveat, and disabling the
+  identifier-cleanliness check each fail tests. One mutation (dropping
+  `round_trip` from the `qc_limma.csv` read) is **not** data-detectable — pandas'
+  default parser happens to reproduce all 715 p-values exactly — so that one is
+  pinned by the source-level check instead of by a test that only appears to
+  cover it.
+- `test_freeze.py::test_tree_matches_manifest` reports `extra` (the 6 new files)
+  and **empty `changed` / `missing`** — no frozen output drifted. `tools/freeze.py
+  --write` was NOT run; the orchestrator re-baselines.
+
+**Counts before → after:** IPA measurement columns 1 → 3 (`log2FC` + `p_value` +
+`adj_p_value`); IPA upload formats 1 → 2 (CSV + tab-delimited TXT); export checks
+1 → 9; CSVs carrying the n=2 caveat 0 → 4.
+
+**Not done / for the orchestrator.** Neither new file is wired into
+`run_pipeline.py`'s `STAGES` table or into `foldchange.py`, both of which are
+owned by other agents this wave. `foldchange.py` cannot host this anyway: it
+writes `ipa_input.csv` *before* calling `run_limma_test`, so at that moment
+`qc_limma.csv` is still the previous run's. The correct wiring is a stage after
+`de`, running `python -m proteomics_de.export.ipa_export`, which builds both full
+files, validates all four IPA outputs and emits all four sidecars in one command.
