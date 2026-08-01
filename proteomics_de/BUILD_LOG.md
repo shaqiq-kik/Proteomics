@@ -225,3 +225,126 @@ the time of writing (a parallel wave — sibling agents may have added more sinc
   `foldchange.py` and `limma_test.py` rather than as standalone modules. Whether
   "inlined" counts as "implemented" is a judgement call; `STATUS.md` reports the
   mapping so a reader can make it themselves.
+
+---
+
+## P2 — Config-driven limma design matrix + file contract (2026-07-31)
+**Wave:** 1 · **Commit:** (this commit) · **Status:** ✅ done
+**Closes:** research1.md Section 6 item 7 (`etl/build_matrix.py`); the §1 file
+contract (`intensity_matrix.tsv` + `design.tsv`); W0's follow-up "wire the frozen
+scripts to `config/design.py`" — for `limma_test.{py,R}` only.
+
+**What changed:**
+
+* **`etl/build_matrix.py` (new).** `build(eligible_df, outdir, sheet=None)` emits
+  `results/de/intensity_matrix.tsv` (`accession, gene, <sample_1..n>`) and
+  `results/de/design.tsv` (`sample, group`), both TAB-separated, both shaped
+  entirely by `config/sample_sheet.tsv`. Called as a *library* from
+  `limma_test.py`, so the existing `foldchange.py -> run_limma_test()` chain is
+  untouched; the `__main__` block is for standalone inspection only.
+* **`limma_test.R`.** Hand-rolled parsing for `--in/--design/--out/--seed/--mode`,
+  alongside the original positional form. With `--design`, the group vector and
+  the required column list are read from the design file instead of the two
+  hardcoded literals (old lines 59 and 95). Both paths now feed one shared
+  `model.matrix(~ factor(group, levels = group_levels))` call, which is what makes
+  the equivalence structural rather than coincidental. No `optparse` — not
+  installed, and not worth a dependency for five flags.
+* **`limma_test.R` error contract.** Added `bug7_abort()`. Previously every failure
+  reached stderr behind R's own banner (`Error: BUG7 R ERROR: ...`,
+  or `Error in parse_flags(args) :`), so the documented "stderr starts with
+  BUG7 R ERROR" contract was not actually true. It is now, and is tested.
+* **`limma_test.py`.** `_CTRL_COLS` / `_TRT_COLS` / `_INTENSITY_COLS` /
+  `_HANDOFF_NAMES` (old lines 52-57) and the four literal intensity columns in the
+  `qc_limma.csv` writer now come from `config.design`. A guard raises if the sheet
+  ever stops ordering controls before treated. Writes `_limma_design.tsv` and
+  passes `--design` to R. `_missing_to_blank` delegates to
+  `build_matrix.intensity_series` so the CSV handoff and the TSV matrix cannot
+  drift apart.
+
+**Why:** the sample sheet drove nothing. The design matrix — the thing that
+decides the sign and meaning of every fold change — was two literals in two
+languages. Adding a biological replicate meant editing R.
+
+**Deliberately NOT changed:** the eBayes mode, and the output column set. Those
+are the next commit, so that the first numeric change is isolated and auditable.
+
+**Files touched:** `limma_test.py`, `limma_test.R`, `etl/build_matrix.py` (new),
+`tests/test_build_matrix.py` (new), `tests/test_limma_r.py` (new),
+`tests/test_limma_contract.py` (new), `BUILD_LOG.md`. `STATUS.md` is regenerated
+output of the gate command, not a hand edit.
+
+**Verification:**
+
+* `.venv/bin/python tools/status.py --check` →
+  `freeze: 90 OK, 3 CHANGED, 0 MISSING`, exit 1. The three CHANGED are
+  `limma_test.R` and `limma_test.py` — the two files this package was
+  commissioned to modify, both of which the manifest freezes as *source* — plus
+  `DECISIONS_LOG.md`, which was **already drifted before this work started**
+  (main's own commit `96d16fd` edited it after W0 froze the manifest at
+  `0c41b20`). Verified at baseline: `92 OK, 1 CHANGED`. See "Open follow-ups".
+* **Every data artifact is byte-identical.** All 19 csv / 14 png / 13 svg /
+  13 json / 3 tsv / 1 txt manifest entries hash to their frozen values, including
+  `results/qc_limma.csv`, `_limma_output.csv`, `_limma_versions.txt` and
+  `_limma_input.csv`. Zero numbers changed, which was the whole constraint.
+* **Control run, before any edit:** re-running the untouched worker reproduced
+  `_limma_output.csv` byte-for-byte, so the environment is stable and later
+  identity results are meaningful (R 4.6.1 / limma 3.68.4 / imputeLCMD 2.1,
+  matching `_limma_versions.txt`).
+* **`--design` equivalence, on the real 1938-protein input:** positional and
+  `--design` invocations both produce sha256
+  `132039e12e802af79112f992df7d4455b8ae96f1b8531ac970b8beda05121146` — equal to
+  each other and to the committed `_limma_output.csv`.
+* `.venv/bin/pytest proteomics_de/tests -q` → **99 passed in 16.9s**.
+
+**Counts before → after.**
+
+| | before | after |
+|---|---|---|
+| Test files / tests | 2 / 51 | 5 / **99** |
+| Frozen data artifacts drifted | 0 | **0** |
+| Frozen *source* files drifted | 0 | 2 (this package's mandate) |
+| Hardcoded design literals in `limma_test.py` | 4 lists + 4 inline column names | 0 |
+| Hardcoded design literals in `limma_test.R` | 2 (`required_cols`, `group`) | 0 when `--design` is passed |
+| Scripts reading `config/` | 0 | 1 (`limma_test.py`, and `etl/build_matrix.py`) |
+| Section-6 item 7 | inlined in `limma_test.py` | implemented at the proposed path |
+
+**Findings worth recording.**
+
+* **The reference level is decided by design-file row order.** `group_levels` is
+  `unique(group)`, so whichever group appears first becomes the denominator.
+  Listing treated first silently inverts every logFC in the study. This is
+  precisely what `config/design.py`'s canonical sort prevents, and it is now
+  pinned by `test_reference_level_follows_design_row_order`. Corollary, also
+  pinned: swapping the labels *and* the row order cancels out and reproduces the
+  committed numbers exactly.
+* **Nothing checked the contrast direction before now.** A sign error would have
+  been invisible to the entire suite and would have inverted every conclusion in
+  the report. `test_contrast_direction_treated_minus_control` asserts it against
+  a planted +3.0 log2 ground truth rather than against the committed numbers.
+* **MinProb's stochasticity is confined to imputation.** Seeds 42 and 7 differ on
+  a matrix *with* NAs and are identical on the same matrix *without* them, so
+  `set.seed` is load-bearing exactly where the code claims.
+
+**Open follow-ups.**
+
+* **The gate cannot reach `0 CHANGED` while the freeze manifest covers source
+  files.** `protected.sha256` freezes 21 `.py`/`.R` files, so *any* sanctioned
+  code change drifts it. `tests/expected/protected.sha256` was outside this
+  package's file scope and was deliberately **not** re-baselined. A human needs to
+  decide whether the manifest should split "outputs" (never change without
+  review) from "source" (changes with every commit), or whether re-baselining the
+  source rows is part of every commit's ritual. The same decision covers
+  `DECISIONS_LOG.md`, which `96d16fd` already drifted.
+* **Contract wart in `design.tsv`.** research1.md's R sketch assumes
+  `design_df$sample` names the matrix columns. It does not: `design.tsv` carries
+  bare sample ids (`31578`) while `intensity_matrix.tsv`'s columns are channels
+  (`Intensity 31578`), so the two contract files join only through the sample
+  sheet. `limma_test.py` therefore hands R a separate `_limma_design.tsv` whose
+  `sample` column holds the handoff names (`ctrl_31578`). Fixing this properly
+  means changing `design.write_design_tsv`, which is W0's file, not this package's.
+* Nothing reads `results/de/*.tsv` yet — the R worker is still fed by the older
+  `_limma_input.csv`. Migrating the handoff onto the contract files is a separate,
+  numerically-neutral step.
+* `tools/status.py`'s Section-6 table still maps item 7 to `limma_test.py`; it is
+  a static table inside `tools/status.py` (out of scope here) and now understates
+  what is on disk.

@@ -31,6 +31,7 @@ result files — it never proceeds on empty or partial p-values.
 
 import os
 import subprocess
+import sys
 
 import numpy as np
 import pandas as pd
@@ -41,20 +42,43 @@ R_SEED          = 42            # passed to R so MinProb imputation is reproduci
 LIMMA_INPUT     = "_limma_input.csv"
 LIMMA_OUTPUT    = "_limma_output.csv"
 LIMMA_VERSIONS  = "_limma_versions.txt"
+LIMMA_DESIGN    = "_limma_design.tsv"   # design handed to R via --design
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _ROOT = os.path.dirname(_HERE)
 _R_SCRIPT = "limma_test.R"  # resolved relative to cwd=_HERE in the subprocess call
 
+if _ROOT not in sys.path:  # importable however the caller was launched
+    sys.path.insert(0, _ROOT)
+
+from proteomics_de.config import design          # noqa: E402
+from proteomics_de.etl import build_matrix       # noqa: E402
+
 DEFAULT_RESULTS_DIR = os.path.join(_HERE, "results")
 DEFAULT_FOLDCHANGE_CSV = os.path.join(DEFAULT_RESULTS_DIR, "foldchange_all.csv")
 
-# Raw intensity columns -> fixed handoff order: control, control, treated, treated.
-_CTRL_COLS = ["Intensity 31578", "Intensity 31580"]
-_TRT_COLS = ["Intensity 31579", "Intensity 31581"]
-_INTENSITY_COLS = _CTRL_COLS + _TRT_COLS
-_HANDOFF_NAMES = ["ctrl_31578", "ctrl_31580", "trt_31579", "trt_31581"]
+# The design, read from config/sample_sheet.tsv rather than hardcoded here. The
+# canonical order the sheet imposes -- control group first, treated second,
+# ascending replicate within a group -- IS the handoff order, and coef 2 of the
+# R design matrix is "treated - control" only because of it.
+_CTRL_COLS = design.control_columns()
+_TRT_COLS = design.treated_columns()
+_INTENSITY_COLS = design.sample_columns()
+_HANDOFF_NAMES = design.handoff_names()
 _HANDOFF_COLS = ["id", "gene"] + _HANDOFF_NAMES
+_GROUP_VECTOR = design.group_vector()
+
+# Guard the assumption the rest of this module makes: that the canonical sample
+# order really is "every control, then every treated". A sheet with interleaved
+# groups would still load, but would silently mis-order the handoff.
+if _INTENSITY_COLS != _CTRL_COLS + _TRT_COLS:
+    raise ValueError(
+        "BUG7: sample_sheet.tsv does not order controls before treated.\n"
+        f"  sample_columns()            : {_INTENSITY_COLS}\n"
+        f"  control_columns() + treated : {_CTRL_COLS + _TRT_COLS}\n"
+        "limma_test assumes a control-then-treated layout; see "
+        "proteomics_de/config/design.py."
+    )
 
 
 def _missing_to_blank(series):
@@ -62,10 +86,24 @@ def _missing_to_blank(series):
 
     NaN is written by ``to_csv`` as an empty cell (its default ``na_rep``), which
     R's ``read.csv`` reads back as ``NA`` so MinProb fills it. This is the single
-    missing-value rule for the handoff.
+    missing-value rule for the handoff -- shared with ``intensity_matrix.tsv``
+    via ``etl.build_matrix`` so the two cannot drift apart.
     """
-    num = pd.to_numeric(series, errors="coerce")
-    return num.where(num > 0)  # keep > 0; everything else (<=0, NaN) -> NaN
+    return build_matrix.intensity_series(series)
+
+
+def _write_design_handoff(path):
+    """Write the ``--design`` TSV the R worker reads (columns: sample, group).
+
+    Distinct from the ``results/de/design.tsv`` contract file: R needs `sample`
+    to *name the intensity columns of the input CSV*, so this one carries the
+    handoff names (``ctrl_31578``), not the bare sample ids (``31578``). See the
+    "Known contract wart" note in ``etl/build_matrix``.
+    """
+    pd.DataFrame({"sample": _HANDOFF_NAMES, "group": _GROUP_VECTOR}).to_csv(
+        path, sep="\t", index=False, encoding="utf-8", lineterminator="\n"
+    )
+    return path
 
 
 def run_limma_test(foldchange_csv=DEFAULT_FOLDCHANGE_CSV, outdir=DEFAULT_RESULTS_DIR,
@@ -112,6 +150,7 @@ def run_limma_test(foldchange_csv=DEFAULT_FOLDCHANGE_CSV, outdir=DEFAULT_RESULTS
           f"(both-group {len(fc)} - ON_OFF {n_onoff})")
 
     input_path = os.path.join(_HERE, LIMMA_INPUT)
+    design_path = os.path.join(_HERE, LIMMA_DESIGN)
     output_path = os.path.join(_HERE, output_name)
     # Versions filename is derived from the output name (mirrors the R worker), so a
     # non-default output writes its own versions file rather than the committed one.
@@ -139,6 +178,15 @@ def run_limma_test(foldchange_csv=DEFAULT_FOLDCHANGE_CSV, outdir=DEFAULT_RESULTS
             inp[handoff_name] = _missing_to_blank(eligible[raw_col])
         inp[_HANDOFF_COLS].to_csv(input_path, index=False, encoding="utf-8")
 
+    # 2b) The design the R worker reads (--design). Derived from the sample sheet,
+    #     not from the data, so it is written even when the input is reused.
+    _write_design_handoff(design_path)
+
+    # 2c) research1.md's Section 1 file contract: results/de/intensity_matrix.tsv
+    #     + results/de/design.tsv. Additive and replicate-count-agnostic; nothing
+    #     downstream reads them yet, so they cannot perturb the frozen numbers.
+    build_matrix.build(eligible, outdir)
+
     # Remove any stale worker artifacts so a leftover from a previous run can never
     # be mistaken for a fresh success (critical for the fail-loud guarantee).
     for stale in (output_path, versions_path):
@@ -149,7 +197,10 @@ def run_limma_test(foldchange_csv=DEFAULT_FOLDCHANGE_CSV, outdir=DEFAULT_RESULTS
     #    and the intermediates land in proteomics_de/.
     try:
         result = subprocess.run(
-            ["Rscript", _R_SCRIPT, LIMMA_INPUT, output_name, str(R_SEED), ebayes_mode],
+            ["Rscript", _R_SCRIPT,
+             "--in", LIMMA_INPUT, "--out", output_name,
+             "--seed", str(R_SEED), "--mode", ebayes_mode,
+             "--design", LIMMA_DESIGN],
             capture_output=True, text=True, cwd=_HERE,
         )
     except FileNotFoundError as exc:
@@ -193,14 +244,16 @@ def run_limma_test(foldchange_csv=DEFAULT_FOLDCHANGE_CSV, outdir=DEFAULT_RESULTS
     os.makedirs(outdir, exist_ok=True)
 
     # 6a) qc_limma.csv — full audit of every eligible protein.
-    qc = pd.DataFrame(
+    #      The raw intensity columns are echoed in canonical sample-sheet order
+    #      (dicts preserve insertion order, so the CSV layout is unchanged).
+    qc_cols = {
+        "id": merged["UniProt Accession Number"],
+        "gene": merged["Gene names"],
+    }
+    for raw_col in _INTENSITY_COLS:
+        qc_cols[raw_col] = merged[raw_col]
+    qc_cols.update(
         {
-            "id": merged["UniProt Accession Number"],
-            "gene": merged["Gene names"],
-            "Intensity 31578": merged["Intensity 31578"],
-            "Intensity 31580": merged["Intensity 31580"],
-            "Intensity 31579": merged["Intensity 31579"],
-            "Intensity 31581": merged["Intensity 31581"],
             "limma_log2FC": merged["limma_log2FC"].round(6),
             "p_value": merged["p_value"],
             "adj_p_value": merged["adj_p_value"],
@@ -208,6 +261,7 @@ def run_limma_test(foldchange_csv=DEFAULT_FOLDCHANGE_CSV, outdir=DEFAULT_RESULTS
             "regulated": merged["regulated"],
         }
     )
+    qc = pd.DataFrame(qc_cols)
     qc_path = os.path.join(outdir, qc_filename)
     qc.to_csv(qc_path, index=False, encoding="utf-8")
 
