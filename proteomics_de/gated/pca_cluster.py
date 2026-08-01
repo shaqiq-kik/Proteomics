@@ -9,8 +9,11 @@ existing report manifests are never touched).
 -----------------------------------------------------------------------------
 SCOPE -- read this before trusting anything this script prints
 -----------------------------------------------------------------------------
-This is a SILAC design with n=2 technical replicates per condition, 4 samples
-total. Per research1.md SS5 ("Limitations as Engineering Constraints"):
+The design is read from config/sample_sheet.tsv via config.design -- nothing
+about the sample count is hardcoded here. For the committed sheet that is a
+SILAC design with n=2 technical replicates per condition, 4 samples total, and
+the paragraphs below describe that case. Per research1.md SS5 ("Limitations as
+Engineering Constraints"):
 
   - PCA on 4 samples: the sample covariance matrix is rank-deficient
     (rank <= n-1 = 3); only 3 PCs exist; eigenvalues are biased (the first
@@ -30,14 +33,31 @@ read as evidence of biological structure or reproducible clusters.
 -----------------------------------------------------------------------------
 Forward-path dispatcher
 -----------------------------------------------------------------------------
-`REGISTRY` below declares, for every candidate analysis, the sample-count
-gates from research1.md SS5 / SS "FORWARD-PATH SECTION". `dispatch()` compares
-those gates against the CURRENT sample sheet (4 samples, 2 per group) and
-assigns a status (QC_ONLY or SKIP) per analysis; the two QC_ONLY analyses
-(pca, hierarchical_clustering) are then actually executed below, tagged
-accordingly. When the sample sheet grows (config/sample_sheet.tsv in the
-forward-path design), only N_SAMPLES / N_REPLICATES_PER_GROUP need to change
-for the gates to flip automatically -- no other code changes required.
+`REGISTRY` declares, for every candidate analysis, the sample-count gates from
+research1.md SS5 / SS "FORWARD-PATH SECTION". `evaluate_registry()` is a pure
+function of (registry, n_samples, n_replicates_per_group) and assigns each
+analysis one of three statuses:
+
+  SKIP     -- below the run gate; the analysis does not execute at all.
+  QC_ONLY  -- runs, but below the trustworthy gate; output is captioned as a
+              sanity check and is NOT interpretable as biology.
+  RUN      -- meets the trustworthy gate; output is interpretable on its own
+              terms.
+
+`dispatch()` is a thin wrapper that evaluates `REGISTRY` against the CURRENT
+sample sheet. N_SAMPLES / N_GROUPS / N_REPLICATES_PER_GROUP are read from
+config/sample_sheet.tsv through config.design, so appending replicate rows to
+that TSV is sufficient to flip a gate -- no edit to this file is required.
+`main()` then executes exactly the analyses whose status is RUN or QC_ONLY.
+
+Scope of "switches itself on", stated precisely so this docstring does not
+overclaim: only `pca` and `hierarchical_clustering` are IMPLEMENTED here, and
+those two do switch themselves on and off from the sheet. The other four
+registry entries (wgcna, umap_tsne, mixomics_splsda, vae_gnn) have no
+implementation yet -- growing the sheet moves them out of SKIP in skip_log.csv,
+which is the signal to go build them, but it does not conjure the analysis.
+`tests/test_gating.py` exercises the dispatcher at n=4, n=6 and n=20 so the
+flip is verified rather than assumed.
 """
 
 import sys
@@ -57,9 +77,24 @@ import matplotlib.pyplot as plt
 # ----------------------------------------------------------------------------
 GATED_DIR = Path(__file__).resolve().parent
 PROTEOMICS_DE_DIR = GATED_DIR.parent
+REPO_ROOT = PROTEOMICS_DE_DIR.parent
 VIZ_DIR = PROTEOMICS_DE_DIR / "viz"
 sys.path.insert(0, str(VIZ_DIR))
 import style  # noqa: E402  (palette, apply_style(), save_fig, CHROME, etc.)
+
+# ----------------------------------------------------------------------------
+# config package bootstrap (same pattern as viz/style.py)
+# ----------------------------------------------------------------------------
+# This script is run as a file path (`python proteomics_de/gated/pca_cluster.py`),
+# so sys.path[0] is *this* directory and the repo root is not importable. Try the
+# normal import first, and only fall back to extending sys.path. The path comes
+# from `__file__`, never from the cwd.
+try:  # pragma: no cover - exercised by both branches across entry points
+    from proteomics_de.config import design as design_cfg  # noqa: E402
+except ImportError:  # pragma: no cover
+    if str(REPO_ROOT) not in sys.path:
+        sys.path.append(str(REPO_ROOT))
+    from proteomics_de.config import design as design_cfg  # noqa: E402
 
 RESULTS_DIR = style.RESULTS_DIR
 FIGURES_DIR = style.FIGURES_DIR
@@ -95,145 +130,226 @@ def record_gated_manifest(entries):
 
 
 # -----------------------------------------------------------------------
-# Current sample sheet (hardcoded today; forward-path = read from
-# config/sample_sheet.tsv once it exists -- see research1.md SS"FORWARD-PATH").
+# The current design, read from config/sample_sheet.tsv (config.design resolves
+# the sheet from its own __file__, never from the cwd). For the committed sheet
+# these are 4 / 2 / 2. Adding biological replicates means appending rows to that
+# TSV; nothing in this file needs editing for the gates below to re-evaluate.
 # -----------------------------------------------------------------------
-N_SAMPLES = 4
-N_GROUPS = 2
-N_REPLICATES_PER_GROUP = N_SAMPLES // N_GROUPS  # 2
+N_SAMPLES = design_cfg.n_samples()
+N_GROUPS = design_cfg.n_groups()
+N_REPLICATES_PER_GROUP = design_cfg.replicates_per_group()
 
 # Gate for "trustworthy" (not just runnable) PCA/clustering, per research1.md SS5.
 TRUSTWORTHY_MIN_SAMPLES = 6
 TRUSTWORTHY_MIN_REPLICATES_PER_GROUP = 3
 
+# Statuses emitted by evaluate_registry(), in increasing order of confidence.
+SKIP = "SKIP"          # below the run gate -- the analysis does not execute
+QC_ONLY = "QC_ONLY"    # runs, but below the trustworthy gate -- not interpretable
+RUN = "RUN"            # meets the trustworthy gate -- interpretable
+STATUSES = (SKIP, QC_ONLY, RUN)
+
+#: Statuses for which main() actually executes the analysis.
+EXECUTING_STATUSES = (QC_ONLY, RUN)
+
 # -----------------------------------------------------------------------
 # Registry: every candidate analysis declares min_samples and
-# min_replicates_per_group. This IS the forward-path mechanism: grow
-# N_SAMPLES / N_REPLICATES_PER_GROUP above and status flips automatically,
-# no code changes required elsewhere.
+# min_replicates_per_group. This IS the forward-path mechanism: grow the
+# sample sheet and the statuses re-evaluate, with no code change here.
+#
+# The `reason_*` fields are FORMAT TEMPLATES, not finished sentences. They are
+# rendered by evaluate_registry() against the n actually being evaluated, so a
+# reason can never go stale by claiming "have 4" at n=20. Placeholders resolve
+# against the entry's own keys plus `n_samples`, `n_replicates_per_group` and
+# `rank` (= n_samples - 1).
 # -----------------------------------------------------------------------
-REGISTRY = [
-    dict(
-        analysis="pca",
-        min_samples_to_run=4,
-        min_replicates_per_group_to_run=2,
-        trustworthy_min_samples=TRUSTWORTHY_MIN_SAMPLES,
-        trustworthy_min_replicates_per_group=TRUSTWORTHY_MIN_REPLICATES_PER_GROUP,
-        reason_qc_only=(
-            "n=4 < trustworthy gate n>=6 (research1.md SS5): the sample "
-            "covariance matrix is rank-deficient (rank<=n-1=3, exactly 3 PCs "
-            "exist by construction), eigenvalues are biased, and PC1 can be "
-            "driven by a single sample. Runs for QC purposes only (e.g. do "
-            "technical replicate pairs land near each other); NOT evidence "
-            "of biological structure."
-        ),
-        reason_skip=None,
-    ),
-    dict(
-        analysis="hierarchical_clustering",
-        min_samples_to_run=4,
-        min_replicates_per_group_to_run=2,
-        trustworthy_min_samples=TRUSTWORTHY_MIN_SAMPLES,
-        trustworthy_min_replicates_per_group=TRUSTWORTHY_MIN_REPLICATES_PER_GROUP,
-        reason_qc_only=(
-            "n=4 < trustworthy gate n>=6 (research1.md SS5): hierarchical "
-            "clustering of 4 samples has no bootstrap support possible -- "
-            "dendrogram topology is not statistically stable. Runs for QC "
-            "purposes only; NOT a claim of reproducible sample clusters."
-        ),
-        reason_skip=None,
-    ),
-    dict(
-        analysis="wgcna",
-        min_samples_to_run=15,
-        min_replicates_per_group_to_run=8,
-        trustworthy_min_samples=20,
-        trustworthy_min_replicates_per_group=10,
-        reason_qc_only=None,
-        reason_skip=(
-            "WGCNA co-expression modules require >=15 samples (ideally "
-            ">=20) for stable network topology; have 4."
-        ),
-    ),
-    dict(
-        analysis="umap_tsne",
-        min_samples_to_run=24,
-        min_replicates_per_group_to_run=12,
-        trustworthy_min_samples=24,
-        trustworthy_min_replicates_per_group=12,
-        reason_qc_only=None,
-        reason_skip=(
-            "UMAP/t-SNE require 'dozens+' samples for a stable "
-            "low-dimensional embedding (approximated here as >=24); have 4."
-        ),
-    ),
-    dict(
-        analysis="mixomics_splsda",
-        min_samples_to_run=10 * N_GROUPS,
-        min_replicates_per_group_to_run=10,
-        trustworthy_min_samples=10 * N_GROUPS,
-        trustworthy_min_replicates_per_group=10,
-        reason_qc_only=None,
-        reason_skip=(
-            "mixOmics sPLS-DA requires samples >> classes (approximated "
-            f"here as >=10x the {N_GROUPS} classes = {10 * N_GROUPS}); have 4."
-        ),
-    ),
-    dict(
-        analysis="vae_gnn",
-        min_samples_to_run=1000,
-        min_replicates_per_group_to_run=500,
-        trustworthy_min_samples=1000,
-        trustworthy_min_replicates_per_group=500,
-        reason_qc_only=None,
-        reason_skip=(
-            "VAE/GNN architectures require thousands of samples to train "
-            "without overfitting (approximated here as >=1000); have 4."
-        ),
-    ),
-]
+#: sPLS-DA wants samples >> classes; approximated as this many per class.
+MIXOMICS_MIN_SAMPLES_PER_CLASS = 10
+
+REASON_MEETS_GATE = "n_samples/replicates meet the trustworthy gate."
 
 
-def dispatch():
-    """Compare REGISTRY gates against the current sample sheet (N_SAMPLES,
-    N_REPLICATES_PER_GROUP) and assign each analysis a status. Returns a
-    list of row dicts with the skip_log.csv schema: analysis, min_samples,
-    have_samples, status, reason.
+def build_registry(n_groups=None):
+    """The candidate-analysis registry, as a list of gate declarations.
+
+    Only `n_groups` is baked in (sPLS-DA's gate scales with the number of
+    classes); the sample-count gates are pure research1.md thresholds. Kept a
+    function rather than a literal so tests can build a registry for a design
+    with a different number of groups.
+    """
+    if n_groups is None:
+        n_groups = N_GROUPS
+    mixomics_min = MIXOMICS_MIN_SAMPLES_PER_CLASS * n_groups
+    return [
+        dict(
+            analysis="pca",
+            min_samples_to_run=4,
+            min_replicates_per_group_to_run=2,
+            trustworthy_min_samples=TRUSTWORTHY_MIN_SAMPLES,
+            trustworthy_min_replicates_per_group=TRUSTWORTHY_MIN_REPLICATES_PER_GROUP,
+            reason_qc_only=(
+                "n={n_samples} < trustworthy gate n>={trustworthy_min_samples} "
+                "(research1.md SS5): the sample "
+                "covariance matrix is rank-deficient (rank<=n-1={rank}, exactly {rank} PCs "
+                "exist by construction), eigenvalues are biased, and PC1 can be "
+                "driven by a single sample. Runs for QC purposes only (e.g. do "
+                "technical replicate pairs land near each other); NOT evidence "
+                "of biological structure."
+            ),
+            reason_skip=None,
+        ),
+        dict(
+            analysis="hierarchical_clustering",
+            min_samples_to_run=4,
+            min_replicates_per_group_to_run=2,
+            trustworthy_min_samples=TRUSTWORTHY_MIN_SAMPLES,
+            trustworthy_min_replicates_per_group=TRUSTWORTHY_MIN_REPLICATES_PER_GROUP,
+            reason_qc_only=(
+                "n={n_samples} < trustworthy gate n>={trustworthy_min_samples} "
+                "(research1.md SS5): hierarchical "
+                "clustering of {n_samples} samples has no bootstrap support possible -- "
+                "dendrogram topology is not statistically stable. Runs for QC "
+                "purposes only; NOT a claim of reproducible sample clusters."
+            ),
+            reason_skip=None,
+        ),
+        dict(
+            analysis="wgcna",
+            min_samples_to_run=15,
+            min_replicates_per_group_to_run=8,
+            trustworthy_min_samples=20,
+            trustworthy_min_replicates_per_group=10,
+            reason_qc_only=None,
+            reason_skip=(
+                "WGCNA co-expression modules require >={min_samples_to_run} samples (ideally "
+                ">={trustworthy_min_samples}) for stable network topology; have {n_samples}."
+            ),
+        ),
+        dict(
+            analysis="umap_tsne",
+            min_samples_to_run=24,
+            min_replicates_per_group_to_run=12,
+            trustworthy_min_samples=24,
+            trustworthy_min_replicates_per_group=12,
+            reason_qc_only=None,
+            reason_skip=(
+                "UMAP/t-SNE require 'dozens+' samples for a stable "
+                "low-dimensional embedding (approximated here as "
+                ">={min_samples_to_run}); have {n_samples}."
+            ),
+        ),
+        dict(
+            analysis="mixomics_splsda",
+            min_samples_to_run=mixomics_min,
+            min_replicates_per_group_to_run=MIXOMICS_MIN_SAMPLES_PER_CLASS,
+            trustworthy_min_samples=mixomics_min,
+            trustworthy_min_replicates_per_group=MIXOMICS_MIN_SAMPLES_PER_CLASS,
+            n_groups=n_groups,
+            min_samples_per_class=MIXOMICS_MIN_SAMPLES_PER_CLASS,
+            reason_qc_only=None,
+            reason_skip=(
+                "mixOmics sPLS-DA requires samples >> classes (approximated "
+                "here as >={min_samples_per_class}x the {n_groups} classes = "
+                "{min_samples_to_run}); have {n_samples}."
+            ),
+        ),
+        dict(
+            analysis="vae_gnn",
+            min_samples_to_run=1000,
+            min_replicates_per_group_to_run=500,
+            trustworthy_min_samples=1000,
+            trustworthy_min_replicates_per_group=500,
+            reason_qc_only=None,
+            reason_skip=(
+                "VAE/GNN architectures require thousands of samples to train "
+                "without overfitting (approximated here as "
+                ">={min_samples_to_run}); have {n_samples}."
+            ),
+        ),
+    ]
+
+
+#: The registry for the committed design. `dispatch()` evaluates this one.
+REGISTRY = build_registry()
+
+
+def _render_reason(template, entry, n_samples, n_replicates_per_group):
+    """Fill a registry reason template. Never returns an empty reason.
+
+    A registry entry may legitimately have no template for a status it was
+    never expected to reach (e.g. `pca` has no `reason_skip`, because at any
+    n>=4 it runs). Rather than emit a blank cell in skip_log.csv, fall back to
+    a reason generated from the entry's own gates -- so every row of the log
+    always says why, at any sample count.
+    """
+    context = dict(
+        entry,
+        n_samples=n_samples,
+        n_replicates_per_group=n_replicates_per_group,
+        rank=max(n_samples - 1, 0),
+    )
+    if template:
+        return template.format(**context)
+    return (
+        "{analysis} requires >={min_samples_to_run} samples and "
+        ">={min_replicates_per_group_to_run} replicates per group; have "
+        "{n_samples} samples ({n_replicates_per_group} per group)."
+    ).format(**context)
+
+
+def evaluate_registry(registry, n_samples, n_replicates_per_group):
+    """Assign every registry entry a status at the given sample counts.
+
+    Pure function -- no I/O, no module state. This is what makes the
+    forward-path claim testable: `tests/test_gating.py` calls it at n=6 and
+    n=20 to prove the gates really do flip, which cannot be observed from the
+    committed n=4 design alone.
+
+    Returns a list of row dicts with the skip_log.csv schema: analysis,
+    min_samples, have_samples, status, reason.
 
     `min_samples` in the emitted row is the gate that is actually binding
     for that row's status: the trustworthy-gate for QC_ONLY rows (the
     number that, once met, would upgrade the analysis out of QC-only), and
     the run-gate for SKIP rows (the number that must be met before the
-    analysis executes at all).
+    analysis executes at all). For RUN rows both gates are already met, so
+    the trustworthy gate is reported as the one that was cleared last.
     """
     rows = []
-    for entry in REGISTRY:
+    for entry in registry:
         can_run = (
-            N_SAMPLES >= entry["min_samples_to_run"]
-            and N_REPLICATES_PER_GROUP >= entry["min_replicates_per_group_to_run"]
+            n_samples >= entry["min_samples_to_run"]
+            and n_replicates_per_group >= entry["min_replicates_per_group_to_run"]
         )
         if not can_run:
-            status = "SKIP"
+            status = SKIP
             min_samples = entry["min_samples_to_run"]
-            reason = entry["reason_skip"]
+            template = entry.get("reason_skip")
         else:
             trustworthy = (
-                N_SAMPLES >= entry["trustworthy_min_samples"]
-                and N_REPLICATES_PER_GROUP >= entry["trustworthy_min_replicates_per_group"]
+                n_samples >= entry["trustworthy_min_samples"]
+                and n_replicates_per_group >= entry["trustworthy_min_replicates_per_group"]
             )
-            status = "TRUSTWORTHY" if trustworthy else "QC_ONLY"
+            status = RUN if trustworthy else QC_ONLY
             min_samples = entry["trustworthy_min_samples"]
-            reason = entry["reason_qc_only"] if not trustworthy else (
-                "n_samples/replicates meet the trustworthy gate."
-            )
+            template = REASON_MEETS_GATE if trustworthy else entry.get("reason_qc_only")
         rows.append(dict(
             analysis=entry["analysis"],
             min_samples=min_samples,
-            have_samples=N_SAMPLES,
+            have_samples=n_samples,
             status=status,
-            reason=reason,
+            reason=_render_reason(template, entry, n_samples, n_replicates_per_group),
         ))
     return rows
+
+
+def dispatch():
+    """Evaluate REGISTRY against the current sample sheet.
+
+    Thin wrapper -- all the logic lives in :func:`evaluate_registry`; the only
+    thing this adds is the design read from config/sample_sheet.tsv.
+    """
+    return evaluate_registry(REGISTRY, N_SAMPLES, N_REPLICATES_PER_GROUP)
 
 
 def write_skip_log(rows):
@@ -252,9 +368,9 @@ def load_complete_matrix():
     """Build the log2 sample x protein matrix from qc_limma.csv.
 
     Zero/absent intensities are treated as missing (style.safe_log2). Only
-    proteins with all 4 samples present ("complete") are used for PCA /
+    proteins present in ALL samples ("complete") are used for PCA /
     clustering, per the task spec -- drop rows with any missing among the
-    4 and report how many were used.
+    N_SAMPLES columns and report how many were used.
     """
     df = pd.read_csv(RESULTS_DIR / "qc_limma.csv")
     n_total = len(df)
@@ -269,7 +385,8 @@ def load_complete_matrix():
     log2_complete = log2[complete_mask]
 
     print(f"[load] qc_limma.csv: {n_total} both-condition proteins")
-    print(f"[load] complete (4/4 intensities present): {n_complete} / {n_total} used for PCA/clustering")
+    print(f"[load] complete ({N_SAMPLES}/{N_SAMPLES} intensities present): "
+          f"{n_complete} / {n_total} used for PCA/clustering")
 
     return df, log2_complete, n_total, n_complete
 
@@ -282,26 +399,29 @@ LABEL_CONDITION = {style.SAMPLE_LABELS[c]: style.SAMPLE_CONDITION[c] for c in st
 # PCA
 # -----------------------------------------------------------------------
 def run_pca(log2_complete, n_complete, n_total):
-    """PCA on the 4 samples.
+    """PCA on the samples named by the sample sheet.
 
-    Design choice (documented): samples are the 4 observations, proteins
-    are the features. Each protein is standardized (z-scored across the 4
+    Design choice (documented): samples are the observations, proteins are
+    the features. Each protein is standardized (z-scored across the
     samples, zero mean / unit variance) before PCA -- this is the
     correlation-based variant of PCA rather than raw-covariance PCA, and is
     the standard choice for expression data where proteins span several
     orders of magnitude in absolute intensity; without it, PCA would be
     dominated by the handful of highest-abundance proteins rather than by
     which proteins actually vary in a coordinated way across samples. This
-    choice does not fix the fundamental n=4 degeneracy from research1.md
-    SS5 (rank<=3, biased eigenvalues) -- it only controls for scale.
+    choice does not fix the small-n degeneracy from research1.md SS5
+    (rank<=n-1, biased eigenvalues) -- it only controls for scale.
     """
-    X = log2_complete.T  # 4 samples (rows) x n_complete proteins (columns)
+    X = log2_complete.T  # n_samples (rows) x n_complete proteins (columns)
     X = X.loc[SAMPLE_ORDER]  # fixed sample order
 
-    scaler = StandardScaler()  # per-protein (per-column) z-score across the 4 samples
+    scaler = StandardScaler()  # per-protein (per-column) z-score across samples
     X_scaled = scaler.fit_transform(X.values)
 
-    n_components = min(3, X_scaled.shape[0] - 1)  # rank <= n_samples - 1 = 3
+    # Centering costs one degree of freedom, so the sample covariance matrix has
+    # rank <= n_samples - 1: that many PCs exist, and no more (research1.md:246).
+    # For the committed 4-sample sheet this is exactly 3.
+    n_components = min(X_scaled.shape[0] - 1, X_scaled.shape[1])
     pca = PCA(n_components=n_components, random_state=SEED)
     coords = pca.fit_transform(X_scaled)
     variance_ratio = pca.explained_variance_ratio_
@@ -328,13 +448,31 @@ def run_pca(log2_complete, n_complete, n_total):
     print(variance_df.to_string(index=False))
     print(f"[pca] cumulative variance explained by {n_components} PCs: {variance_ratio.sum():.4f} "
           f"(rank<=n-1={X_scaled.shape[0]-1} -> {'100%' if abs(variance_ratio.sum()-1.0)<1e-6 else f'{variance_ratio.sum():.1%}'} "
-          f"by construction, direct evidence of the n=4 degeneracy)")
+          f"by construction, direct evidence of the n={N_SAMPLES} degeneracy)")
 
     return coords_df, variance_df, pc_cols
 
 
-def fig_pca(coords_df, variance_df, pc_cols, n_complete, n_total):
+def gate_banner(status, qc_only_text):
+    """(text, facecolor) for a figure's gate banner.
+
+    QC_ONLY figures carry the analysis-specific degeneracy warning; RUN figures
+    say so plainly instead of shouting a caveat that no longer applies. Keeping
+    this in one place means the banner can never contradict skip_log.csv.
+    """
+    if status == RUN:
+        return (
+            f"n={N_SAMPLES} meets the trustworthy gate "
+            f"(n≥{TRUSTWORTHY_MIN_SAMPLES} samples, "
+            f"≥{TRUSTWORTHY_MIN_REPLICATES_PER_GROUP} per group; research1.md §5).",
+            style.STATUS["good"],
+        )
+    return qc_only_text, style.STATUS["critical"]
+
+
+def fig_pca(coords_df, variance_df, pc_cols, n_complete, n_total, status=QC_ONLY):
     pct = {row["PC"]: row["variance_explained"] * 100 for _, row in variance_df.iterrows()}
+    rank = len(pc_cols)
 
     fig, ax = plt.subplots(figsize=(7.6, 6.4))
     for _, row in coords_df.iterrows():
@@ -356,7 +494,7 @@ def fig_pca(coords_df, variance_df, pc_cols, n_complete, n_total):
     ax.axvline(0, color=style.CHROME["gridline"], lw=0.8, zorder=1)
     ax.set_xlabel(f"PC1 ({pct['PC1']:.1f}% variance)")
     ax.set_ylabel(f"PC2 ({pct['PC2']:.1f}% variance)")
-    ax.set_title("PCA of 4 samples")
+    ax.set_title(f"PCA of {N_SAMPLES} samples")
 
     handles = [
         plt.Line2D([0], [0], marker="o", linestyle="", markersize=10,
@@ -368,19 +506,23 @@ def fig_pca(coords_df, variance_df, pc_cols, n_complete, n_total):
     ]
     ax.legend(handles, ["Control", "Treated"], loc="best", title="Condition")
 
+    banner_text, banner_color = gate_banner(
+        status,
+        f"QC-ONLY — n={N_SAMPLES} is statistically degenerate for PCA: rank≤n−1={rank}, "
+        f"only {rank} PCs exist, eigenvalues biased, PC1 can be driven by 1 sample. "
+        f"NOT evidence of biological structure.",
+    )
     fig.text(
         0.5, 0.975,
-        f"n_proteins_used = {n_complete:,} of {n_total:,} (complete across all 4 samples); "
-        f"trustworthy gate = n≥6 samples (research1.md §5)",
+        f"n_proteins_used = {n_complete:,} of {n_total:,} (complete across all {N_SAMPLES} samples); "
+        f"trustworthy gate = n≥{TRUSTWORTHY_MIN_SAMPLES} samples (research1.md §5)",
         ha="center", va="top", fontsize=8.8, color=style.CHROME["ink_secondary"],
     )
     fig.text(
         0.5, 0.925,
-        "QC-ONLY — n=4 is statistically degenerate for PCA: rank≤n−1=3, "
-        "only 3 PCs exist, eigenvalues biased, PC1 can be driven by 1 sample. "
-        "NOT evidence of biological structure.",
+        banner_text,
         ha="center", va="top", fontsize=8.3, color="white", wrap=True,
-        bbox=dict(boxstyle="round,pad=0.5", facecolor=style.STATUS["critical"], edgecolor="none"),
+        bbox=dict(boxstyle="round,pad=0.5", facecolor=banner_color, edgecolor="none"),
     )
     style.add_caveat(fig, y=-0.02)
     fig.tight_layout(rect=(0, 0.02, 1, 0.83))
@@ -393,17 +535,17 @@ def fig_pca(coords_df, variance_df, pc_cols, n_complete, n_total):
 # Hierarchical clustering
 # -----------------------------------------------------------------------
 def run_clustering(log2_complete, n_complete):
-    """Hierarchical clustering of the 4 samples.
+    """Hierarchical clustering of the samples named by the sample sheet.
 
     Distance: 1 - Pearson correlation between samples' log2 intensity
     vectors (scipy pdist metric='correlation'), computed on the same
     complete-protein matrix used for PCA.
     Linkage: average (UPGMA) -- the standard choice for correlation
     distances; Ward's method assumes (squared) Euclidean distance and is
-    not appropriate here, and single linkage is prone to chaining on only
-    4 observations.
+    not appropriate here, and single linkage is prone to chaining at the
+    handful of observations this design provides.
     """
-    X = log2_complete.T.loc[SAMPLE_ORDER]  # 4 samples x n_complete proteins
+    X = log2_complete.T.loc[SAMPLE_ORDER]  # n_samples x n_complete proteins
     dist_condensed = pdist(X.values, metric="correlation")  # 1 - Pearson r
     dist_square = squareform(dist_condensed)
     dist_df = pd.DataFrame(dist_square, index=SAMPLE_ORDER, columns=SAMPLE_ORDER)
@@ -417,7 +559,7 @@ def run_clustering(log2_complete, n_complete):
     return Z, dist_df
 
 
-def fig_dendrogram(Z, dist_df, n_complete):
+def fig_dendrogram(Z, dist_df, n_complete, status=QC_ONLY):
     fig, ax = plt.subplots(figsize=(7.2, 5.8))
     ddata = dendrogram(
         Z, labels=SAMPLE_ORDER, ax=ax,
@@ -432,21 +574,25 @@ def fig_dendrogram(Z, dist_df, n_complete):
     style.recede_spines(ax)
     ax.set_ylabel("1 − Pearson correlation distance")
     ax.set_xlabel("")
-    ax.set_title("Hierarchical clustering of 4 samples (average linkage)")
+    ax.set_title(f"Hierarchical clustering of {N_SAMPLES} samples (average linkage)")
 
+    banner_text, banner_color = gate_banner(
+        status,
+        f"QC-ONLY — no bootstrap support is possible at n={N_SAMPLES}; dendrogram "
+        f"topology is not statistically stable. NOT a claim of reproducible "
+        f"sample clusters.",
+    )
     fig.text(
         0.5, 0.975,
         f"n_proteins_used = {n_complete:,}; distance = 1−Pearson r on log2 intensity; "
-        f"trustworthy gate = n≥6 samples (research1.md §5)",
+        f"trustworthy gate = n≥{TRUSTWORTHY_MIN_SAMPLES} samples (research1.md §5)",
         ha="center", va="top", fontsize=8.8, color=style.CHROME["ink_secondary"],
     )
     fig.text(
         0.5, 0.925,
-        "QC-ONLY — no bootstrap support is possible at n=4; dendrogram "
-        "topology is not statistically stable. NOT a claim of reproducible "
-        "sample clusters.",
+        banner_text,
         ha="center", va="top", fontsize=8.3, color="white", wrap=True,
-        bbox=dict(boxstyle="round,pad=0.5", facecolor=style.STATUS["critical"], edgecolor="none"),
+        bbox=dict(boxstyle="round,pad=0.5", facecolor=banner_color, edgecolor="none"),
     )
     style.add_caveat(fig, y=-0.02)
     fig.tight_layout(rect=(0, 0.02, 1, 0.80))
@@ -458,30 +604,61 @@ def fig_dendrogram(Z, dist_df, n_complete):
 # -----------------------------------------------------------------------
 # Manifest
 # -----------------------------------------------------------------------
+#: Human-readable suffix for a figure title, per gate status.
+TITLE_SUFFIX = {QC_ONLY: "QC only", RUN: "trustworthy"}
+
+
+def _group_composition():
+    """e.g. "2 control, 2 treated" -- read from the sample sheet, not assumed."""
+    return ", ".join(
+        f"{N_REPLICATES_PER_GROUP} {group}" for group in design_cfg.group_names()
+    )
+
+
 def record_manifest_entries(n_complete, n_total, pct, dist_df, skip_rows):
-    skip_list = [r["analysis"] for r in skip_rows if r["status"] == "SKIP"]
-    qc_only_list = [r["analysis"] for r in skip_rows if r["status"] == "QC_ONLY"]
+    status_by_analysis = {r["analysis"]: r["status"] for r in skip_rows}
+    skip_list = [r["analysis"] for r in skip_rows if r["status"] == SKIP]
+    qc_only_list = [r["analysis"] for r in skip_rows if r["status"] == QC_ONLY]
+
+    pca_status = status_by_analysis["pca"]
+    cluster_status = status_by_analysis["hierarchical_clustering"]
+    rank = len(pct)
+    composition = _group_composition()
+
+    # Captions are assembled per status so a figure can never carry a caveat
+    # that its own gate status contradicts.
+    if pca_status == RUN:
+        pca_tail = (
+            f"Meets the trustworthy gate (n>={TRUSTWORTHY_MIN_SAMPLES} samples, "
+            f">={TRUSTWORTHY_MIN_REPLICATES_PER_GROUP} per group; research1.md "
+            f"SS5), so the decomposition is interpretable on its own terms. "
+            f"Note that rank<=n-1 still holds: exactly {rank} PCs exist."
+        )
+    else:
+        pca_tail = (
+            f"QC-ONLY / NOT INTERPRETABLE AS BIOLOGICAL "
+            f"STRUCTURE: at n={N_SAMPLES} the sample covariance matrix is "
+            f"rank-deficient (rank<=n-1={rank}, exactly {rank} PCs exist by "
+            f"construction), eigenvalues are biased, and PC1 can be driven "
+            f"by a single sample (research1.md SS5). The trustworthy gate is "
+            f"n>={TRUSTWORTHY_MIN_SAMPLES} samples; this dataset is below it, so PCA is shown only "
+            f"as a QC sanity check (do technical replicate pairs sit near "
+            f"each other), not as evidence of biological grouping."
+        )
 
     pca_entry = {
         "file": "figures/pca_qc.png",
-        "title": "PCA of 4 samples (QC only)",
+        "title": f"PCA of {N_SAMPLES} samples ({TITLE_SUFFIX[pca_status]})",
         "caption": (
-            "PC1 vs PC2 from PCA on the 4 SILAC samples (2 control, 2 "
-            "treated), standardized per-protein across samples before "
-            "decomposition. QC-ONLY / NOT INTERPRETABLE AS BIOLOGICAL "
-            "STRUCTURE: at n=4 the sample covariance matrix is "
-            "rank-deficient (rank<=n-1=3, exactly 3 PCs exist by "
-            "construction), eigenvalues are biased, and PC1 can be driven "
-            "by a single sample (research1.md SS5). The trustworthy gate is "
-            "n>=6 samples; this dataset is below it, so PCA is shown only "
-            "as a QC sanity check (do technical replicate pairs sit near "
-            "each other), not as evidence of biological grouping."
+            f"PC1 vs PC2 from PCA on the {N_SAMPLES} SILAC samples ({composition}"
+            f"), standardized per-protein across samples before "
+            f"decomposition. " + pca_tail
         ),
         "key_numbers": {
             "n_proteins_used": n_complete,
             "n_proteins_total_qc_limma": n_total,
             "pc_variance_explained_pct": {k: round(v, 2) for k, v in pct.items()},
-            "gate_status": "QC_ONLY",
+            "gate_status": pca_status,
             "trustworthy_min_samples": TRUSTWORTHY_MIN_SAMPLES,
             "have_samples": N_SAMPLES,
             "skip_list": skip_list,
@@ -489,18 +666,32 @@ def record_manifest_entries(n_complete, n_total, pct, dist_df, skip_rows):
         },
     }
 
+    if cluster_status == RUN:
+        cluster_tail = (
+            f"Meets the trustworthy gate (n>={TRUSTWORTHY_MIN_SAMPLES} samples, "
+            f">={TRUSTWORTHY_MIN_REPLICATES_PER_GROUP} per group; research1.md "
+            f"SS5), so the topology may be read as sample structure."
+        )
+    else:
+        cluster_tail = (
+            f"QC-ONLY / NOT INTERPRETABLE: no "
+            f"bootstrap support is possible with {N_SAMPLES} observations, so "
+            f"dendrogram topology is not statistically stable (research1.md "
+            f"SS5). The trustworthy gate is n>={TRUSTWORTHY_MIN_SAMPLES} samples; shown only as a QC "
+            f"sanity check that technical replicate pairs are each other's "
+            f"nearest neighbor, not as a claim of reproducible clusters."
+        )
+
     dendro_entry = {
         "file": "figures/sample_dendrogram.png",
-        "title": "Hierarchical clustering of 4 samples (QC only)",
+        "title": (
+            f"Hierarchical clustering of {N_SAMPLES} samples "
+            f"({TITLE_SUFFIX[cluster_status]})"
+        ),
         "caption": (
-            "Dendrogram of the 4 SILAC samples, average-linkage clustering "
-            "on 1-minus-Pearson-correlation distance of log2 intensity "
-            "(complete proteins only). QC-ONLY / NOT INTERPRETABLE: no "
-            "bootstrap support is possible with 4 observations, so "
-            "dendrogram topology is not statistically stable (research1.md "
-            "SS5). The trustworthy gate is n>=6 samples; shown only as a QC "
-            "sanity check that technical replicate pairs are each other's "
-            "nearest neighbor, not as a claim of reproducible clusters."
+            f"Dendrogram of the {N_SAMPLES} SILAC samples, average-linkage clustering "
+            f"on 1-minus-Pearson-correlation distance of log2 intensity "
+            f"(complete proteins only). " + cluster_tail
         ),
         "key_numbers": {
             "n_proteins_used": n_complete,
@@ -508,7 +699,7 @@ def record_manifest_entries(n_complete, n_total, pct, dist_df, skip_rows):
             "distance_metric": "1 - Pearson correlation (log2 intensity)",
             "linkage_method": "average",
             "pairwise_correlation_distance": dist_df.round(4).to_dict(),
-            "gate_status": "QC_ONLY",
+            "gate_status": cluster_status,
             "trustworthy_min_samples": TRUSTWORTHY_MIN_SAMPLES,
             "have_samples": N_SAMPLES,
             "skip_list": skip_list,
@@ -516,7 +707,15 @@ def record_manifest_entries(n_complete, n_total, pct, dist_df, skip_rows):
         },
     }
 
-    record_gated_manifest([pca_entry, dendro_entry])
+    # Only describe figures this run actually produced. A SKIPped analysis
+    # leaves whatever the manifest already said about it untouched.
+    entries = []
+    if pca_status in EXECUTING_STATUSES:
+        entries.append(pca_entry)
+    if cluster_status in EXECUTING_STATUSES:
+        entries.append(dendro_entry)
+
+    record_gated_manifest(entries)
     print(f"\n[manifest] wrote {GATED_MANIFEST_PATH}")
 
 
@@ -533,20 +732,44 @@ def main():
     skip_rows = dispatch()
     skip_df, skip_log_path = write_skip_log(skip_rows)
 
+    # The dispatcher decides what runs. Nothing below is unconditional: grow
+    # config/sample_sheet.tsv past a gate and the corresponding analysis starts
+    # executing (and loses its QC-only caveats) without an edit to this file.
+    status_by_analysis = {r["analysis"]: r["status"] for r in skip_rows}
+    pca_status = status_by_analysis["pca"]
+    cluster_status = status_by_analysis["hierarchical_clustering"]
+
     df, log2_complete, n_total, n_complete = load_complete_matrix()
 
-    coords_df, variance_df, pc_cols = run_pca(log2_complete, n_complete, n_total)
-    _, _, pct = fig_pca(coords_df, variance_df, pc_cols, n_complete, n_total)
+    pct = {}
+    dist_df = pd.DataFrame()
 
-    Z, dist_df = run_clustering(log2_complete, n_complete)
-    fig_dendrogram(Z, dist_df, n_complete)
+    if pca_status in EXECUTING_STATUSES:
+        coords_df, variance_df, pc_cols = run_pca(log2_complete, n_complete, n_total)
+        _, _, pct = fig_pca(
+            coords_df, variance_df, pc_cols, n_complete, n_total, status=pca_status
+        )
+    else:
+        print(f"\n[pca] SKIPPED by the dispatcher ({status_by_analysis['pca']}).")
+
+    if cluster_status in EXECUTING_STATUSES:
+        Z, dist_df = run_clustering(log2_complete, n_complete)
+        fig_dendrogram(Z, dist_df, n_complete, status=cluster_status)
+    else:
+        print(f"\n[cluster] SKIPPED by the dispatcher ({cluster_status}).")
 
     record_manifest_entries(n_complete, n_total, pct, dist_df, skip_rows)
 
     print("\n" + "=" * 78)
-    print("DONE. QC-ONLY outputs -- PCA/clustering below the n>=6 trustworthy "
-          "gate are NOT evidence of biological structure. See skip_log.csv "
-          "for the forward-path dispatcher's full status table.")
+    if QC_ONLY in (pca_status, cluster_status):
+        print(f"DONE. QC-ONLY outputs -- PCA/clustering below the "
+              f"n>={TRUSTWORTHY_MIN_SAMPLES} trustworthy "
+              f"gate are NOT evidence of biological structure. See skip_log.csv "
+              f"for the forward-path dispatcher's full status table.")
+    else:
+        print(f"DONE. PCA/clustering meet the n>={TRUSTWORTHY_MIN_SAMPLES} "
+              f"trustworthy gate. See skip_log.csv for the forward-path "
+              f"dispatcher's full status table.")
     print("=" * 78)
 
 

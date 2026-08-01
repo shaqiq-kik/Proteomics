@@ -848,3 +848,79 @@ seeds 715 → 715; edges 5963 → 5963.
 orchestrator finished `test_string_ppi.py` (it needed one missing `import ast`)
 and wrote this entry. No further live STRING calls were made — the re-run itself
 was already complete and independently verified before the interruption.
+
+---
+
+## P8 — gated dispatcher reads the sample sheet (2026-08-01)
+**Wave:** 3 (Tier 3, config-driven refactor) · **Commit:** see below · **Status:** ✅ done
+**Closes:** the last hardcoded sample count in `gated/pca_cluster.py`; makes
+research1.md's FORWARD-PATH promise executable rather than aspirational.
+
+**What changed.**
+- `N_SAMPLES = 4` / `N_GROUPS = 2` / `N_REPLICATES_PER_GROUP` now come from
+  `config.design.n_samples()` / `n_groups()` / `replicates_per_group()`. The stale
+  comment telling a future reader to "read from `config/sample_sheet.tsv` once it
+  exists" is gone — Wave 0 built it, and this module now uses it.
+- Extracted `evaluate_registry(registry, n_samples, n_replicates_per_group)` as a
+  pure function; `dispatch()` is now a three-line wrapper whose only contribution
+  is the design read. The gating logic had never been exercised at any n except 4,
+  so the "switches itself on" behaviour had literally never been observed.
+- Registry `reason_*` fields became format templates. They previously hardcoded
+  `"; have 4."` and `"rank<=n-1=3"`, so at n=20 the log would have emitted a
+  confidently wrong sentence. Reasons are now rendered against the n actually
+  evaluated, and `_render_reason` guarantees no row is ever emitted with a blank
+  reason.
+- `main()` is genuinely dispatcher-driven: it executes exactly the analyses whose
+  status is RUN or QC_ONLY instead of running PCA and clustering unconditionally.
+  Figure banners, manifest captions, titles and `gate_status` are all built from
+  the dispatched status, so a figure can no longer carry a "QC-ONLY / NOT
+  INTERPRETABLE" caveat that its own gate contradicts.
+- `n_components = min(3, n-1)` → `min(n_samples - 1, n_features)`. The literal 3
+  was the rank bound written out longhand (research1.md:246).
+- Status vocabulary `TRUSTWORTHY` → `RUN`. No committed artifact contained the old
+  value (no row reaches it at n=4) and nothing else in the repo referenced it.
+
+**Docstring.** The module claimed gated analyses "switch themselves on" as
+thresholds are met. Only `pca` and `hierarchical_clustering` are implemented; the
+other four registry entries have no code behind them, so growing the sheet moves
+them out of SKIP in `skip_log.csv` — which is the signal to go build them — but
+does not conjure the analysis. The docstring now says exactly that.
+
+**Verification (run, not assumed).**
+- **Control first:** re-ran the *unmodified* script and confirmed `freeze.py
+  --check` reported 70 OK, so any later drift would be attributable to the edit.
+- After the refactor: `tools/freeze.py --check` → **70 OK, 0 CHANGED**. All five
+  gated artifacts (`skip_log.csv`, `pca_coords.csv`, `pca_variance.csv`,
+  `pca_qc.png/.svg`, `sample_dendrogram.png/.svg`, `figures_manifest_gated.json`)
+  byte-identical. Script **stdout is also byte-identical** to the baseline.
+- The two SVGs show as modified in `git status` purely from matplotlib's
+  `<dc:date>` + salted element ids; they hash OK under `freeze.py`'s canonical
+  mode and were restored rather than committed as noise.
+- `tests/test_gating.py`: **22 passing**. Full suite: **329 passing, 2 deselected**.
+- **Mutation-checked, so the suite is known to bite:** re-hardcoding
+  `N_SAMPLES = 4` fails 1 test; pinning the status so the gate never flips to RUN
+  fails 3. Neither mutant passed silently.
+
+**Gating table (the deliverable).**
+
+| analysis | n=4 (committed) | n=6, 3/group | n=20, 10/group |
+|---|---|---|---|
+| pca | QC_ONLY | RUN | RUN |
+| hierarchical_clustering | QC_ONLY | RUN | RUN |
+| wgcna | SKIP | SKIP | RUN |
+| umap_tsne | SKIP | SKIP | SKIP |
+| mixomics_splsda | SKIP | SKIP | RUN |
+| vae_gnn | SKIP | SKIP | SKIP |
+
+n=6 and n=20 are synthetic sheets written to `tmp_path` and read back through
+`config.design`, so what is under test is the real TSV → gate path. At n=6 exactly
+two analyses flip and no others; WGCNA's 15-to-run / 20-to-trust band is covered
+by a separate n=16 → QC_ONLY case.
+
+**D7 check.** PCA and clustering are direction-agnostic, and the outputs were
+confirmed byte-identical, so nothing here depends on the control/treated
+assignment — as expected.
+
+**Not done / for the orchestrator:** `tools/freeze.py --write` not run (no
+re-baseline needed — nothing changed). Only `gated/pca_cluster.py` and the new
+`tests/test_gating.py` were touched.
