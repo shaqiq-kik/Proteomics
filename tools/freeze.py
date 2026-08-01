@@ -1,0 +1,181 @@
+"""Canonical hashing for the byte-freeze gate.
+
+WHY THIS EXISTS
+---------------
+The pipeline's scientific artifacts must not change when we refactor the code
+that produces them. A sha256 manifest is how we prove that. Two lessons from
+the first attempt are baked in here:
+
+1. **Freeze outputs, not sources.** The original manifest hashed all 93 tracked
+   files, including 21 .py/.R source files. That makes the gate fail by
+   construction the moment anyone refactors a script -- which is exactly the
+   activity the gate is supposed to make safe. Git already versions sources.
+   Only `proteomics_de/results/**` and the `_limma_*` handoff intermediates are
+   frozen here.
+
+2. **SVGs are not byte-reproducible, and never were.** matplotlib stamps a
+   wall-clock `<dc:date>` into every SVG and salts element ids with random hex.
+   Two consecutive runs of *unmodified* code produce different SVG bytes. This
+   was verified by control experiment (stash the change, re-run, still drifts),
+   so it is a property of matplotlib, not of any edit we made. PNGs, by
+   contrast, are byte-identical run to run.
+
+   Rather than exclude SVGs from the gate (which would leave 13 figures
+   unguarded) we hash their *canonical* form: the date is dropped and each
+   distinct salted id is renumbered by first-appearance order. That removes the
+   volatile parts while preserving structure -- a genuine change to a plot still
+   changes the hash, because the path data, transforms and embedded rasters are
+   all still hashed verbatim.
+
+The manifest records which mode each file used, so the normalization is never
+silent.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import re
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
+#: Files whose bytes are the scientific record. Refactors must not change these.
+FROZEN_GLOBS = (
+    "proteomics_de/results/**/*",
+    "proteomics_de/_limma_input.csv",
+    "proteomics_de/_limma_output.csv",
+    "proteomics_de/_limma_versions.txt",
+)
+
+# matplotlib's SVG volatility, in the two forms it takes.
+_SVG_DATE = re.compile(rb"<dc:date>[^<]*</dc:date>")
+_SVG_SALTED_ID = re.compile(rb"\b((?:p|m|image|DejaVu|Fraunces|Newsreader)[0-9a-f]{10})\b")
+
+
+def canonical_bytes(path: Path) -> tuple[bytes, str]:
+    """Return (bytes_to_hash, mode) for *path*.
+
+    ``mode`` is ``"raw"`` for everything except SVG, which uses ``"svg-canon"``.
+    """
+    data = path.read_bytes()
+    if path.suffix.lower() != ".svg":
+        return data, "raw"
+
+    data = _SVG_DATE.sub(b"<dc:date></dc:date>", data)
+
+    # Renumber salted ids by first appearance so distinct ids stay distinct
+    # (a blanket substitution would collapse them and could mask a real change).
+    mapping: dict[bytes, bytes] = {}
+
+    def _renumber(match: re.Match) -> bytes:
+        token = match.group(1)
+        if token not in mapping:
+            mapping[token] = b"id%d" % len(mapping)
+        return mapping[token]
+
+    return _SVG_SALTED_ID.sub(_renumber, data), "svg-canon"
+
+
+def digest(path: Path) -> tuple[str, str]:
+    """Return (sha256_hex, mode) of *path*'s canonical form."""
+    data, mode = canonical_bytes(path)
+    return hashlib.sha256(data).hexdigest(), mode
+
+
+def frozen_files(root: Path | None = None) -> list[Path]:
+    """Every frozen artifact, sorted, as absolute paths."""
+    root = root or REPO_ROOT
+    found: set[Path] = set()
+    for pattern in FROZEN_GLOBS:
+        for p in root.glob(pattern):
+            if p.is_file():
+                found.add(p)
+    return sorted(found)
+
+
+def build_manifest(root: Path | None = None) -> list[tuple[str, str, str]]:
+    """Return [(relpath, sha256, mode)] for every frozen artifact."""
+    root = root or REPO_ROOT
+    rows = []
+    for p in frozen_files(root):
+        sha, mode = digest(p)
+        rows.append((p.relative_to(root).as_posix(), sha, mode))
+    return rows
+
+
+def write_manifest(path: Path, root: Path | None = None) -> int:
+    """Write the manifest to *path*. Returns the number of entries."""
+    rows = build_manifest(root)
+    lines = [
+        "# Byte-freeze manifest for proteomics_de scientific outputs.",
+        "# Format: <sha256>  <mode>  <relpath>",
+        "# mode=raw       -> sha256 of the file's bytes",
+        "# mode=svg-canon -> sha256 after dropping matplotlib's <dc:date> and",
+        "#                   renumbering its randomly-salted element ids, which",
+        "#                   differ between runs of identical code.",
+        "# Source files are deliberately NOT frozen; git versions those.",
+        f"# entries: {len(rows)}",
+    ]
+    lines += [f"{sha}  {mode}  {rel}" for rel, sha, mode in rows]
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return len(rows)
+
+
+def read_manifest(path: Path) -> dict[str, tuple[str, str]]:
+    """Parse a manifest into {relpath: (sha256, mode)}."""
+    out: dict[str, tuple[str, str]] = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        sha, mode, rel = line.split(None, 2)
+        out[rel.strip()] = (sha, mode)
+    return out
+
+
+def verify(manifest_path: Path, root: Path | None = None):
+    """Compare the tree against *manifest_path*.
+
+    Returns (ok, changed, missing, extra) as lists of relpaths.
+    """
+    root = root or REPO_ROOT
+    expected = read_manifest(manifest_path)
+    ok, changed, missing = [], [], []
+    for rel, (sha, _mode) in sorted(expected.items()):
+        p = root / rel
+        if not p.is_file():
+            missing.append(rel)
+            continue
+        actual, _ = digest(p)
+        (ok if actual == sha else changed).append(rel)
+    present = {p.relative_to(root).as_posix() for p in frozen_files(root)}
+    extra = sorted(present - set(expected))
+    return ok, changed, missing, extra
+
+
+if __name__ == "__main__":
+    import argparse
+    import sys
+
+    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    ap.add_argument("--write", action="store_true", help="regenerate the manifest")
+    ap.add_argument("--check", action="store_true", help="verify, nonzero exit on drift")
+    ap.add_argument(
+        "--manifest",
+        default=str(REPO_ROOT / "proteomics_de/tests/expected/outputs.sha256"),
+    )
+    args = ap.parse_args()
+    mpath = Path(args.manifest)
+
+    if args.write:
+        n = write_manifest(mpath)
+        print(f"wrote {mpath.relative_to(REPO_ROOT)} ({n} artifacts)")
+    if args.check:
+        ok, changed, missing, extra = verify(mpath)
+        print(f"freeze: {len(ok)} OK, {len(changed)} CHANGED, {len(missing)} MISSING, {len(extra)} UNTRACKED")
+        for rel in changed:
+            print(f"  CHANGED  {rel}")
+        for rel in missing:
+            print(f"  MISSING  {rel}")
+        for rel in extra:
+            print(f"  UNTRACKED {rel}")
+        sys.exit(1 if (changed or missing) else 0)
