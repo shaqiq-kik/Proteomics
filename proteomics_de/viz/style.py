@@ -177,10 +177,14 @@ def derive_sample_maps(sheet=None):
     return cols, labels, condition
 
 
-#: For the committed sheet these are exactly the literals this module used to
-#: hardcode: ``["Intensity 31578", "Intensity 31580", "Intensity 31579",
-#: "Intensity 31581"]`` with labels control_1/control_2/treated_1/treated_2.
-#: `tests/test_style_samples.py` asserts that equality.
+#: For the committed (D7-corrected) sheet: ``["Intensity 31579", "Intensity
+#: 31581", "Intensity 31578", "Intensity 31580"]`` with labels
+#: control_1/control_2/treated_1/treated_2. Before D7 this module hardcoded the
+#: literal ``["Intensity 31578", "Intensity 31580", "Intensity 31579",
+#: "Intensity 31581"]`` with control_1/2 on the FIRST pair -- i.e. the
+#: now-inverted assignment; deriving from the sheet is what let the D7 fix
+#: reach every figure with no code edit here. `tests/test_style_samples.py`
+#: asserts the current values.
 SAMPLE_COLS, SAMPLE_LABELS, SAMPLE_CONDITION = derive_sample_maps()
 SAMPLE_ORDER = SAMPLE_COLS  # canonical order: control group first, then treated
 

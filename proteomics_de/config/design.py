@@ -1,20 +1,25 @@
 """The experimental design, read from ``config/sample_sheet.tsv``.
 
-This module is the single source of truth for the design. Today the same facts
-are hardcoded as literals in nine files -- ``foldchange.py``, ``limma_test.py``,
-``replicate_check.py``, ``centering_check.py``, ``qc/schema.py``,
-``viz/style.py``, ``gated/pca_cluster.py`` and friends all carry their own copy
-of ``["Intensity 31578", "Intensity 31580", "Intensity 31579", "Intensity
-31581"]`` and of ``["control", "control", "treated", "treated"]``. That is the
-pipeline's central architectural flaw: the sample sheet drives nothing.
+This module is the single source of truth for the design. Before it existed, the
+same facts were hardcoded as literals scattered across ``foldchange.py``,
+``limma_test.py``, ``replicate_check.py``, ``qc/schema.py``, ``viz/style.py``
+and ``gated/pca_cluster.py`` -- each its own copy of the intensity-column order
+and of ``["control", "control", "treated", "treated"]``. That was the pipeline's
+central architectural flaw: the sample sheet drove nothing. Those modules now
+call into this one (or assert-match it, for the ones whose logic is inherently
+2-channel-SILAC-specific); see ``DECISIONS_LOG.md`` D7 for the correction this
+made possible -- the control/treated assignment shipped inverted, and fixing it
+was a one-line edit to the sheet rather than a nine-file sweep.
 
-The sheet has four columns::
+The sheet has four columns. Per D7, 31579/31581 are the vehicle CONTROL and
+31578/31580 are the testosterone-TREATED replicates -- the reverse of the
+pipeline's original (incorrect) assumption::
 
     sample    group    channel             replicate
-    31578     control  Intensity 31578     1
-    31580     control  Intensity 31580     2
-    31579     treated  Intensity 31579     1
-    31581     treated  Intensity 31581     2
+    31579     control  Intensity 31579     1
+    31581     control  Intensity 31581     2
+    31578     treated  Intensity 31578     1
+    31580     treated  Intensity 31580     2
 
 ``channel`` is the literal intensity column name as it appears in the input
 workbook, so ``sample_columns()`` is just the ``channel`` column read out in the
@@ -50,7 +55,8 @@ REQUIRED_COLUMNS = ["sample", "group", "channel", "replicate"]
 CANONICAL_GROUP_ORDER = ["control", "treated"]
 
 #: Prefix used when a group's samples cross the limma handoff boundary
-#: (``limma_test.py:56`` writes ``ctrl_31578`` / ``trt_31579``).
+#: (``limma_test.py:56`` writes ``ctrl_31579`` / ``trt_31578`` for today's,
+#: D7-corrected, sheet).
 GROUP_HANDOFF_PREFIX = {"control": "ctrl", "treated": "trt"}
 
 
@@ -187,7 +193,7 @@ def handoff_names(sheet=None) -> list[str]:
     """Column names used across the limma handoff, aligned with sample order.
 
     Pattern is ``<group prefix>_<sample id>``, matching ``limma_test.py:56``.
-    For today's sheet: ``["ctrl_31578", "ctrl_31580", "trt_31579", "trt_31581"]``.
+    For today's sheet: ``["ctrl_31579", "ctrl_31581", "trt_31578", "trt_31580"]``.
     """
     df = _sheet(sheet)
     names = []

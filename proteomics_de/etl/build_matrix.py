@@ -28,7 +28,7 @@ the contract is on disk and testable now, ahead of the handoff migrating onto it
 channels (``Intensity 31578``). The two contract files are therefore joinable
 only through the sample sheet, not directly. ``limma_test.py`` consequently
 hands the R worker its own ``_limma_design.tsv``, whose ``sample`` column holds
-the handoff names (``ctrl_31578``) that really do match its matrix. Resolving
+the handoff names (``trt_31578``) that really do match its matrix. Resolving
 the wart means changing ``design.write_design_tsv``, which is out of scope here.
 """
 

@@ -111,10 +111,10 @@ GROUP_CATEGORIES = ["control", "treated"]
 DIRECTION_CATEGORIES = ["UP", "DOWN", "NS"]
 
 INTENSITY_COLUMNS = [
-    "Intensity 31578",  # control / Light, replicate 1
-    "Intensity 31580",  # control / Light, replicate 2
-    "Intensity 31579",  # treated / Heavy, replicate 1
-    "Intensity 31581",  # treated / Heavy, replicate 2
+    "Intensity 31578",  # treated (testosterone) / Light, replicate 1
+    "Intensity 31580",  # treated (testosterone) / Light, replicate 2
+    "Intensity 31579",  # control (vehicle) / Heavy, replicate 1
+    "Intensity 31581",  # control (vehicle) / Heavy, replicate 2
 ]
 
 # ---------------------------------------------------------------------------

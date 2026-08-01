@@ -31,8 +31,8 @@
 #   whose whole value is that it reproduces a frozen numeric result.
 #
 # Input  (written by Python): columns id, gene, then one column per sample —
-#         ctrl_31578, ctrl_31580, trt_31579, trt_31581 for today's design.
-#         Raw intensities; blank cell == missing.
+#         ctrl_31579, ctrl_31581, trt_31578, trt_31580 for today's (D7-corrected)
+#         design. Raw intensities; blank cell == missing.
 # Design (optional, --design): TAB-separated, columns sample, group. `sample`
 #         names the INPUT CSV's intensity columns (i.e. the handoff names), in
 #         the order the design matrix expects: control group first.
@@ -227,7 +227,8 @@ run <- function() {
   }
 
   # Build the numeric matrix in the design's column order: control group first,
-  # treated second (= 31578, 31580, 31579, 31581 for today's sheet).
+  # treated second (= 31579, 31581, 31578, 31580 for today's, D7-corrected,
+  # sheet).
   mat <- sapply(
     df[, intensity_cols, drop = FALSE],
     function(x) suppressWarnings(as.numeric(as.character(x)))

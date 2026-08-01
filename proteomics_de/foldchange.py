@@ -118,13 +118,13 @@ OUT_COLS = [
 IPA_COLS = ["UniProt Accession Number", "Gene names", "log2FC", "regulated"]
 SINGLE_COLS = [
     "accession", "gene", "detected_in",
-    "Intensity 31578", "Intensity 31580",  # control replicates
-    "Intensity 31579", "Intensity 31581",  # treated replicates
+    "Intensity 31578", "Intensity 31580",  # treated (testosterone) replicates
+    "Intensity 31579", "Intensity 31581",  # control (vehicle) replicates
 ]
 ONOFF_COLS = [
     "accession", "gene", "onoff",
-    "Intensity 31578", "Intensity 31580",  # control replicates
-    "Intensity 31579", "Intensity 31581",  # treated replicates
+    "Intensity 31578", "Intensity 31580",  # treated (testosterone) replicates
+    "Intensity 31579", "Intensity 31581",  # control (vehicle) replicates
 ]
 
 

@@ -183,7 +183,7 @@ def _write_design_handoff(path):
 
     Distinct from the ``results/de/design.tsv`` contract file: R needs `sample`
     to *name the intensity columns of the input CSV*, so this one carries the
-    handoff names (``ctrl_31578``), not the bare sample ids (``31578``). See the
+    handoff names (``trt_31578``), not the bare sample ids (``31578``). See the
     "Known contract wart" note in ``etl/build_matrix``.
     """
     pd.DataFrame({"sample": _HANDOFF_NAMES, "group": _GROUP_VECTOR}).to_csv(

@@ -223,3 +223,20 @@ changed path coordinate and ignores pure regeneration noise.
    specific and need regenerating.
 5. **Decide on CI.** `.github/workflows/tests.yml` exists but only runs if you
    push to GitHub.
+
+---
+
+## Documentation cleanup (2026-08-01)
+
+**⚪ D15 — stale pre-D7 examples in docstrings and comments, corrected.** D7
+fixed the code; a sweep for `31578`/`31579`/`31580`/`31581` across every
+`.py`/`.R` file found nine remaining spots that still illustrated the OLD
+(inverted) assignment in prose — `config/design.py`'s worked example and sheet
+table, `foldchange.py`'s `SINGLE_COLS`/`ONOFF_COLS` inline comments,
+`qc/schema.py`'s `INTENSITY_COLUMNS` comments, `limma_test.R`/`limma_test.py`'s
+handoff-name examples, `etl/build_matrix.py`'s contract note, and
+`viz/style.py`'s "used to hardcode" comment (which had drifted from historical
+framing into a present-tense claim that was simply false post-D7). No code, no
+values, no committed output changed — comments and docstrings only, verified by
+running the full suite before and after. Found independently by two exploratory
+sessions; folded into one pass here rather than landing duplicate fixes.
