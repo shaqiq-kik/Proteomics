@@ -15,13 +15,24 @@ The spec's "~6" was tried literally first (top 3 UP + top 3 DOWN) but that
 cutoff has ZERO gene overlap of any kind -- neither within a direction nor
 across -- which makes an UpSet plot pointless (six disconnected bars). Widened
 to top 5 UP + top 5 DOWN (10 terms, still the same small "best available
-leads" pool already fetched by ora.py, nothing new queried) so the one real
-within-direction overlap is visible: the two UP-side Reactome mRNA terms
-("mRNA decay by 5' to 3' exoribonuclease" and "mRNA Splicing - Major
-Pathway") share Prosc and Tpd52l2. This is the most defensible set-intersection
-view available given the data: still hypothesis-generating leads, not
-confirmed pathways, but at least shows genuine (if modest) intersection
-structure instead of an empty grid.
+leads" pool already fetched by ora.py, nothing new queried) so the real
+within-direction overlaps are visible: the three DOWN-side Reactome mRNA terms
+share spliceosomal Sm-like genes -- "mRNA decay by 5' to 3' exoribonuclease"
+and "mRNA Splicing - Major Pathway" share Lsm2 and Lsm6, and "mRNA Splicing -
+Minor Pathway" and "Major Pathway" share Snrpg. This is the most defensible
+set-intersection view available given the data: still hypothesis-generating
+leads, not confirmed pathways, but at least shows genuine (if modest)
+intersection structure instead of an empty grid.
+
+Two corrections are folded into the current output. (1) DECISIONS_LOG D7
+inverted the control/treated assignment, so the UP and DOWN query sets swapped
+wholesale -- the Reactome mRNA cluster that used to sit on the UP side is now
+on the DOWN side. (2) ora.py used to align g:Profiler's ``intersections``
+booleans against the SUBMITTED query list, but that vector is indexed by the
+genes g:Profiler successfully MAPPED (509 submitted -> 473 mapped for UP), so
+every gene label after the first unmapped symbol was wrong. The gene names
+below are the fixed ones; they are also the ones that make biological sense
+(e.g. "succinate dehydrogenase activity" -> Sdha, not the old Ybx3).
 
 A structural note baked into the result: UP and DOWN are, by construction,
 mutually exclusive protein categories (a protein cannot be both up- and
@@ -29,8 +40,8 @@ down-regulated in this contrast), so no gene can ever appear in both a
 UP-side pathway and a DOWN-side pathway here -- the UpSet necessarily shows
 two disjoint intersection clusters (overlap only WITHIN each direction), not
 cross-direction overlap. That is expected, not a display bug, and is called
-out in the caption. Real within-direction overlap does show up, e.g. Prosc
-and Tpd52l2 are shared between the two UP-side Reactome mRNA terms.
+out in the caption. Real within-direction overlap does show up, e.g. Lsm2 and
+Lsm6 are shared between two of the DOWN-side Reactome mRNA terms.
 
 Per-pathway total bars are colored by direction (red = UP-side term, blue =
 DOWN-side term, matching the report palette) via UpSet.style_categories().
@@ -164,8 +175,9 @@ def main():
             "share genes here by construction (UP/DOWN are mutually "
             "exclusive protein calls), so the plot shows two disjoint "
             "intersection clusters, not a display error; real overlap WITHIN "
-            "a direction is visible (e.g. the two UP-side Reactome mRNA "
-            "terms share Prosc and Tpd52l2). Hypothesis-generating only."
+            "a direction is visible (e.g. the DOWN-side Reactome mRNA terms "
+            "share the Sm-like genes Lsm2/Lsm6, and Snrpg between the minor "
+            "and major splicing pathways). Hypothesis-generating only."
         ),
         "key_numbers": key_numbers,
     }])

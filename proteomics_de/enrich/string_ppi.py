@@ -3,9 +3,12 @@ STRING protein-protein interaction network for the DE-regulated seed proteins.
 
 Organism: Mus musculus (NCBI taxid 10090). Every STRING call uses species=10090.
 
-Seed set: the 715 "regulated" proteins from `results/foldchange_all.csv`
-(rows where `regulated` in {UP, DOWN}: 206 UP + 509 DOWN). These are the
-+/-0.585 log2FC HYPOTHESIS-GENERATING set from a n=2 technical-replicate
+Seed set: the "regulated" proteins from `results/foldchange_all.csv` (rows where
+`regulated` in {UP, DOWN}) -- 715 proteins, 509 UP + 206 DOWN after the
+DECISIONS_LOG D7 correction of the inverted control/treated assignment (the seed
+SET is unchanged by D7; only the direction labels swapped). Those three counts
+are asserted against `tests/expected/frozen_counts.json`, never typed here.
+These are the +/-0.585 log2FC HYPOTHESIS-GENERATING set from a n=2 technical-replicate
 SILAC experiment where 0/1938 proteins survive FDR < 0.05 (see
 `proteomics_de/results/de_stats.json` / the limma report). The PPI network
 below shows structure among *candidate* proteins only -- it is exploratory
@@ -20,12 +23,17 @@ Pipeline:
      betweenness centrality, and greedy-modularity communities.
   4. Write edge list, node metrics table, and a metadata JSON.
 
+Every STRING response is cached verbatim under `results/enrichment/raw/` --
+including the `/json/version` probe -- so a future offline-replay mode has the
+complete set of responses on disk.
+
 STRING rate limit: >=1 second sleep between API calls (RATE_LIMIT_SECONDS).
 """
 
 from __future__ import annotations
 
 import json
+import sys
 import time
 from pathlib import Path
 
@@ -40,6 +48,13 @@ from networkx.algorithms.community import greedy_modularity_communities
 # ----------------------------------------------------------------------------
 ENRICH_DIR = Path(__file__).resolve().parent
 PROTEOMICS_DE_DIR = ENRICH_DIR.parent
+if str(PROTEOMICS_DE_DIR) not in sys.path:
+    # run as a script, sys.path[0] is enrich/ -- make `etl.` importable, the
+    # same way enrich/network_figure.py reaches viz/
+    sys.path.insert(0, str(PROTEOMICS_DE_DIR))
+
+from etl import foldchange_core as core  # noqa: E402
+
 RESULTS_DIR = PROTEOMICS_DE_DIR / "results"
 ENRICHMENT_DIR = RESULTS_DIR / "enrichment"
 RAW_DIR = ENRICHMENT_DIR / "raw"
@@ -53,6 +68,7 @@ NODE_METRICS_OUT = ENRICHMENT_DIR / "string_node_metrics.csv"
 META_OUT = ENRICHMENT_DIR / "string_meta.json"
 RAW_GET_IDS_OUT = RAW_DIR / "string_get_ids.json"
 RAW_NETWORK_OUT = RAW_DIR / "string_network.tsv"
+RAW_VERSION_OUT = RAW_DIR / "string_version.json"
 
 # ----------------------------------------------------------------------------
 # STRING API config
@@ -87,9 +103,22 @@ def load_seeds() -> pd.DataFrame:
     print(f"[seeds] loaded {len(seeds)} regulated proteins from {FOLDCHANGE_CSV.name} "
           f"({n_up} UP, {n_down} DOWN)")
 
-    assert len(seeds) == 715, f"expected 715 regulated seeds, got {len(seeds)}"
-    assert n_up == 206, f"expected 206 UP, got {n_up}"
-    assert n_down == 509, f"expected 509 DOWN, got {n_down}"
+    # Dataset-specific expectations live in tests/expected/frozen_counts.json,
+    # never as literals here: D7 swapped UP/DOWN (206/509 -> 509/206) and the
+    # literals that used to sit on these three lines went stale silently.
+    # `expect` is None only when PDE_EXPECT_BASELINE=0 (a different dataset),
+    # which is the documented way to run without the baseline checks --
+    # the checks are ON by default.
+    expect = core.load_frozen_counts() if core.baseline_checks_enabled() else None
+    if expect is not None:
+        n_expected = expect["ipa_input_rows"]
+        assert len(seeds) == n_expected, (
+            f"expected {n_expected} regulated seeds, got {len(seeds)}"
+        )
+        assert n_up == expect["n_up"], f"expected {expect['n_up']} UP, got {n_up}"
+        assert n_down == expect["n_down"], (
+            f"expected {expect['n_down']} DOWN, got {n_down}"
+        )
 
     dup = seeds["UniProt Accession Number"].duplicated().sum()
     assert dup == 0, f"expected unique accessions among seeds, found {dup} duplicates"
@@ -196,9 +225,19 @@ def fetch_network(string_ids: list[str], batch_size: int = 500) -> tuple[str, bo
 # Step 3: STRING version
 # ----------------------------------------------------------------------------
 def get_string_version() -> str:
+    """Query STRING's version endpoint and cache the raw response.
+
+    Every other STRING response is written verbatim to `raw/`; this one used to
+    be dropped on the floor, which would leave a future offline-replay mode with
+    no recorded version. The parsed value is returned as before; the cache write
+    is a side effect.
+    """
     r = requests.get(f"{STRING_API_BASE}/json/version", timeout=30)
     r.raise_for_status()
-    return r.json()[0]["string_version"]
+    payload = r.json()
+    RAW_VERSION_OUT.write_text(json.dumps(payload, indent=2))
+    print(f"[string] raw version JSON saved -> {RAW_VERSION_OUT}")
+    return payload[0]["string_version"]
 
 
 # ----------------------------------------------------------------------------

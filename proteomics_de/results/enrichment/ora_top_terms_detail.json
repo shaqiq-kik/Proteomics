@@ -3,6 +3,78 @@
   "terms": [
     {
       "direction": "UP",
+      "source": "GO:MF",
+      "term_id": "GO:0000030",
+      "term_name": "mannosyltransferase activity",
+      "p_value": 1.0,
+      "term_size": 1,
+      "query_size": 473,
+      "intersection_size": 1,
+      "intersecting_genes": [
+        "Tmtc3"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "UP",
+      "source": "GO:MF",
+      "term_id": "GO:0000049",
+      "term_name": "tRNA binding",
+      "p_value": 1.0,
+      "term_size": 17,
+      "query_size": 473,
+      "intersection_size": 3,
+      "intersecting_genes": [
+        "Trnt1",
+        "Eif2s3x",
+        "Eif1ax"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "UP",
+      "source": "GO:MF",
+      "term_id": "GO:0000104",
+      "term_name": "succinate dehydrogenase activity",
+      "p_value": 1.0,
+      "term_size": 1,
+      "query_size": 473,
+      "intersection_size": 1,
+      "intersecting_genes": [
+        "Sdha"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "UP",
+      "source": "GO:MF",
+      "term_id": "GO:0000146",
+      "term_name": "microfilament motor activity",
+      "p_value": 1.0,
+      "term_size": 6,
+      "query_size": 473,
+      "intersection_size": 1,
+      "intersecting_genes": [
+        "Myh9"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "UP",
+      "source": "GO:MF",
+      "term_id": "GO:0000149",
+      "term_name": "SNARE binding",
+      "p_value": 1.0,
+      "term_size": 5,
+      "query_size": 473,
+      "intersection_size": 1,
+      "intersecting_genes": [
+        "Napa"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "DOWN",
       "source": "GO:BP",
       "term_id": "GO:0016311",
       "term_name": "dephosphorylation",
@@ -15,18 +87,18 @@
         "Ppp2ca",
         "Ppp1cc",
         "Ppp1ca",
-        "Nid2",
-        "Ppif",
-        "Sh3bgrl3",
-        "Lsm8",
-        "Tsc22d1",
-        "Aldh1l1",
-        "Galnt1"
+        "Ppp5c",
+        "Ppm1l",
+        "Lhpp",
+        "Ppm1a",
+        "Thnsl2",
+        "Ptp4a2",
+        "Timm50"
       ],
       "significant_g_SCS_0.05": false
     },
     {
-      "direction": "UP",
+      "direction": "DOWN",
       "source": "REAC",
       "term_id": "REAC:R-MMU-372708",
       "term_name": "p130Cas linkage to MAPK signaling for integrins",
@@ -36,12 +108,12 @@
       "intersection_size": 2,
       "intersecting_genes": [
         "Fga",
-        "Col18a1"
+        "Rap1b"
       ],
       "significant_g_SCS_0.05": false
     },
     {
-      "direction": "UP",
+      "direction": "DOWN",
       "source": "REAC",
       "term_id": "REAC:R-MMU-430039",
       "term_name": "mRNA decay by 5' to 3' exoribonuclease",
@@ -50,13 +122,13 @@
       "query_size": 196,
       "intersection_size": 2,
       "intersecting_genes": [
-        "Prosc",
-        "Tpd52l2"
+        "Lsm2",
+        "Lsm6"
       ],
       "significant_g_SCS_0.05": false
     },
     {
-      "direction": "UP",
+      "direction": "DOWN",
       "source": "REAC",
       "term_id": "REAC:R-MMU-72165",
       "term_name": "mRNA Splicing - Minor Pathway",
@@ -65,12 +137,12 @@
       "query_size": 196,
       "intersection_size": 1,
       "intersecting_genes": [
-        "Fabp4"
+        "Snrpg"
       ],
       "significant_g_SCS_0.05": false
     },
     {
-      "direction": "UP",
+      "direction": "DOWN",
       "source": "REAC",
       "term_id": "REAC:R-MMU-72163",
       "term_name": "mRNA Splicing - Major Pathway",
@@ -79,85 +151,13 @@
       "query_size": 196,
       "intersection_size": 7,
       "intersecting_genes": [
-        "Prosc",
-        "Tpd52l2",
-        "Sec22b",
-        "Fabp4",
-        "Sephs1",
-        "Heph",
-        "Mdp1"
-      ],
-      "significant_g_SCS_0.05": false
-    },
-    {
-      "direction": "DOWN",
-      "source": "GO:MF",
-      "term_id": "GO:0000030",
-      "term_name": "mannosyltransferase activity",
-      "p_value": 1.0,
-      "term_size": 1,
-      "query_size": 473,
-      "intersection_size": 1,
-      "intersecting_genes": [
-        "Snrpd1"
-      ],
-      "significant_g_SCS_0.05": false
-    },
-    {
-      "direction": "DOWN",
-      "source": "GO:MF",
-      "term_id": "GO:0000049",
-      "term_name": "tRNA binding",
-      "p_value": 1.0,
-      "term_size": 17,
-      "query_size": 473,
-      "intersection_size": 3,
-      "intersecting_genes": [
-        "Ubr2",
-        "Ptx3",
-        "P4ha1"
-      ],
-      "significant_g_SCS_0.05": false
-    },
-    {
-      "direction": "DOWN",
-      "source": "GO:MF",
-      "term_id": "GO:0000104",
-      "term_name": "succinate dehydrogenase activity",
-      "p_value": 1.0,
-      "term_size": 1,
-      "query_size": 473,
-      "intersection_size": 1,
-      "intersecting_genes": [
-        "Ybx3"
-      ],
-      "significant_g_SCS_0.05": false
-    },
-    {
-      "direction": "DOWN",
-      "source": "GO:MF",
-      "term_id": "GO:0000146",
-      "term_name": "microfilament motor activity",
-      "p_value": 1.0,
-      "term_size": 6,
-      "query_size": 473,
-      "intersection_size": 1,
-      "intersecting_genes": [
-        "Hadh"
-      ],
-      "significant_g_SCS_0.05": false
-    },
-    {
-      "direction": "DOWN",
-      "source": "GO:MF",
-      "term_id": "GO:0000149",
-      "term_name": "SNARE binding",
-      "p_value": 1.0,
-      "term_size": 5,
-      "query_size": 473,
-      "intersection_size": 1,
-      "intersecting_genes": [
-        "Clybl"
+        "Lsm2",
+        "Lsm6",
+        "Lsm8",
+        "Snrpg",
+        "Srrt",
+        "Prpf19",
+        "Ddx46"
       ],
       "significant_g_SCS_0.05": false
     }

@@ -3,7 +3,11 @@ Item 16 (GSEA half): rank-based preranked GSEA over the full ranked protein
 list (item 16), against MOUSE Enrichr gene-set libraries.
 
 Ranked list: all 1938 rows of results/qc_limma.csv, score =
-sign(limma_log2FC) * -log10(p_value), descending (range ~ -3.80 to +2.69).
+sign(limma_log2FC) * -log10(p_value), descending (range ~ -2.69 to +3.80).
+That range was ~ -3.80 to +2.69 before DECISIONS_LOG D7 corrected the inverted
+control/treated assignment: every log2FC negates, so the score range mirrors
+and the whole ranking (and every term's ES/NES sign) reverses. Verified after
+the re-run -- all 568 terms flipped NES sign, corr(NES_old, NES_new) = -0.9998.
 Multi-gene "gene" entries (razor/shared peptide groups, 45 rows) are
 collapsed to their first listed symbol; the 8 rows with no gene name fall
 back to the UniProt accession (`id`), same resolution rule as enrich/ora.py,
@@ -36,6 +40,13 @@ Gene-set libraries (MOUSE, not human):
 Seed fixed (42, matching the report style module's SEED) for determinism.
 
 Outputs:
+  results/enrichment/raw/enrichr_libraries.json.gz
+    -- the raw gp.get_library() payload for BOTH libraries, keyed by library
+       name ({term: [gene, ...]}). This was the last uncached outbound call in
+       the enrichment layer; caching it means every network response this
+       pipeline depends on now lives under results/enrichment/raw/ and an
+       offline-replay mode is buildable. Gzipped: the two libraries are ~6300
+       terms and tens of MB of gene symbols uncompressed.
   results/enrichment/gsea_results.csv
     -- term, source, es, nes, nom_p_value, fdr_q_value, tag_pct, gene_pct,
        lead_genes (semicolon-separated), one row per gene set that passed
@@ -49,6 +60,7 @@ Outputs:
        explicit caveat that none pass FDR<0.05.
 """
 
+import gzip
 import json
 
 import gseapy as gp
@@ -97,13 +109,20 @@ def load_gene_sets():
     """Fetch MOUSE Enrichr libraries via get_library() directly (bypasses the
     gseapy 1.1.11 _download_libraries IndexError bug -- see module docstring).
 
+    Every fetched library is cached verbatim to
+    results/enrichment/raw/enrichr_libraries.json.gz (keyed by library name)
+    before it is merged, so the one remaining uncached outbound call in the
+    enrichment layer is now on disk for audit / offline replay.
+
     Returns (merged_gene_sets_dict, per_library_n_terms, term_to_source_map).
     """
     libs = {}
     per_library_n_terms = {}
     term_to_source = {}
+    raw_by_library = {}
     for name in LIBRARIES:
         d = gp.get_library(name=name, organism="Mouse")
+        raw_by_library[name] = d
         per_library_n_terms[name] = len(d)
         overlap = set(libs) & set(d)
         if overlap:
@@ -111,6 +130,22 @@ def load_gene_sets():
                   f"{name} and already-loaded libraries; later library wins.")
         libs.update(d)
         term_to_source.update({term: name for term in d})
+
+    cache_path = ec.RAW_DIR / "enrichr_libraries.json.gz"
+    with gzip.open(cache_path, "wt", encoding="utf-8") as fh:
+        json.dump(
+            {
+                "_source": "gseapy.get_library(name=..., organism='Mouse')",
+                "_gseapy_version": gp.__version__,
+                "_n_terms_per_library": per_library_n_terms,
+                "libraries": raw_by_library,
+            },
+            fh,
+            indent=2,
+        )
+    print(f"[gsea] cached Enrichr libraries -> {cache_path.name} "
+          f"({cache_path.stat().st_size / 1024:.0f} KB on disk)")
+
     return libs, per_library_n_terms, term_to_source
 
 

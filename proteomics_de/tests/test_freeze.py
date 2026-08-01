@@ -23,8 +23,9 @@ def test_manifest_exists_and_parses():
     entries = freeze.read_manifest(MANIFEST)
     # Deliberately an explicit number: adding a scientific artifact should be a
     # conscious act that updates this manifest, not something silently absorbed.
-    # 62 baseline + 2 research1.md §1 contract files (P2) + the D7 staleness marker.
-    assert len(entries) == 65, f"expected 65 frozen artifacts, got {len(entries)}"
+    # Grew during the D7 enrichment re-run: the previously-uncached STRING and
+    # g:Profiler responses are now recorded under results/enrichment/raw/.
+    assert len(entries) == 70, f"expected 70 frozen artifacts, got {len(entries)}"
     modes = {mode for _sha, mode in entries.values()}
     assert modes == {"raw", "svg-canon"}, modes
 
@@ -45,7 +46,7 @@ def test_tree_matches_manifest():
     assert not changed, f"frozen outputs drifted: {changed}"
     assert not missing, f"frozen outputs missing: {missing}"
     assert not extra, f"untracked artifacts present: {extra}"
-    assert len(ok) == 65
+    assert len(ok) == 70
 
 
 def test_svg_canonicalization_absorbs_regeneration_noise(tmp_path):

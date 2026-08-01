@@ -6,17 +6,26 @@ POSTs to https://biit.cs.ut.ee/gprofiler/api/gost/profile/, organism="mmusculus"
 significance_threshold_method="g_SCS", domain_scope="custom" with a CUSTOM
 background = the detected proteome (2554-row union of foldchange_all.csv and
 single_condition_proteins.csv; see enrich_common.load_background_and_queries).
-UP (206) and DOWN (509) gene sets are queried SEPARATELY (opposite biology).
+UP (509) and DOWN (206) gene sets are queried SEPARATELY (opposite biology).
+Those sizes were 206 UP / 509 DOWN before DECISIONS_LOG D7 corrected the
+inverted control/treated assignment; the two query sets swapped wholesale. The
+counts are read from tests/expected/frozen_counts.json, never hardcoded.
 
-Custom background matters here: with g:Profiler's default whole-genome
-background the same UP list returns 196 "significant" GO/KEGG/REAC terms
-(e.g. GO:CC "cytoplasm", p=1.9e-23) -- but that is inflation from comparing
+Custom background matters here, and it is the whole point. Against
+g:Profiler's DEFAULT whole-genome background the same two lists return 326
+(UP) and 196 (DOWN) "significant" GO/KEGG/REAC terms, both topped by GO:CC
+"cytoplasm" (p=9.0e-70 and p=1.9e-23) -- but that is inflation from comparing
 against ~20-25k background genes when only ~2.5k proteins were even detectable
 in this experiment. Restricting to the CUSTOM detected-proteome background
-(the scientifically correct comparison) removes essentially all of that
-signal: with domain_scope="custom" as specified, 0/0 terms pass g:SCS-corrected
-significance at 0.05 in either direction (best corrected p ~=0.68-1.0). This
-null result is reported honestly below, not papered over.
+(the scientifically correct comparison) removes ALL of that signal: with
+domain_scope="custom" as specified, 0/0 terms pass g:SCS-corrected
+significance at 0.05 in either direction (best corrected p = 0.703 DOWN,
+1.000 UP). This null result is reported honestly below, not papered over.
+
+The default-background counts moved with the D7 correction because the query
+sets swapped: the 196-terms/p=1.9e-23 figure recorded pre-D7 for the UP list
+now belongs to the DOWN list, unchanged to three significant figures, which is
+itself a check that the swap is a clean relabelling and nothing else.
 
 Also produces results/figures/ora_dotplot.png/.svg: since 0 terms are
 significant, the dotplot shows the best (still non-significant) g:SCS-corrected
@@ -28,6 +37,19 @@ Outputs:
     -- raw API response for the EXACT spec'd call (all_results=False,
        no_evidences=False; small/empty here because nothing is significant,
        but carries full query/background/domain metadata for audit).
+  results/enrichment/raw/gprofiler_up_all.json, gprofiler_down_all.json
+    -- raw API response for the all_results=True / no_evidences=True ranking
+       call (every tested term with its g:SCS-corrected p-value, no gene-level
+       evidence vectors). Previously discarded in memory; cached now so a
+       future offline-replay mode has every response this script depends on.
+  results/enrichment/raw/gprofiler_up_all_evidence.json.gz,
+  gprofiler_down_all_evidence.json.gz
+    -- raw API response for the all_results=True / no_evidences=FALSE
+       gene-level call behind ora_top_terms_detail.json. Gzipped because the
+       uncompressed payload carries one boolean vector per term per query gene
+       (tens of MB); gzip takes it to a committable size. The module previously
+       documented this response as deliberately not persisted -- that made
+       offline replay impossible, so it is persisted compressed instead.
   results/enrichment/ora_up.csv, ora_down.csv
     -- source, term_id, term_name, p_value, term_size, query_size,
        intersection_size, intersecting_genes for rows with significant==True
@@ -41,6 +63,7 @@ Outputs:
        gene-level intersecting-gene lists. Consumed by enrich/upset.py.
 """
 
+import gzip
 import json
 import time
 
@@ -89,9 +112,52 @@ def _post(query, background, all_results, no_evidences, retries=3):
     raise RuntimeError(f"g:Profiler request failed after {retries} attempts: {last_err}")
 
 
+def _cache_raw(response, filename, gzipped=False):
+    """Persist a raw g:Profiler response under results/enrichment/raw/.
+
+    Every outbound call this module makes is cached, so an offline-replay mode
+    can be built without re-querying g:Profiler. Large responses are gzipped.
+    """
+    path = ec.RAW_DIR / filename
+    payload = json.dumps(response, indent=2)
+    if gzipped:
+        with gzip.open(path, "wt", encoding="utf-8") as fh:
+            fh.write(payload)
+    else:
+        path.write_text(payload)
+    print(f"[ora] cached raw response -> {path.name} "
+          f"({path.stat().st_size / 1024:.0f} KB on disk)")
+    return path
+
+
 def _query_order(response):
-    qm = response["meta"]["query_metadata"]["queries"]
-    return qm.get("query_1") or next(iter(qm.values()))
+    """Gene labels aligned 1:1 with each term's ``intersections`` vector.
+
+    NOT the submitted query list. g:Profiler's ``intersections`` booleans are
+    indexed by the genes it successfully MAPPED, not by what was submitted: for
+    the UP query 509 symbols go out and 31 fail to map, so the vectors come back
+    length 473. Zipping those 473 booleans against the 509 submitted symbols
+    (what this function used to do) stays correct only up to the first failed
+    symbol and silently mislabels everything after it -- e.g. GO:MF
+    "mannosyltransferase activity" was credited to `Snrpd1` when the gene
+    g:Profiler actually matched is `Tmtc3`.
+
+    The authoritative order is ``meta.genes_metadata.query.<q>.ensgs``; the
+    sibling ``mapping`` ({submitted symbol: [ensg, ...]}) inverts it back to
+    symbols. An ENSG with no symbol (or several) keeps the ENSG id so the
+    ambiguity is visible rather than guessed at.
+    """
+    gm = response["meta"]["genes_metadata"]["query"]
+    entry = gm.get("query_1") or next(iter(gm.values()))
+    ensgs = entry["ensgs"]
+    by_ensg = {}
+    for symbol, mapped in entry["mapping"].items():
+        for ensg in mapped:
+            by_ensg.setdefault(ensg, []).append(symbol)
+    return [
+        by_ensg[e][0] if len(by_ensg.get(e, [])) == 1 else e
+        for e in ensgs
+    ]
 
 
 def _rows_from_result(result_list, query_order, only_significant):
@@ -102,6 +168,13 @@ def _rows_from_result(result_list, query_order, only_significant):
         inter = term.get("intersections")
         genes = []
         if inter:
+            # Never let zip() paper over a length mismatch: a short/long
+            # evidence vector means the alignment assumption above broke.
+            assert len(inter) == len(query_order), (
+                f"intersections vector for {term.get('native')} has "
+                f"{len(inter)} entries but {len(query_order)} mapped genes "
+                "were resolved -- gene labels would be misaligned"
+            )
             for gene, ev in zip(query_order, inter):
                 if ev:
                     genes.append(gene)
@@ -121,16 +194,16 @@ def _rows_from_result(result_list, query_order, only_significant):
 
 
 def run_direction(direction, query, background):
-    """Two API calls for this direction:
-      1. spec-literal (all_results=False, no_evidences=False) -> saved raw JSON
-         + ora_{direction}.csv (significant-only).
-      2. all_results=True, no_evidences=True -> fast/small, used only to rank
-         every tested term by corrected p_value for reporting (not saved raw).
+    """Two API calls for this direction, BOTH cached to raw/:
+      1. spec-literal (all_results=False, no_evidences=False) -> raw
+         gprofiler_{direction}.json + ora_{direction}.csv (significant-only).
+      2. all_results=True, no_evidences=True -> fast/small, ranks every tested
+         term by corrected p_value for reporting -> raw
+         gprofiler_{direction}_all.json.
     """
     print(f"[ora] querying g:Profiler for {direction.upper()} (n={len(query)})...")
     resp_primary = _post(query, background, all_results=False, no_evidences=False)
-    raw_path = ec.RAW_DIR / f"gprofiler_{direction}.json"
-    raw_path.write_text(json.dumps(resp_primary, indent=2))
+    _cache_raw(resp_primary, f"gprofiler_{direction}.json")
 
     qorder = _query_order(resp_primary)
     sig_rows = _rows_from_result(resp_primary["result"], qorder, only_significant=True)
@@ -140,6 +213,7 @@ def run_direction(direction, query, background):
 
     print(f"[ora] querying g:Profiler for {direction.upper()} (all terms, for ranking)...")
     resp_all = _post(query, background, all_results=True, no_evidences=True)
+    _cache_raw(resp_all, f"gprofiler_{direction}_all.json")
     qorder_all = _query_order(resp_all)
     all_rows = _rows_from_result(resp_all["result"], qorder_all, only_significant=False)
 
@@ -154,10 +228,16 @@ def fetch_gene_level_for_top_terms(direction, query, background, top_term_ids, t
     """Targeted re-fetch WITH gene-level evidence (no_evidences=False,
     all_results=True), used only to harvest intersecting-gene lists for the
     handful of top-ranked (sub-threshold) terms chosen for the UpSet plot /
-    detail JSON. The full response (~8-20MB for this dataset) is NOT persisted
-    to disk -- only the small extracted subset is.
+    detail JSON.
+
+    The full response (~8-20MB uncompressed for this dataset -- one boolean
+    vector per term per query gene) IS persisted, gzipped, as
+    raw/gprofiler_{direction}_all_evidence.json.gz. It used to be dropped on
+    the floor for size reasons, which meant this script could never be replayed
+    offline; gzip makes keeping it cheap.
     """
     resp = _post(query, background, all_results=True, no_evidences=False)
+    _cache_raw(resp, f"gprofiler_{direction}_all_evidence.json.gz", gzipped=True)
     qorder = _query_order(resp)
     wanted = set(top_term_ids)
     out = {}
@@ -165,6 +245,11 @@ def fetch_gene_level_for_top_terms(direction, query, background, top_term_ids, t
         if term["native"] not in wanted:
             continue
         inter = term.get("intersections") or []
+        assert len(inter) == len(qorder), (
+            f"intersections vector for {term['native']} has {len(inter)} "
+            f"entries but {len(qorder)} mapped genes were resolved -- gene "
+            "labels would be misaligned"
+        )
         genes = [g for g, ev in zip(qorder, inter) if ev]
         out[term["native"]] = genes
     return out
@@ -328,17 +413,31 @@ def main():
         "n_terms_down": len(out["down"]["sig_rows"]),
         "note": (
             "0 terms pass g:SCS-corrected significance (user_threshold=0.05) in "
-            "either direction using the correct CUSTOM background (detected "
-            "proteome, n=2554 rows / "
-            f"{len(background)} unique symbols). For comparison, the SAME UP "
-            "query against g:Profiler's default whole-genome background "
-            "returns 196 nominally 'significant' terms (e.g. GO:CC 'cytoplasm', "
-            "p=1.9e-23) -- an artifact of comparing detected proteins to the "
-            "whole genome rather than to what could have been detected. This "
-            "0/0 result is a SEPARATE statistical test from per-protein FDR "
-            "(0/1938 significant, limma) and should not be conflated with it; "
+            f"either direction using the correct CUSTOM background (detected "
+            f"proteome, {list_meta['background_row_union_n']} rows / "
+            f"{len(background)} unique symbols). For comparison, the SAME two "
+            "queries against g:Profiler's default whole-genome background "
+            "return 326 (UP) and 196 (DOWN) nominally 'significant' terms, "
+            "both topped by GO:CC 'cytoplasm' (p=9.0e-70 and p=1.9e-23) -- an "
+            "artifact of comparing detected proteins to the whole genome "
+            "rather than to what could have been detected. This 0/0 result is "
+            "a SEPARATE statistical test from per-protein FDR (0/1938 "
+            "significant, limma) and should not be conflated with it; "
             "reported honestly as a null finding, not an error."
         ),
+        "default_background_comparison": {
+            "_what": (
+                "Diagnostic only -- NOT how this pipeline computes its results. "
+                "Same queries, same sources, same g:SCS threshold, but "
+                "domain_scope='annotated' (g:Profiler's whole-genome default) "
+                "instead of the detected-proteome custom background."
+            ),
+            "n_significant_up_default_background": 326,
+            "n_significant_down_default_background": 196,
+            "top_term_both_directions": "GO:CC cytoplasm",
+            "top_p_up": 9.01e-70,
+            "top_p_down": 1.92e-23,
+        },
         "best_subthreshold_term_up": out["up"]["all_rows"][0] if out["up"]["all_rows"] else None,
         "best_subthreshold_term_down": out["down"]["all_rows"][0] if out["down"]["all_rows"] else None,
         "top5_subthreshold_terms_up": out["up"]["all_rows"][:5],
@@ -357,10 +456,14 @@ def main():
         "caption": (
             "Top 5 GO/KEGG/Reactome terms per direction from g:Profiler g:GOSt "
             "(organism=mmusculus, sources=GO:BP/MF/CC+KEGG+REAC, custom "
-            "background = the 2554-row detected proteome, g:SCS-corrected "
-            f"p-values, user_threshold=0.05). 0/0 terms pass significance in "
+            f"background = the {list_meta['background_row_union_n']}-row "
+            "detected proteome, g:SCS-corrected p-values, user_threshold=0.05). "
+            "0/0 terms pass significance in "
             "either direction (dashed line = the p=0.05 cutoff nothing "
-            "reaches); dot size = intersection_size. Shown as the best "
+            "reaches); dot size = intersection_size. The same two queries "
+            "against g:Profiler's DEFAULT whole-genome background would return "
+            "326 (UP) and 196 (DOWN) 'significant' terms -- background "
+            "inflation this pipeline deliberately avoids. Shown as the best "
             "available leads for hypothesis generation, NOT as significant "
             "pathway enrichment. This is a separate statistical test from the "
             "non-significant per-protein FDR (0/1938 at FDR<0.05)."

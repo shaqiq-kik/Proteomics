@@ -2,85 +2,85 @@
   {
     "file": "figures/ora_dotplot.png",
     "title": "ORA top terms \u2014 UP vs. DOWN (g:Profiler, custom background)",
-    "caption": "Top 5 GO/KEGG/Reactome terms per direction from g:Profiler g:GOSt (organism=mmusculus, sources=GO:BP/MF/CC+KEGG+REAC, custom background = the 2554-row detected proteome, g:SCS-corrected p-values, user_threshold=0.05). 0/0 terms pass significance in either direction (dashed line = the p=0.05 cutoff nothing reaches); dot size = intersection_size. Shown as the best available leads for hypothesis generation, NOT as significant pathway enrichment. This is a separate statistical test from the non-significant per-protein FDR (0/1938 at FDR<0.05).",
+    "caption": "Top 5 GO/KEGG/Reactome terms per direction from g:Profiler g:GOSt (organism=mmusculus, sources=GO:BP/MF/CC+KEGG+REAC, custom background = the 2554-row detected proteome, g:SCS-corrected p-values, user_threshold=0.05). 0/0 terms pass significance in either direction (dashed line = the p=0.05 cutoff nothing reaches); dot size = intersection_size. The same two queries against g:Profiler's DEFAULT whole-genome background would return 326 (UP) and 196 (DOWN) 'significant' terms -- background inflation this pipeline deliberately avoids. Shown as the best available leads for hypothesis generation, NOT as significant pathway enrichment. This is a separate statistical test from the non-significant per-protein FDR (0/1938 at FDR<0.05).",
     "key_numbers": {
       "n_significant_up": 0,
       "n_significant_down": 0,
       "background_size": 2532,
-      "up_query_size": 206,
-      "down_query_size": 509,
-      "best_p_up": 0.7029801000701202,
-      "best_p_down": 1.0,
+      "up_query_size": 509,
+      "down_query_size": 206,
+      "best_p_up": 1.0,
+      "best_p_down": 0.7029801000701202,
       "top_terms_shown": [
-        {
-          "term_name": "SNARE binding",
-          "source": "GO:MF",
-          "direction": "DOWN",
-          "p_value": 1.0,
-          "intersection_size": 1
-        },
-        {
-          "term_name": "microfilament motor activity",
-          "source": "GO:MF",
-          "direction": "DOWN",
-          "p_value": 1.0,
-          "intersection_size": 1
-        },
-        {
-          "term_name": "succinate dehydrogenase activity",
-          "source": "GO:MF",
-          "direction": "DOWN",
-          "p_value": 1.0,
-          "intersection_size": 1
-        },
-        {
-          "term_name": "tRNA binding",
-          "source": "GO:MF",
-          "direction": "DOWN",
-          "p_value": 1.0,
-          "intersection_size": 3
-        },
-        {
-          "term_name": "mannosyltransferase activity",
-          "source": "GO:MF",
-          "direction": "DOWN",
-          "p_value": 1.0,
-          "intersection_size": 1
-        },
         {
           "term_name": "mRNA Splicing - Major Pathway",
           "source": "REAC",
-          "direction": "UP",
+          "direction": "DOWN",
           "p_value": 1.0,
           "intersection_size": 7
         },
         {
           "term_name": "mRNA Splicing - Minor Pathway",
           "source": "REAC",
-          "direction": "UP",
+          "direction": "DOWN",
           "p_value": 1.0,
           "intersection_size": 1
         },
         {
           "term_name": "mRNA decay by 5' to 3' exoribonuclease",
           "source": "REAC",
-          "direction": "UP",
+          "direction": "DOWN",
           "p_value": 1.0,
           "intersection_size": 2
         },
         {
           "term_name": "p130Cas linkage to MAPK signaling for integrins",
           "source": "REAC",
-          "direction": "UP",
+          "direction": "DOWN",
           "p_value": 1.0,
           "intersection_size": 2
         },
         {
           "term_name": "dephosphorylation",
           "source": "GO:BP",
-          "direction": "UP",
+          "direction": "DOWN",
           "p_value": 0.7029801000701202,
           "intersection_size": 11
+        },
+        {
+          "term_name": "SNARE binding",
+          "source": "GO:MF",
+          "direction": "UP",
+          "p_value": 1.0,
+          "intersection_size": 1
+        },
+        {
+          "term_name": "microfilament motor activity",
+          "source": "GO:MF",
+          "direction": "UP",
+          "p_value": 1.0,
+          "intersection_size": 1
+        },
+        {
+          "term_name": "succinate dehydrogenase activity",
+          "source": "GO:MF",
+          "direction": "UP",
+          "p_value": 1.0,
+          "intersection_size": 1
+        },
+        {
+          "term_name": "tRNA binding",
+          "source": "GO:MF",
+          "direction": "UP",
+          "p_value": 1.0,
+          "intersection_size": 3
+        },
+        {
+          "term_name": "mannosyltransferase activity",
+          "source": "GO:MF",
+          "direction": "UP",
+          "p_value": 1.0,
+          "intersection_size": 1
         }
       ]
     }
@@ -88,153 +88,153 @@
   {
     "file": "figures/gsea_top.png",
     "title": "GSEA prerank \u2014 top pathways by NES (mouse GO-BP + KEGG)",
-    "caption": "Preranked GSEA (gseapy 1.1.11, seed=42, 1000 permutations) over all 1938 qc_limma.csv proteins ranked by sign(limma_log2FC) * -log10(p_value), against GO_Biological_Process_2021 + KEGG_2019_Mouse (mouse Enrichr libraries; 568 gene sets tested after min_size=15/max_size=500 filtering). Top 10 pathways by NES on each side shown (red = NES>0, enriched toward the UP-scoring end; blue = NES<0, toward the DOWN-scoring end). Minimum FDR q-value = 0.125 -- NO pathway passes FDR<0.05; 40 pass an uncorrected nominal p<0.05 and are shown as hypothesis-generating leads only. This GSEA FDR is a separate statistical test from the non-significant per-protein FDR (0/1938 at FDR<0.05, limma) and must not be conflated with it.",
+    "caption": "Preranked GSEA (gseapy 1.1.11, seed=42, 1000 permutations) over all 1938 qc_limma.csv proteins ranked by sign(limma_log2FC) * -log10(p_value), against GO_Biological_Process_2021 + KEGG_2019_Mouse (mouse Enrichr libraries; 568 gene sets tested after min_size=15/max_size=500 filtering). Top 10 pathways by NES on each side shown (red = NES>0, enriched toward the UP-scoring end; blue = NES<0, toward the DOWN-scoring end). Minimum FDR q-value = 0.116 -- NO pathway passes FDR<0.05; 37 pass an uncorrected nominal p<0.05 and are shown as hypothesis-generating leads only. This GSEA FDR is a separate statistical test from the non-significant per-protein FDR (0/1938 at FDR<0.05, limma) and must not be conflated with it.",
     "key_numbers": {
       "n_terms_tested": 568,
       "n_fdr_lt_0.05": 0,
-      "n_fdr_lt_0.25": 17,
-      "n_nom_p_lt_0.05": 40,
-      "min_fdr_q_value": 0.1248,
+      "n_fdr_lt_0.25": 15,
+      "n_nom_p_lt_0.05": 37,
+      "min_fdr_q_value": 0.1157,
       "top_terms_shown": [
         {
-          "term": "mitotic cell cycle phase transition (GO:0044772)",
+          "term": "positive regulation of secretion by cell (GO:1903532)",
           "source": "GO_Biological_Process_2021",
-          "nes": -1.6308475748861135,
-          "nom_p_value": 0.006321112515802781,
-          "fdr_q_value": 1.0
+          "nes": -2.026291906667093,
+          "nom_p_value": 0.0,
+          "fdr_q_value": 0.11574037410710042
         },
         {
-          "term": "Chemical carcinogenesis",
+          "term": "regulation of protein secretion (GO:0050708)",
+          "source": "GO_Biological_Process_2021",
+          "nes": -1.9213565593368287,
+          "nom_p_value": 0.0,
+          "fdr_q_value": 0.1479718706938879
+        },
+        {
+          "term": "positive regulation of transmembrane receptor protein serine/threonine kinase signaling pathway (GO:0090100)",
+          "source": "GO_Biological_Process_2021",
+          "nes": -1.8341550202015517,
+          "nom_p_value": 0.011538461538461539,
+          "fdr_q_value": 0.2226903400541679
+        },
+        {
+          "term": "positive regulation of protein secretion (GO:0050714)",
+          "source": "GO_Biological_Process_2021",
+          "nes": -1.7866404478728342,
+          "nom_p_value": 0.007936507936507936,
+          "fdr_q_value": 0.2545555696342873
+        },
+        {
+          "term": "positive regulation of protein transport (GO:0051222)",
+          "source": "GO_Biological_Process_2021",
+          "nes": -1.766038732753257,
+          "nom_p_value": 0.003703703703703704,
+          "fdr_q_value": 0.2402711563742338
+        },
+        {
+          "term": "regulation of GTPase activity (GO:0043087)",
+          "source": "GO_Biological_Process_2021",
+          "nes": -1.735117739304315,
+          "nom_p_value": 0.004048582995951417,
+          "fdr_q_value": 0.24661978448981314
+        },
+        {
+          "term": "positive regulation of protein localization to nucleus (GO:1900182)",
+          "source": "GO_Biological_Process_2021",
+          "nes": -1.721436979928352,
+          "nom_p_value": 0.007692307692307693,
+          "fdr_q_value": 0.23252722537610956
+        },
+        {
+          "term": "Rheumatoid arthritis",
           "source": "KEGG_2019_Mouse",
-          "nes": -1.5897643392950234,
-          "nom_p_value": 0.024896265560165973,
-          "fdr_q_value": 1.0
+          "nes": -1.7132546723489064,
+          "nom_p_value": 0.00819672131147541,
+          "fdr_q_value": 0.21463246590747107
         },
         {
-          "term": "chromosome organization (GO:0051276)",
+          "term": "positive regulation of GTPase activity (GO:0043547)",
           "source": "GO_Biological_Process_2021",
-          "nes": -1.5092062097708532,
-          "nom_p_value": 0.028225806451612902,
-          "fdr_q_value": 1.0
+          "nes": -1.6794493839802276,
+          "nom_p_value": 0.01824817518248175,
+          "fdr_q_value": 0.24580585780832861
         },
         {
-          "term": "Tight junction",
-          "source": "KEGG_2019_Mouse",
-          "nes": -1.4918782855023824,
-          "nom_p_value": 0.02729528535980149,
-          "fdr_q_value": 1.0
-        },
-        {
-          "term": "post-Golgi vesicle-mediated transport (GO:0006892)",
+          "term": "negative regulation of transmembrane receptor protein serine/threonine kinase signaling pathway (GO:0090101)",
           "source": "GO_Biological_Process_2021",
-          "nes": -1.4647093122442905,
-          "nom_p_value": 0.041720990873533245,
-          "fdr_q_value": 1.0
+          "nes": -1.671716840286949,
+          "nom_p_value": 0.011235955056179775,
+          "fdr_q_value": 0.2327993094382058
         },
         {
-          "term": "cell cycle G2/M phase transition (GO:0044839)",
+          "term": "endoplasmic reticulum organization (GO:0007029)",
           "source": "GO_Biological_Process_2021",
-          "nes": -1.4571117274064933,
-          "nom_p_value": 0.048366013071895426,
-          "fdr_q_value": 1.0
-        },
-        {
-          "term": "G2/M transition of mitotic cell cycle (GO:0000086)",
-          "source": "GO_Biological_Process_2021",
-          "nes": -1.4571117274064933,
-          "nom_p_value": 0.048366013071895426,
-          "fdr_q_value": 1.0
-        },
-        {
-          "term": "Pyruvate metabolism",
-          "source": "KEGG_2019_Mouse",
-          "nes": -1.4526168964086414,
-          "nom_p_value": 0.04155495978552279,
+          "nes": 1.4136053559630204,
+          "nom_p_value": 0.06703146374829001,
           "fdr_q_value": 1.0
         },
         {
           "term": "gene expression (GO:0010467)",
           "source": "GO_Biological_Process_2021",
-          "nes": -1.4184121239916494,
-          "nom_p_value": 0.019318181818181818,
+          "nes": 1.4181287923980566,
+          "nom_p_value": 0.025583982202447165,
           "fdr_q_value": 1.0
         },
         {
-          "term": "endoplasmic reticulum organization (GO:0007029)",
-          "source": "GO_Biological_Process_2021",
-          "nes": -1.3982518153539971,
-          "nom_p_value": 0.08183079056865465,
-          "fdr_q_value": 1.0
-        },
-        {
-          "term": "iron ion homeostasis (GO:0055072)",
-          "source": "GO_Biological_Process_2021",
-          "nes": 1.6768004547171678,
-          "nom_p_value": 0.012,
-          "fdr_q_value": 0.20881703153243622
-        },
-        {
-          "term": "Rheumatoid arthritis",
+          "term": "Pyruvate metabolism",
           "source": "KEGG_2019_Mouse",
-          "nes": 1.6894124324291886,
-          "nom_p_value": 0.012345679012345678,
-          "fdr_q_value": 0.21203722300328043
+          "nes": 1.4398562325750361,
+          "nom_p_value": 0.04933333333333333,
+          "fdr_q_value": 1.0
         },
         {
-          "term": "regulation of GTPase activity (GO:0043087)",
+          "term": "G2/M transition of mitotic cell cycle (GO:0000086)",
           "source": "GO_Biological_Process_2021",
-          "nes": 1.7250975910355273,
-          "nom_p_value": 0.008,
-          "fdr_q_value": 0.18689495882707371
+          "nes": 1.4551310106073327,
+          "nom_p_value": 0.04247104247104247,
+          "fdr_q_value": 1.0
         },
         {
-          "term": "positive regulation of protein localization to nucleus (GO:1900182)",
+          "term": "cell cycle G2/M phase transition (GO:0044839)",
           "source": "GO_Biological_Process_2021",
-          "nes": 1.7340606895240853,
-          "nom_p_value": 0.019305019305019305,
-          "fdr_q_value": 0.1959716523685192
+          "nes": 1.4551310106073327,
+          "nom_p_value": 0.04247104247104247,
+          "fdr_q_value": 1.0
         },
         {
-          "term": "positive regulation of protein transport (GO:0051222)",
-          "source": "GO_Biological_Process_2021",
-          "nes": 1.7439351436663633,
-          "nom_p_value": 0.011904761904761904,
-          "fdr_q_value": 0.21476200040168708
+          "term": "Tight junction",
+          "source": "KEGG_2019_Mouse",
+          "nes": 1.4932990578778813,
+          "nom_p_value": 0.023255813953488372,
+          "fdr_q_value": 1.0
         },
         {
-          "term": "negative regulation of transmembrane receptor protein serine/threonine kinase signaling pathway (GO:0090101)",
+          "term": "post-Golgi vesicle-mediated transport (GO:0006892)",
           "source": "GO_Biological_Process_2021",
-          "nes": 1.7543211177063973,
-          "nom_p_value": 0.010752688172043012,
-          "fdr_q_value": 0.2383932516569592
+          "nes": 1.503978646610255,
+          "nom_p_value": 0.03648648648648649,
+          "fdr_q_value": 1.0
         },
         {
-          "term": "positive regulation of protein secretion (GO:0050714)",
+          "term": "chromosome organization (GO:0051276)",
           "source": "GO_Biological_Process_2021",
-          "nes": 1.7733591602744012,
-          "nom_p_value": 0.004166666666666667,
-          "fdr_q_value": 0.2574914641494276
+          "nes": 1.507031666694856,
+          "nom_p_value": 0.023743016759776536,
+          "fdr_q_value": 1.0
         },
         {
-          "term": "positive regulation of transmembrane receptor protein serine/threonine kinase signaling pathway (GO:0090100)",
+          "term": "Chemical carcinogenesis",
+          "source": "KEGG_2019_Mouse",
+          "nes": 1.5816631572538151,
+          "nom_p_value": 0.019858156028368795,
+          "fdr_q_value": 1.0
+        },
+        {
+          "term": "mitotic cell cycle phase transition (GO:0044772)",
           "source": "GO_Biological_Process_2021",
-          "nes": 1.8798609563174036,
+          "nes": 1.6311874553935832,
           "nom_p_value": 0.0,
-          "fdr_q_value": 0.13673428399276963
-        },
-        {
-          "term": "regulation of protein secretion (GO:0050708)",
-          "source": "GO_Biological_Process_2021",
-          "nes": 1.9327176946798088,
-          "nom_p_value": 0.0,
-          "fdr_q_value": 0.12484434625426792
-        },
-        {
-          "term": "positive regulation of secretion by cell (GO:1903532)",
-          "source": "GO_Biological_Process_2021",
-          "nes": 1.9939703205552186,
-          "nom_p_value": 0.0,
-          "fdr_q_value": 0.13673428399276963
+          "fdr_q_value": 1.0
         }
       ]
     }
@@ -242,7 +242,7 @@
   {
     "file": "figures/upset.png",
     "title": "UpSet plot \u2014 gene overlap across top ORA leads (UP + DOWN)",
-    "caption": "UpSet plot of gene-level overlap across the top 5 UP-side + top 5 DOWN-side g:Profiler ORA terms (by g:SCS-corrected p-value; NONE pass significance at 0.05 -- see enrich/ora.py). Chosen as the most defensible set-intersection view available since there are no significant pathways to rank by: these are the best (still non-significant) leads per direction, widened from a literal top-3+3 (which had zero overlap of any kind) so the one genuine within-direction overlap is visible. Per-pathway total bars are colored by direction (red = UP-side term, blue = DOWN-side term). UP-side and DOWN-side terms never share genes here by construction (UP/DOWN are mutually exclusive protein calls), so the plot shows two disjoint intersection clusters, not a display error; real overlap WITHIN a direction is visible (e.g. the two UP-side Reactome mRNA terms share Prosc and Tpd52l2). Hypothesis-generating only.",
+    "caption": "UpSet plot of gene-level overlap across the top 5 UP-side + top 5 DOWN-side g:Profiler ORA terms (by g:SCS-corrected p-value; NONE pass significance at 0.05 -- see enrich/ora.py). Chosen as the most defensible set-intersection view available since there are no significant pathways to rank by: these are the best (still non-significant) leads per direction, widened from a literal top-3+3 (which had zero overlap of any kind) so the one genuine within-direction overlap is visible. Per-pathway total bars are colored by direction (red = UP-side term, blue = DOWN-side term). UP-side and DOWN-side terms never share genes here by construction (UP/DOWN are mutually exclusive protein calls), so the plot shows two disjoint intersection clusters, not a display error; real overlap WITHIN a direction is visible (e.g. the DOWN-side Reactome mRNA terms share the Sm-like genes Lsm2/Lsm6, and Snrpg between the minor and major splicing pathways). Hypothesis-generating only.",
     "key_numbers": {
       "n_sets_shown": 10,
       "n_up_terms": 5,
@@ -252,6 +252,58 @@
       "terms": [
         {
           "direction": "UP",
+          "source": "GO:MF",
+          "term_name": "mannosyltransferase activity",
+          "n_genes": 1,
+          "genes": [
+            "Tmtc3"
+          ],
+          "p_value_g_SCS": 1.0
+        },
+        {
+          "direction": "UP",
+          "source": "GO:MF",
+          "term_name": "tRNA binding",
+          "n_genes": 3,
+          "genes": [
+            "Trnt1",
+            "Eif2s3x",
+            "Eif1ax"
+          ],
+          "p_value_g_SCS": 1.0
+        },
+        {
+          "direction": "UP",
+          "source": "GO:MF",
+          "term_name": "succinate dehydrogenase activity",
+          "n_genes": 1,
+          "genes": [
+            "Sdha"
+          ],
+          "p_value_g_SCS": 1.0
+        },
+        {
+          "direction": "UP",
+          "source": "GO:MF",
+          "term_name": "microfilament motor activity",
+          "n_genes": 1,
+          "genes": [
+            "Myh9"
+          ],
+          "p_value_g_SCS": 1.0
+        },
+        {
+          "direction": "UP",
+          "source": "GO:MF",
+          "term_name": "SNARE binding",
+          "n_genes": 1,
+          "genes": [
+            "Napa"
+          ],
+          "p_value_g_SCS": 1.0
+        },
+        {
+          "direction": "DOWN",
           "source": "GO:BP",
           "term_name": "dephosphorylation",
           "n_genes": 11,
@@ -260,113 +312,61 @@
             "Ppp2ca",
             "Ppp1cc",
             "Ppp1ca",
-            "Nid2",
-            "Ppif",
-            "Sh3bgrl3",
-            "Lsm8",
-            "Tsc22d1",
-            "Aldh1l1",
-            "Galnt1"
+            "Ppp5c",
+            "Ppm1l",
+            "Lhpp",
+            "Ppm1a",
+            "Thnsl2",
+            "Ptp4a2",
+            "Timm50"
           ],
           "p_value_g_SCS": 0.7029801000701202
         },
         {
-          "direction": "UP",
+          "direction": "DOWN",
           "source": "REAC",
           "term_name": "p130Cas linkage to MAPK signaling for integrins",
           "n_genes": 2,
           "genes": [
             "Fga",
-            "Col18a1"
+            "Rap1b"
           ],
           "p_value_g_SCS": 1.0
         },
         {
-          "direction": "UP",
+          "direction": "DOWN",
           "source": "REAC",
           "term_name": "mRNA decay by 5' to 3' exoribonuclease",
           "n_genes": 2,
           "genes": [
-            "Prosc",
-            "Tpd52l2"
+            "Lsm2",
+            "Lsm6"
           ],
           "p_value_g_SCS": 1.0
         },
         {
-          "direction": "UP",
+          "direction": "DOWN",
           "source": "REAC",
           "term_name": "mRNA Splicing - Minor Pathway",
           "n_genes": 1,
           "genes": [
-            "Fabp4"
+            "Snrpg"
           ],
           "p_value_g_SCS": 1.0
         },
         {
-          "direction": "UP",
+          "direction": "DOWN",
           "source": "REAC",
           "term_name": "mRNA Splicing - Major Pathway",
           "n_genes": 7,
           "genes": [
-            "Prosc",
-            "Tpd52l2",
-            "Sec22b",
-            "Fabp4",
-            "Sephs1",
-            "Heph",
-            "Mdp1"
-          ],
-          "p_value_g_SCS": 1.0
-        },
-        {
-          "direction": "DOWN",
-          "source": "GO:MF",
-          "term_name": "mannosyltransferase activity",
-          "n_genes": 1,
-          "genes": [
-            "Snrpd1"
-          ],
-          "p_value_g_SCS": 1.0
-        },
-        {
-          "direction": "DOWN",
-          "source": "GO:MF",
-          "term_name": "tRNA binding",
-          "n_genes": 3,
-          "genes": [
-            "Ubr2",
-            "Ptx3",
-            "P4ha1"
-          ],
-          "p_value_g_SCS": 1.0
-        },
-        {
-          "direction": "DOWN",
-          "source": "GO:MF",
-          "term_name": "succinate dehydrogenase activity",
-          "n_genes": 1,
-          "genes": [
-            "Ybx3"
-          ],
-          "p_value_g_SCS": 1.0
-        },
-        {
-          "direction": "DOWN",
-          "source": "GO:MF",
-          "term_name": "microfilament motor activity",
-          "n_genes": 1,
-          "genes": [
-            "Hadh"
-          ],
-          "p_value_g_SCS": 1.0
-        },
-        {
-          "direction": "DOWN",
-          "source": "GO:MF",
-          "term_name": "SNARE binding",
-          "n_genes": 1,
-          "genes": [
-            "Clybl"
+            "Lsm2",
+            "Lsm6",
+            "Lsm8",
+            "Snrpg",
+            "Srrt",
+            "Prpf19",
+            "Ddx46"
           ],
           "p_value_g_SCS": 1.0
         }

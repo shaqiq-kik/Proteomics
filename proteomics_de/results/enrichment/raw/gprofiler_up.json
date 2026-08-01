@@ -4,212 +4,515 @@
     "query_metadata": {
       "queries": {
         "query_1": [
-          "Col12a1",
-          "Taldo1",
-          "Tpm3",
-          "Ywhae",
-          "Actb",
-          "Neo1",
-          "Fga",
-          "Ywhah",
-          "Psma6",
-          "Sod1",
-          "Htra1",
-          "Mov10",
-          "Tcp1",
-          "Psmd6",
-          "Tpi1",
-          "Cct5",
-          "Psma8",
-          "Cct6a",
-          "Cgn",
-          "Cct7",
-          "Plaa",
-          "Fxr1",
-          "Fbp1",
-          "Aplp2",
-          "Ppp2ca",
-          "Ppp1cc",
-          "G6pdx",
-          "Dpysl3",
-          "Sh3bgrl",
-          "Psmb7",
-          "Cyct",
-          "Lztfl1",
-          "Plxnb2",
-          "Gm2a",
-          "Hsph1",
-          "Ppp1ca",
-          "Hist1h2ba",
-          "Ybx2",
-          "Psmd5",
-          "Ube2l3",
-          "Psmb4",
-          "Q8BHG2",
-          "Nqo2",
-          "Myl9",
-          "Me2",
-          "Hmbs",
-          "Macf1",
-          "Ruvbl1",
-          "Prss35",
-          "Qsox2",
-          "Adk",
-          "Tceb1",
-          "Akr1b7",
-          "Cox5b",
-          "Erh",
-          "Faim",
-          "Nid2",
-          "Arf1",
-          "Bax",
-          "Ppp5c",
-          "Pfdn1",
-          "Ankfy1",
-          "S100a6",
-          "Hint1",
-          "Ddah2",
-          "Prosc",
-          "Ppif",
-          "Abhd14b",
-          "Col18a1",
-          "Lsm2",
-          "Ppm1l",
-          "Rac1",
-          "Rap1b",
-          "Stat1",
-          "Ykt6",
-          "Mad2l1",
-          "Atp6v1b2",
-          "Bola1",
-          "Canx",
-          "Stmn2",
-          "Rps21",
-          "Ppih",
-          "Ccl2",
-          "Tgfb1",
-          "Prcp",
-          "Golm1",
-          "Ivd",
-          "Tpd52l2",
-          "Adi1",
-          "Txndc17",
-          "Sec22b",
-          "Sh3bgrl3",
-          "Lsm6",
-          "Psmb10",
-          "Fabp4",
-          "Lsm8",
-          "Lhpp",
-          "Cdc73",
-          "Rps28",
-          "Snrpg",
-          "Ppm1a",
-          "Ap1s1",
-          "Zc3h15",
-          "Sephs1",
-          "Rrbp1",
-          "Pcbd2",
-          "Cnpy3",
-          "Guk1",
-          "Srrt",
-          "Actr1a",
-          "Cecr5",
-          "Gng12",
-          "Lif",
-          "Ptgds",
-          "Ctsh",
-          "Col6a4",
-          "Heph",
-          "Gba",
-          "Hpcal1",
-          "Rab5c",
-          "Copz1",
-          "Tsc22d1",
-          "Nono",
-          "Prpf19",
-          "Nutf2",
-          "Arhgdib",
-          "Serpina1a",
-          "Abracl",
-          "Spin1",
-          "Thnsl2",
-          "Bag2",
-          "Eif2s2",
-          "Arpin",
-          "Mdp1",
-          "Ehd1",
-          "Smarcb1",
-          "Itm2b",
-          "Cryab",
-          "Brk1",
-          "Atp6v1f",
-          "Akr7a2",
-          "Tssc1",
-          "Ddx46",
-          "Amacr",
-          "Pcsk9",
-          "Nbl1",
-          "Ang",
-          "Kiaa0319l",
-          "Adam9",
-          "Gc",
-          "Gdf15",
-          "Fuca1",
-          "C1qtnf5",
-          "Rab21",
-          "Mcam",
-          "Ostf1",
-          "Pdlim1",
-          "Renbp",
-          "Lin7c",
-          "Prorsd1",
-          "Aldh1l1",
-          "Glrx",
-          "2018-09-11 00:00:00",
-          "Ak1",
-          "Khsrp",
-          "Arglu1",
-          "Acy3",
-          "Akr1d1",
-          "Aoc3",
-          "Galnt1",
-          "Ptp4a2",
-          "Mfap2",
-          "Phgdh",
-          "Mob4",
-          "Sh3bgrl2",
-          "Ncoa5",
-          "Chmp3",
-          "Rpl14",
-          "Hnrnpa0",
-          "Timm50",
-          "Ift22",
-          "Timm9",
-          "Dctn3",
-          "Cxcl1",
-          "Tgfb3",
-          "Tbc1d15",
-          "Ranbp3",
-          "Ccl7",
-          "Dsc2",
-          "Adamts1",
-          "Adam17",
-          "Efemp2",
-          "Cxcl5",
-          "Col16a1",
-          "Itga3",
-          "Mgat2",
-          "Grcc10",
-          "Ube3a",
-          "Nucb2",
-          "Immt",
-          "Gda",
-          "Tardbp",
-          "Katnal2",
-          "S100a13",
-          "Nedd8",
-          "Hnrnpm"
+          "Dync1h1",
+          "Sptbn1",
+          "Flnb",
+          "Col4a1",
+          "Col1a2",
+          "Hsp90aa1",
+          "Col5a1",
+          "Lrp2",
+          "Hyou1",
+          "Usp9x",
+          "Tpp2",
+          "Pitrm1",
+          "Dsp",
+          "Lrp1",
+          "Cspg4",
+          "Tln1",
+          "Pdia4",
+          "Col6a1",
+          "Pgk1",
+          "Lmnb1",
+          "Nrd1",
+          "Aco2",
+          "Col15a1",
+          "Dpp3",
+          "Col5a2",
+          "Pgd",
+          "Ahcy",
+          "Gatm",
+          "Ltf",
+          "Col6a2",
+          "Mrc2",
+          "Ncl",
+          "H6pd",
+          "Myh11",
+          "Pdia6",
+          "Hadh",
+          "Jup",
+          "A2mp",
+          "Myh9",
+          "Tuba3a",
+          "Actr3",
+          "Mvp",
+          "Cad",
+          "Blmh",
+          "Xdh",
+          "Fstl1",
+          "Pafah1b1",
+          "Rnh1",
+          "Vps35",
+          "Stip1",
+          "Glod4",
+          "Asl",
+          "Ubr2",
+          "Ywhag",
+          "Fkbp4",
+          "Arpc2",
+          "Trnt1",
+          "Man2a2",
+          "Nsfl1c",
+          "Nes",
+          "Uso1",
+          "Rps3",
+          "Cops2",
+          "Lap3",
+          "Cars",
+          "Hnrnpf",
+          "Mat2a",
+          "Serpinh1",
+          "Mdh1",
+          "Serping1",
+          "Ipo4",
+          "Gnb2l1",
+          "Naa25",
+          "Npl",
+          "Dld",
+          "Alad",
+          "Serpinf1",
+          "Sema4b",
+          "Lama2",
+          "Hnrnpk",
+          "Syncrip",
+          "Mylk",
+          "Gart",
+          "Fam49b",
+          "Ppp2r4",
+          "Nit2",
+          "Fh",
+          "Gpc4",
+          "Pa2g4",
+          "Psmd12",
+          "Cul1",
+          "Vps26a",
+          "Rars",
+          "Otub1",
+          "Gsta3",
+          "Nme1",
+          "Tsnax",
+          "Anp32a",
+          "Bcat2",
+          "Iqgap1",
+          "Acaca",
+          "Ap1g1",
+          "Sec23a",
+          "Cops4",
+          "Ube2v1",
+          "Serbp1",
+          "Prkcsh",
+          "Bpnt1",
+          "Acy1",
+          "Blvra",
+          "Cs",
+          "Ech1",
+          "Hsd17b4",
+          "Ptx3",
+          "Spp1",
+          "Gns",
+          "Txnl1",
+          "Strap",
+          "Aldoc",
+          "Ddah1",
+          "Rcn1",
+          "Gmfb",
+          "Eif2s3x",
+          "Ublcp1",
+          "Pdhb",
+          "Tpr",
+          "Prkaca",
+          "Ppa1",
+          "Hmgb2",
+          "Hmgb1",
+          "Fkbp3",
+          "Man2c1",
+          "Set",
+          "Rcn2",
+          "Armt1",
+          "H2-K1",
+          "Fgl2",
+          "Dak",
+          "Naga",
+          "St13",
+          "Psmc2",
+          "Glrx3",
+          "Mtr",
+          "Arpc5",
+          "Anp32b",
+          "Ola1",
+          "Uba3",
+          "Ptrf",
+          "Adh5",
+          "Wdr92",
+          "Apeh",
+          "Ube2n",
+          "Cops5",
+          "Cope",
+          "Sord",
+          "Ccdc58",
+          "Psip1",
+          "Hdgf",
+          "Npm1",
+          "Sema6c",
+          "Serpini1",
+          "Xylt1",
+          "Cab39",
+          "Chordc1",
+          "Ppp1cb",
+          "Etf1",
+          "Acat2",
+          "Gars",
+          "Rps3a",
+          "Pepd",
+          "Hnrnph1",
+          "Csrp1",
+          "P4ha1",
+          "Actl6a",
+          "Prdx5",
+          "Dnajc10",
+          "Cttn",
+          "Ube2v2",
+          "Magoh",
+          "Myg1",
+          "Ttc38",
+          "Apoa1bp",
+          "Ptprz1",
+          "Ftl1",
+          "Rbbp7",
+          "Pitpnb",
+          "Ipo7",
+          "Mapk1",
+          "Tars",
+          "Eif1ax",
+          "Tceb2",
+          "Eftud2",
+          "Nagk",
+          "Mrto4",
+          "Psmd9",
+          "Arhgap1",
+          "Eif3a",
+          "Wdr5",
+          "Rps16",
+          "Ptges3",
+          "Mapk14",
+          "Vps26b",
+          "Rpsa",
+          "Itpa",
+          "Fabp9",
+          "Hist1h2bc",
+          "Snrpd2",
+          "Timp1",
+          "Fbln1",
+          "Cdc37",
+          "Iars",
+          "Ppp2cb",
+          "Sec13",
+          "Chmp4b",
+          "Lasp1",
+          "Hnrnpu",
+          "Dnajc8",
+          "Ybx3",
+          "Anxa2",
+          "Psmc5",
+          "Pcbp2",
+          "Sucla2",
+          "Gnb1",
+          "Psph",
+          "Wdr61",
+          "Rps19",
+          "Crym",
+          "Mlec",
+          "Myl12b",
+          "Rexo2",
+          "Tex101",
+          "Nudt9",
+          "Txndc12",
+          "Rbm3",
+          "Ssbp1",
+          "Abhd10",
+          "Acot9",
+          "Rbmxl1",
+          "Ybx1",
+          "Sdha",
+          "Eif4a3",
+          "Lrp8",
+          "Rnase4",
+          "Jag1",
+          "Sema6d",
+          "Ctso",
+          "C4b",
+          "Plxdc2",
+          "Cnn3",
+          "Thumpd1",
+          "Nae1",
+          "Sec23b",
+          "Trappc3",
+          "Pcmt1",
+          "Polr2h",
+          "Nif3l1",
+          "Gps1",
+          "Dcun1d1",
+          "Ppp1r7",
+          "Lamp2",
+          "Gspt1",
+          "Adss",
+          "Eif4h",
+          "Metap1",
+          "Ppcs",
+          "Entpd5",
+          "Hibch",
+          "Adprhl2",
+          "Cryz",
+          "Pts",
+          "Rplp0",
+          "Gpx7",
+          "Tmpo",
+          "Ndufv2",
+          "Pkp1",
+          "Aldh1a2",
+          "Sf3a1",
+          "Rab1b",
+          "Cdkn2aip",
+          "Ctla2a",
+          "Clstn2",
+          "Sdcbp",
+          "Lyz2",
+          "Ctbs",
+          "Apoe",
+          "Abat",
+          "Dpp7",
+          "Ppm1b",
+          "Scpep1",
+          "Tmsb4x",
+          "Fhl2",
+          "Sugt1",
+          "Snrnp200",
+          "Hmgcs1",
+          "Lman2",
+          "Vars",
+          "Fnta",
+          "Thrap3",
+          "Clybl",
+          "Psmd14",
+          "Wdr12",
+          "Snx12",
+          "Naca",
+          "Fam136a",
+          "Psmc4",
+          "Grhpr",
+          "Rps18",
+          "Cpped1",
+          "Nenf",
+          "Nudt2",
+          "Ptma",
+          "Scrn2",
+          "Cryl1",
+          "Eif4b",
+          "Cops8",
+          "Nudt19",
+          "Pura",
+          "Ccbl2",
+          "Gpd1l",
+          "Dctn2",
+          "Arsb",
+          "Hexb",
+          "Dnaja1",
+          "Atp6v1g1",
+          "Napa",
+          "Epb41l2",
+          "Matr3",
+          "Rps14",
+          "Lgals3",
+          "Usp47",
+          "Ppp1r12b",
+          "Anxa5",
+          "Cbr3",
+          "Psmc3",
+          "Q9CQE8",
+          "Acp6",
+          "Rnpep",
+          "Sdf2",
+          "Crkl",
+          "Nap1l4",
+          "Eif4g1",
+          "Lsm4",
+          "Kpna3",
+          "Pfdn5",
+          "Uqcrfs1",
+          "Rps20",
+          "Uchl5",
+          "Sumf2",
+          "Siae",
+          "Rps17",
+          "Ap1m1",
+          "Nfu1",
+          "Carhsp1",
+          "Gpd1",
+          "Nudt16",
+          "Sri",
+          "Supt16h",
+          "Plrg1",
+          "Cyb5a",
+          "Snrpb",
+          "Hmgn5",
+          "Hddc2",
+          "Plcd1",
+          "Polr2i",
+          "Uqcrh",
+          "Fuca2",
+          "Nptx2",
+          "Npnt",
+          "B4galt1",
+          "Plat",
+          "Metrnl",
+          "Vcan",
+          "Naa50",
+          "Lancl1",
+          "Paip1",
+          "2018-09-09 00:00:00",
+          "Txnrd2",
+          "Glb1",
+          "Plod3",
+          "Pde6d",
+          "Eif4e",
+          "Tmod3",
+          "Galk1",
+          "Ccs",
+          "Nxn",
+          "Dnaja2",
+          "Dhdh",
+          "Memo1",
+          "Edf1",
+          "Eif3h",
+          "Pea15",
+          "Hnrnpl",
+          "Ppp6c",
+          "Srp14",
+          "Zadh2",
+          "Twf2",
+          "Timm8b",
+          "Arpc1a",
+          "Aox1",
+          "A2m",
+          "Fahd1",
+          "Sumo2",
+          "Cops6",
+          "Rabif",
+          "Hdgfrp3",
+          "Snrpd3",
+          "Enah",
+          "Rragc",
+          "Rnf114",
+          "Nanp",
+          "Meig1",
+          "Pdxp",
+          "Isca2",
+          "Cst9",
+          "Fst",
+          "Ccdc80",
+          "Asah2",
+          "Neu1",
+          "Mbtps1",
+          "Olfml3",
+          "St6gal1",
+          "Atp6v1c1",
+          "Sort1",
+          "Ciao1",
+          "Chmp2a",
+          "Itgb1",
+          "Impact",
+          "Isoc2a",
+          "Arf4",
+          "Lypla2",
+          "Marcksl1",
+          "Casp3",
+          "Lamp1",
+          "Hnrnpdl",
+          "Rpl18",
+          "Ube2g1",
+          "Pin4",
+          "Cuta",
+          "Mri1",
+          "Eif3e",
+          "Nudt14",
+          "Mif",
+          "Decr1",
+          "Caprin1",
+          "Rps25",
+          "Parp1",
+          "Sec31a",
+          "Fus",
+          "Pcbd1",
+          "Dlst",
+          "Nt5c3b",
+          "Cnrip1",
+          "Snrpa1",
+          "Snrpd1",
+          "Pabpn1",
+          "Hist1h1a",
+          "Atp5d",
+          "Hmgn2",
+          "Polr2e",
+          "Gbp2",
+          "Cbln4",
+          "Fat3",
+          "Ddr1",
+          "Cd81",
+          "Extl2",
+          "Vps28",
+          "Sumf1",
+          "Mt1",
+          "Cdc34",
+          "Vasp",
+          "Pdcd6",
+          "Uap1",
+          "Rps8",
+          "Hypk",
+          "Efnb1",
+          "Rpl22",
+          "Mtap",
+          "Rpl27",
+          "Asna1",
+          "Rps13",
+          "Rabggtb",
+          "Nat2",
+          "Ptges3l",
+          "Alyref",
+          "Cox5a",
+          "Fam192a",
+          "Ncstn",
+          "Atad5",
+          "Wdyhv1",
+          "Tmtc3",
+          "Rpn1",
+          "Ppm1n",
+          "Mcfd2",
+          "Stc2",
+          "Pf4",
+          "Ext1",
+          "Podxl",
+          "Trappc2l",
+          "Procr",
+          "Cachd1",
+          "Lgals9",
+          "Copz2",
+          "Rab18",
+          "Sprr1a",
+          "Crip1",
+          "Tjp2",
+          "Uba5",
+          "Sat2",
+          "Impa2"
         ]
       },
       "organism": "mmusculus",
@@ -262,49 +565,97 @@
     },
     "genes_metadata": {
       "failed": [
-        "Hist1h2ba",
-        "Tceb1",
-        "Prosc",
-        "Cecr5",
-        "Gba",
-        "Tssc1",
-        "2018-09-11 00:00:00"
+        "Nrd1",
+        "A2mp",
+        "Cars",
+        "Gnb2l1",
+        "Fam49b",
+        "Ppp2r4",
+        "Rars",
+        "Dak",
+        "Ptrf",
+        "Wdr92",
+        "Ccdc58",
+        "Gars",
+        "Apoa1bp",
+        "Tars",
+        "Tceb2",
+        "Hist1h2bc",
+        "Iars",
+        "Wdr61",
+        "Adss",
+        "Adprhl2",
+        "Vars",
+        "Ccbl2",
+        "Supt16h",
+        "2018-09-09 00:00:00",
+        "Zadh2",
+        "Hdgfrp3",
+        "Hist1h1a",
+        "Atp5d",
+        "Asna1",
+        "Fam192a",
+        "Wdyhv1"
       ],
       "ambiguous": {
-        "Erh": [
+        "Ahcy": [
           {
-            "gene_id": "ENSMUSG00000021131",
-            "description": "ERH mRNA splicing and mitosis factor [Source:MGI Symbol;Acc:MGI:108089]",
-            "number_of_go_annotations": 33
+            "gene_id": "ENSMUSG00000027597",
+            "description": "S-adenosylhomocysteine hydrolase [Source:MGI Symbol;Acc:MGI:87968]",
+            "number_of_go_annotations": 81
           },
           {
-            "gene_id": "ENSMUSG00000063412",
-            "description": "ERH mRNA splicing and mitosis factor retrotransposed, pseudogene [Source:MGI Symbol;Acc:MGI:3704308]",
-            "number_of_go_annotations": 33
+            "gene_id": "ENSMUSG00000048087",
+            "description": "adenosylhomocysteinase like [Source:MGI Symbol;Acc:MGI:3643647]",
+            "number_of_go_annotations": 81
           }
         ],
-        "Ppih": [
+        "Tuba3a": [
           {
-            "gene_id": "ENSMUSG00000060288",
-            "description": "peptidyl prolyl isomerase H [Source:MGI Symbol;Acc:MGI:106499]",
-            "number_of_go_annotations": 77
+            "gene_id": "ENSMUSG00000067338",
+            "description": "tubulin, alpha 3B [Source:MGI Symbol;Acc:MGI:1095408]",
+            "number_of_go_annotations": 68
           },
           {
-            "gene_id": "ENSMUSG00000033036",
-            "description": "peptidyl prolyl isomerase H like [Source:MGI Symbol;Acc:MGI:3645078]",
-            "number_of_go_annotations": 77
+            "gene_id": "ENSMUSG00000067702",
+            "description": "tubulin, alpha 3A [Source:MGI Symbol;Acc:MGI:1095406]",
+            "number_of_go_annotations": 68
           }
         ],
-        "Nutf2": [
+        "Ftl1": [
           {
-            "gene_id": "ENSMUSG00000071497",
-            "description": "nuclear transport factor 2, pseudogene 1 [Source:MGI Symbol;Acc:MGI:108008]",
-            "number_of_go_annotations": 69
+            "gene_id": "ENSMUSG00000050708",
+            "description": "ferritin light polypeptide 1 [Source:MGI Symbol;Acc:MGI:95589]",
+            "number_of_go_annotations": 41
           },
           {
-            "gene_id": "ENSMUSG00000008450",
-            "description": "nuclear transport factor 2 [Source:MGI Symbol;Acc:MGI:1915301]",
-            "number_of_go_annotations": 69
+            "gene_id": "ENSMUSG00000062382",
+            "description": "ferritin light polypeptide 1, pseudogene 1 [Source:MGI Symbol;Acc:MGI:3779109]",
+            "number_of_go_annotations": 41
+          }
+        ],
+        "Myl12b": [
+          {
+            "gene_id": "ENSMUSG00000034868",
+            "description": "myosin, light chain 12B, regulatory [Source:MGI Symbol;Acc:MGI:107494]",
+            "number_of_go_annotations": 53
+          },
+          {
+            "gene_id": "ENSMUSG00000117098",
+            "description": "predicted gene, 49909 [Source:MGI Symbol;Acc:MGI:6270609]",
+            "number_of_go_annotations": 64
+          }
+        ],
+        "Hmgn2": [
+          {
+            "gene_id": "ENSMUSG00000070713",
+            "description": "high mobility group nucleosomal binding domain 2, pseudogene [Source:MGI Symbol;Acc:MGI:3704312]",
+            "number_of_go_annotations": 68
+          },
+          {
+            "gene_id": "ENSMUSG00000003038",
+            "description": "high mobility group nucleosomal binding domain 2 [Source:MGI Symbol;Acc:MGI:96136]",
+            "number_of_go_annotations": 68
           }
         ]
       },
@@ -312,797 +663,1905 @@
       "query": {
         "query_1": {
           "mapping": {
-            "Col12a1": [
-              "ENSMUSG00000032332"
+            "Dync1h1": [
+              "ENSMUSG00000018707"
             ],
-            "Taldo1": [
-              "ENSMUSG00000025503"
+            "Sptbn1": [
+              "ENSMUSG00000020315"
             ],
-            "Tpm3": [
-              "ENSMUSG00000027940"
+            "Flnb": [
+              "ENSMUSG00000025278"
             ],
-            "Ywhae": [
-              "ENSMUSG00000020849"
+            "Col4a1": [
+              "ENSMUSG00000031502"
             ],
-            "Actb": [
-              "ENSMUSG00000029580"
+            "Col1a2": [
+              "ENSMUSG00000029661"
             ],
-            "Neo1": [
-              "ENSMUSG00000032340"
+            "Hsp90aa1": [
+              "ENSMUSG00000021270"
             ],
-            "Fga": [
-              "ENSMUSG00000028001"
+            "Col5a1": [
+              "ENSMUSG00000026837"
             ],
-            "Ywhah": [
-              "ENSMUSG00000018965"
+            "Lrp2": [
+              "ENSMUSG00000027070"
             ],
-            "Psma6": [
-              "ENSMUSG00000021024"
+            "Hyou1": [
+              "ENSMUSG00000032115"
             ],
-            "Sod1": [
-              "ENSMUSG00000022982"
+            "Usp9x": [
+              "ENSMUSG00000031010"
             ],
-            "Htra1": [
-              "ENSMUSG00000006205"
+            "Tpp2": [
+              "ENSMUSG00000041763"
             ],
-            "Mov10": [
-              "ENSMUSG00000002227"
+            "Pitrm1": [
+              "ENSMUSG00000021193"
             ],
-            "Tcp1": [
-              "ENSMUSG00000068039"
+            "Dsp": [
+              "ENSMUSG00000054889"
             ],
-            "Psmd6": [
-              "ENSMUSG00000021737"
+            "Lrp1": [
+              "ENSMUSG00000040249"
             ],
-            "Tpi1": [
-              "ENSMUSG00000023456"
+            "Cspg4": [
+              "ENSMUSG00000032911"
             ],
-            "Cct5": [
-              "ENSMUSG00000022234"
+            "Tln1": [
+              "ENSMUSG00000028465"
             ],
-            "Psma8": [
-              "ENSMUSG00000036743"
+            "Pdia4": [
+              "ENSMUSG00000025823"
             ],
-            "Cct6a": [
-              "ENSMUSG00000029447"
+            "Col6a1": [
+              "ENSMUSG00000001119"
             ],
-            "Cgn": [
-              "ENSMUSG00000068876"
+            "Pgk1": [
+              "ENSMUSG00000062070"
             ],
-            "Cct7": [
-              "ENSMUSG00000030007"
+            "Lmnb1": [
+              "ENSMUSG00000024590"
             ],
-            "Plaa": [
-              "ENSMUSG00000028577"
+            "Aco2": [
+              "ENSMUSG00000022477"
             ],
-            "Fxr1": [
-              "ENSMUSG00000027680"
+            "Col15a1": [
+              "ENSMUSG00000028339"
             ],
-            "Fbp1": [
-              "ENSMUSG00000069805"
+            "Dpp3": [
+              "ENSMUSG00000063904"
             ],
-            "Aplp2": [
-              "ENSMUSG00000031996"
+            "Col5a2": [
+              "ENSMUSG00000026042"
             ],
-            "Ppp2ca": [
-              "ENSMUSG00000020349"
+            "Pgd": [
+              "ENSMUSG00000028961"
             ],
-            "Ppp1cc": [
-              "ENSMUSG00000004455"
+            "Gatm": [
+              "ENSMUSG00000027199"
             ],
-            "G6pdx": [
-              "ENSMUSG00000031400"
+            "Ltf": [
+              "ENSMUSG00000032496"
             ],
-            "Dpysl3": [
-              "ENSMUSG00000024501"
+            "Col6a2": [
+              "ENSMUSG00000020241"
             ],
-            "Sh3bgrl": [
-              "ENSMUSG00000031246"
+            "Mrc2": [
+              "ENSMUSG00000020695"
             ],
-            "Psmb7": [
-              "ENSMUSG00000026750"
+            "Ncl": [
+              "ENSMUSG00000026234"
             ],
-            "Cyct": [
-              "ENSMUSG00000056436"
+            "H6pd": [
+              "ENSMUSG00000028980"
             ],
-            "Lztfl1": [
-              "ENSMUSG00000025245"
+            "Myh11": [
+              "ENSMUSG00000018830"
             ],
-            "Plxnb2": [
-              "ENSMUSG00000036606"
+            "Pdia6": [
+              "ENSMUSG00000020571"
             ],
-            "Gm2a": [
-              "ENSMUSG00000000594"
+            "Hadh": [
+              "ENSMUSG00000027984"
             ],
-            "Hsph1": [
-              "ENSMUSG00000029657"
+            "Jup": [
+              "ENSMUSG00000001552"
             ],
-            "Ppp1ca": [
-              "ENSMUSG00000040385"
+            "Myh9": [
+              "ENSMUSG00000022443"
             ],
-            "Ybx2": [
-              "ENSMUSG00000018554"
+            "Actr3": [
+              "ENSMUSG00000026341"
             ],
-            "Psmd5": [
-              "ENSMUSG00000026869"
+            "Mvp": [
+              "ENSMUSG00000030681"
             ],
-            "Ube2l3": [
-              "ENSMUSG00000038965"
+            "Cad": [
+              "ENSMUSG00000013629"
             ],
-            "Psmb4": [
-              "ENSMUSG00000005779"
+            "Blmh": [
+              "ENSMUSG00000020840"
             ],
-            "Q8BHG2": [
-              "ENSMUSG00000028608"
+            "Xdh": [
+              "ENSMUSG00000024066"
             ],
-            "Nqo2": [
-              "ENSMUSG00000046949"
+            "Fstl1": [
+              "ENSMUSG00000022816"
             ],
-            "Myl9": [
-              "ENSMUSG00000067818"
+            "Pafah1b1": [
+              "ENSMUSG00000020745"
             ],
-            "Me2": [
-              "ENSMUSG00000024556"
+            "Rnh1": [
+              "ENSMUSG00000038650"
             ],
-            "Hmbs": [
-              "ENSMUSG00000032126"
+            "Vps35": [
+              "ENSMUSG00000031696"
             ],
-            "Macf1": [
-              "ENSMUSG00000028649"
+            "Stip1": [
+              "ENSMUSG00000024966"
             ],
-            "Ruvbl1": [
-              "ENSMUSG00000030079"
+            "Glod4": [
+              "ENSMUSG00000017286"
             ],
-            "Prss35": [
-              "ENSMUSG00000033491"
+            "Asl": [
+              "ENSMUSG00000025533"
             ],
-            "Qsox2": [
-              "ENSMUSG00000036327"
+            "Ubr2": [
+              "ENSMUSG00000023977"
             ],
-            "Adk": [
-              "ENSMUSG00000039197"
+            "Ywhag": [
+              "ENSMUSG00000051391"
             ],
-            "Akr1b7": [
-              "ENSMUSG00000052131"
+            "Fkbp4": [
+              "ENSMUSG00000030357"
             ],
-            "Cox5b": [
-              "ENSMUSG00000061518"
+            "Arpc2": [
+              "ENSMUSG00000006304"
             ],
-            "Faim": [
-              "ENSMUSG00000032463"
+            "Trnt1": [
+              "ENSMUSG00000013736"
             ],
-            "Nid2": [
-              "ENSMUSG00000021806"
+            "Man2a2": [
+              "ENSMUSG00000038886"
             ],
-            "Arf1": [
-              "ENSMUSG00000048076"
+            "Nsfl1c": [
+              "ENSMUSG00000027455"
             ],
-            "Bax": [
-              "ENSMUSG00000003873"
+            "Nes": [
+              "ENSMUSG00000004891"
             ],
-            "Ppp5c": [
-              "ENSMUSG00000003099"
+            "Uso1": [
+              "ENSMUSG00000029407"
             ],
-            "Pfdn1": [
-              "ENSMUSG00000024346"
+            "Rps3": [
+              "ENSMUSG00000030744"
             ],
-            "Ankfy1": [
-              "ENSMUSG00000020790"
+            "Cops2": [
+              "ENSMUSG00000027206"
             ],
-            "S100a6": [
-              "ENSMUSG00000001025"
+            "Lap3": [
+              "ENSMUSG00000039682"
             ],
-            "Hint1": [
-              "ENSMUSG00000020267"
+            "Hnrnpf": [
+              "ENSMUSG00000042079"
             ],
-            "Ddah2": [
-              "ENSMUSG00000007039"
+            "Mat2a": [
+              "ENSMUSG00000053907"
             ],
-            "Ppif": [
-              "ENSMUSG00000021868"
+            "Serpinh1": [
+              "ENSMUSG00000070436"
             ],
-            "Abhd14b": [
-              "ENSMUSG00000042073"
+            "Mdh1": [
+              "ENSMUSG00000020321"
             ],
-            "Col18a1": [
-              "ENSMUSG00000001435"
+            "Serping1": [
+              "ENSMUSG00000023224"
             ],
-            "Lsm2": [
-              "ENSMUSG00000007050"
+            "Ipo4": [
+              "ENSMUSG00000002319"
             ],
-            "Ppm1l": [
-              "ENSMUSG00000027784"
+            "Naa25": [
+              "ENSMUSG00000042719"
             ],
-            "Rac1": [
-              "ENSMUSG00000001847"
+            "Npl": [
+              "ENSMUSG00000042684"
             ],
-            "Rap1b": [
-              "ENSMUSG00000052681"
+            "Dld": [
+              "ENSMUSG00000020664"
             ],
-            "Stat1": [
-              "ENSMUSG00000026104"
+            "Alad": [
+              "ENSMUSG00000028393"
             ],
-            "Ykt6": [
-              "ENSMUSG00000002741"
+            "Serpinf1": [
+              "ENSMUSG00000000753"
             ],
-            "Mad2l1": [
-              "ENSMUSG00000029910"
+            "Sema4b": [
+              "ENSMUSG00000030539"
             ],
-            "Atp6v1b2": [
-              "ENSMUSG00000006273"
+            "Lama2": [
+              "ENSMUSG00000019899"
             ],
-            "Bola1": [
-              "ENSMUSG00000015943"
+            "Hnrnpk": [
+              "ENSMUSG00000021546"
             ],
-            "Canx": [
-              "ENSMUSG00000020368"
+            "Syncrip": [
+              "ENSMUSG00000032423"
             ],
-            "Stmn2": [
-              "ENSMUSG00000027500"
+            "Mylk": [
+              "ENSMUSG00000022836"
             ],
-            "Rps21": [
-              "ENSMUSG00000039001"
+            "Gart": [
+              "ENSMUSG00000022962"
             ],
-            "Ccl2": [
-              "ENSMUSG00000035385"
+            "Nit2": [
+              "ENSMUSG00000022751"
             ],
-            "Tgfb1": [
-              "ENSMUSG00000002603"
+            "Fh": [
+              "ENSMUSG00000026526"
             ],
-            "Prcp": [
-              "ENSMUSG00000061119"
+            "Gpc4": [
+              "ENSMUSG00000031119"
             ],
-            "Golm1": [
-              "ENSMUSG00000021556"
+            "Pa2g4": [
+              "ENSMUSG00000025364"
             ],
-            "Ivd": [
-              "ENSMUSG00000027332"
+            "Psmd12": [
+              "ENSMUSG00000020720"
             ],
-            "Tpd52l2": [
-              "ENSMUSG00000000827"
+            "Cul1": [
+              "ENSMUSG00000029686"
             ],
-            "Adi1": [
-              "ENSMUSG00000020629"
+            "Vps26a": [
+              "ENSMUSG00000020078"
             ],
-            "Txndc17": [
-              "ENSMUSG00000020803"
+            "Otub1": [
+              "ENSMUSG00000024767"
             ],
-            "Sec22b": [
-              "ENSMUSG00000027879"
+            "Gsta3": [
+              "ENSMUSG00000025934"
             ],
-            "Sh3bgrl3": [
-              "ENSMUSG00000028843"
+            "Nme1": [
+              "ENSMUSG00000037601"
             ],
-            "Lsm6": [
-              "ENSMUSG00000031683"
+            "Tsnax": [
+              "ENSMUSG00000056820"
             ],
-            "Psmb10": [
-              "ENSMUSG00000031897"
+            "Anp32a": [
+              "ENSMUSG00000032249"
             ],
-            "Fabp4": [
-              "ENSMUSG00000062515"
+            "Bcat2": [
+              "ENSMUSG00000030826"
             ],
-            "Lsm8": [
-              "ENSMUSG00000044155"
+            "Iqgap1": [
+              "ENSMUSG00000030536"
             ],
-            "Lhpp": [
-              "ENSMUSG00000030946"
+            "Acaca": [
+              "ENSMUSG00000020532"
             ],
-            "Cdc73": [
-              "ENSMUSG00000026361"
+            "Ap1g1": [
+              "ENSMUSG00000031731"
             ],
-            "Rps28": [
-              "ENSMUSG00000067288"
+            "Sec23a": [
+              "ENSMUSG00000020986"
             ],
-            "Snrpg": [
-              "ENSMUSG00000057278"
+            "Cops4": [
+              "ENSMUSG00000035297"
             ],
-            "Ppm1a": [
-              "ENSMUSG00000021096"
+            "Ube2v1": [
+              "ENSMUSG00000078923"
             ],
-            "Ap1s1": [
-              "ENSMUSG00000004849"
+            "Serbp1": [
+              "ENSMUSG00000036371"
             ],
-            "Zc3h15": [
-              "ENSMUSG00000027091"
+            "Prkcsh": [
+              "ENSMUSG00000003402"
             ],
-            "Sephs1": [
-              "ENSMUSG00000026662"
+            "Bpnt1": [
+              "ENSMUSG00000026617"
             ],
-            "Rrbp1": [
-              "ENSMUSG00000027422"
+            "Acy1": [
+              "ENSMUSG00000023262"
             ],
-            "Pcbd2": [
-              "ENSMUSG00000021496"
+            "Blvra": [
+              "ENSMUSG00000001999"
             ],
-            "Cnpy3": [
-              "ENSMUSG00000023973"
+            "Cs": [
+              "ENSMUSG00000005683"
             ],
-            "Guk1": [
-              "ENSMUSG00000020444"
+            "Ech1": [
+              "ENSMUSG00000053898"
             ],
-            "Srrt": [
-              "ENSMUSG00000037364"
+            "Hsd17b4": [
+              "ENSMUSG00000024507"
             ],
-            "Actr1a": [
-              "ENSMUSG00000025228"
+            "Ptx3": [
+              "ENSMUSG00000027832"
             ],
-            "Gng12": [
-              "ENSMUSG00000036402"
+            "Spp1": [
+              "ENSMUSG00000029304"
             ],
-            "Lif": [
-              "ENSMUSG00000034394"
+            "Gns": [
+              "ENSMUSG00000034707"
             ],
-            "Ptgds": [
-              "ENSMUSG00000015090"
+            "Txnl1": [
+              "ENSMUSG00000024583"
             ],
-            "Ctsh": [
-              "ENSMUSG00000032359"
+            "Strap": [
+              "ENSMUSG00000030224"
             ],
-            "Col6a4": [
-              "ENSMUSG00000032572"
+            "Aldoc": [
+              "ENSMUSG00000017390"
             ],
-            "Heph": [
-              "ENSMUSG00000031209"
+            "Ddah1": [
+              "ENSMUSG00000028194"
             ],
-            "Hpcal1": [
-              "ENSMUSG00000071379"
+            "Rcn1": [
+              "ENSMUSG00000005973"
             ],
-            "Rab5c": [
-              "ENSMUSG00000019173"
+            "Gmfb": [
+              "ENSMUSG00000062014"
             ],
-            "Copz1": [
-              "ENSMUSG00000060992"
+            "Eif2s3x": [
+              "ENSMUSG00000035150"
             ],
-            "Tsc22d1": [
-              "ENSMUSG00000022010"
+            "Ublcp1": [
+              "ENSMUSG00000041231"
             ],
-            "Nono": [
-              "ENSMUSG00000031311"
+            "Pdhb": [
+              "ENSMUSG00000021748"
             ],
-            "Prpf19": [
-              "ENSMUSG00000024735"
+            "Tpr": [
+              "ENSMUSG00000006005"
             ],
-            "Arhgdib": [
-              "ENSMUSG00000030220"
+            "Prkaca": [
+              "ENSMUSG00000005469"
             ],
-            "Serpina1a": [
-              "ENSMUSG00000066366"
+            "Ppa1": [
+              "ENSMUSG00000020089"
             ],
-            "Abracl": [
-              "ENSMUSG00000078453"
+            "Hmgb2": [
+              "ENSMUSG00000054717"
             ],
-            "Spin1": [
-              "ENSMUSG00000021395"
+            "Hmgb1": [
+              "ENSMUSG00000066551"
             ],
-            "Thnsl2": [
-              "ENSMUSG00000054474"
+            "Fkbp3": [
+              "ENSMUSG00000020949"
             ],
-            "Bag2": [
-              "ENSMUSG00000042215"
+            "Man2c1": [
+              "ENSMUSG00000032295"
             ],
-            "Eif2s2": [
-              "ENSMUSG00000074656"
+            "Set": [
+              "ENSMUSG00000054766"
             ],
-            "Arpin": [
-              "ENSMUSG00000039043"
+            "Rcn2": [
+              "ENSMUSG00000032320"
             ],
-            "Mdp1": [
-              "ENSMUSG00000002329"
+            "Armt1": [
+              "ENSMUSG00000061759"
             ],
-            "Ehd1": [
-              "ENSMUSG00000024772"
+            "H2-K1": [
+              "ENSMUSG00000061232"
             ],
-            "Smarcb1": [
-              "ENSMUSG00000000902"
+            "Fgl2": [
+              "ENSMUSG00000039899"
             ],
-            "Itm2b": [
-              "ENSMUSG00000022108"
+            "Naga": [
+              "ENSMUSG00000022453"
             ],
-            "Cryab": [
-              "ENSMUSG00000032060"
+            "St13": [
+              "ENSMUSG00000022403"
             ],
-            "Brk1": [
-              "ENSMUSG00000033940"
+            "Psmc2": [
+              "ENSMUSG00000028932"
             ],
-            "Atp6v1f": [
-              "ENSMUSG00000004285"
+            "Glrx3": [
+              "ENSMUSG00000031068"
             ],
-            "Akr7a2": [
-              "ENSMUSG00000028743"
+            "Mtr": [
+              "ENSMUSG00000021311"
             ],
-            "Ddx46": [
-              "ENSMUSG00000021500"
+            "Arpc5": [
+              "ENSMUSG00000008475"
             ],
-            "Amacr": [
-              "ENSMUSG00000022244"
+            "Anp32b": [
+              "ENSMUSG00000028333"
             ],
-            "Pcsk9": [
-              "ENSMUSG00000044254"
+            "Ola1": [
+              "ENSMUSG00000027108"
             ],
-            "Nbl1": [
-              "ENSMUSG00000041120"
+            "Uba3": [
+              "ENSMUSG00000030061"
             ],
-            "Ang": [
-              "ENSMUSG00000072115"
+            "Adh5": [
+              "ENSMUSG00000028138"
             ],
-            "Kiaa0319l": [
-              "ENSMUSG00000028830"
+            "Apeh": [
+              "ENSMUSG00000032590"
             ],
-            "Adam9": [
-              "ENSMUSG00000031555"
+            "Ube2n": [
+              "ENSMUSG00000074781"
             ],
-            "Gc": [
-              "ENSMUSG00000035540"
+            "Cops5": [
+              "ENSMUSG00000025917"
             ],
-            "Gdf15": [
-              "ENSMUSG00000038508"
+            "Cope": [
+              "ENSMUSG00000055681"
             ],
-            "Fuca1": [
-              "ENSMUSG00000028673"
+            "Sord": [
+              "ENSMUSG00000027227"
             ],
-            "C1qtnf5": [
-              "ENSMUSG00000079592"
+            "Psip1": [
+              "ENSMUSG00000028484"
             ],
-            "Rab21": [
-              "ENSMUSG00000020132"
+            "Hdgf": [
+              "ENSMUSG00000004897"
             ],
-            "Mcam": [
-              "ENSMUSG00000032135"
+            "Npm1": [
+              "ENSMUSG00000057113"
             ],
-            "Ostf1": [
-              "ENSMUSG00000024725"
+            "Sema6c": [
+              "ENSMUSG00000038777"
             ],
-            "Pdlim1": [
-              "ENSMUSG00000055044"
+            "Serpini1": [
+              "ENSMUSG00000027834"
             ],
-            "Renbp": [
-              "ENSMUSG00000031387"
+            "Xylt1": [
+              "ENSMUSG00000030657"
             ],
-            "Lin7c": [
-              "ENSMUSG00000027162"
+            "Cab39": [
+              "ENSMUSG00000036707"
             ],
-            "Prorsd1": [
-              "ENSMUSG00000032673"
+            "Chordc1": [
+              "ENSMUSG00000001774"
             ],
-            "Aldh1l1": [
-              "ENSMUSG00000030088"
+            "Ppp1cb": [
+              "ENSMUSG00000014956"
             ],
-            "Glrx": [
-              "ENSMUSG00000021591"
+            "Etf1": [
+              "ENSMUSG00000024360"
             ],
-            "Ak1": [
-              "ENSMUSG00000026817"
+            "Acat2": [
+              "ENSMUSG00000023832"
             ],
-            "Khsrp": [
-              "ENSMUSG00000007670"
+            "Rps3a": [
+              "ENSMUSG00000028081"
             ],
-            "Arglu1": [
-              "ENSMUSG00000040459"
+            "Pepd": [
+              "ENSMUSG00000063931"
             ],
-            "Acy3": [
-              "ENSMUSG00000024866"
+            "Hnrnph1": [
+              "ENSMUSG00000007850"
             ],
-            "Akr1d1": [
-              "ENSMUSG00000038641"
+            "Csrp1": [
+              "ENSMUSG00000026421"
             ],
-            "Aoc3": [
-              "ENSMUSG00000019326"
+            "P4ha1": [
+              "ENSMUSG00000019916"
             ],
-            "Galnt1": [
-              "ENSMUSG00000000420"
+            "Actl6a": [
+              "ENSMUSG00000027671"
             ],
-            "Ptp4a2": [
-              "ENSMUSG00000028788"
+            "Prdx5": [
+              "ENSMUSG00000024953"
             ],
-            "Mfap2": [
-              "ENSMUSG00000060572"
+            "Dnajc10": [
+              "ENSMUSG00000027006"
             ],
-            "Phgdh": [
-              "ENSMUSG00000053398"
+            "Cttn": [
+              "ENSMUSG00000031078"
             ],
-            "Mob4": [
-              "ENSMUSG00000025979"
+            "Ube2v2": [
+              "ENSMUSG00000022674"
             ],
-            "Sh3bgrl2": [
-              "ENSMUSG00000032261"
+            "Magoh": [
+              "ENSMUSG00000028609"
             ],
-            "Ncoa5": [
-              "ENSMUSG00000039804"
+            "Myg1": [
+              "ENSMUSG00000001285"
             ],
-            "Chmp3": [
-              "ENSMUSG00000053119"
+            "Ttc38": [
+              "ENSMUSG00000035944"
             ],
-            "Rpl14": [
-              "ENSMUSG00000025794"
+            "Ptprz1": [
+              "ENSMUSG00000068748"
             ],
-            "Hnrnpa0": [
-              "ENSMUSG00000007836"
+            "Rbbp7": [
+              "ENSMUSG00000031353"
             ],
-            "Timm50": [
-              "ENSMUSG00000003438"
+            "Pitpnb": [
+              "ENSMUSG00000050017"
             ],
-            "Ift22": [
-              "ENSMUSG00000007987"
+            "Ipo7": [
+              "ENSMUSG00000066232"
             ],
-            "Timm9": [
-              "ENSMUSG00000021079"
+            "Mapk1": [
+              "ENSMUSG00000063358"
             ],
-            "Dctn3": [
-              "ENSMUSG00000028447"
+            "Eif1ax": [
+              "ENSMUSG00000067194"
             ],
-            "Cxcl1": [
-              "ENSMUSG00000029380"
+            "Eftud2": [
+              "ENSMUSG00000020929"
             ],
-            "Tgfb3": [
-              "ENSMUSG00000021253"
+            "Nagk": [
+              "ENSMUSG00000034744"
             ],
-            "Tbc1d15": [
-              "ENSMUSG00000020130"
+            "Mrto4": [
+              "ENSMUSG00000028741"
             ],
-            "Ranbp3": [
-              "ENSMUSG00000002372"
+            "Psmd9": [
+              "ENSMUSG00000029440"
             ],
-            "Ccl7": [
-              "ENSMUSG00000035373"
+            "Arhgap1": [
+              "ENSMUSG00000027247"
             ],
-            "Dsc2": [
-              "ENSMUSG00000024331"
+            "Eif3a": [
+              "ENSMUSG00000024991"
             ],
-            "Adamts1": [
-              "ENSMUSG00000022893"
+            "Wdr5": [
+              "ENSMUSG00000026917"
             ],
-            "Adam17": [
-              "ENSMUSG00000052593"
+            "Rps16": [
+              "ENSMUSG00000037563"
             ],
-            "Efemp2": [
-              "ENSMUSG00000024909"
+            "Ptges3": [
+              "ENSMUSG00000071072"
             ],
-            "Cxcl5": [
-              "ENSMUSG00000029371"
+            "Mapk14": [
+              "ENSMUSG00000053436"
             ],
-            "Col16a1": [
-              "ENSMUSG00000040690"
+            "Vps26b": [
+              "ENSMUSG00000031988"
             ],
-            "Itga3": [
-              "ENSMUSG00000001507"
+            "Rpsa": [
+              "ENSMUSG00000032518"
             ],
-            "Mgat2": [
-              "ENSMUSG00000043998"
+            "Itpa": [
+              "ENSMUSG00000074797"
             ],
-            "Grcc10": [
-              "ENSMUSG00000072772"
+            "Fabp9": [
+              "ENSMUSG00000027528"
             ],
-            "Ube3a": [
-              "ENSMUSG00000025326"
+            "Snrpd2": [
+              "ENSMUSG00000040824"
             ],
-            "Nucb2": [
-              "ENSMUSG00000030659"
+            "Timp1": [
+              "ENSMUSG00000001131"
             ],
-            "Immt": [
-              "ENSMUSG00000052337"
+            "Fbln1": [
+              "ENSMUSG00000006369"
             ],
-            "Gda": [
-              "ENSMUSG00000058624"
+            "Cdc37": [
+              "ENSMUSG00000019471"
             ],
-            "Tardbp": [
-              "ENSMUSG00000041459"
+            "Ppp2cb": [
+              "ENSMUSG00000009630"
             ],
-            "Katnal2": [
-              "ENSMUSG00000025420"
+            "Sec13": [
+              "ENSMUSG00000030298"
             ],
-            "S100a13": [
-              "ENSMUSG00000042312"
+            "Chmp4b": [
+              "ENSMUSG00000038467"
             ],
-            "Nedd8": [
-              "ENSMUSG00000010376"
+            "Lasp1": [
+              "ENSMUSG00000038366"
             ],
-            "Hnrnpm": [
-              "ENSMUSG00000059208"
+            "Hnrnpu": [
+              "ENSMUSG00000039630"
+            ],
+            "Dnajc8": [
+              "ENSMUSG00000054405"
+            ],
+            "Ybx3": [
+              "ENSMUSG00000030189"
+            ],
+            "Anxa2": [
+              "ENSMUSG00000032231"
+            ],
+            "Psmc5": [
+              "ENSMUSG00000020708"
+            ],
+            "Pcbp2": [
+              "ENSMUSG00000056851"
+            ],
+            "Sucla2": [
+              "ENSMUSG00000022110"
+            ],
+            "Gnb1": [
+              "ENSMUSG00000029064"
+            ],
+            "Psph": [
+              "ENSMUSG00000029446"
+            ],
+            "Rps19": [
+              "ENSMUSG00000040952"
+            ],
+            "Crym": [
+              "ENSMUSG00000030905"
+            ],
+            "Mlec": [
+              "ENSMUSG00000048578"
+            ],
+            "Rexo2": [
+              "ENSMUSG00000032026"
+            ],
+            "Tex101": [
+              "ENSMUSG00000062773"
+            ],
+            "Nudt9": [
+              "ENSMUSG00000029310"
+            ],
+            "Txndc12": [
+              "ENSMUSG00000028567"
+            ],
+            "Rbm3": [
+              "ENSMUSG00000031167"
+            ],
+            "Ssbp1": [
+              "ENSMUSG00000029911"
+            ],
+            "Abhd10": [
+              "ENSMUSG00000033157"
+            ],
+            "Acot9": [
+              "ENSMUSG00000025287"
+            ],
+            "Rbmxl1": [
+              "ENSMUSG00000037070"
+            ],
+            "Ybx1": [
+              "ENSMUSG00000028639"
+            ],
+            "Sdha": [
+              "ENSMUSG00000021577"
+            ],
+            "Eif4a3": [
+              "ENSMUSG00000025580"
+            ],
+            "Lrp8": [
+              "ENSMUSG00000028613"
+            ],
+            "Rnase4": [
+              "ENSMUSG00000021876"
+            ],
+            "Jag1": [
+              "ENSMUSG00000027276"
+            ],
+            "Sema6d": [
+              "ENSMUSG00000027200"
+            ],
+            "Ctso": [
+              "ENSMUSG00000028015"
+            ],
+            "C4b": [
+              "ENSMUSG00000073418"
+            ],
+            "Plxdc2": [
+              "ENSMUSG00000026748"
+            ],
+            "Cnn3": [
+              "ENSMUSG00000053931"
+            ],
+            "Thumpd1": [
+              "ENSMUSG00000030942"
+            ],
+            "Nae1": [
+              "ENSMUSG00000031878"
+            ],
+            "Sec23b": [
+              "ENSMUSG00000027429"
+            ],
+            "Trappc3": [
+              "ENSMUSG00000028847"
+            ],
+            "Pcmt1": [
+              "ENSMUSG00000019795"
+            ],
+            "Polr2h": [
+              "ENSMUSG00000021018"
+            ],
+            "Nif3l1": [
+              "ENSMUSG00000026036"
+            ],
+            "Gps1": [
+              "ENSMUSG00000025156"
+            ],
+            "Dcun1d1": [
+              "ENSMUSG00000027708"
+            ],
+            "Ppp1r7": [
+              "ENSMUSG00000026275"
+            ],
+            "Lamp2": [
+              "ENSMUSG00000016534"
+            ],
+            "Gspt1": [
+              "ENSMUSG00000062203"
+            ],
+            "Eif4h": [
+              "ENSMUSG00000040731"
+            ],
+            "Metap1": [
+              "ENSMUSG00000005813"
+            ],
+            "Ppcs": [
+              "ENSMUSG00000028636"
+            ],
+            "Entpd5": [
+              "ENSMUSG00000021236"
+            ],
+            "Hibch": [
+              "ENSMUSG00000041426"
+            ],
+            "Cryz": [
+              "ENSMUSG00000028199"
+            ],
+            "Pts": [
+              "ENSMUSG00000032067"
+            ],
+            "Rplp0": [
+              "ENSMUSG00000067274"
+            ],
+            "Gpx7": [
+              "ENSMUSG00000028597"
+            ],
+            "Tmpo": [
+              "ENSMUSG00000019961"
+            ],
+            "Ndufv2": [
+              "ENSMUSG00000024099"
+            ],
+            "Pkp1": [
+              "ENSMUSG00000026413"
+            ],
+            "Aldh1a2": [
+              "ENSMUSG00000013584"
+            ],
+            "Sf3a1": [
+              "ENSMUSG00000002129"
+            ],
+            "Rab1b": [
+              "ENSMUSG00000024870"
+            ],
+            "Cdkn2aip": [
+              "ENSMUSG00000038069"
+            ],
+            "Ctla2a": [
+              "ENSMUSG00000044258"
+            ],
+            "Clstn2": [
+              "ENSMUSG00000032452"
+            ],
+            "Sdcbp": [
+              "ENSMUSG00000028249"
+            ],
+            "Lyz2": [
+              "ENSMUSG00000069516"
+            ],
+            "Ctbs": [
+              "ENSMUSG00000028189"
+            ],
+            "Apoe": [
+              "ENSMUSG00000002985"
+            ],
+            "Abat": [
+              "ENSMUSG00000057880"
+            ],
+            "Dpp7": [
+              "ENSMUSG00000026958"
+            ],
+            "Ppm1b": [
+              "ENSMUSG00000061130"
+            ],
+            "Scpep1": [
+              "ENSMUSG00000000278"
+            ],
+            "Tmsb4x": [
+              "ENSMUSG00000049775"
+            ],
+            "Fhl2": [
+              "ENSMUSG00000008136"
+            ],
+            "Sugt1": [
+              "ENSMUSG00000022024"
+            ],
+            "Snrnp200": [
+              "ENSMUSG00000003660"
+            ],
+            "Hmgcs1": [
+              "ENSMUSG00000093930"
+            ],
+            "Lman2": [
+              "ENSMUSG00000021484"
+            ],
+            "Fnta": [
+              "ENSMUSG00000015994"
+            ],
+            "Thrap3": [
+              "ENSMUSG00000043962"
+            ],
+            "Clybl": [
+              "ENSMUSG00000025545"
+            ],
+            "Psmd14": [
+              "ENSMUSG00000026914"
+            ],
+            "Wdr12": [
+              "ENSMUSG00000026019"
+            ],
+            "Snx12": [
+              "ENSMUSG00000046032"
+            ],
+            "Naca": [
+              "ENSMUSG00000061315"
+            ],
+            "Fam136a": [
+              "ENSMUSG00000057497"
+            ],
+            "Psmc4": [
+              "ENSMUSG00000030603"
+            ],
+            "Grhpr": [
+              "ENSMUSG00000035637"
+            ],
+            "Rps18": [
+              "ENSMUSG00000008668"
+            ],
+            "Cpped1": [
+              "ENSMUSG00000065979"
+            ],
+            "Nenf": [
+              "ENSMUSG00000037499"
+            ],
+            "Nudt2": [
+              "ENSMUSG00000028443"
+            ],
+            "Ptma": [
+              "ENSMUSG00000026238"
+            ],
+            "Scrn2": [
+              "ENSMUSG00000020877"
+            ],
+            "Cryl1": [
+              "ENSMUSG00000021947"
+            ],
+            "Eif4b": [
+              "ENSMUSG00000058655"
+            ],
+            "Cops8": [
+              "ENSMUSG00000034432"
+            ],
+            "Nudt19": [
+              "ENSMUSG00000034875"
+            ],
+            "Pura": [
+              "ENSMUSG00000043991"
+            ],
+            "Gpd1l": [
+              "ENSMUSG00000050627"
+            ],
+            "Dctn2": [
+              "ENSMUSG00000025410"
+            ],
+            "Arsb": [
+              "ENSMUSG00000042082"
+            ],
+            "Hexb": [
+              "ENSMUSG00000021665"
+            ],
+            "Dnaja1": [
+              "ENSMUSG00000028410"
+            ],
+            "Atp6v1g1": [
+              "ENSMUSG00000039105"
+            ],
+            "Napa": [
+              "ENSMUSG00000006024"
+            ],
+            "Epb41l2": [
+              "ENSMUSG00000019978"
+            ],
+            "Matr3": [
+              "ENSMUSG00000037236"
+            ],
+            "Rps14": [
+              "ENSMUSG00000024608"
+            ],
+            "Lgals3": [
+              "ENSMUSG00000050335"
+            ],
+            "Usp47": [
+              "ENSMUSG00000059263"
+            ],
+            "Ppp1r12b": [
+              "ENSMUSG00000073557"
+            ],
+            "Anxa5": [
+              "ENSMUSG00000027712"
+            ],
+            "Cbr3": [
+              "ENSMUSG00000022947"
+            ],
+            "Psmc3": [
+              "ENSMUSG00000002102"
+            ],
+            "Q9CQE8": [
+              "ENSMUSG00000021807"
+            ],
+            "Acp6": [
+              "ENSMUSG00000028093"
+            ],
+            "Rnpep": [
+              "ENSMUSG00000041926"
+            ],
+            "Sdf2": [
+              "ENSMUSG00000002064"
+            ],
+            "Crkl": [
+              "ENSMUSG00000006134"
+            ],
+            "Nap1l4": [
+              "ENSMUSG00000059119"
+            ],
+            "Eif4g1": [
+              "ENSMUSG00000045983"
+            ],
+            "Lsm4": [
+              "ENSMUSG00000031848"
+            ],
+            "Kpna3": [
+              "ENSMUSG00000021929"
+            ],
+            "Pfdn5": [
+              "ENSMUSG00000001289"
+            ],
+            "Uqcrfs1": [
+              "ENSMUSG00000038462"
+            ],
+            "Rps20": [
+              "ENSMUSG00000028234"
+            ],
+            "Uchl5": [
+              "ENSMUSG00000018189"
+            ],
+            "Sumf2": [
+              "ENSMUSG00000025538"
+            ],
+            "Siae": [
+              "ENSMUSG00000001942"
+            ],
+            "Rps17": [
+              "ENSMUSG00000061787"
+            ],
+            "Ap1m1": [
+              "ENSMUSG00000003033"
+            ],
+            "Nfu1": [
+              "ENSMUSG00000029993"
+            ],
+            "Carhsp1": [
+              "ENSMUSG00000008393"
+            ],
+            "Gpd1": [
+              "ENSMUSG00000023019"
+            ],
+            "Nudt16": [
+              "ENSMUSG00000032565"
+            ],
+            "Sri": [
+              "ENSMUSG00000003161"
+            ],
+            "Plrg1": [
+              "ENSMUSG00000027998"
+            ],
+            "Cyb5a": [
+              "ENSMUSG00000024646"
+            ],
+            "Snrpb": [
+              "ENSMUSG00000027404"
+            ],
+            "Hmgn5": [
+              "ENSMUSG00000031245"
+            ],
+            "Hddc2": [
+              "ENSMUSG00000000295"
+            ],
+            "Plcd1": [
+              "ENSMUSG00000010660"
+            ],
+            "Polr2i": [
+              "ENSMUSG00000019738"
+            ],
+            "Uqcrh": [
+              "ENSMUSG00000063882"
+            ],
+            "Fuca2": [
+              "ENSMUSG00000019810"
+            ],
+            "Nptx2": [
+              "ENSMUSG00000059991"
+            ],
+            "Npnt": [
+              "ENSMUSG00000040998"
+            ],
+            "B4galt1": [
+              "ENSMUSG00000028413"
+            ],
+            "Plat": [
+              "ENSMUSG00000031538"
+            ],
+            "Metrnl": [
+              "ENSMUSG00000039208"
+            ],
+            "Vcan": [
+              "ENSMUSG00000021614"
+            ],
+            "Naa50": [
+              "ENSMUSG00000022698"
+            ],
+            "Lancl1": [
+              "ENSMUSG00000026000"
+            ],
+            "Paip1": [
+              "ENSMUSG00000025451"
+            ],
+            "Txnrd2": [
+              "ENSMUSG00000075704"
+            ],
+            "Glb1": [
+              "ENSMUSG00000045594"
+            ],
+            "Plod3": [
+              "ENSMUSG00000004846"
+            ],
+            "Pde6d": [
+              "ENSMUSG00000026239"
+            ],
+            "Eif4e": [
+              "ENSMUSG00000028156"
+            ],
+            "Tmod3": [
+              "ENSMUSG00000058587"
+            ],
+            "Galk1": [
+              "ENSMUSG00000020766"
+            ],
+            "Ccs": [
+              "ENSMUSG00000034108"
+            ],
+            "Nxn": [
+              "ENSMUSG00000020844"
+            ],
+            "Dnaja2": [
+              "ENSMUSG00000031701"
+            ],
+            "Dhdh": [
+              "ENSMUSG00000011382"
+            ],
+            "Memo1": [
+              "ENSMUSG00000058704"
+            ],
+            "Edf1": [
+              "ENSMUSG00000015092"
+            ],
+            "Eif3h": [
+              "ENSMUSG00000022312"
+            ],
+            "Pea15": [
+              "ENSMUSG00000013698"
+            ],
+            "Hnrnpl": [
+              "ENSMUSG00000015165"
+            ],
+            "Ppp6c": [
+              "ENSMUSG00000026753"
+            ],
+            "Srp14": [
+              "ENSMUSG00000009549"
+            ],
+            "Twf2": [
+              "ENSMUSG00000023277"
+            ],
+            "Timm8b": [
+              "ENSMUSG00000039016"
+            ],
+            "Arpc1a": [
+              "ENSMUSG00000029621"
+            ],
+            "Aox1": [
+              "ENSMUSG00000063558"
+            ],
+            "A2m": [
+              "ENSMUSG00000030111"
+            ],
+            "Fahd1": [
+              "ENSMUSG00000045316"
+            ],
+            "Sumo2": [
+              "ENSMUSG00000020738"
+            ],
+            "Cops6": [
+              "ENSMUSG00000019494"
+            ],
+            "Rabif": [
+              "ENSMUSG00000042229"
+            ],
+            "Snrpd3": [
+              "ENSMUSG00000020180"
+            ],
+            "Enah": [
+              "ENSMUSG00000022995"
+            ],
+            "Rragc": [
+              "ENSMUSG00000028646"
+            ],
+            "Rnf114": [
+              "ENSMUSG00000006418"
+            ],
+            "Nanp": [
+              "ENSMUSG00000053916"
+            ],
+            "Meig1": [
+              "ENSMUSG00000026650"
+            ],
+            "Pdxp": [
+              "ENSMUSG00000116165"
+            ],
+            "Isca2": [
+              "ENSMUSG00000021241"
+            ],
+            "Cst9": [
+              "ENSMUSG00000027445"
+            ],
+            "Fst": [
+              "ENSMUSG00000021765"
+            ],
+            "Ccdc80": [
+              "ENSMUSG00000022665"
+            ],
+            "Asah2": [
+              "ENSMUSG00000024887"
+            ],
+            "Neu1": [
+              "ENSMUSG00000007038"
+            ],
+            "Mbtps1": [
+              "ENSMUSG00000031835"
+            ],
+            "Olfml3": [
+              "ENSMUSG00000027848"
+            ],
+            "St6gal1": [
+              "ENSMUSG00000022885"
+            ],
+            "Atp6v1c1": [
+              "ENSMUSG00000022295"
+            ],
+            "Sort1": [
+              "ENSMUSG00000068747"
+            ],
+            "Ciao1": [
+              "ENSMUSG00000003662"
+            ],
+            "Chmp2a": [
+              "ENSMUSG00000033916"
+            ],
+            "Itgb1": [
+              "ENSMUSG00000025809"
+            ],
+            "Impact": [
+              "ENSMUSG00000024423"
+            ],
+            "Isoc2a": [
+              "ENSMUSG00000086784"
+            ],
+            "Arf4": [
+              "ENSMUSG00000021877"
+            ],
+            "Lypla2": [
+              "ENSMUSG00000028670"
+            ],
+            "Marcksl1": [
+              "ENSMUSG00000047945"
+            ],
+            "Casp3": [
+              "ENSMUSG00000031628"
+            ],
+            "Lamp1": [
+              "ENSMUSG00000031447"
+            ],
+            "Hnrnpdl": [
+              "ENSMUSG00000029328"
+            ],
+            "Rpl18": [
+              "ENSMUSG00000059070"
+            ],
+            "Ube2g1": [
+              "ENSMUSG00000020794"
+            ],
+            "Pin4": [
+              "ENSMUSG00000079480"
+            ],
+            "Cuta": [
+              "ENSMUSG00000024194"
+            ],
+            "Mri1": [
+              "ENSMUSG00000004996"
+            ],
+            "Eif3e": [
+              "ENSMUSG00000022336"
+            ],
+            "Nudt14": [
+              "ENSMUSG00000002804"
+            ],
+            "Mif": [
+              "ENSMUSG00000033307"
+            ],
+            "Decr1": [
+              "ENSMUSG00000028223"
+            ],
+            "Caprin1": [
+              "ENSMUSG00000027184"
+            ],
+            "Rps25": [
+              "ENSMUSG00000009927"
+            ],
+            "Parp1": [
+              "ENSMUSG00000026496"
+            ],
+            "Sec31a": [
+              "ENSMUSG00000035325"
+            ],
+            "Fus": [
+              "ENSMUSG00000030795"
+            ],
+            "Pcbd1": [
+              "ENSMUSG00000020098"
+            ],
+            "Dlst": [
+              "ENSMUSG00000004789"
+            ],
+            "Nt5c3b": [
+              "ENSMUSG00000017176"
+            ],
+            "Cnrip1": [
+              "ENSMUSG00000044629"
+            ],
+            "Snrpa1": [
+              "ENSMUSG00000030512"
+            ],
+            "Snrpd1": [
+              "ENSMUSG00000002477"
+            ],
+            "Pabpn1": [
+              "ENSMUSG00000022194"
+            ],
+            "Polr2e": [
+              "ENSMUSG00000004667"
+            ],
+            "Gbp2": [
+              "ENSMUSG00000028270"
+            ],
+            "Cbln4": [
+              "ENSMUSG00000067578"
+            ],
+            "Fat3": [
+              "ENSMUSG00000074505"
+            ],
+            "Ddr1": [
+              "ENSMUSG00000003534"
+            ],
+            "Cd81": [
+              "ENSMUSG00000037706"
+            ],
+            "Extl2": [
+              "ENSMUSG00000027963"
+            ],
+            "Vps28": [
+              "ENSMUSG00000115987"
+            ],
+            "Sumf1": [
+              "ENSMUSG00000030101"
+            ],
+            "Mt1": [
+              "ENSMUSG00000031765"
+            ],
+            "Cdc34": [
+              "ENSMUSG00000020307"
+            ],
+            "Vasp": [
+              "ENSMUSG00000030403"
+            ],
+            "Pdcd6": [
+              "ENSMUSG00000021576"
+            ],
+            "Uap1": [
+              "ENSMUSG00000026670"
+            ],
+            "Rps8": [
+              "ENSMUSG00000047675"
+            ],
+            "Hypk": [
+              "ENSMUSG00000027245"
+            ],
+            "Efnb1": [
+              "ENSMUSG00000031217"
+            ],
+            "Rpl22": [
+              "ENSMUSG00000028936"
+            ],
+            "Mtap": [
+              "ENSMUSG00000062937"
+            ],
+            "Rpl27": [
+              "ENSMUSG00000063316"
+            ],
+            "Rps13": [
+              "ENSMUSG00000090862"
+            ],
+            "Rabggtb": [
+              "ENSMUSG00000038975"
+            ],
+            "Nat2": [
+              "ENSMUSG00000051147"
+            ],
+            "Ptges3l": [
+              "ENSMUSG00000097487"
+            ],
+            "Alyref": [
+              "ENSMUSG00000025134"
+            ],
+            "Cox5a": [
+              "ENSMUSG00000000088"
+            ],
+            "Ncstn": [
+              "ENSMUSG00000003458"
+            ],
+            "Atad5": [
+              "ENSMUSG00000017550"
+            ],
+            "Tmtc3": [
+              "ENSMUSG00000036676"
+            ],
+            "Rpn1": [
+              "ENSMUSG00000030062"
+            ],
+            "Ppm1n": [
+              "ENSMUSG00000030402"
+            ],
+            "Mcfd2": [
+              "ENSMUSG00000024150"
+            ],
+            "Stc2": [
+              "ENSMUSG00000020303"
+            ],
+            "Pf4": [
+              "ENSMUSG00000029373"
+            ],
+            "Ext1": [
+              "ENSMUSG00000061731"
+            ],
+            "Podxl": [
+              "ENSMUSG00000025608"
+            ],
+            "Trappc2l": [
+              "ENSMUSG00000015013"
+            ],
+            "Procr": [
+              "ENSMUSG00000027611"
+            ],
+            "Cachd1": [
+              "ENSMUSG00000028532"
+            ],
+            "Lgals9": [
+              "ENSMUSG00000001123"
+            ],
+            "Copz2": [
+              "ENSMUSG00000018672"
+            ],
+            "Rab18": [
+              "ENSMUSG00000073639"
+            ],
+            "Sprr1a": [
+              "ENSMUSG00000050359"
+            ],
+            "Crip1": [
+              "ENSMUSG00000006360"
+            ],
+            "Tjp2": [
+              "ENSMUSG00000024812"
+            ],
+            "Uba5": [
+              "ENSMUSG00000032557"
+            ],
+            "Sat2": [
+              "ENSMUSG00000069835"
+            ],
+            "Impa2": [
+              "ENSMUSG00000024525"
             ]
           },
           "ensgs": [
-            "ENSMUSG00000032332",
-            "ENSMUSG00000025503",
-            "ENSMUSG00000027940",
-            "ENSMUSG00000020849",
-            "ENSMUSG00000029580",
-            "ENSMUSG00000032340",
-            "ENSMUSG00000028001",
-            "ENSMUSG00000018965",
-            "ENSMUSG00000021024",
-            "ENSMUSG00000022982",
-            "ENSMUSG00000006205",
-            "ENSMUSG00000002227",
-            "ENSMUSG00000068039",
-            "ENSMUSG00000021737",
-            "ENSMUSG00000023456",
-            "ENSMUSG00000022234",
-            "ENSMUSG00000036743",
-            "ENSMUSG00000029447",
-            "ENSMUSG00000068876",
-            "ENSMUSG00000030007",
-            "ENSMUSG00000028577",
-            "ENSMUSG00000027680",
-            "ENSMUSG00000069805",
-            "ENSMUSG00000031996",
-            "ENSMUSG00000020349",
-            "ENSMUSG00000004455",
-            "ENSMUSG00000031400",
-            "ENSMUSG00000024501",
-            "ENSMUSG00000031246",
-            "ENSMUSG00000026750",
-            "ENSMUSG00000056436",
-            "ENSMUSG00000025245",
-            "ENSMUSG00000036606",
-            "ENSMUSG00000000594",
-            "ENSMUSG00000029657",
-            "ENSMUSG00000040385",
-            "ENSMUSG00000018554",
-            "ENSMUSG00000026869",
-            "ENSMUSG00000038965",
-            "ENSMUSG00000005779",
-            "ENSMUSG00000028608",
-            "ENSMUSG00000046949",
-            "ENSMUSG00000067818",
-            "ENSMUSG00000024556",
-            "ENSMUSG00000032126",
-            "ENSMUSG00000028649",
-            "ENSMUSG00000030079",
-            "ENSMUSG00000033491",
-            "ENSMUSG00000036327",
-            "ENSMUSG00000039197",
-            "ENSMUSG00000052131",
-            "ENSMUSG00000061518",
-            "ENSMUSG00000032463",
-            "ENSMUSG00000021806",
-            "ENSMUSG00000048076",
-            "ENSMUSG00000003873",
-            "ENSMUSG00000003099",
-            "ENSMUSG00000024346",
-            "ENSMUSG00000020790",
-            "ENSMUSG00000001025",
-            "ENSMUSG00000020267",
-            "ENSMUSG00000007039",
-            "ENSMUSG00000021868",
-            "ENSMUSG00000042073",
-            "ENSMUSG00000001435",
-            "ENSMUSG00000007050",
-            "ENSMUSG00000027784",
-            "ENSMUSG00000001847",
-            "ENSMUSG00000052681",
-            "ENSMUSG00000026104",
-            "ENSMUSG00000002741",
-            "ENSMUSG00000029910",
-            "ENSMUSG00000006273",
-            "ENSMUSG00000015943",
-            "ENSMUSG00000020368",
-            "ENSMUSG00000027500",
-            "ENSMUSG00000039001",
-            "ENSMUSG00000035385",
-            "ENSMUSG00000002603",
-            "ENSMUSG00000061119",
-            "ENSMUSG00000021556",
-            "ENSMUSG00000027332",
-            "ENSMUSG00000000827",
-            "ENSMUSG00000020629",
-            "ENSMUSG00000020803",
-            "ENSMUSG00000027879",
-            "ENSMUSG00000028843",
-            "ENSMUSG00000031683",
-            "ENSMUSG00000031897",
-            "ENSMUSG00000062515",
-            "ENSMUSG00000044155",
-            "ENSMUSG00000030946",
-            "ENSMUSG00000026361",
-            "ENSMUSG00000067288",
-            "ENSMUSG00000057278",
-            "ENSMUSG00000021096",
-            "ENSMUSG00000004849",
-            "ENSMUSG00000027091",
-            "ENSMUSG00000026662",
-            "ENSMUSG00000027422",
-            "ENSMUSG00000021496",
-            "ENSMUSG00000023973",
-            "ENSMUSG00000020444",
-            "ENSMUSG00000037364",
-            "ENSMUSG00000025228",
-            "ENSMUSG00000036402",
-            "ENSMUSG00000034394",
-            "ENSMUSG00000015090",
-            "ENSMUSG00000032359",
-            "ENSMUSG00000032572",
-            "ENSMUSG00000031209",
-            "ENSMUSG00000071379",
-            "ENSMUSG00000019173",
-            "ENSMUSG00000060992",
-            "ENSMUSG00000022010",
-            "ENSMUSG00000031311",
-            "ENSMUSG00000024735",
-            "ENSMUSG00000030220",
-            "ENSMUSG00000066366",
-            "ENSMUSG00000078453",
-            "ENSMUSG00000021395",
-            "ENSMUSG00000054474",
-            "ENSMUSG00000042215",
-            "ENSMUSG00000074656",
-            "ENSMUSG00000039043",
-            "ENSMUSG00000002329",
-            "ENSMUSG00000024772",
-            "ENSMUSG00000000902",
-            "ENSMUSG00000022108",
-            "ENSMUSG00000032060",
-            "ENSMUSG00000033940",
-            "ENSMUSG00000004285",
-            "ENSMUSG00000028743",
-            "ENSMUSG00000021500",
-            "ENSMUSG00000022244",
-            "ENSMUSG00000044254",
-            "ENSMUSG00000041120",
-            "ENSMUSG00000072115",
-            "ENSMUSG00000028830",
-            "ENSMUSG00000031555",
-            "ENSMUSG00000035540",
-            "ENSMUSG00000038508",
-            "ENSMUSG00000028673",
-            "ENSMUSG00000079592",
-            "ENSMUSG00000020132",
-            "ENSMUSG00000032135",
-            "ENSMUSG00000024725",
-            "ENSMUSG00000055044",
-            "ENSMUSG00000031387",
-            "ENSMUSG00000027162",
-            "ENSMUSG00000032673",
-            "ENSMUSG00000030088",
-            "ENSMUSG00000021591",
-            "ENSMUSG00000026817",
-            "ENSMUSG00000007670",
-            "ENSMUSG00000040459",
-            "ENSMUSG00000024866",
-            "ENSMUSG00000038641",
-            "ENSMUSG00000019326",
-            "ENSMUSG00000000420",
-            "ENSMUSG00000028788",
-            "ENSMUSG00000060572",
-            "ENSMUSG00000053398",
-            "ENSMUSG00000025979",
-            "ENSMUSG00000032261",
-            "ENSMUSG00000039804",
-            "ENSMUSG00000053119",
-            "ENSMUSG00000025794",
-            "ENSMUSG00000007836",
-            "ENSMUSG00000003438",
-            "ENSMUSG00000007987",
-            "ENSMUSG00000021079",
-            "ENSMUSG00000028447",
-            "ENSMUSG00000029380",
-            "ENSMUSG00000021253",
-            "ENSMUSG00000020130",
-            "ENSMUSG00000002372",
-            "ENSMUSG00000035373",
-            "ENSMUSG00000024331",
-            "ENSMUSG00000022893",
-            "ENSMUSG00000052593",
-            "ENSMUSG00000024909",
-            "ENSMUSG00000029371",
-            "ENSMUSG00000040690",
-            "ENSMUSG00000001507",
-            "ENSMUSG00000043998",
-            "ENSMUSG00000072772",
-            "ENSMUSG00000025326",
-            "ENSMUSG00000030659",
-            "ENSMUSG00000052337",
-            "ENSMUSG00000058624",
-            "ENSMUSG00000041459",
-            "ENSMUSG00000025420",
-            "ENSMUSG00000042312",
-            "ENSMUSG00000010376",
-            "ENSMUSG00000059208"
+            "ENSMUSG00000018707",
+            "ENSMUSG00000020315",
+            "ENSMUSG00000025278",
+            "ENSMUSG00000031502",
+            "ENSMUSG00000029661",
+            "ENSMUSG00000021270",
+            "ENSMUSG00000026837",
+            "ENSMUSG00000027070",
+            "ENSMUSG00000032115",
+            "ENSMUSG00000031010",
+            "ENSMUSG00000041763",
+            "ENSMUSG00000021193",
+            "ENSMUSG00000054889",
+            "ENSMUSG00000040249",
+            "ENSMUSG00000032911",
+            "ENSMUSG00000028465",
+            "ENSMUSG00000025823",
+            "ENSMUSG00000001119",
+            "ENSMUSG00000062070",
+            "ENSMUSG00000024590",
+            "ENSMUSG00000022477",
+            "ENSMUSG00000028339",
+            "ENSMUSG00000063904",
+            "ENSMUSG00000026042",
+            "ENSMUSG00000028961",
+            "ENSMUSG00000027199",
+            "ENSMUSG00000032496",
+            "ENSMUSG00000020241",
+            "ENSMUSG00000020695",
+            "ENSMUSG00000026234",
+            "ENSMUSG00000028980",
+            "ENSMUSG00000018830",
+            "ENSMUSG00000020571",
+            "ENSMUSG00000027984",
+            "ENSMUSG00000001552",
+            "ENSMUSG00000022443",
+            "ENSMUSG00000026341",
+            "ENSMUSG00000030681",
+            "ENSMUSG00000013629",
+            "ENSMUSG00000020840",
+            "ENSMUSG00000024066",
+            "ENSMUSG00000022816",
+            "ENSMUSG00000020745",
+            "ENSMUSG00000038650",
+            "ENSMUSG00000031696",
+            "ENSMUSG00000024966",
+            "ENSMUSG00000017286",
+            "ENSMUSG00000025533",
+            "ENSMUSG00000023977",
+            "ENSMUSG00000051391",
+            "ENSMUSG00000030357",
+            "ENSMUSG00000006304",
+            "ENSMUSG00000013736",
+            "ENSMUSG00000038886",
+            "ENSMUSG00000027455",
+            "ENSMUSG00000004891",
+            "ENSMUSG00000029407",
+            "ENSMUSG00000030744",
+            "ENSMUSG00000027206",
+            "ENSMUSG00000039682",
+            "ENSMUSG00000042079",
+            "ENSMUSG00000053907",
+            "ENSMUSG00000070436",
+            "ENSMUSG00000020321",
+            "ENSMUSG00000023224",
+            "ENSMUSG00000002319",
+            "ENSMUSG00000042719",
+            "ENSMUSG00000042684",
+            "ENSMUSG00000020664",
+            "ENSMUSG00000028393",
+            "ENSMUSG00000000753",
+            "ENSMUSG00000030539",
+            "ENSMUSG00000019899",
+            "ENSMUSG00000021546",
+            "ENSMUSG00000032423",
+            "ENSMUSG00000022836",
+            "ENSMUSG00000022962",
+            "ENSMUSG00000022751",
+            "ENSMUSG00000026526",
+            "ENSMUSG00000031119",
+            "ENSMUSG00000025364",
+            "ENSMUSG00000020720",
+            "ENSMUSG00000029686",
+            "ENSMUSG00000020078",
+            "ENSMUSG00000024767",
+            "ENSMUSG00000025934",
+            "ENSMUSG00000037601",
+            "ENSMUSG00000056820",
+            "ENSMUSG00000032249",
+            "ENSMUSG00000030826",
+            "ENSMUSG00000030536",
+            "ENSMUSG00000020532",
+            "ENSMUSG00000031731",
+            "ENSMUSG00000020986",
+            "ENSMUSG00000035297",
+            "ENSMUSG00000078923",
+            "ENSMUSG00000036371",
+            "ENSMUSG00000003402",
+            "ENSMUSG00000026617",
+            "ENSMUSG00000023262",
+            "ENSMUSG00000001999",
+            "ENSMUSG00000005683",
+            "ENSMUSG00000053898",
+            "ENSMUSG00000024507",
+            "ENSMUSG00000027832",
+            "ENSMUSG00000029304",
+            "ENSMUSG00000034707",
+            "ENSMUSG00000024583",
+            "ENSMUSG00000030224",
+            "ENSMUSG00000017390",
+            "ENSMUSG00000028194",
+            "ENSMUSG00000005973",
+            "ENSMUSG00000062014",
+            "ENSMUSG00000035150",
+            "ENSMUSG00000041231",
+            "ENSMUSG00000021748",
+            "ENSMUSG00000006005",
+            "ENSMUSG00000005469",
+            "ENSMUSG00000020089",
+            "ENSMUSG00000054717",
+            "ENSMUSG00000066551",
+            "ENSMUSG00000020949",
+            "ENSMUSG00000032295",
+            "ENSMUSG00000054766",
+            "ENSMUSG00000032320",
+            "ENSMUSG00000061759",
+            "ENSMUSG00000061232",
+            "ENSMUSG00000039899",
+            "ENSMUSG00000022453",
+            "ENSMUSG00000022403",
+            "ENSMUSG00000028932",
+            "ENSMUSG00000031068",
+            "ENSMUSG00000021311",
+            "ENSMUSG00000008475",
+            "ENSMUSG00000028333",
+            "ENSMUSG00000027108",
+            "ENSMUSG00000030061",
+            "ENSMUSG00000028138",
+            "ENSMUSG00000032590",
+            "ENSMUSG00000074781",
+            "ENSMUSG00000025917",
+            "ENSMUSG00000055681",
+            "ENSMUSG00000027227",
+            "ENSMUSG00000028484",
+            "ENSMUSG00000004897",
+            "ENSMUSG00000057113",
+            "ENSMUSG00000038777",
+            "ENSMUSG00000027834",
+            "ENSMUSG00000030657",
+            "ENSMUSG00000036707",
+            "ENSMUSG00000001774",
+            "ENSMUSG00000014956",
+            "ENSMUSG00000024360",
+            "ENSMUSG00000023832",
+            "ENSMUSG00000028081",
+            "ENSMUSG00000063931",
+            "ENSMUSG00000007850",
+            "ENSMUSG00000026421",
+            "ENSMUSG00000019916",
+            "ENSMUSG00000027671",
+            "ENSMUSG00000024953",
+            "ENSMUSG00000027006",
+            "ENSMUSG00000031078",
+            "ENSMUSG00000022674",
+            "ENSMUSG00000028609",
+            "ENSMUSG00000001285",
+            "ENSMUSG00000035944",
+            "ENSMUSG00000068748",
+            "ENSMUSG00000031353",
+            "ENSMUSG00000050017",
+            "ENSMUSG00000066232",
+            "ENSMUSG00000063358",
+            "ENSMUSG00000067194",
+            "ENSMUSG00000020929",
+            "ENSMUSG00000034744",
+            "ENSMUSG00000028741",
+            "ENSMUSG00000029440",
+            "ENSMUSG00000027247",
+            "ENSMUSG00000024991",
+            "ENSMUSG00000026917",
+            "ENSMUSG00000037563",
+            "ENSMUSG00000071072",
+            "ENSMUSG00000053436",
+            "ENSMUSG00000031988",
+            "ENSMUSG00000032518",
+            "ENSMUSG00000074797",
+            "ENSMUSG00000027528",
+            "ENSMUSG00000040824",
+            "ENSMUSG00000001131",
+            "ENSMUSG00000006369",
+            "ENSMUSG00000019471",
+            "ENSMUSG00000009630",
+            "ENSMUSG00000030298",
+            "ENSMUSG00000038467",
+            "ENSMUSG00000038366",
+            "ENSMUSG00000039630",
+            "ENSMUSG00000054405",
+            "ENSMUSG00000030189",
+            "ENSMUSG00000032231",
+            "ENSMUSG00000020708",
+            "ENSMUSG00000056851",
+            "ENSMUSG00000022110",
+            "ENSMUSG00000029064",
+            "ENSMUSG00000029446",
+            "ENSMUSG00000040952",
+            "ENSMUSG00000030905",
+            "ENSMUSG00000048578",
+            "ENSMUSG00000032026",
+            "ENSMUSG00000062773",
+            "ENSMUSG00000029310",
+            "ENSMUSG00000028567",
+            "ENSMUSG00000031167",
+            "ENSMUSG00000029911",
+            "ENSMUSG00000033157",
+            "ENSMUSG00000025287",
+            "ENSMUSG00000037070",
+            "ENSMUSG00000028639",
+            "ENSMUSG00000021577",
+            "ENSMUSG00000025580",
+            "ENSMUSG00000028613",
+            "ENSMUSG00000021876",
+            "ENSMUSG00000027276",
+            "ENSMUSG00000027200",
+            "ENSMUSG00000028015",
+            "ENSMUSG00000073418",
+            "ENSMUSG00000026748",
+            "ENSMUSG00000053931",
+            "ENSMUSG00000030942",
+            "ENSMUSG00000031878",
+            "ENSMUSG00000027429",
+            "ENSMUSG00000028847",
+            "ENSMUSG00000019795",
+            "ENSMUSG00000021018",
+            "ENSMUSG00000026036",
+            "ENSMUSG00000025156",
+            "ENSMUSG00000027708",
+            "ENSMUSG00000026275",
+            "ENSMUSG00000016534",
+            "ENSMUSG00000062203",
+            "ENSMUSG00000040731",
+            "ENSMUSG00000005813",
+            "ENSMUSG00000028636",
+            "ENSMUSG00000021236",
+            "ENSMUSG00000041426",
+            "ENSMUSG00000028199",
+            "ENSMUSG00000032067",
+            "ENSMUSG00000067274",
+            "ENSMUSG00000028597",
+            "ENSMUSG00000019961",
+            "ENSMUSG00000024099",
+            "ENSMUSG00000026413",
+            "ENSMUSG00000013584",
+            "ENSMUSG00000002129",
+            "ENSMUSG00000024870",
+            "ENSMUSG00000038069",
+            "ENSMUSG00000044258",
+            "ENSMUSG00000032452",
+            "ENSMUSG00000028249",
+            "ENSMUSG00000069516",
+            "ENSMUSG00000028189",
+            "ENSMUSG00000002985",
+            "ENSMUSG00000057880",
+            "ENSMUSG00000026958",
+            "ENSMUSG00000061130",
+            "ENSMUSG00000000278",
+            "ENSMUSG00000049775",
+            "ENSMUSG00000008136",
+            "ENSMUSG00000022024",
+            "ENSMUSG00000003660",
+            "ENSMUSG00000093930",
+            "ENSMUSG00000021484",
+            "ENSMUSG00000015994",
+            "ENSMUSG00000043962",
+            "ENSMUSG00000025545",
+            "ENSMUSG00000026914",
+            "ENSMUSG00000026019",
+            "ENSMUSG00000046032",
+            "ENSMUSG00000061315",
+            "ENSMUSG00000057497",
+            "ENSMUSG00000030603",
+            "ENSMUSG00000035637",
+            "ENSMUSG00000008668",
+            "ENSMUSG00000065979",
+            "ENSMUSG00000037499",
+            "ENSMUSG00000028443",
+            "ENSMUSG00000026238",
+            "ENSMUSG00000020877",
+            "ENSMUSG00000021947",
+            "ENSMUSG00000058655",
+            "ENSMUSG00000034432",
+            "ENSMUSG00000034875",
+            "ENSMUSG00000043991",
+            "ENSMUSG00000050627",
+            "ENSMUSG00000025410",
+            "ENSMUSG00000042082",
+            "ENSMUSG00000021665",
+            "ENSMUSG00000028410",
+            "ENSMUSG00000039105",
+            "ENSMUSG00000006024",
+            "ENSMUSG00000019978",
+            "ENSMUSG00000037236",
+            "ENSMUSG00000024608",
+            "ENSMUSG00000050335",
+            "ENSMUSG00000059263",
+            "ENSMUSG00000073557",
+            "ENSMUSG00000027712",
+            "ENSMUSG00000022947",
+            "ENSMUSG00000002102",
+            "ENSMUSG00000021807",
+            "ENSMUSG00000028093",
+            "ENSMUSG00000041926",
+            "ENSMUSG00000002064",
+            "ENSMUSG00000006134",
+            "ENSMUSG00000059119",
+            "ENSMUSG00000045983",
+            "ENSMUSG00000031848",
+            "ENSMUSG00000021929",
+            "ENSMUSG00000001289",
+            "ENSMUSG00000038462",
+            "ENSMUSG00000028234",
+            "ENSMUSG00000018189",
+            "ENSMUSG00000025538",
+            "ENSMUSG00000001942",
+            "ENSMUSG00000061787",
+            "ENSMUSG00000003033",
+            "ENSMUSG00000029993",
+            "ENSMUSG00000008393",
+            "ENSMUSG00000023019",
+            "ENSMUSG00000032565",
+            "ENSMUSG00000003161",
+            "ENSMUSG00000027998",
+            "ENSMUSG00000024646",
+            "ENSMUSG00000027404",
+            "ENSMUSG00000031245",
+            "ENSMUSG00000000295",
+            "ENSMUSG00000010660",
+            "ENSMUSG00000019738",
+            "ENSMUSG00000063882",
+            "ENSMUSG00000019810",
+            "ENSMUSG00000059991",
+            "ENSMUSG00000040998",
+            "ENSMUSG00000028413",
+            "ENSMUSG00000031538",
+            "ENSMUSG00000039208",
+            "ENSMUSG00000021614",
+            "ENSMUSG00000022698",
+            "ENSMUSG00000026000",
+            "ENSMUSG00000025451",
+            "ENSMUSG00000075704",
+            "ENSMUSG00000045594",
+            "ENSMUSG00000004846",
+            "ENSMUSG00000026239",
+            "ENSMUSG00000028156",
+            "ENSMUSG00000058587",
+            "ENSMUSG00000020766",
+            "ENSMUSG00000034108",
+            "ENSMUSG00000020844",
+            "ENSMUSG00000031701",
+            "ENSMUSG00000011382",
+            "ENSMUSG00000058704",
+            "ENSMUSG00000015092",
+            "ENSMUSG00000022312",
+            "ENSMUSG00000013698",
+            "ENSMUSG00000015165",
+            "ENSMUSG00000026753",
+            "ENSMUSG00000009549",
+            "ENSMUSG00000023277",
+            "ENSMUSG00000039016",
+            "ENSMUSG00000029621",
+            "ENSMUSG00000063558",
+            "ENSMUSG00000030111",
+            "ENSMUSG00000045316",
+            "ENSMUSG00000020738",
+            "ENSMUSG00000019494",
+            "ENSMUSG00000042229",
+            "ENSMUSG00000020180",
+            "ENSMUSG00000022995",
+            "ENSMUSG00000028646",
+            "ENSMUSG00000006418",
+            "ENSMUSG00000053916",
+            "ENSMUSG00000026650",
+            "ENSMUSG00000116165",
+            "ENSMUSG00000021241",
+            "ENSMUSG00000027445",
+            "ENSMUSG00000021765",
+            "ENSMUSG00000022665",
+            "ENSMUSG00000024887",
+            "ENSMUSG00000007038",
+            "ENSMUSG00000031835",
+            "ENSMUSG00000027848",
+            "ENSMUSG00000022885",
+            "ENSMUSG00000022295",
+            "ENSMUSG00000068747",
+            "ENSMUSG00000003662",
+            "ENSMUSG00000033916",
+            "ENSMUSG00000025809",
+            "ENSMUSG00000024423",
+            "ENSMUSG00000086784",
+            "ENSMUSG00000021877",
+            "ENSMUSG00000028670",
+            "ENSMUSG00000047945",
+            "ENSMUSG00000031628",
+            "ENSMUSG00000031447",
+            "ENSMUSG00000029328",
+            "ENSMUSG00000059070",
+            "ENSMUSG00000020794",
+            "ENSMUSG00000079480",
+            "ENSMUSG00000024194",
+            "ENSMUSG00000004996",
+            "ENSMUSG00000022336",
+            "ENSMUSG00000002804",
+            "ENSMUSG00000033307",
+            "ENSMUSG00000028223",
+            "ENSMUSG00000027184",
+            "ENSMUSG00000009927",
+            "ENSMUSG00000026496",
+            "ENSMUSG00000035325",
+            "ENSMUSG00000030795",
+            "ENSMUSG00000020098",
+            "ENSMUSG00000004789",
+            "ENSMUSG00000017176",
+            "ENSMUSG00000044629",
+            "ENSMUSG00000030512",
+            "ENSMUSG00000002477",
+            "ENSMUSG00000022194",
+            "ENSMUSG00000004667",
+            "ENSMUSG00000028270",
+            "ENSMUSG00000067578",
+            "ENSMUSG00000074505",
+            "ENSMUSG00000003534",
+            "ENSMUSG00000037706",
+            "ENSMUSG00000027963",
+            "ENSMUSG00000115987",
+            "ENSMUSG00000030101",
+            "ENSMUSG00000031765",
+            "ENSMUSG00000020307",
+            "ENSMUSG00000030403",
+            "ENSMUSG00000021576",
+            "ENSMUSG00000026670",
+            "ENSMUSG00000047675",
+            "ENSMUSG00000027245",
+            "ENSMUSG00000031217",
+            "ENSMUSG00000028936",
+            "ENSMUSG00000062937",
+            "ENSMUSG00000063316",
+            "ENSMUSG00000090862",
+            "ENSMUSG00000038975",
+            "ENSMUSG00000051147",
+            "ENSMUSG00000097487",
+            "ENSMUSG00000025134",
+            "ENSMUSG00000000088",
+            "ENSMUSG00000003458",
+            "ENSMUSG00000017550",
+            "ENSMUSG00000036676",
+            "ENSMUSG00000030062",
+            "ENSMUSG00000030402",
+            "ENSMUSG00000024150",
+            "ENSMUSG00000020303",
+            "ENSMUSG00000029373",
+            "ENSMUSG00000061731",
+            "ENSMUSG00000025608",
+            "ENSMUSG00000015013",
+            "ENSMUSG00000027611",
+            "ENSMUSG00000028532",
+            "ENSMUSG00000001123",
+            "ENSMUSG00000018672",
+            "ENSMUSG00000073639",
+            "ENSMUSG00000050359",
+            "ENSMUSG00000006360",
+            "ENSMUSG00000024812",
+            "ENSMUSG00000032557",
+            "ENSMUSG00000069835",
+            "ENSMUSG00000024525"
           ]
         }
       }
     },
-    "timestamp": "2026-07-12T21:33:47.617285+00:00",
+    "timestamp": "2026-08-01T04:41:37.095992+00:00",
     "version": "e114_eg62_p19_27110d83"
   }
 }

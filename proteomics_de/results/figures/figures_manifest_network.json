@@ -2,11 +2,11 @@
   {
     "file": "figures/ppi_network.png",
     "title": "STRING PPI network of DE-regulated proteins (mouse) \u2014 largest connected component",
-    "caption": "Protein-protein interaction network from STRING v12.0 (species=10090, Mus musculus, required_score=400) built from the 715 DE-\"regulated\" seed proteins (206 UP, 509 DOWN; |log2FC|>=0.585). 694/715 seeds (97.1%) mapped to a STRING identifier, yielding a 694-node / 5963-edge network with 57 greedy-modularity communities. Only the largest connected component (645 nodes, 5960 edges) is drawn for legibility; 49 nodes across 46 smaller components are omitted. Node color = log2 fold change (blue = down, red = up); node size is proportional to STRING degree; the top 15 hub genes by degree are labeled. IMPORTANT: this is an exploratory network over the hypothesis-generating |log2FC|>=0.585 candidate set from an n=2 technical-replicate SILAC design (no biological replication) in which 0/1938 proteins pass FDR<0.05 (limma) \u2014 network structure reflects STRING's curated evidence, not statistical significance in this dataset, and should not be read as confirmed findings.",
+    "caption": "Protein-protein interaction network from STRING v12.0 (species=10090, Mus musculus, required_score=400) built from the 715 DE-\"regulated\" seed proteins (509 UP, 206 DOWN; |log2FC|>=0.585). 694/715 seeds (97.1%) mapped to a STRING identifier, yielding a 694-node / 5963-edge network with 57 greedy-modularity communities. Only the largest connected component (645 nodes, 5960 edges) is drawn for legibility; 49 nodes across 46 smaller components are omitted. Node color = log2 fold change (blue = down, red = up); node size is proportional to STRING degree; the top 15 hub genes by degree are labeled. IMPORTANT: this is an exploratory network over the hypothesis-generating |log2FC|>=0.585 candidate set from an n=2 technical-replicate SILAC design (no biological replication) in which 0/1938 proteins pass FDR<0.05 (limma) \u2014 network structure reflects STRING's curated evidence, not statistical significance in this dataset, and should not be read as confirmed findings.",
     "key_numbers": {
       "n_seeds": 715,
-      "n_seeds_up": 206,
-      "n_seeds_down": 509,
+      "n_seeds_up": 509,
+      "n_seeds_down": 206,
       "n_mapped": 694,
       "mapping_rate": 0.9706,
       "required_score": 400,
@@ -23,92 +23,92 @@
         {
           "symbol": "Actb",
           "degree": 137,
-          "log2FC": 0.87,
-          "regulated": "UP"
+          "log2FC": -0.87,
+          "regulated": "DOWN"
         },
         {
           "symbol": "Rps3",
           "degree": 100,
-          "log2FC": -0.67,
-          "regulated": "DOWN"
+          "log2FC": 0.67,
+          "regulated": "UP"
         },
         {
           "symbol": "Hsp90aa1",
           "degree": 97,
-          "log2FC": -1.624,
-          "regulated": "DOWN"
+          "log2FC": 1.624,
+          "regulated": "UP"
         },
         {
           "symbol": "Gnb2l1",
           "degree": 93,
-          "log2FC": -0.993,
-          "regulated": "DOWN"
+          "log2FC": 0.993,
+          "regulated": "UP"
         },
         {
           "symbol": "Cct7",
           "degree": 86,
-          "log2FC": 0.63,
-          "regulated": "UP"
+          "log2FC": -0.63,
+          "regulated": "DOWN"
         },
         {
           "symbol": "Gart",
           "degree": 83,
-          "log2FC": -0.888,
-          "regulated": "DOWN"
+          "log2FC": 0.888,
+          "regulated": "UP"
         },
         {
           "symbol": "Rps20",
           "degree": 82,
-          "log2FC": -2.19,
-          "regulated": "DOWN"
+          "log2FC": 2.19,
+          "regulated": "UP"
         },
         {
           "symbol": "Tcp1",
           "degree": 81,
-          "log2FC": 2.32,
-          "regulated": "UP"
+          "log2FC": -2.32,
+          "regulated": "DOWN"
         },
         {
           "symbol": "Nedd8",
           "degree": 81,
-          "log2FC": 2.709,
-          "regulated": "UP"
+          "log2FC": -2.709,
+          "regulated": "DOWN"
         },
         {
           "symbol": "Psmd14",
           "degree": 80,
-          "log2FC": -0.652,
-          "regulated": "DOWN"
+          "log2FC": 0.652,
+          "regulated": "UP"
         },
         {
           "symbol": "Eftud2",
           "degree": 79,
-          "log2FC": -0.906,
-          "regulated": "DOWN"
+          "log2FC": 0.906,
+          "regulated": "UP"
         },
         {
           "symbol": "Rplp0",
           "degree": 77,
-          "log2FC": -1.54,
-          "regulated": "DOWN"
+          "log2FC": 1.54,
+          "regulated": "UP"
         },
         {
           "symbol": "Cct5",
           "degree": 77,
-          "log2FC": 0.594,
-          "regulated": "UP"
+          "log2FC": -0.594,
+          "regulated": "DOWN"
         },
         {
           "symbol": "Rpsa",
           "degree": 77,
-          "log2FC": -0.628,
-          "regulated": "DOWN"
+          "log2FC": 0.628,
+          "regulated": "UP"
         },
         {
           "symbol": "Rps16",
           "degree": 72,
-          "log2FC": -1.264,
-          "regulated": "DOWN"
+          "log2FC": 1.264,
+          "regulated": "UP"
         }
       ]
     }

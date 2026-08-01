@@ -23,9 +23,18 @@ import pandas as pd
 # ----------------------------------------------------------------------------
 ENRICH_DIR_PATH = Path(__file__).resolve().parent
 PROTEOMICS_DE_DIR = ENRICH_DIR_PATH.parent
+REPO_ROOT = PROTEOMICS_DE_DIR.parent
 VIZ_DIR = PROTEOMICS_DE_DIR / "viz"
 sys.path.insert(0, str(VIZ_DIR))
+# The repo root has to be importable for the `proteomics_de.etl.*` package form
+# (`proteomics_de/` is a namespace package -- no __init__.py). These scripts are
+# run as bare files (`python proteomics_de/enrich/ora.py`), so only the script's
+# own directory lands on sys.path automatically; the repo root does not.
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 import style  # noqa: E402  (palette, apply_style(), save_fig, CHROME, etc.)
+
+from proteomics_de.etl.accessions import first_token  # noqa: E402
 
 RESULTS_DIR = style.RESULTS_DIR
 FIGURES_DIR = style.FIGURES_DIR
@@ -36,6 +45,17 @@ RAW_DIR.mkdir(parents=True, exist_ok=True)
 
 # NEW manifest -- never touches the existing figures_manifest.json
 ENRICH_MANIFEST_PATH = FIGURES_DIR / "figures_manifest_enrich.json"
+
+# Dataset-specific row/class counts live in exactly one place. They are NOT
+# inlined here: the D7 correction (control/treated were inverted) swapped
+# n_up/n_down from 206/509 to 509/206, and inline literals in this file were
+# precisely what made that a multi-file edit. See tests/expected/frozen_counts.json.
+FROZEN_COUNTS_PATH = PROTEOMICS_DE_DIR / "tests" / "expected" / "frozen_counts.json"
+
+
+def load_frozen_counts():
+    """Expected row/class counts for the committed dataset (single source of truth)."""
+    return json.loads(FROZEN_COUNTS_PATH.read_text(encoding="utf-8"))
 
 ORGANISM_GPROFILER = "mmusculus"
 CAVEAT_ENRICHMENT = (
@@ -79,11 +99,18 @@ def _first_token_or_accession(gene_val, acc_val):
     collapsed to their first listed gene symbol, per task spec. Rows with a
     missing/blank gene name fall back to the (first token of the) UniProt
     accession number so every row still contributes exactly one identifier.
+
+    The accession fallback goes through
+    :func:`proteomics_de.etl.accessions.first_token`, the one documented
+    accession policy, rather than re-implementing ``str(acc).split(";")[0]``
+    inline. That helper is behaviour-identical to the inline form it replaces
+    (including its NaN -> ``"nan"`` handling); tests/test_enrich_common.py
+    asserts the equivalence directly rather than trusting the comment.
     """
     if isinstance(gene_val, str) and gene_val.strip():
         parts = gene_val.split(";")
         return parts[0].strip(), len(parts) > 1, False
-    return str(acc_val).split(";")[0].strip(), False, True
+    return first_token(acc_val), False, True
 
 
 def build_symbol_list(df, gene_col, acc_col):
@@ -108,9 +135,14 @@ def load_background_and_queries():
     identical symbols the background has fewer unique strings than 2554 rows
     (both counts are reported).
 
-    UP / DOWN queries = foldchange_all.csv rows with regulated == UP (206) /
-    DOWN (509), same per-row resolution.
+    UP / DOWN queries = foldchange_all.csv rows with regulated == UP (509) /
+    DOWN (206), same per-row resolution. Those two counts were 206 / 509 until
+    DECISIONS_LOG D7 corrected the inverted control/treated assignment; the
+    query SETS swap wholesale (what was queried as UP is now the DOWN set and
+    vice versa). Nothing here hardcodes them -- every expected count is read
+    from tests/expected/frozen_counts.json.
     """
+    counts = load_frozen_counts()
     fc = pd.read_csv(RESULTS_DIR / "foldchange_all.csv")
     scp = pd.read_csv(RESULTS_DIR / "single_condition_proteins.csv")
 
@@ -129,10 +161,20 @@ def load_background_and_queries():
         down_df, "Gene names", "UniProt Accession Number"
     )
 
-    assert len(up_df) == 206, f"expected 206 UP rows, got {len(up_df)}"
-    assert len(down_df) == 509, f"expected 509 DOWN rows, got {len(down_df)}"
-    assert len(fc_symbols) + len(scp_symbols) == 2554, (
-        f"expected 2554-row background union, got {len(fc_symbols) + len(scp_symbols)}"
+    n_up_expected = counts["n_up"]
+    n_down_expected = counts["n_down"]
+    background_expected = counts["background_union"]
+    assert len(up_df) == n_up_expected, (
+        f"expected {n_up_expected} UP rows (frozen_counts.json:n_up), got {len(up_df)}"
+    )
+    assert len(down_df) == n_down_expected, (
+        f"expected {n_down_expected} DOWN rows (frozen_counts.json:n_down), "
+        f"got {len(down_df)}"
+    )
+    assert len(fc_symbols) + len(scp_symbols) == background_expected, (
+        f"expected {background_expected}-row background union "
+        f"(frozen_counts.json:background_union), got "
+        f"{len(fc_symbols) + len(scp_symbols)}"
     )
 
     list_meta = {

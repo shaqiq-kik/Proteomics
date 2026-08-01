@@ -3,8 +3,8 @@
 > **This file is GENERATED. Do not hand-edit.**
 > Regenerate with `.venv/bin/python tools/status.py` (source: `tools/status.py`). Every number below is read off the filesystem at generation time, so it cannot silently go stale.
 
-* Generated: **2026-08-01 00:24:30 EDT**
-* Git HEAD: **`c37c6d9`**
+* Generated: **2026-08-01 00:46:04 EDT**
+* Git HEAD: **`83b22a1`**
 * Repo root: `/Users/abrarshakik/Documents/Proteomics`
 
 Companions: `DECISIONS_LOG.md` (human decisions D1–D6) · `BUILD_LOG.md` (per-work-package history) · `../research1.md` §Build Log (per-bug narrative).
@@ -44,7 +44,7 @@ Companions: `DECISIONS_LOG.md` (human decisions D1–D6) · `BUILD_LOG.md` (per-
 
 ## b) Artifact inventory (`proteomics_de/results/`)
 
-**62 files**, 8.4 MB total, 21 tabular (`.csv`/`.tsv`).
+**67 files**, 20.1 MB total, 21 tabular (`.csv`/`.tsv`).
 
 Row counts EXCLUDE the header. Three files are header-only **by design** — they are the honest scientific result, not a failure. See `DECISIONS_LOG.md` D2 and D6.
 
@@ -52,25 +52,30 @@ Row counts EXCLUDE the header. Three files are header-only **by design** — the
 |---|---|---|---|
 | `results/de/design.tsv` | 69 B | 4 |  |
 | `results/de/intensity_matrix.tsv` | 110.8 KB | 1,938 |  |
-| `results/enrichment/STALE_AFTER_D7.md` | 1.8 KB | — |  |
 | `results/enrichment/gsea_meta.json` | 1.5 KB | — |  |
-| `results/enrichment/gsea_results.csv` | 113.2 KB | 568 | matches expected 568 |
+| `results/enrichment/gsea_results.csv` | 112.9 KB | 568 | matches expected 568 |
 | `results/enrichment/ora_down.csv` | 91 B | **0 rows (expected -- 0 GO/KEGG/Reactome terms survive the honest detected-proteome background (DECISIONS_LOG D6))** |  |
-| `results/enrichment/ora_meta.json` | 4.9 KB | — |  |
+| `results/enrichment/ora_meta.json` | 5.4 KB | — |  |
 | `results/enrichment/ora_top_terms_detail.json` | 4.1 KB | — |  |
 | `results/enrichment/ora_up.csv` | 91 B | **0 rows (expected -- 0 GO/KEGG/Reactome terms survive the honest detected-proteome background (DECISIONS_LOG D6))** |  |
-| `results/enrichment/raw/gprofiler_down.json` | 63.2 KB | — |  |
-| `results/enrichment/raw/gprofiler_up.json` | 27.4 KB | — |  |
+| `results/enrichment/raw/enrichr_libraries.json.gz` | 686.7 KB | — |  |
+| `results/enrichment/raw/gprofiler_down.json` | 27.4 KB | — |  |
+| `results/enrichment/raw/gprofiler_down_all.json` | 3.7 MB | — |  |
+| `results/enrichment/raw/gprofiler_down_all_evidence.json.gz` | 650.2 KB | — |  |
+| `results/enrichment/raw/gprofiler_up.json` | 63.2 KB | — |  |
+| `results/enrichment/raw/gprofiler_up_all.json` | 5.5 MB | — |  |
+| `results/enrichment/raw/gprofiler_up_all_evidence.json.gz` | 1.1 MB | — |  |
 | `results/enrichment/raw/string_get_ids.json` | 386.7 KB | — |  |
 | `results/enrichment/raw/string_network.tsv` | 574.3 KB | 5,962 |  |
+| `results/enrichment/raw/string_version.json` | 100 B | — |  |
 | `results/enrichment/string_edges.tsv` | 103.9 KB | 5,963 |  |
 | `results/enrichment/string_meta.json` | 760 B | — |  |
-| `results/enrichment/string_node_metrics.csv` | 58.3 KB | 694 | matches expected 694 |
+| `results/enrichment/string_node_metrics.csv` | 57.5 KB | 694 | matches expected 694 |
 | `results/figures/figures_manifest.json` | 8.2 KB | — |  |
-| `results/figures/figures_manifest_enrich.json` | 12.9 KB | — |  |
+| `results/figures/figures_manifest_enrich.json` | 13.1 KB | — |  |
 | `results/figures/figures_manifest_gated.json` | 2.9 KB | — |  |
 | `results/figures/figures_manifest_network.json` | 3.5 KB | — |  |
-| `results/figures/gsea_top.png` | 373.2 KB | — |  |
+| `results/figures/gsea_top.png` | 376.6 KB | — |  |
 | `results/figures/gsea_top.svg` | 27.3 KB | — |  |
 | `results/figures/heatmap_top_de.png` | 164.4 KB | — |  |
 | `results/figures/heatmap_top_de.svg` | 90.7 KB | — |  |
@@ -80,7 +85,7 @@ Row counts EXCLUDE the header. Three files are header-only **by design** — the
 | `results/figures/ma_plot.svg` | 226.7 KB | — |  |
 | `results/figures/missing_values.png` | 203.2 KB | — |  |
 | `results/figures/missing_values.svg` | 32.3 KB | — |  |
-| `results/figures/ora_dotplot.png` | 214.3 KB | — |  |
+| `results/figures/ora_dotplot.png` | 214.4 KB | — |  |
 | `results/figures/ora_dotplot.svg` | 25.6 KB | — |  |
 | `results/figures/pca_qc.png` | 134.4 KB | — |  |
 | `results/figures/pca_qc.svg` | 18.3 KB | — |  |
@@ -92,7 +97,7 @@ Row counts EXCLUDE the header. Three files are header-only **by design** — the
 | `results/figures/sample_correlation.svg` | 20.3 KB | — |  |
 | `results/figures/sample_dendrogram.png` | 112.3 KB | — |  |
 | `results/figures/sample_dendrogram.svg` | 12.4 KB | — |  |
-| `results/figures/upset.png` | 271.6 KB | — |  |
+| `results/figures/upset.png` | 271.5 KB | — |  |
 | `results/figures/upset.svg` | 43.6 KB | — |  |
 | `results/figures/volcano.png` | 211.1 KB | — |  |
 | `results/figures/volcano.svg` | 230.5 KB | — |  |
@@ -119,9 +124,9 @@ All 7 headline row counts match the contract in `config/config.yaml`.
 
 ## c) Byte-freeze drift
 
-Manifest: `proteomics_de/tests/expected/outputs.sha256` (65 files).
+Manifest: `proteomics_de/tests/expected/outputs.sha256` (70 files).
 
-**65 OK · 0 CHANGED · 0 MISSING**
+**70 OK · 0 CHANGED · 0 MISSING**
 
 ✅ **No drift.** Every frozen file is byte-identical to its baseline.
 
@@ -134,26 +139,28 @@ Manifest: `proteomics_de/tests/expected/outputs.sha256` (65 files).
 | `tests/test_accessions.py` | 14 |
 | `tests/test_build_matrix.py` | 11 |
 | `tests/test_design.py` | 23 |
+| `tests/test_enrich_common.py` | 27 |
 | `tests/test_foldchange_core.py` | 29 |
 | `tests/test_freeze.py` | 7 |
 | `tests/test_limma_contract.py` | 12 |
 | `tests/test_limma_r.py` | 27 |
 | `tests/test_merge_guard.py` | 16 |
 | `tests/test_run_pipeline.py` | 40 |
+| `tests/test_string_ppi.py` | 36 |
 | `tests/test_style_samples.py` | 18 |
 
-**10 test files · 197 test functions.**
+**12 test files · 260 test functions.**
 
 Module coverage — a module counts as covered if a test file is named after it (`test_<module>.py`) or mentions it in its filename:
 
 | Pipeline module | Test file? |
 |---|---|
 | `centering_check.py` | ❌ none |
-| `enrich/enrich_common.py` | ❌ none |
+| `enrich/enrich_common.py` | ✅ yes |
 | `enrich/gsea.py` | ❌ none |
 | `enrich/network_figure.py` | ❌ none |
 | `enrich/ora.py` | ❌ none |
-| `enrich/string_ppi.py` | ❌ none |
+| `enrich/string_ppi.py` | ✅ yes |
 | `enrich/upset.py` | ❌ none |
 | `etl/accessions.py` | ✅ yes |
 | `etl/build_matrix.py` | ✅ yes |
@@ -175,7 +182,7 @@ Module coverage — a module counts as covered if a test file is named after it 
 | `viz/style.py` | ✅ yes |
 | `viz/volcano.py` | ❌ none |
 
-**6/26 pipeline modules have a matching test file.**
+**8/26 pipeline modules have a matching test file.**
 
 ---
 

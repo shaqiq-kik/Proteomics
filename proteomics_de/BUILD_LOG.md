@@ -710,3 +710,141 @@ Appended this entry. Nothing else.
   flows through, but it still writes `_limma_input.csv` / `_limma_output.csv` /
   `_limma_versions.txt` into `proteomics_de/` regardless of that flag. Harmless today;
   worth tidying when `limma_test.py` is next opened.
+
+---
+
+## CHAIN-B — enrichment layer re-run after the D7 correction (2026-08-01)
+
+Files: `enrich/enrich_common.py`, `enrich/ora.py`, `enrich/gsea.py`, `enrich/upset.py`,
+new `tests/test_enrich_common.py`. Outputs regenerated live against g:Profiler and
+Enrichr (user-approved; gene/protein identifiers only, per D3). Nothing committed.
+
+**D6 re-demonstrated, not assumed. It survives the swap intact.**
+
+| | UP | DOWN |
+|---|---|---|
+| query size | 509 (was 206) | 206 (was 509) |
+| terms passing g:SCS < 0.05, custom background | **0** | **0** |
+| best corrected p | 1.000 — GO:MF mannosyltransferase activity | 0.703 — GO:BP dephosphorylation |
+| terms passing against g:Profiler's DEFAULT background | 326 (GO:CC cytoplasm, p=9.0e-70) | 196 (GO:CC cytoplasm, p=1.9e-23) |
+
+GSEA: **0 / 568** terms pass FDR<0.05 (min FDR q = 0.1157; 15 at q<0.25, 37 at nominal
+p<0.05). Term count and library sizes unchanged (6034 GO-BP + 303 KEGG).
+
+**The swap is confirmed exactly.** The new UP query list is *identical, element for
+element and in the same order*, to the list cached as DOWN at `83b22a1`, and vice
+versa (`raw/gprofiler_*.json` `meta.query_metadata.queries.query_1`); the new and old
+UP sets share zero genes. Three independent corroborations: the two ORA best-terms
+traded places at unchanged p-values (0.702980 and 1.000000 to 6 dp); the GSEA score
+range mirrored exactly, `[-3.8034621343, +2.6912806382]` → `[-2.6912806382,
++3.8034621343]`, with all 568 NES signs flipped and corr(NES_old, NES_new) = −0.9998;
+and the pre-D7 "196 significant terms, cytoplasm p=1.9e-23" default-background figure
+reappears unchanged — now attached to DOWN. Swapping two label sets manufactured no
+enrichment, exactly as D6 predicts.
+
+**Work done**
+
+* **De-hardcoded the frozen literals.** `enrich_common.load_background_and_queries`
+  read `== 206` / `== 509` / `== 2554` inline; the first two were wrong after D7. All
+  three now come from `tests/expected/frozen_counts.json` and the assertions stay
+  active (and now name the key they came from in the failure message). Docstrings that
+  stated the old counts are corrected in `enrich_common.py`, `ora.py` and `gsea.py`.
+  `test_no_dataset_counts_are_hardcoded_in_enrich_common` walks the module's **AST**
+  (not its text — comments and docstrings never reach the AST) so the literals cannot
+  creep back in.
+* **Routed accession handling through the shared policy.** The inline
+  `str(acc).split(";")[0].strip()` is now `etl.accessions.first_token`. Equivalence is
+  asserted, not assumed: over 12 edge cases (NaN, empty, leading/trailing separators,
+  non-str) and over all 2554 committed accessions.
+* **Every outbound call is now cached** — offline replay is buildable.
+  `raw/gprofiler_{up,down}_all.json` (the ranking call), `raw/enrichr_libraries.json.gz`
+  (both Enrichr libraries, 687 KB gzipped). Also cached the gene-level evidence call as
+  `raw/gprofiler_{up,down}_all_evidence.json.gz` — `ora.py` had documented it as
+  deliberately *not* persisted because it is ~8–20 MB, which is precisely what made
+  replay impossible; gzip takes it to 650 KB–1.1 MB.
+* `upset.py` unchanged in behaviour: `ora.py` still writes the top-5 **sub-threshold**
+  terms per direction, which is the only reason `upset.py` does not hit its
+  `RuntimeError`. Preserved deliberately.
+
+**🔴 Bug found and fixed in `ora.py`: every ORA gene label was misaligned.**
+
+Not caused by D7 — it was there from the original build. g:Profiler indexes each term's
+`intersections` boolean vector by the genes it successfully **mapped**, not by the
+genes submitted: 509 UP symbols go out, 31 fail to map, the vectors come back length
+473. `_query_order()` returned the *submitted* list, and `zip()` silently truncated —
+so labels stayed correct only up to the first unmapped symbol and were wrong after it.
+GO:MF "mannosyltransferase activity" was credited to `Snrpd1`; the gene g:Profiler
+actually matched is `Tmtc3`.
+
+Fixed by deriving the order from `meta.genes_metadata.query.<q>.ensgs`, inverted back
+to symbols via the sibling `mapping`, plus a hard length assertion so a mismatch can
+never again be absorbed by `zip()`. The corrected labels are self-evidently right:
+succinate dehydrogenase activity → `Sdha` (was `Ybx3`), microfilament motor activity →
+`Myh9` (was `Hadh`), SNARE binding → `Napa` (was `Clybl`), mRNA splicing → `Lsm2/Lsm6/
+Snrpg/Prpf19/Ddx46` (was `Prosc/Tpd52l2/Fabp4`).
+
+Affects `ora_top_terms_detail.json` and the UpSet figure only. `ora_up.csv` /
+`ora_down.csv` are header-only, so no shipped table carried a wrong gene. **No p-value,
+term, or count changes** — D6 is untouched by this. `upset.py`'s docstring and caption
+referenced the old mislabelled overlap (`Prosc`/`Tpd52l2`) and now name the real one
+(`Lsm2`/`Lsm6`, plus `Snrpg` between the minor and major splicing pathways).
+
+**Also corrected:** `ora_meta.json`'s note claimed "the SAME UP query against the
+default background returns 196 terms". Post-D7 that query is the DOWN query. Both
+directions were re-measured against `domain_scope="annotated"` and the real numbers
+(326 UP / 196 DOWN) are now recorded under a new `default_background_comparison` key,
+flagged as a diagnostic that is *not* how the pipeline computes its results.
+
+**Tests:** `tests/test_enrich_common.py`, 43 offline + 1 `@pytest.mark.network`.
+Full suite: **306 passed**. The only failure is `test_freeze.py::test_tree_matches_manifest`
+— expected drift from the regenerated enrichment outputs (and CHAIN-A's STRING/network
+files). Not re-baselined; that is the orchestrator's call.
+
+The header-only contract is asserted as a **contract**, in both directions: exactly 0
+data rows with all 8 columns intact. Emptiness here is D6's result, not a failure, and
+the test message says so — if a term ever passes, that is a finding to report, not a
+test to relax. Same guard on `gsea_meta.json` (`n_fdr_lt_0.05 == 0`) and on both ORA
+best-subthreshold p-values (`> 0.05`). No assertion was weakened anywhere.
+
+**Not done / for the orchestrator:** `results/enrichment/STALE_AFTER_D7.md` left in
+place as instructed. `tools/freeze.py --write` not run. Nothing committed.
+
+---
+
+## CHAIN-A — STRING PPI network re-run after the D7 correction (2026-08-01)
+**Wave:** 2 · **Commit:** see below · **Status:** ✅ done
+**Closes:** the STRING half of the stale-enrichment problem D7 created.
+
+**What changed.** Re-ran `enrich/string_ppi.py` and `enrich/network_figure.py`
+live against STRING v12.0 (species 10090, `required_score=400`) so the network's
+direction annotations reflect the corrected 509 UP / 206 DOWN assignment.
+De-hardcoded the three dataset literals in `load_seeds` (`715`/`206`/`509`) to
+read from `tests/expected/frozen_counts.json`; two of them had silently become
+wrong at D7 and would have aborted a legitimate re-run. Cached the `/json/version`
+probe to `raw/string_version.json` — it was the only STRING call whose response
+was never recorded, which would have left an offline-replay mode without a
+version to pin.
+
+**Why.** `results/enrichment/` described the inverted experiment. The seed SET is
+unchanged (the same 715 regulated proteins), so this is a relabelling, not a
+re-analysis — but every node's UP/DOWN annotation and the figure's colour mapping
+were backwards.
+
+**Verification (run, not assumed).**
+- Node set identical: 694 → 694 rows, same accessions, verified by set equality.
+- Direction swap is exactly clean: 496 DOWN→UP and 198 UP→DOWN, **zero
+  off-diagonal** in the transition table. Nothing moved except the labels.
+- `string_edges.tsv` **byte-unchanged**, which is the expected consequence of an
+  identical seed set — a change there would have meant something else moved.
+- `string_meta.json`: 715 seeds (509 UP / 206 DOWN), 694 mapped (97.1%),
+  5963 edges, 57 communities, species 10090.
+- `tests/test_string_ppi.py`: **37 passing**, 1 network-marked and deselected by
+  default. Includes an AST guard that fails if anyone re-inlines a dataset count.
+
+**Counts before → after:** UP 198 → 496, DOWN 496 → 198 (network nodes);
+seeds 715 → 715; edges 5963 → 5963.
+
+**Open follow-ups.** The agent was interrupted before writing its tests; the
+orchestrator finished `test_string_ppi.py` (it needed one missing `import ast`)
+and wrote this entry. No further live STRING calls were made — the re-run itself
+was already complete and independently verified before the interruption.
