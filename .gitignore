@@ -10,3 +10,6 @@ proteomics_de/_limma_versions_trend.txt
 # Test tooling (see ENVIRONMENT.md)
 .venv/
 .pytest_cache/
+
+# Agent worktrees (created by Claude Code isolation)
+.claude/
