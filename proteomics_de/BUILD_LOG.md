@@ -1291,3 +1291,145 @@ rather than retyping a literal. **No assertion was weakened.**
 **Still stale, not owned here:** `report/report_facts.json` and the generated
 report carry 606 / 2554 / "detected_universe" and need regenerating after the
 enrichment re-query.
+
+---
+
+## P10 — the regression net: cross-file invariants, an end-to-end fixture, CI (2026-08-01)
+**Wave:** 2 · **Commit:** (this commit) · **Status:** ✅ done
+**Closes:** "508 tests, none of which prove the pipeline runs on data other than
+the one committed workbook, and none of which check the outputs against each
+other."
+
+**What changed.** Three new test files, one committed fixture workbook, one CI
+workflow. No production file was touched.
+
+1. **`tests/test_golden_outputs.py` (29 tests)** — cross-file invariants over the
+   committed `results/`. Deliberately *not* a second freeze test. `test_freeze.py`
+   proves nobody edited the files; this proves the files still agree with each
+   other, which byte-identity structurally cannot: the manifest is re-baselined by
+   hand, so a coherent-but-wrong regeneration passes it. Every count is read from
+   `tests/expected/frozen_counts.json`; not one dataset number is inlined.
+   `qc_limma ⊂ foldchange_all`; `len(qc_limma) == len(foldchange_all) - n_onoff`;
+   `ipa_input` recomputed row-for-row from `(complete & regulated ∈ {UP,DOWN})`;
+   `background_union == foldchange_all + single_condition`; quarantine accounts
+   for the two dropped rows; `corr(log2FC, limma logFC) = 0.99999999999996`
+   (asserted `> 0.9999`, and asserted **finite** — a stale NaN for this once
+   shipped in `report_facts.json`); post-D7 direction sanity on both sides of the
+   Python/R boundary; and the header-only files as a **contract**.
+
+2. **`tests/fixtures/make_mini_sheet.py` + `mini_sheet.xlsx`** — 31 hand-designed
+   proteins in the real 29-column MaxQuant layout, two sheets, D7 orientation
+   (31578/31580 = treated in `Protein Report L`; 31579/31581 = control in
+   `Protein Report H`). The design table is the single source of truth: the
+   workbook AND every expectation are generated from it, so they cannot drift.
+   Committed, regenerable, and **byte-reproducible**, which took two fixes: an
+   .xlsx hides the zip member timestamps AND a `dcterms:modified` that openpyxl
+   overwrites with `now()` at save time, discarding the pinned document
+   property. Both are flattened; a test asserts the committed bytes are exactly
+   what the script produces today.
+
+3. **`tests/test_e2e_smoke.py` (45 tests)** — Level 1 runs the real
+   `foldchange.py --input <fixture> --results-dir <tmp>` end to end **including
+   the R limma leg** in ~2.5 s and checks every row against its designed branch;
+   Level 2 (`slow` + `golden`) re-runs the DE leg on the real workbook into a temp
+   directory and canonically diffs 16 artifacts plus the frozen `_limma_*`
+   intermediates against the committed ones via `tools/freeze.py`'s digest —
+   **never** raw `shasum`, because matplotlib salts SVG ids and stamps a
+   wall-clock date, so identical code produces different bytes.
+
+4. **`.github/workflows/tests.yml`** — Python 3.13, installs
+   `requirements-lock.txt` + `requirements-dev.txt`, runs
+   `-m "not network and not slow and not golden"`, and ends with a
+   "working tree is clean" gate. R is not installed; the `r` tests skip (verified,
+   not assumed — see below). The file carries a long comment on why `golden` is
+   **deselected on purpose** and must never be re-enabled or loosened: byte
+   identity depends on the BLAS/LAPACK and R builds, so it is a this-machine
+   guarantee, and "fixing" a red CI with a tolerance would destroy it on the
+   machine where it is real. Also notes the workflow only runs if the repo is
+   pushed to GitHub, which it has not been.
+
+**Fixture branch coverage** (asserted by `test_fixture_covers_every_branch`, so a
+future edit cannot quietly drop one): complete UP/DOWN/NO CHANGE in both
+directions · the Bug-1 witness (ratios 4 and 0.25 → honest log2FC 0.0, where
+mean-of-ratios would have said UP) · the threshold razor edge, three rows: a
+protein up **exactly 1.5×** lands at 0.5849625, just **inside** the rounded
+`LOG2_THRESHOLD = 0.585` literal, and is NO CHANGE · ON_OFF in both directions
+**and both absence encodings** — the committed workbook only ever encodes absence
+as a zero, so the blank-cell form had zero coverage before this · absent on both
+sides (must stay NO CHANGE, not be invented into ON_OFF) · a zero denominator ·
+partial missingness on one side and on both · semicolon protein groups on the
+merge path and the single-condition path · a missing gene symbol · single-condition
+rescue in both directions · a D11 junk accession quarantined while a legitimate
+group on the same path survives · `n_imputed` ∈ {0,1,2,4}.
+
+**Verification (run, not assumed).**
+- Full suite **580 → 579 passed + 1 xfailed, 4 deselected** (was 508). +74 tests.
+- Level 2 `golden`: 2 passed — the DE leg reproduces all 16 artifacts and both
+  frozen `_limma_*` files exactly.
+- No-R path forced by stripping PATH: **505 passed, 74 skipped, 0 failed.**
+- `tools/freeze.py --check`: 79 OK / 0 CHANGED, before and after every run above.
+
+**Mutation testing — six deliberate breaks, each caught, each reverted.**
+| # | mutation | caught by |
+|---|---|---|
+| 1 | swap control/treated in `sample_sheet.tsv` (re-inflict D7) | 22 e2e tests |
+| 2 | `LOG2_THRESHOLD` "tidied" to `math.log2(1.5)` | 5 e2e tests (the razor-edge rows flip) |
+| 3 | `compute_log2fc` back to mean-of-ratios (Bug 1) | 11 e2e L1 + both L2 golden |
+| 4 | `detect_onoff` ignores blank cells | 4 e2e, incl. the blank-form ON_OFF row |
+| 5 | an ON_OFF row added to `ipa_input.csv` **+ its manifest entry re-baselined** | `test_freeze.py` **stayed green (7 passed)**; `test_golden_outputs.py` caught it with 3 failures |
+| 6 | `boundaries._resolve_results_dir` ignores `--results-dir` (the old leak) | 4 e2e, incl. the standing leak test |
+
+Mutation 5 is the one that justifies the whole `test_golden_outputs.py` module:
+the freeze gate passed a knowingly-wrong output because the hash had been
+re-baselined alongside it.
+
+**Counts before → after:** tests 510 → 584 collected. Frozen artifacts unchanged
+(79). No production file modified.
+
+**Open follow-ups (findings, not chores).**
+1. 🔴 **`results/ipa_input_full.csv` is STALE** — found by this work. Its
+   `p_value` / `adj_p_value` are the **vanilla** eBayes numbers (they match
+   `qc_limma_vanilla.csv` to the bit) rather than the trend/robust ones that
+   **D9** made the default and that `qc_limma.csv`, the report and the figures all
+   quote. The **code is correct**: `export/ipa_export.py:514` reads
+   `qc_limma.csv`, and rebuilding from the committed inputs reproduces `log2FC`
+   byte-identically while changing the p-values. The artifact was simply never
+   regenerated after D9. Root cause: **`export/ipa_export.py` is not one of
+   `run_pipeline.py`'s 13 stages**, so `--all` refreshes `qc_limma.csv` and never
+   refreshes `ipa_input_full.csv` — there is no automated path keeping them in
+   sync. Impact is presentational, not conclusional (min adj.p 0.3047 vanilla vs
+   0.1161 trend/robust; both still 0 significant), but the deliverable a human
+   uploads to QIAGEN quotes different numbers from the report. The provenance
+   sidecars actively hide it: both files carry the same `generated_at`.
+   *Fix:* `python -m proteomics_de.export.ipa_export`, re-baseline, then delete
+   the `xfail(strict=True)` marker on
+   `test_golden_outputs.py::test_ipa_input_full_carries_the_default_flavours_p_values`.
+   `strict=True` means the fix cannot land silently — the test XPASSes and fails
+   the run until the marker goes. Consider also adding `ipa_export` as a stage.
+2. 🟠 **`limma_test.py` writes its R handoff into the committed tree.**
+   `_limma_input.csv`, `_limma_output.csv`, `_limma_versions.txt`,
+   `_limma_design.tsv` (+ the two `_vanilla` files) resolve against
+   `proteomics_de/`, **not** `--results-dir`, and the R worker runs with `cwd`
+   there. Two of them are byte-frozen artifacts, so *any* run into a temp
+   directory dirties the scientific record — the same family as the
+   `qc_boundaries.json` leak P6 fixed, one directory further out.
+   `test_e2e_smoke.py` handles it two ways: an autouse fixture snapshots and
+   restores them (and **verifies the restore against the freeze manifest**, so a
+   half-restore fails loudly), and
+   `test_run_touches_only_the_known_handoff_files_outside_results` bounds the leak
+   with a **subset** assertion — fixing it keeps the test green, growing it turns
+   it red.
+3. ⚪ `replicate_check.py` labels the raw-reproducibility columns
+   `control_raw_r` / `treated_raw_r` from hardcoded
+   `CONTROL_RAW = ("Intensity 31578", "Intensity 31580")`, which is the
+   **treated** pair post-D7. `qc/schema.py`'s `INTENSITY_COLUMNS` comments are
+   stale the same way. Labels only — no verdict or number changes, and neither is
+   read by anything downstream. Not fixed here (production files were off-limits);
+   flagged so it is a conscious deferral.
+4. ⚪ Level 2 covers the DE leg only. The viz/enrichment stages resolve their
+   output paths from `viz/style.py` and cannot be pointed at a temp directory, so
+   they stay covered by the freeze gate alone. Giving them a `--results-dir` would
+   extend the golden test to the whole pipeline.
+5. ⚪ These e2e tests write to shared paths under `proteomics_de/` and must not run
+   concurrently with themselves. The default invocation is serial; anyone adding
+   `-n` for xdist needs `--dist loadfile`.
