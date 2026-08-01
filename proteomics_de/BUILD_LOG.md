@@ -225,3 +225,137 @@ the time of writing (a parallel wave — sibling agents may have added more sinc
   `foldchange.py` and `limma_test.py` rather than as standalone modules. Whether
   "inlined" counts as "implemented" is a judgement call; `STATUS.md` reports the
   mapping so a reader can make it themselves.
+
+---
+
+## P1 — foldchange.py made testable and cwd-independent (2026-08-01)
+
+**Wave:** 1 · **Commit:** _this commit; branch `worktree-agent-a37cd2116177abdff`,
+branched from `96d16fd`_ · **Status:** ✅ done
+
+**Closes:** research1.md Bug 4 / Section 2 "Duplicate / cardinality detection" (lines
+52 and 183 — the merge cardinality guard, which did not exist); Section 6 items 4
+(`etl/merge.py`) and 10 (`export/ipa_export.py` call site); the Wave-0 follow-up
+"wire the frozen scripts to `config/design.py` and `config/constants.py`", for
+`foldchange.py` only.
+
+**What changed.**
+
+1. **Logic extracted to `etl/foldchange_core.py`** (13 stage functions: `read_sheets`,
+   `merge_with_indicator`, `split_both_single`, `restore_left_order`,
+   `mark_complete`, `compute_ratios`, `compute_log2fc`, `classify_regulated`,
+   `detect_onoff`, `summarize`, `build_ipa_frame`, `build_single_condition_frame`,
+   `build_onoff_frame`). Every one is a plain function over DataFrames. Before this,
+   all of it lived inside `if __name__ == "__main__"`, so none of it could be
+   imported, and the only way to exercise the Bug 1–4b fixes was to run the full
+   2,315-protein pipeline and read the console.
+   `foldchange.py` is now wiring: it reads the workbook, calls the functions in
+   order, and writes the CSVs. Print strings, assert order, `to_csv` call order and
+   arguments, and column order are unchanged — deliberately, statement for statement.
+2. **cwd lock fixed.** `INPUT_FILE` / `RESULTS_DIR` were cwd-relative, so the script
+   only ran from the repo root. Both now resolve from `Path(__file__)`. Added
+   `--input` / `--results-dir` / `--sample-sheet`, defaulting to today's values, and
+   an explicit `sys.path.insert` for `_HERE` and `_ROOT` so the bare
+   `from centering_check import ...` also resolves under `-m`.
+3. **Merge cardinality guard added** (`etl/merge_guard.py`). `assert_merge_safe`
+   counts duplicate accessions per input sheet, asserts
+   `len(both) <= min(len(df_L), len(df_H))`, and asserts
+   `len(merged) <= len(df_L) + len(df_H)`. `assert_classification_partition` asserts
+   `n_up + n_down + n_nochange + n_onoff == len(df)`. Every bound is derived from the
+   frames in hand — no dataset number appears in the module (there is a test that
+   parses the module's AST and proves it).
+4. **Frozen literals moved out of source.** `n_up == 206`, `n_down == 509`,
+   `n_nc + n_onoff == 1233` and `len(df_ipa) == 715` now come from
+   `tests/expected/frozen_counts.json`. The checks stay **active by default**;
+   `PDE_EXPECT_BASELINE=0` disables them for a future dataset.
+5. **Shim call sites installed.** `qc.boundaries.check("after_load"|"after_merge"|
+   "after_foldchange", df)` and `export.ipa_export.write_ipa(...)`. The IPA writer
+   receives the **live in-memory frame**, never a re-read of the CSV just written.
+6. **`config.design.assert_matches(INTENSITY_COLS)`** guards the hardcoded column
+   list against the sample sheet. Assert-match only: this stage is not made
+   design-driven, because the L/H sheet split and the left-order/Heavy-dtype restore
+   are inherently 2-channel SILAC. `LOG2_THRESHOLD` now comes from
+   `config/constants.py` and is re-exported for `centering_check.py`.
+
+**Why.** The extraction is the precondition for everything else: a stage that cannot
+be called cannot be tested, and a stage that cannot be tested accumulates exactly the
+kind of silent arithmetic error research1.md's Bugs 1–3 already were. The cardinality
+guard is the one research1.md asks for twice and the pipeline never had; it is a
+no-op on today's clean sheets, which is precisely when it is worth installing,
+because the failure it catches (a many-to-many row explosion on a duplicated
+accession) is invisible in every downstream count.
+
+**Files touched.** Modified `proteomics_de/foldchange.py`. Added
+`proteomics_de/etl/foldchange_core.py`, `proteomics_de/etl/merge_guard.py`,
+`proteomics_de/tests/test_foldchange_core.py`, `proteomics_de/tests/test_merge_guard.py`.
+Appended this entry. Nothing else.
+
+**Verification** (all run, with output).
+
+* Full pipeline re-run from the repo root: **all 13 files `foldchange.py` writes are
+  sha256-identical to the manifest** — `foldchange_all.csv`, `ipa_input.csv`,
+  `single_condition_proteins.csv`, `onoff_proteins.csv`, `qc_centering.csv`,
+  `foldchange_all_centered.csv`, `qc_replicate_correlation.csv`,
+  `replicate_correlation.png`, `_limma_input.csv`, `_limma_output.csv`,
+  `_limma_versions.txt`, `qc_limma.csv`, `ipa_input_significant.csv`. The R leg
+  (Rscript 4.6.1 / limma 3.68.4 / imputeLCMD 2.1, seed 42) reproduces bit for bit.
+* **Console output diffed against the pre-refactor script** (`96d16fd`'s
+  `foldchange.py`, run into the same tree): `diff` is empty. Every print string, in
+  order, is preserved.
+* Re-run **from `/tmp`** and **as `python -m proteomics_de.foldchange`**: both
+  byte-identical. Path resolution is genuinely cwd-free.
+* Re-run with `--results-dir <tmpdir>`: all 10 result files byte-identical to the
+  committed ones, and `results/` untouched. The CLI is real, not decorative.
+* Frozen-count assertions proven **live**, not merely present: with
+  `load_frozen_counts` monkeypatched to `n_up=999` the run raises
+  `AssertionError: UP changed to 206, expected 999`; with `PDE_EXPECT_BASELINE=0` the
+  same doctored run completes. Design guard proven live too: a sample sheet naming
+  `Intensity WRONG` fails at step 0 with `ValueError: design drift in foldchange.py`,
+  before any file is read.
+* `pytest -q`: **106 passed** (51 before, +55 from the two new files). New tests are
+  hand-built 1–4 row DataFrames with no file I/O, except `test_merge_guard.py`'s two
+  positive tests, which read the real workbook (~0.4 s) to prove today's sheets pass.
+* `tools/status.py --check`: **`freeze: 91 OK, 2 CHANGED, 0 MISSING`, exit 1.**
+  Both CHANGED entries are explained below — neither is an output.
+
+**Counts before → after.**
+
+| | before (`96d16fd`) | after (P1) |
+|---|---|---|
+| Pipeline outputs drifted | 0 / 13 | **0 / 13** |
+| UP / DOWN / NO CHANGE / ON_OFF | 206 / 509 / 1223 / 10 | 206 / 509 / 1223 / 10 |
+| `ipa_input.csv` rows | 715 | 715 |
+| `foldchange.py` lines under `__main__` | 195 | 0 |
+| Importable fold-change functions | 0 | 19 (15 in `etl/foldchange_core.py`, 4 in `etl/merge_guard.py`) |
+| Dataset literals in `foldchange.py` source | 4 (206, 509, 1233, 715) | 0 |
+| Tests | 51 | 106 |
+| Working directories the script runs from | 1 (repo root) | any |
+
+**Open follow-ups.**
+
+* **The freeze manifest covers source files, not just outputs.** All 93 tracked files
+  at `421814c` are in `protected.sha256`, `foldchange.py` among them, so *any* source
+  edit makes `tools/status.py --check` report drift and exit 1. It cannot report
+  `93 OK` for a wave whose whole purpose is to edit sources. Two entries are CHANGED
+  after this package: `proteomics_de/foldchange.py` (this package's intended edit) and
+  `proteomics_de/DECISIONS_LOG.md` (**pre-existing** — commit `96d16fd` added D7–D11
+  to a file the manifest had frozen at `421814c`; it was already CHANGED before I
+  touched anything). The orchestrator should decide whether to split the manifest into
+  an *outputs* freeze (the real gate — a 13-file subset, currently 13/13 OK) and a
+  *sources* baseline that is re-cut per wave. **I did not re-baseline anything.**
+* `LOG2_THRESHOLD` is `0.585`, the 3-decimal rounding of `log2(1.5) = 0.5849625…`, so
+  a ratio of *exactly* 1.5 (or 1/1.5) is called NO CHANGE by 7.2e-5 of log2. The
+  symmetry that Bug 2 is about is unaffected — the same rounded value bounds both
+  sides — but the cutoff is a hair stricter than the "1.5-fold" it is named for. This
+  is recorded, not fixed: changing the constant would move real proteins across the
+  boundary and rewrite every committed output. Test
+  `test_bug2_threshold_is_a_rounded_log2_of_1_point_5` pins the current behaviour.
+* `qc.boundaries.check("before_ipa_export", ...)` is defined in `STAGES` but has no
+  call site yet; it belongs with P7, who owns `export/ipa_export.py`.
+* `centering_check.py`, `replicate_check.py` and `limma_test.py` still carry their own
+  copies of the intensity-column literals and are not guarded by
+  `design.assert_matches`. They were out of scope here (not my files).
+* `run_limma_test` is now called with `foldchange_csv=` / `outdir=` so `--results-dir`
+  flows through, but it still writes `_limma_input.csv` / `_limma_output.csv` /
+  `_limma_versions.txt` into `proteomics_de/` regardless of that flag. Harmless today;
+  worth tidying when `limma_test.py` is next opened.

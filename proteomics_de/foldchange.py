@@ -11,44 +11,172 @@ fixing three correctness bugs:
           division by zero can't occur, and we assert no inf/NaN survives.
 
 The legacy script is the frozen baseline and is NOT modified.
+
+This file is **wiring**, not logic. Every transformation lives in
+:mod:`proteomics_de.etl.foldchange_core` as an ordinary function over
+DataFrames, and the merge cardinality guards live in
+:mod:`proteomics_de.etl.merge_guard`; ``main`` reads the workbook, calls them in
+order, and writes the CSVs. Previously all of it sat inside ``if __name__ ==
+"__main__"``, which is why none of it could be tested.
+
+Running it
+----------
+Every path is resolved from ``__file__``, so the script works from any working
+directory::
+
+    python proteomics_de/foldchange.py            # from the repo root
+    python -m proteomics_de.foldchange            # as a module
+    python /abs/path/proteomics_de/foldchange.py  # from /tmp, or anywhere
+
+``--input`` / ``--results-dir`` / ``--sample-sheet`` override the defaults; the
+defaults reproduce the committed run exactly.
+
+Assertions
+----------
+Two kinds, deliberately kept apart:
+
+* **Structural guards** (``etl/merge_guard.py``) are derived from the data in
+  hand and hold for any dataset.
+* **Frozen expectations** (UP=206, DOWN=509, ...) are specific to the committed
+  workbook and are read from ``tests/expected/frozen_counts.json``, not typed
+  into this file. They are ON by default because they have caught real
+  regressions; a genuinely new dataset sets ``PDE_EXPECT_BASELINE=0`` and
+  re-derives the JSON.
 """
 
+import argparse
 import os
+import sys
+from pathlib import Path
 
 import numpy as np
-import pandas as pd
 
-INPUT_FILE = "Copy of General Sheet.xlsx"
-RESULTS_DIR = os.path.join("proteomics_de", "results")
+# --- Path resolution --------------------------------------------------------
+# Resolved from __file__, never from the cwd. The pipeline is invoked from the
+# repo root, from proteomics_de/, and (in tests) from a temp dir; the previous
+# cwd-relative INPUT_FILE / RESULTS_DIR silently produced a FileNotFoundError
+# anywhere but the repo root.
+_HERE = Path(__file__).resolve().parent          # proteomics_de/
+_ROOT = _HERE.parent                             # repo root
 
-LOG2_THRESHOLD = 0.585  # = log2(1.5); the down side is the symmetric -log2(1.5)
+# `_ROOT` makes `proteomics_de.*` importable; `_HERE` makes the flat sibling
+# imports at the bottom of main (`from centering_check import ...`) resolve under
+# `-m` and from any cwd -- a bare `import centering_check` only ever worked by
+# accident of sys.path[0] being the script's directory. Inserted in this order so
+# the result is [_ROOT, _HERE, ...], which is exactly the sys.path the committed
+# run ends up with today (script dir is _HERE; centering_check.py prepends _ROOT).
+for _entry in (str(_HERE), str(_ROOT)):
+    if _entry not in sys.path:
+        sys.path.insert(0, _entry)
 
+# LOG2_THRESHOLD (= log2(1.5), with the symmetric -log2(1.5) on the down side) is
+# re-exported from this module: centering_check.py imports the cutoff from here
+# rather than re-typing 0.585. The value itself now comes from config/constants.py,
+# so there is exactly one literal for it in the tree.
+from proteomics_de.config import design  # noqa: E402
+from proteomics_de.config.constants import LOG2_THRESHOLD  # noqa: E402,F401
+from proteomics_de.etl import foldchange_core as core  # noqa: E402
+from proteomics_de.etl import merge_guard  # noqa: E402
+from proteomics_de.export.ipa_export import write_ipa  # noqa: E402
+from proteomics_de.qc import boundaries  # noqa: E402
+
+INPUT_FILE = str(_ROOT / "Copy of General Sheet.xlsx")
+RESULTS_DIR = str(_HERE / "results")
+
+CONTROL_COLS = ["Intensity 31578", "Intensity 31580"]  # light / control replicates
+TREATED_COLS = ["Intensity 31579", "Intensity 31581"]  # heavy / treated replicates
 INTENSITY_COLS = ["Intensity 31578", "Intensity 31580", "Intensity 31579", "Intensity 31581"]
 
+SHEET_L = "Protein Report L"
+SHEET_H = "Protein Report H"
 
-if __name__ == "__main__":
+COLS_L = ["UniProt Accession Number", "Gene names", "Intensity 31578", "Intensity 31580"]
+COLS_H = ["UniProt Accession Number", "Gene names", "Intensity 31579", "Intensity 31581"]
+
+OUT_COLS = [
+    "UniProt Accession Number", "Gene names",
+    "Intensity 31578", "Intensity 31580", "Intensity 31579", "Intensity 31581",
+    "ratio_rep1", "ratio_rep2", "log2_rep1", "log2_rep2", "log2FC",
+    "complete", "regulated", "onoff",
+]
+IPA_COLS = ["UniProt Accession Number", "Gene names", "log2FC", "regulated"]
+SINGLE_COLS = [
+    "accession", "gene", "detected_in",
+    "Intensity 31578", "Intensity 31580",  # control replicates
+    "Intensity 31579", "Intensity 31581",  # treated replicates
+]
+ONOFF_COLS = [
+    "accession", "gene", "onoff",
+    "Intensity 31578", "Intensity 31580",  # control replicates
+    "Intensity 31579", "Intensity 31581",  # treated replicates
+]
+
+
+def _display(path) -> str:
+    """Repo-relative rendering of `path` for the console, absolute if outside.
+
+    Keeps the "Saved ..." lines reading ``proteomics_de/results/...`` now that
+    the paths themselves are absolute, and matches how ``centering_check.py`` and
+    ``replicate_check.py`` already report their outputs.
+    """
+    try:
+        rel = os.path.relpath(str(path), str(_ROOT))
+    except ValueError:  # different drive (Windows); no sensible relative form
+        return str(path)
+    return str(path) if rel.startswith(os.pardir) else rel
+
+
+def parse_args(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--input", default=INPUT_FILE,
+                    help="input workbook (default: %(default)s)")
+    ap.add_argument("--results-dir", default=RESULTS_DIR,
+                    help="directory for the output CSVs (default: %(default)s)")
+    ap.add_argument("--sample-sheet", default=None,
+                    help="sample sheet to validate the intensity columns against "
+                         "(default: proteomics_de/config/sample_sheet.tsv)")
+    return ap.parse_args(argv)
+
+
+def main(argv=None) -> int:
+    args = parse_args(argv)
+    input_file = args.input
+    results_dir = args.results_dir
+
+    # 0) The hardcoded column list must still describe the sample sheet. This
+    #    stage is NOT made design-driven: the L/H sheet split and the
+    #    left-order/Heavy-dtype restore below are inherently 2-channel SILAC, so
+    #    a new design means regenerating this stage, not re-deriving its columns.
+    #    assert_matches turns "silently analysing the wrong four columns" into a
+    #    loud, actionable failure.
+    design.assert_matches(INTENSITY_COLS, sheet=args.sample_sheet, stage="foldchange.py")
+    assert INTENSITY_COLS == CONTROL_COLS + TREATED_COLS, (
+        "INTENSITY_COLS must be control replicates followed by treated replicates"
+    )
+
     # 1) Read both protein report sheets, keeping only the relevant columns
-    cols_L = ["UniProt Accession Number", "Gene names", "Intensity 31578", "Intensity 31580"]
-    cols_H = ["UniProt Accession Number", "Gene names", "Intensity 31579", "Intensity 31581"]
-
-    df_L = pd.read_excel(INPUT_FILE, sheet_name="Protein Report L")[cols_L]
-    df_H = pd.read_excel(INPUT_FILE, sheet_name="Protein Report H")[cols_H]
+    df_L, df_H = core.read_sheets(input_file, COLS_L, COLS_H,
+                                  sheet_L=SHEET_L, sheet_H=SHEET_H)
+    boundaries.check("after_load", df_L)
+    boundaries.check("after_load", df_H)
 
     print(f"Proteins in Protein Report L: {len(df_L)}")
     print(f"Proteins in Protein Report H: {len(df_H)}")
 
     # 2) Outer-merge on accession with an indicator so proteins detected in only ONE
     #    sheet are NOT silently dropped (Bug 4). Coalesce Gene names (L first, then H).
-    merged = pd.merge(
-        df_L, df_H, on="UniProt Accession Number", how="outer",
-        indicator=True, suffixes=("_L", "_H"),
-    )
-    merged["Gene names"] = merged["Gene names_L"].combine_first(merged["Gene names_H"])
+    merged = core.merge_with_indicator(df_L, df_H)
+    boundaries.check("after_merge", merged)
 
     # Split: "both" feeds the EXISTING fold-change pipeline unchanged; single-condition
     # rows (left_only / right_only) are rescued to their own file (no fold change).
-    both = merged[merged["_merge"] == "both"].copy()
-    single_cond = merged[merged["_merge"] != "both"].copy()
+    both, single_cond = core.split_both_single(merged)
+
+    # Cardinality guard (research1.md lines 52, 183): duplicate accessions on
+    # either side turn the merge into a cross product, and the extra rows are
+    # indistinguishable from real proteins downstream. Derived entirely from the
+    # frames in hand, so it stays valid for any dataset.
+    merge_guard.assert_merge_safe(df_L, df_H, merged, both)
 
     n_both = (merged["_merge"] == "both").sum()
     n_control_only = (merged["_merge"] == "left_only").sum()
@@ -64,66 +192,44 @@ if __name__ == "__main__":
     # unchanged: (a) it reorders the matched rows, and (b) its NaNs (from the rescued
     # single-condition rows) coerce the Heavy intensity columns to float. Restore the
     # original Light-sheet row order and the original Heavy dtypes.
-    left_order = {acc: i for i, acc in enumerate(df_L["UniProt Accession Number"])}
-    both = both.sort_values(
-        "UniProt Accession Number", key=lambda s: s.map(left_order), kind="stable"
+    df = core.restore_left_order(
+        both, df_L, df_H,
+        out_cols=["UniProt Accession Number", "Gene names"] + INTENSITY_COLS,
+        dtype_cols=TREATED_COLS,  # Heavy/treated replicates
     )
-    df = both[["UniProt Accession Number", "Gene names"] + INTENSITY_COLS].reset_index(drop=True)
-    for col in ["Intensity 31579", "Intensity 31581"]:  # Heavy/treated replicates
-        df[col] = df[col].astype(df_H[col].dtype)
 
     # 3) Completeness: a row is INCOMPLETE if any of the 4 intensities is 0 or NaN
-    df["complete"] = ~(
-        df[INTENSITY_COLS].isnull().any(axis=1) | (df[INTENSITY_COLS] == 0).any(axis=1)
-    )
+    df = core.mark_complete(df, INTENSITY_COLS)
     print(f"Complete proteins (all 4 intensities present & non-zero): {df['complete'].sum()}")
 
     # 4) Per-replicate SILAC ratios (Heavy / Light), only on complete rows.
     #    Restricting to complete rows means denominators are never 0, so no inf can
     #    be produced (Bug 3).
-    df["ratio_rep1"] = np.nan
-    df["ratio_rep2"] = np.nan
     mask = df["complete"]
-    df.loc[mask, "ratio_rep1"] = df.loc[mask, "Intensity 31579"] / df.loc[mask, "Intensity 31578"]
-    df.loc[mask, "ratio_rep2"] = df.loc[mask, "Intensity 31581"] / df.loc[mask, "Intensity 31580"]
+    df, ratio_cols = core.compute_ratios(df, CONTROL_COLS, TREATED_COLS, mask)
 
     # 5) Bug 1 fix: log2 each ratio first, THEN average the logs.
-    df["log2_rep1"] = np.log2(df["ratio_rep1"])
-    df["log2_rep2"] = np.log2(df["ratio_rep2"])
-    df["log2FC"] = df[["log2_rep1", "log2_rep2"]].mean(axis=1)
+    df, _log_cols = core.compute_log2fc(df, ratio_cols)
 
     # 6) Bug 2 fix: symmetric cutoffs in log2 space (only on complete rows)
-    df["regulated"] = "NO CHANGE"
-    df.loc[mask & (df["log2FC"] >= LOG2_THRESHOLD), "regulated"] = "UP"
-    df.loc[mask & (df["log2FC"] <= -LOG2_THRESHOLD), "regulated"] = "DOWN"
+    df = core.classify_regulated(df, mask, LOG2_THRESHOLD)
 
     # 7) Bug 4b: "cousin" on/off proteins. A protein present in BOTH sheets but whose
     #    entire control OR treated side is absent (both intensities 0/NaN) is a real
     #    on/off signal, yet the Bug 3 completeness logic parks it as incomplete and it
     #    falls into NO CHANGE — a wrong label. Detect these and relabel them ON_OFF.
     #    A protein absent on BOTH sides is fully empty and stays NO CHANGE.
-    CONTROL_COLS = ["Intensity 31578", "Intensity 31580"]  # light / control replicates
-    TREATED_COLS = ["Intensity 31579", "Intensity 31581"]  # heavy / treated replicates
-    control_absent = (df[CONTROL_COLS].isnull() | (df[CONTROL_COLS] == 0)).all(axis=1)
-    treated_absent = (df[TREATED_COLS].isnull() | (df[TREATED_COLS] == 0)).all(axis=1)
-    control_off = control_absent & ~treated_absent  # present in treated only -> "on"
-    treated_off = treated_absent & ~control_absent  # present in control only -> "off"
-
-    df["onoff"] = ""
-    df.loc[control_off, "onoff"] = "on_with_treatment"
-    df.loc[treated_off, "onoff"] = "off_with_treatment"
-
-    # Relabel out of NO CHANGE. No log2FC is computed for on/off proteins (they are
-    # incomplete, so log2FC is already NaN).
-    df.loc[control_off | treated_off, "regulated"] = "ON_OFF"
+    df, _control_off, _treated_off = core.detect_onoff(df, CONTROL_COLS, TREATED_COLS)
+    boundaries.check("after_foldchange", df)
 
     # Sanity checks
-    n_up = (df["regulated"] == "UP").sum()
-    n_down = (df["regulated"] == "DOWN").sum()
-    n_nc = (df["regulated"] == "NO CHANGE").sum()
-    n_onoff = (df["regulated"] == "ON_OFF").sum()
-    n_on = (df["onoff"] == "on_with_treatment").sum()
-    n_off = (df["onoff"] == "off_with_treatment").sum()
+    counts = core.summarize(df)
+    n_up = counts["n_up"]
+    n_down = counts["n_down"]
+    n_nc = counts["n_nochange"]
+    n_onoff = counts["n_onoff"]
+    n_on = counts["n_on"]
+    n_off = counts["n_off"]
     print(f"on_with_treatment: {n_on}")
     print(f"off_with_treatment: {n_off}")
     print(f"total on/off: {n_onoff}")
@@ -132,15 +238,22 @@ if __name__ == "__main__":
     print(f"NO CHANGE: {n_nc}")
     print(f"ON_OFF: {n_onoff}")
 
+    # Dataset-specific expectations, read from tests/expected/frozen_counts.json
+    # rather than typed here. `expect` is None when PDE_EXPECT_BASELINE=0.
+    expect = core.load_frozen_counts() if core.baseline_checks_enabled() else None
+
     # Bug 4 + Bug 4b asserts: UP/DOWN are untouched, and on/off proteins ONLY move from
     # NO CHANGE to ON_OFF — nothing else should shift between buckets.
-    assert n_up == 206, f"UP changed to {n_up}, expected 206"
-    assert n_down == 509, f"DOWN changed to {n_down}, expected 509"
+    if expect is not None:
+        assert n_up == expect["n_up"], f"UP changed to {n_up}, expected {expect['n_up']}"
+        assert n_down == expect["n_down"], f"DOWN changed to {n_down}, expected {expect['n_down']}"
     assert n_onoff == n_on + n_off, "ON_OFF total != on_with_treatment + off_with_treatment"
-    assert n_nc + n_onoff == 1233, (
-        f"NO CHANGE + ON_OFF = {n_nc + n_onoff}, expected 1233; the NO CHANGE drop "
-        "does not equal the on/off total, so something other than on/off proteins moved."
-    )
+    if expect is not None:
+        assert n_nc + n_onoff == expect["n_nochange_plus_onoff"], (
+            f"NO CHANGE + ON_OFF = {n_nc + n_onoff}, expected "
+            f"{expect['n_nochange_plus_onoff']}; the NO CHANGE drop "
+            "does not equal the on/off total, so something other than on/off proteins moved."
+        )
     # On/off proteins must NOT carry a numeric log2FC.
     assert df.loc[df["regulated"] == "ON_OFF", "log2FC"].isnull().all(), (
         "An ON_OFF protein has a numeric log2FC."
@@ -151,69 +264,57 @@ if __name__ == "__main__":
     assert not np.isinf(complete_log2fc).any(), "Found inf in log2FC for complete rows"
     assert not complete_log2fc.isnull().any(), "Found NaN in log2FC for complete rows"
 
-    # Output
-    os.makedirs(RESULTS_DIR, exist_ok=True)
+    # Every row carries exactly one of UP / DOWN / NO CHANGE / ON_OFF. Catches a
+    # stray or missing label, which would otherwise surface only as a downstream
+    # file being mysteriously short (research1.md line 183).
+    merge_guard.assert_classification_partition(df)
 
-    out_cols = [
-        "UniProt Accession Number", "Gene names",
-        "Intensity 31578", "Intensity 31580", "Intensity 31579", "Intensity 31581",
-        "ratio_rep1", "ratio_rep2", "log2_rep1", "log2_rep2", "log2FC",
-        "complete", "regulated", "onoff",
-    ]
-    foldchange_path = os.path.join(RESULTS_DIR, "foldchange_all.csv")
-    df[out_cols].to_csv(foldchange_path, index=False)
-    print(f"\nSaved {foldchange_path} ({len(df)} rows)")
+    # Output
+    os.makedirs(results_dir, exist_ok=True)
+
+    foldchange_path = os.path.join(results_dir, "foldchange_all.csv")
+    df[OUT_COLS].to_csv(foldchange_path, index=False)
+    print(f"\nSaved {_display(foldchange_path)} ({len(df)} rows)")
 
     # IPA input: complete AND regulated; accession leftmost. UTF-8, no BOM.
-    df_ipa = df[df["complete"] & (df["regulated"] != "NO CHANGE")].copy()
-    ipa_cols = ["UniProt Accession Number", "Gene names", "log2FC", "regulated"]
-    ipa_path = os.path.join(RESULTS_DIR, "ipa_input.csv")
-    df_ipa[ipa_cols].to_csv(ipa_path, index=False, encoding="utf-8")
-    print(f"Saved {ipa_path} ({len(df_ipa)} rows)")
+    # The LIVE frame is handed to the writer — never a re-read of the CSV just
+    # written. Round-tripping through text perturbs ~30 rows in the last float
+    # ULP, which is invisible in a diff and fatal to the byte-freeze.
+    df_ipa = core.build_ipa_frame(df)
+    ipa_path = os.path.join(results_dir, "ipa_input.csv")
+    write_ipa(df_ipa, ipa_path, IPA_COLS)
+    print(f"Saved {_display(ipa_path)} ({len(df_ipa)} rows)")
 
-    assert len(df_ipa) == 715, f"ipa_input.csv has {len(df_ipa)} rows, expected 715"
+    if expect is not None:
+        assert len(df_ipa) == expect["ipa_input_rows"], (
+            f"ipa_input.csv has {len(df_ipa)} rows, expected {expect['ipa_input_rows']}"
+        )
 
     # Bug 4 rescue file: single-condition proteins (no fold change computed). The
     # absent condition's intensity columns stay blank/NaN, which is expected and
     # visually shows the protein was off in that condition.
-    single_cond["accession"] = single_cond["UniProt Accession Number"]
-    single_cond["gene"] = single_cond["Gene names"]
-    single_cond["detected_in"] = np.where(
-        single_cond["_merge"] == "left_only", "control_only", "treated_only"
-    )
-    single_cols = [
-        "accession", "gene", "detected_in",
-        "Intensity 31578", "Intensity 31580",  # control replicates
-        "Intensity 31579", "Intensity 31581",  # treated replicates
-    ]
-    single_path = os.path.join(RESULTS_DIR, "single_condition_proteins.csv")
-    single_cond[single_cols].to_csv(single_path, index=False, encoding="utf-8")
-    print(f"Saved {single_path} ({len(single_cond)} rows)")
+    single_cond = core.build_single_condition_frame(single_cond)
+    single_path = os.path.join(results_dir, "single_condition_proteins.csv")
+    single_cond[SINGLE_COLS].to_csv(single_path, index=False, encoding="utf-8")
+    print(f"Saved {_display(single_path)} ({len(single_cond)} rows)")
 
     # Bug 4b file: "cousin" on/off proteins (present in both sheets, one side absent).
-    onoff_df = df[df["regulated"] == "ON_OFF"].copy()
-    onoff_df["accession"] = onoff_df["UniProt Accession Number"]
-    onoff_df["gene"] = onoff_df["Gene names"]
-    onoff_cols = [
-        "accession", "gene", "onoff",
-        "Intensity 31578", "Intensity 31580",  # control replicates
-        "Intensity 31579", "Intensity 31581",  # treated replicates
-    ]
-    onoff_path = os.path.join(RESULTS_DIR, "onoff_proteins.csv")
-    onoff_df[onoff_cols].to_csv(onoff_path, index=False, encoding="utf-8")
-    print(f"Saved {onoff_path} ({len(onoff_df)} rows)")
+    onoff_df = core.build_onoff_frame(df)
+    onoff_path = os.path.join(results_dir, "onoff_proteins.csv")
+    onoff_df[ONOFF_COLS].to_csv(onoff_path, index=False, encoding="utf-8")
+    print(f"Saved {_display(onoff_path)} ({len(onoff_df)} rows)")
 
     # Bug 5 — SILAC centering QC. Runs AFTER foldchange_all.csv is written and
     # only ever writes NEW files (qc_centering.csv, and on WARN
     # foldchange_all_centered.csv); the four outputs above are untouched.
     from centering_check import run_centering_check
-    run_centering_check(foldchange_path, RESULTS_DIR)
+    run_centering_check(foldchange_path, results_dir)
 
     # Bug 6 — replicate correlation QC. Pure read of foldchange_all.csv; writes
     # only NEW files (qc_replicate_correlation.csv, replicate_correlation.png).
     # Local import keeps the module-level import graph acyclic (same as Bug 5).
     from replicate_check import run_replicate_correlation
-    run_replicate_correlation(foldchange_path, RESULTS_DIR)
+    run_replicate_correlation(foldchange_path, results_dir)
 
     # Bug 7 — per-protein statistical testing via limma (R) + MinProb imputation.
     # Reads foldchange_all.csv from disk, shells out to limma_test.R for the stats,
@@ -221,4 +322,10 @@ if __name__ == "__main__":
     # import keeps the module graph acyclic (same as Bug 5/6); limma_test.py does
     # not import from foldchange.
     from limma_test import run_limma_test
-    run_limma_test()
+    run_limma_test(foldchange_csv=foldchange_path, outdir=results_dir)
+
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
