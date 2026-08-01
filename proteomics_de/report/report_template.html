@@ -36,10 +36,10 @@
   --ink-4:#9a8e77;          /* faintest                              */
   --rule:#d7ccb2;           /* hairline                              */
   --rule-2:#c3b795;         /* stronger rule                         */
-  --down:#2a78d6;           /* DOWN / control / Light  (fig blue)     */
+  --down:#2a78d6;           /* DOWN / control          (fig blue)     */
   --down-deep:#1f579e;
   --down-wash:#e2ecfa;
-  --up:#e34948;             /* UP / treated / Heavy    (fig red)      */
+  --up:#e34948;             /* UP / treated            (fig red)      */
   --up-deep:#b8362f;
   --up-wash:#fbe5e2;
   --neutral:#b3ac97;        /* NO CHANGE gray-olive                  */
@@ -480,7 +480,7 @@ section{transition:opacity .4s,filter .4s}
     <div class="strap">
       <span><b>Mus&nbsp;musculus</b> · taxid 10090</span>
       <span>SILAC label-free</span>
-      <span><span class="chip-h">testosterone (Heavy)</span> vs <span class="chip-l">vehicle (Light)</span></span>
+      <span><span class="chip-h">testosterone-treated</span> vs <span class="chip-l">vehicle control</span></span>
       <span><b>n&nbsp;=&nbsp;2</b> technical replicates / group</span>
     </div>
 
@@ -491,11 +491,11 @@ section{transition:opacity .4s,filter .4s}
         <span class="zcap">of <b>1,938</b> tested proteins survive FDR&nbsp;&lt;&nbsp;0.05. The significance line exists — nothing reaches it. That is the honest headline, and the point of the exercise.</span>
       </div>
       <div class="ledger reveal">
-        <div class="row"><span class="lab">Proteins in the detected universe</span><span class="val num">2,554</span></div>
+        <div class="row"><span class="lab">Proteins in the detected universe</span><span class="val num">2,552</span></div>
         <div class="row"><span class="lab">Tested by limma (both conditions)</span><span class="val num">1,938</span></div>
         <div class="row"><span class="lab">Regulated leads at&nbsp;|log₂FC|&nbsp;≥&nbsp;0.585</span><span class="val num">715<span class="u">hypotheses</span></span></div>
-        <div class="row"><span class="lab">Up in treated</span><span class="val up num">206</span></div>
-        <div class="row"><span class="lab">Down in treated</span><span class="val down num">509</span></div>
+        <div class="row"><span class="lab">Up in treated</span><span class="val up num">509</span></div>
+        <div class="row"><span class="lab">Down in treated</span><span class="val down num">206</span></div>
         <div class="row"><span class="lab">Pass FDR&nbsp;&lt;&nbsp;0.05</span><span class="val num">0</span></div>
       </div>
     </div>
@@ -536,7 +536,7 @@ section{transition:opacity .4s,filter .4s}
         <li>Top candidate proteins by ranked p-value</li>
         <li>Cytoskeletal, chaperone &amp; ribosomal interaction hubs</li>
         <li>Suggestive pathway themes, all sub-threshold</li>
-        <li>10 on/off + 606 single-condition proteins as candidate pools</li>
+        <li>10 on/off + 604 single-condition proteins as candidate pools</li>
       </ul>
     </div>
   </div>
@@ -550,19 +550,22 @@ section{transition:opacity .4s,filter .4s}
     <div class="htext">
       <span class="trackchip both"><span class="dot"></span>Framing spine · both tracks</span>
       <h2 class="stitle">The experiment, and its hard ceiling</h2>
-      <p class="deck">A SILAC label-free comparison in <em>mouse</em>: testosterone-treated material carries the Heavy label, vehicle control the Light. Two runs per condition — <em>technical</em> replicates of one biological sample, not a population.</p>
+      <p class="deck">A SILAC comparison in <em>mouse</em>: testosterone-treated material against vehicle control. Two runs per condition — <em>technical</em> replicates of one biological sample, not a population.</p>
     </div>
   </div>
 
   <div class="prose reveal">
-    <p>The four measured channels are <span class="mono">31578, 31580</span> (Light / control) and <span class="mono">31579, 31581</span> (Heavy / treated). Because both replicates re-measure the same biological material, their p-values describe <em>“is this ratio reproducible on this instrument,”</em> not <em>“does testosterone change this protein in the population.”</em> That distinction is the governing constraint of the entire analysis, and it is why the significance line is never reached.</p>
+    <p>The four measured channels are <span class="mono">31579, 31581</span> (vehicle control) and <span class="mono">31578, 31580</span> (testosterone-treated). Because both replicates re-measure the same biological material, their p-values describe <em>“is this ratio reproducible on this instrument,”</em> not <em>“does testosterone change this protein in the population.”</em> That distinction is the governing constraint of the entire analysis, and it is why the significance line is never reached.</p>
     <p><strong>A correction worth flagging.</strong> The original design document assumed a human system (taxid 9606). Inspection of the committed data showed otherwise: 99.7% of gene symbols are title-case MGI nomenclature (<em>Lama1, Sptan1, Cryab</em>), and <span class="mono">H2-K1</span> is a mouse MHC class-I gene. The organism was corrected to <mark class="b">Mus&nbsp;musculus, taxid&nbsp;10090</mark>, and every organism-specific step — STRING, g:Profiler, Enrichr libraries — was re-pointed to mouse. Human parameters would have returned meaningless mappings.</p>
+    <p><strong>A second correction, and a bigger one: the treatment assignment was inverted.</strong> This pipeline originally read <span class="mono">31578, 31580</span> as control and <span class="mono">31579, 31581</span> as treated, inherited from the design document. The lab's own earlier Pilot Project says the opposite — its cleaned tables and cleaning script name the columns <span class="mono">Vehicle_Rep1_31579</span>, <span class="mono">Vehicle_Rep2_31581</span>, <span class="mono">Testosterone_Rep1_31578</span>, <span class="mono">Testosterone_Rep2_31580</span>. The check that settled it: on the 30 proteins common to the pilot's cleaned table and this pipeline's output, the two log₂ fold changes correlate at <mark>r = −0.82</mark> with sign agreement of <strong>2/30</strong>. Mirror images. The pipeline was flipped to match the lab.</p>
+    <p>Every direction in this report is therefore the <em>corrected</em> one, and the numbers below are not the ones an earlier draft carried: <span class="inline-r">509 up</span> / <span class="inline-b">206 down</span> is the reverse of the 206/509 that shipped before. Three things are worth stating plainly. The replicate <em>pairing</em> never changed — rep 1 is <span class="mono">31578/31579</span>, rep 2 is <span class="mono">31580/31581</span>, as it always was; only the direction inverts. Every p-value is <strong>unchanged</strong>, because swapping two group labels negates log₂FC and <span class="mono">t</span> but leaves <span class="mono">|t|</span> and therefore <span class="mono">p</span> exactly invariant — the headline null is untouched by this correction. And the fix itself was a one-line edit to <span class="mono">config/sample_sheet.tsv</span>, which is precisely the payoff of having made that sheet load-bearing.</p>
+    <p class="note">A note on the isotope labels, since SILAC invites the assumption: the workbook's <em>Protein Report L</em> and <em>Protein Report H</em> sheets record which sheet a channel's row lives in, <strong>not</strong> which condition it belongs to. All four samples are complete SILAC runs carrying their own Light, Heavy and H/L columns, and this pipeline analyses the combined <span class="mono">Intensity</span> — it never uses the native H/L ratio. Whether that is the right quantity is an open question filed for the lab, not a settled one.</p>
   </div>
 
   <div class="tiles reveal">
-    <div class="tile"><div class="tn num">2,554</div><div class="tl">Detected universe</div><div class="ts">≥1 non-missing intensity</div></div>
+    <div class="tile"><div class="tn num">2,552</div><div class="tl">Detected universe</div><div class="ts">≥1 non-missing intensity</div></div>
     <div class="tile"><div class="tn num">1,948</div><div class="tl">Both conditions</div><div class="ts">complete + partial</div></div>
-    <div class="tile"><div class="tn num">606</div><div class="tl">Single-condition only</div><div class="ts">rescued from the join</div></div>
+    <div class="tile"><div class="tn num">604</div><div class="tl">Single-condition only</div><div class="ts">rescued from the join</div></div>
     <div class="tile"><div class="tn num">10</div><div class="tl">On / off proteins</div><div class="ts">present in one arm only</div></div>
     <div class="tile"><div class="tn num">4</div><div class="tl">Samples total</div><div class="ts">2 control · 2 treated</div></div>
   </div>
@@ -614,7 +617,7 @@ section{transition:opacity .4s,filter .4s}
 
   <div class="prose two-col reveal">
     <p><strong>Bug 2 — asymmetric thresholds on the log₂ scale.</strong> “UP” fired at ratio&nbsp;≥&nbsp;1.5 (log₂&nbsp;=&nbsp;+0.585) while “DOWN” required ratio&nbsp;≤&nbsp;0.5 (log₂&nbsp;=&nbsp;−1.0). A protein had to rise only 1.5× to be called up, but fall a full 2× to be called down. The symmetric partner of a 1.5× cut is 1/1.5&nbsp;=&nbsp;0.667 (log₂&nbsp;=&nbsp;−0.585) — so the classifier was quietly biased against detecting down-regulation.</p>
-    <p><strong>Bug 3 — inf / NaN propagation.</strong> Ratios were computed for every row before the zero/missing filter, so a zero Light denominator produced <span class="mono">inf</span>, and log₂(0) produced <span class="mono">−inf</span>. These non-finite values were excluded from the UP/DOWN call but survived in the saved artifact, ready to break any downstream consumer that did not re-filter.</p>
+    <p><strong>Bug 3 — inf / NaN propagation.</strong> Ratios were computed for every row before the zero/missing filter, so a zero control-channel denominator produced <span class="mono">inf</span>, and log₂(0) produced <span class="mono">−inf</span>. These non-finite values were excluded from the UP/DOWN call but survived in the saved artifact, ready to break any downstream consumer that did not re-filter.</p>
     <p><strong>And a silent fourth.</strong> The <span class="mono">inner join</span> on accession kept only proteins seen in <em>both</em> sheets — discarding the on/off proteins that are often the strongest biological signal, with no log. Corrected in the next section.</p>
   </div>
 </section>
@@ -634,12 +637,13 @@ section{transition:opacity .4s,filter .4s}
     <div class="tile"><div class="tn">log-space</div><div class="tl">Averaging</div><div class="ts">mean of log₂ ratios (geometric)</div></div>
     <div class="tile"><div class="tn num">±0.585</div><div class="tl">Symmetric cutoff</div><div class="ts">|log₂FC| ≥ log₂(1.5)</div></div>
     <div class="tile"><div class="tn">masked</div><div class="tl">inf / NaN</div><div class="ts">computed on complete rows only</div></div>
-    <div class="tile"><div class="tn up num">606</div><div class="tl">Single-condition rescued</div><div class="ts">the join used to drop these</div></div>
+    <div class="tile"><div class="tn up num">604</div><div class="tl">Single-condition rescued</div><div class="ts">the join used to drop these</div></div>
     <div class="tile"><div class="tn down num">10</div><div class="tl">On/off rescued</div><div class="ts">relabelled, not discarded</div></div>
   </div>
 
   <div class="prose reveal">
-    <p>The three arithmetic bugs are fixed at the source: fold changes are the mean of <span class="mono">log2_rep1</span> and <span class="mono">log2_rep2</span>, the regulation cutoff is symmetric at <mark>|log₂FC| ≥ 0.585</mark>, and non-finite values never reach the saved table. Just as important, the merge no longer silently loses data: the <strong>606 single-condition</strong> and <strong>10 on/off</strong> proteins the inner join used to drop are now carried into their own audited CSVs as separate candidate pools (returned to in Track B). Of the 1,948 both-condition proteins, 715 clear the |log₂FC|&nbsp;≥&nbsp;0.585 effect-size gate — <span class="inline-r">206 up</span>, <span class="inline-b">509 down</span> — but that is an <em>effect-size</em> list, not yet a significance claim. That comes next.</p>
+    <p>The three arithmetic bugs are fixed at the source: fold changes are the mean of <span class="mono">log2_rep1</span> and <span class="mono">log2_rep2</span>, the regulation cutoff is symmetric at <mark>|log₂FC| ≥ 0.585</mark>, and non-finite values never reach the saved table. Just as important, the merge no longer silently loses data: the <strong>604 single-condition</strong> and <strong>10 on/off</strong> proteins the inner join used to drop are now carried into their own audited CSVs as separate candidate pools (returned to in Track B). Of the 1,948 both-condition proteins, 715 clear the |log₂FC|&nbsp;≥&nbsp;0.585 effect-size gate — <span class="inline-r">509 up</span>, <span class="inline-b">206 down</span> — but that is an <em>effect-size</em> list, not yet a significance claim. That comes next.</p>
+    <p class="note">The single-condition pool reads 604, not the 606 an earlier draft carried. Two rows of the raw Light sheet held a semicolon-joined list of bare MaxQuant row indices — 32,759 and 681 characters long — where an accession belongs, and the schema used to carve an explicit exception so they would pass validation. They are now quarantined to their own file instead. The test discriminates on token <em>shape</em> (every token a bare integer), never on length: two other long accessions of 69 characters, such as <span class="mono">P08752;P20612;…</span>, are legitimate protein groups and are retained. Nothing else moved — those rows are single-condition, so they never had a fold change, never entered limma and never reached the IPA export; only the enrichment background shrinks, 2,554 → 2,552.</p>
   </div>
 </section>
 
@@ -656,14 +660,15 @@ section{transition:opacity .4s,filter .4s}
 
   <div class="tiles reveal">
     <div class="tile"><div class="tn down num">0.27</div><div class="tl">Fold-change replicate r</div><div class="ts">WARN · threshold 0.50</div></div>
-    <div class="tile"><div class="tn num">−0.28</div><div class="tl">Mean log₂FC (centering)</div><div class="ts">WARN · tolerance 0.10</div></div>
-    <div class="tile"><div class="tn num">0.86 / 0.84</div><div class="tl">Raw replicate r</div><div class="ts">control / treated intensities</div></div>
+    <div class="tile"><div class="tn num">+0.28</div><div class="tl">Mean log₂FC (centering)</div><div class="ts">WARN · tolerance 0.10</div></div>
+    <div class="tile"><div class="tn num">0.84 / 0.86</div><div class="tl">Raw replicate r</div><div class="ts">control / treated intensities</div></div>
     <div class="tile"><div class="tn num">56.3%</div><div class="tl">Fold-change sign agreement</div><div class="ts">889 / 1,578 proteins</div></div>
   </div>
 
   <div class="prose reveal">
-    <p><strong>The honest limitation, surfaced.</strong> Raw intensities reproduce well between runs (Pearson <span class="mono">r</span> = 0.86 control, 0.84 treated). But the fold-change — a <em>difference</em> of two large, similar numbers — is noisy: replicate <span class="mono">r</span> = <mark>0.27</mark>, below the 0.50 gate, so the check returns <strong>WARN</strong>. Subtracting two near-equal quantities amplifies small wobbles, so per-protein up/down calls at n&nbsp;=&nbsp;2 are not individually trustworthy. This is not a failure to hide; it is precisely the on-paper justification for limma, which borrows information across all ~1,938 proteins to stabilise each estimate when single-protein replicates cannot.</p>
-    <p>The centering check likewise returns <strong>WARN</strong> (mean log₂FC = −0.28 against a ±0.10 tolerance) and writes a centered copy for inspection, without overriding the “no normalization” rule that the recipe calls for. Per-sample intensity distributions are near-identical (medians 27.4–27.8 log₂), which is the basis for <em>not</em> adding a cross-sample normalization step; and most “missingness” is structural — proteins genuinely absent from one condition — rather than random dropout.</p>
+    <p><strong>The honest limitation, surfaced.</strong> Raw intensities reproduce well between runs (Pearson <span class="mono">r</span> = 0.84 control, 0.86 treated). But the fold-change — a <em>difference</em> of two large, similar numbers — is noisy: replicate <span class="mono">r</span> = <mark>0.27</mark>, below the 0.50 gate, so the check returns <strong>WARN</strong>. Subtracting two near-equal quantities amplifies small wobbles, so per-protein up/down calls at n&nbsp;=&nbsp;2 are not individually trustworthy. This is not a failure to hide; it is precisely the on-paper justification for limma, which borrows information across all ~1,938 proteins to stabilise each estimate when single-protein replicates cannot.</p>
+    <p>The centering check likewise returns <strong>WARN</strong> (mean log₂FC = +0.28 against a ±0.10 tolerance) and writes a centered copy for inspection, without overriding the “no normalization” rule that the recipe calls for. Per-sample intensity distributions are near-identical (medians 27.4–27.8 log₂), which is the basis for <em>not</em> adding a cross-sample normalization step; and most “missingness” is structural — proteins genuinely absent from one condition — rather than random dropout.</p>
+    <p class="note">One loose end, stated rather than hidden: the standalone <span class="mono">qc_replicate_correlation.csv</span> still labels those two raw-<span class="mono">r</span> values with the pre-correction assignment, because <span class="mono">replicate_check.py</span> hardcodes its channel pairs instead of reading the sample sheet and so was not carried along by the treatment-assignment flip. The values are right and the pairing is right; only the two column <em>names</em> in that one QC file are swapped. The figures on this page, which do read the sheet, are correct — and the numbers quoted above are the corrected ones.</p>
   </div>
 
   <div class="figrow reveal">
@@ -674,6 +679,7 @@ section{transition:opacity .4s,filter .4s}
     %%PLATE_sample_correlation%%
     %%PLATE_rank_abundance%%
   </div>
+  <p class="note">Two captions above still describe a <strong>2554</strong>-protein universe with 606 single-condition proteins, where the prose on this page says 2,552 and 604. That is not a contradiction being hidden: these two QC figures were last drawn before the two junk accessions were quarantined, and their captions are reproduced verbatim from the manifest each figure writes, rather than re-typed to match. Nothing statistical moves — the quarantined rows are single-condition, so they are absent from the 1,578 complete proteins the correlations are computed on, and the <span class="mono">r</span> values are identical either way. Re-running the figure layer will resolve the labels; the discrepancy is left visible rather than papered over by editing a caption the code did not produce.</p>
 </section>
 
 <!-- ==================================================== §06 LIMMA/MINPROB == -->
@@ -689,14 +695,15 @@ section{transition:opacity .4s,filter .4s}
 
   <div class="tiles reveal">
     <div class="tile"><div class="tn num">1,938</div><div class="tl">Proteins tested</div><div class="ts">both-condition; on/off excluded</div></div>
-    <div class="tile"><div class="tn num">0</div><div class="tl">Pass FDR &lt; 0.05</div><div class="ts">min adj.p = 0.305</div></div>
-    <div class="tile"><div class="tn num">63</div><div class="tl">At raw p &lt; 0.05</div><div class="ts">nominal only</div></div>
-    <div class="tile"><div class="tn num">0.116</div><div class="tl">Min adj.p, trend/robust</div><div class="ts">still &gt; 0.05</div></div>
+    <div class="tile"><div class="tn num">0</div><div class="tl">Pass FDR &lt; 0.05</div><div class="ts">min adj.p = 0.116</div></div>
+    <div class="tile"><div class="tn num">55</div><div class="tl">At raw p &lt; 0.05</div><div class="ts">nominal only</div></div>
+    <div class="tile"><div class="tn num">0.305</div><div class="tl">Min adj.p, vanilla eBayes</div><div class="ts">comparison run · also &gt; 0.05</div></div>
     <div class="tile"><div class="tn num">1.0000</div><div class="tl">corr(limma, pipeline log₂FC)</div><div class="ts">contrast wired correctly</div></div>
   </div>
 
   <div class="prose reveal">
-    <p>With two values per group, a per-protein t-test has essentially no power and a wildly unstable variance estimate. limma’s empirical Bayes shrinks each protein’s variance toward a global trend — the one thing that makes inference possible at small n. It runs cleanly here, and the result is unambiguous: <mark>0 of 1,938</mark> proteins reach FDR&nbsp;&lt;&nbsp;0.05, with the smallest adjusted p-value at 0.305. The field-standard <span class="mono">trend + robust</span> refinement sharpens the extremes — the smallest adjusted p falls to 0.116 — but still crosses nothing. Critically, <span class="mono">corr(limma log₂FC, pipeline log₂FC) = 1.0000</span>: the contrast is wired correctly, so the null is a real property of the data at n&nbsp;=&nbsp;2, not a plumbing error. The volcano therefore draws the raw p&nbsp;=&nbsp;0.05 line for orientation only — there is no FDR line to draw, because nothing crosses it.</p>
+    <p>With two values per group, a per-protein t-test has essentially no power and a wildly unstable variance estimate. limma’s empirical Bayes shrinks each protein’s variance toward a global trend — the one thing that makes inference possible at small n. It runs cleanly here, and the result is unambiguous: <mark>0 of 1,938</mark> proteins reach FDR&nbsp;&lt;&nbsp;0.05. The default fit is the field-standard <span class="mono">eBayes(trend&nbsp;=&nbsp;TRUE, robust&nbsp;=&nbsp;TRUE)</span>, which the recipe specifies and which handles the intensity-dependent variance and the outlying proteins that a two-replicate design produces; its smallest adjusted p-value is <strong>0.116</strong>, with 55 proteins at a nominal raw p&nbsp;&lt;&nbsp;0.05. Plain vanilla eBayes is kept alongside it as a byte-reproducible comparison and lands at 0.305 with 63 nominal — a visibly more conservative tail, and the same verdict. Neither flavour puts anything across the line, which is the point: the conclusion does not depend on that choice.</p>
+    <p>Critically, <span class="mono">corr(limma log₂FC, pipeline log₂FC) = 1.0000</span> across the 1,578 proteins where both estimates are fully observed: the contrast is wired correctly, so the null is a real property of the data at n&nbsp;=&nbsp;2, not a plumbing error. The volcano therefore draws the raw p&nbsp;=&nbsp;0.05 line for orientation only — there is no FDR line to draw, because nothing crosses it. Each row of the limma output now also carries <span class="mono">n_imputed</span>, the count of values MinProb invented for that protein; since MinProb is stochastic at n&nbsp;=&nbsp;2, a reader can tell a measured estimate from a partly-manufactured one instead of having to trust that they are the same thing.</p>
   </div>
 
   <div class="figrow reveal">
@@ -718,22 +725,22 @@ section{transition:opacity .4s,filter .4s}
 
   <div class="callout trap reveal">
     <div class="co-k">The background-inflation trap</div>
-    <p>Over-representation asks whether your gene list is enriched <em>relative to a background</em>. The right background is the <strong>detected proteome</strong> — the 2,554 proteins that <em>could</em> have been seen. The naive background is the whole genome.</p>
+    <p>Over-representation asks whether your gene list is enriched <em>relative to a background</em>. The right background is the <strong>detected proteome</strong> — the 2,552 proteins that <em>could</em> have been seen. The naive background is the whole genome.</p>
     <div class="trapbars">
       <div class="trapbar good">
         <div class="tv num">0</div>
-        <div class="tk">terms significant · <b>correct</b> custom background<br>(2,554 detected proteins · g:SCS-corrected)</div>
+        <div class="tk">terms significant · <b>correct</b> custom background<br>(2,552 detected proteins · g:SCS-corrected)</div>
       </div>
       <div class="trapbar bad">
-        <div class="tv num">196</div>
-        <div class="tk">“significant” terms · <b>naive</b> whole-genome background<br>(top: GO:CC “cytoplasm”, p ≈ 1.9 × 10⁻²³)</div>
+        <div class="tv num">522</div>
+        <div class="tk">“significant” terms · <b>naive</b> whole-genome background<br>(326 up + 196 down; both topped by GO:CC “cytoplasm”, p ≈ 9.0 × 10⁻⁷⁰ and 1.9 × 10⁻²³)</div>
       </div>
     </div>
-    <p>Same UP gene list, same tool. The 196-term story is an artifact of comparing detected proteins to the whole genome rather than to what could have been detected. The pipeline uses the detected-proteome background and therefore does not fall into it — the honest answer at n&nbsp;=&nbsp;2 is that <em>no enrichment survives correction.</em></p>
+    <p>Same two gene lists, same tool, same corrected-p threshold — only the background changes. That whole-genome story is an artifact of comparing detected proteins to every gene in the mouse, rather than to what this instrument could have detected at all; “cytoplasm” tops both directions because a detected proteome is cytoplasm-rich by construction, not because testosterone did anything. The pipeline uses the detected-proteome background and therefore does not fall into it — the honest answer at n&nbsp;=&nbsp;2 is that <em>no enrichment survives correction.</em></p>
   </div>
 
   <div class="prose reveal">
-    <p>Both enrichment tests agree with the per-protein null and are reported as <em>separate</em> statistical tests from it — never conflated. g:Profiler ORA against the custom background returns <strong>0 terms</strong> in either direction (best corrected p ≈ 0.70). Preranked GSEA over 568 mouse gene sets returns <strong>0 at FDR&nbsp;&lt;&nbsp;0.05</strong> (minimum FDR q = 0.125). The sub-threshold leads that do exist are carried into Track B, labelled for exactly what they are.</p>
+    <p>Both enrichment tests agree with the per-protein null and are reported as <em>separate</em> statistical tests from it — never conflated. g:Profiler ORA against the custom background returns <strong>0 terms</strong> in either direction (best corrected p ≈ 0.70). Preranked GSEA over 568 mouse gene sets returns <strong>0 at FDR&nbsp;&lt;&nbsp;0.05</strong> (minimum FDR q = 0.127). The sub-threshold leads that do exist are carried into Track B, labelled for exactly what they are.</p>
   </div>
 
   %%PLATE_ora_dotplot%%
@@ -786,13 +793,13 @@ section{transition:opacity .4s,filter .4s}
   </div>
 
   <div class="prose reveal">
-    <p>Five committed CSV contracts are validated with <strong>pandera</strong> schemas built by inspecting the <em>real</em> data, not an idealised spec — they accommodate O/P/Q-prefixed UniProt accessions, semicolon-joined protein groups, NaN gene names, and one narrowly-scoped documented data quirk, while still rejecting anything genuinely malformed. The last run passed <mark class="b">5 / 5 files</mark>, with cross-file arithmetic checked too: <span class="mono">1,948 − 10 = 1,938</span> and <span class="mono">1,948 + 606 = 2,554</span>. MinProb is stochastic, so its seed is fixed (42); package versions are pinned; and outputs are frozen — the reproducibility layer never edits the pipeline it describes.</p>
+    <p>Five committed CSV contracts are validated with <strong>pandera</strong> schemas built by inspecting the <em>real</em> data, not an idealised spec — they accommodate O/P/Q-prefixed UniProt accessions, semicolon-joined protein groups, NaN gene names, and one narrowly-scoped documented data quirk, while still rejecting anything genuinely malformed. The last run passed <mark class="b">5 / 5 files</mark>, with cross-file arithmetic checked too: <span class="mono">1,948 − 10 = 1,938</span> and <span class="mono">1,948 + 604 = 2,552</span>. MinProb is stochastic, so its seed is fixed (42); package versions are pinned; and outputs are frozen — the reproducibility layer never edits the pipeline it describes.</p>
   </div>
 
   <div class="prov reveal">
     <div class="pc"><div class="pk">Source of truth</div><dl>
       <dt>Config</dt><dd><span class="v">config.yaml</span> — design, thresholds, contracts</dd>
-      <dt>Sample sheet</dt><dd><span class="v">sample_sheet.tsv</span> — replicate-count-agnostic</dd>
+      <dt>Sample sheet</dt><dd><span class="v">sample_sheet.tsv</span> — drives design, gates &amp; figures</dd>
       <dt>Seed</dt><dd><span class="v">42</span> (MinProb is stochastic)</dd>
     </dl></div>
     <div class="pc"><div class="pk">Validation</div><dl>
@@ -821,22 +828,23 @@ section{transition:opacity .4s,filter .4s}
 
   <div class="tablewrap reveal">
     <table class="candidates">
-      <thead><tr><th>#</th><th>Gene</th><th>UniProt</th><th class="n">limma log₂FC</th><th class="n">raw p</th><th>Pipeline call</th></tr></thead>
+      <thead><tr><th>#</th><th>Gene</th><th>UniProt</th><th class="n">limma log₂FC</th><th class="n">raw p</th><th class="n">imputed</th><th>Pipeline call</th></tr></thead>
       <tbody>
-        <tr><td class="n">1</td><td class="gene">Hist1h2bc <span class="small">+3</span></td><td class="mono small">Q6ZWY9</td><td class="n">−10.10</td><td class="n">1.6×10⁻⁴</td><td><span class="badge DOWN">DOWN</span></td></tr>
-        <tr><td class="n">2</td><td class="gene">Tuba1a</td><td class="mono small">P68369</td><td class="n">−10.55</td><td class="n">1.2×10⁻³</td><td><span class="badge NC">NO CHANGE</span></td></tr>
-        <tr><td class="n">3</td><td class="gene">Gspt1 <span class="small">+1</span></td><td class="mono small">Q8R050</td><td class="n">−4.16</td><td class="n">1.8×10⁻³</td><td><span class="badge DOWN">DOWN</span></td></tr>
-        <tr><td class="n">4</td><td class="gene">Abhd14b</td><td class="mono small">Q8VCR7</td><td class="n">+4.58</td><td class="n">2.0×10⁻³</td><td><span class="badge UP">UP</span></td></tr>
-        <tr><td class="n">5</td><td class="gene">Memo1</td><td class="mono small">Q91VH6</td><td class="n">−3.94</td><td class="n">2.3×10⁻³</td><td><span class="badge DOWN">DOWN</span></td></tr>
-        <tr><td class="n">6</td><td class="gene">Hist1h2ba</td><td class="mono small">P70696</td><td class="n">+6.83</td><td class="n">3.1×10⁻³</td><td><span class="badge UP">UP</span></td></tr>
-        <tr><td class="n">7</td><td class="gene">Ndufv2</td><td class="mono small">Q9D6J6</td><td class="n">−3.39</td><td class="n">4.9×10⁻³</td><td><span class="badge DOWN">DOWN</span></td></tr>
-        <tr><td class="n">8</td><td class="gene">Khsrp</td><td class="mono small">Q3U0V1</td><td class="n">+3.06</td><td class="n">5.7×10⁻³</td><td><span class="badge UP">UP</span></td></tr>
-        <tr><td class="n">9</td><td class="gene">Arglu1</td><td class="mono small">Q3UL36</td><td class="n">+4.80</td><td class="n">5.9×10⁻³</td><td><span class="badge UP">UP</span></td></tr>
-        <tr><td class="n">10</td><td class="gene">Ech1</td><td class="mono small">O35459</td><td class="n">−2.99</td><td class="n">6.6×10⁻³</td><td><span class="badge DOWN">DOWN</span></td></tr>
+        <tr><td class="n">1</td><td class="gene">Hist1h2bc <span class="small">+3</span></td><td class="mono small">Q6ZWY9</td><td class="n">+10.10</td><td class="n">6.53×10⁻⁵</td><td class="n">0</td><td><span class="badge UP">UP</span></td></tr>
+        <tr><td class="n">2</td><td class="gene">Abhd14b</td><td class="mono small">Q8VCR7</td><td class="n">−4.58</td><td class="n">1.58×10⁻⁴</td><td class="n">0</td><td><span class="badge DOWN">DOWN</span></td></tr>
+        <tr><td class="n">3</td><td class="gene">Tuba1a</td><td class="mono small">P68369</td><td class="n">+10.55</td><td class="n">1.80×10⁻⁴</td><td class="n">1</td><td><span class="badge NC">NO CHANGE</span></td></tr>
+        <tr><td class="n">4</td><td class="gene">Gsta3</td><td class="mono small">P30115</td><td class="n">+2.74</td><td class="n">8.69×10⁻⁴</td><td class="n">0</td><td><span class="badge UP">UP</span></td></tr>
+        <tr><td class="n">5</td><td class="gene">Hist1h2ba</td><td class="mono small">P70696</td><td class="n">−6.83</td><td class="n">1.01×10⁻³</td><td class="n">0</td><td><span class="badge DOWN">DOWN</span></td></tr>
+        <tr><td class="n">6</td><td class="gene">Ech1</td><td class="mono small">O35459</td><td class="n">+2.99</td><td class="n">1.66×10⁻³</td><td class="n">0</td><td><span class="badge UP">UP</span></td></tr>
+        <tr><td class="n">7</td><td class="gene">Gspt1 <span class="small">+1</span></td><td class="mono small">Q8R050</td><td class="n">+4.16</td><td class="n">1.68×10⁻³</td><td class="n">0</td><td><span class="badge UP">UP</span></td></tr>
+        <tr><td class="n">8</td><td class="gene">Arglu1</td><td class="mono small">Q3UL36</td><td class="n">−4.80</td><td class="n">1.70×10⁻³</td><td class="n">0</td><td><span class="badge DOWN">DOWN</span></td></tr>
+        <tr><td class="n">9</td><td class="gene">Ndufv2</td><td class="mono small">Q9D6J6</td><td class="n">+3.39</td><td class="n">2.14×10⁻³</td><td class="n">0</td><td><span class="badge UP">UP</span></td></tr>
+        <tr><td class="n">10</td><td class="gene">Ppp2cb</td><td class="mono small">P62715</td><td class="n">+4.07</td><td class="n">3.67×10⁻³</td><td class="n">0</td><td><span class="badge UP">UP</span></td></tr>
       </tbody>
     </table>
   </div>
-  <p class="note">The <em>pipeline call</em> is the |log₂FC| ≥ 0.585 flag computed on complete-case ratios; the log₂FC shown is the limma / MinProb estimate. The two can diverge for proteins with missing channels — e.g. <em>Tuba1a</em>, whose imputed estimate is large but whose complete-case ratio does not clear the gate. Both are shown, unreconciled, on purpose.</p>
+  <p class="note">The <em>pipeline call</em> is the |log₂FC| ≥ 0.585 flag computed on complete-case ratios; the log₂FC shown is the limma / MinProb estimate. The two can diverge for proteins with missing channels — <em>Tuba1a</em> is the worked example, and the <em>imputed</em> column now says why: one of its four values was invented by MinProb, so its imputed estimate is large while its complete-case ratio does not clear the gate. Both are shown, unreconciled, on purpose. Nine of these ten rest on four measured values; only <em>Tuba1a</em> does not.</p>
+  <p class="note">This ranking is the <span class="mono">trend/robust</span> fit, and it is not the list an earlier draft carried. Beyond the direction flip, changing the variance model reshuffles the tail: <em>Gsta3</em> and <em>Ppp2cb</em> enter, <em>Memo1</em> and <em>Khsrp</em> leave. That instability across two reasonable model choices is itself the argument — at n&nbsp;=&nbsp;2 a rank ordering of non-significant p-values is a to-do list, not a finding.</p>
 </section>
 
 <!-- ==================================================== §11 HEATMAP ======= -->
@@ -869,12 +877,12 @@ section{transition:opacity .4s,filter .4s}
   </div>
 
   <div class="hubs reveal">
-    <div class="hub up"><div class="hg">Actb</div><div class="hd">degree 137 · cytoskeletal</div><div class="hf num">log₂FC +0.87 ▲</div></div>
-    <div class="hub down"><div class="hg">Rps3</div><div class="hd">degree 100 · ribosomal</div><div class="hf num">log₂FC −0.67 ▼</div></div>
-    <div class="hub down"><div class="hg">Hsp90aa1</div><div class="hd">degree 97 · chaperone</div><div class="hf num">log₂FC −1.62 ▼</div></div>
-    <div class="hub down"><div class="hg">Gnb2l1</div><div class="hd">degree 93 · scaffold</div><div class="hf num">log₂FC −0.99 ▼</div></div>
-    <div class="hub up"><div class="hg">Cct7</div><div class="hd">degree 86 · chaperonin</div><div class="hf num">log₂FC +0.63 ▲</div></div>
-    <div class="hub up"><div class="hg">Tcp1</div><div class="hd">degree 81 · chaperonin</div><div class="hf num">log₂FC +2.32 ▲</div></div>
+    <div class="hub down"><div class="hg">Actb</div><div class="hd">degree 137 · cytoskeletal</div><div class="hf num">log₂FC −0.87 ▼</div></div>
+    <div class="hub up"><div class="hg">Rps3</div><div class="hd">degree 100 · ribosomal</div><div class="hf num">log₂FC +0.67 ▲</div></div>
+    <div class="hub up"><div class="hg">Hsp90aa1</div><div class="hd">degree 97 · chaperone</div><div class="hf num">log₂FC +1.62 ▲</div></div>
+    <div class="hub up"><div class="hg">Gnb2l1</div><div class="hd">degree 93 · scaffold</div><div class="hf num">log₂FC +0.99 ▲</div></div>
+    <div class="hub down"><div class="hg">Cct7</div><div class="hd">degree 86 · chaperonin</div><div class="hf num">log₂FC −0.63 ▼</div></div>
+    <div class="hub down"><div class="hg">Tcp1</div><div class="hd">degree 81 · chaperonin</div><div class="hf num">log₂FC −2.32 ▼</div></div>
   </div>
 
   %%PLATE_ppi_network%%
@@ -892,7 +900,8 @@ section{transition:opacity .4s,filter .4s}
   </div>
 
   <div class="prose reveal">
-    <p>On the UP side, the best (still non-significant) ORA lead is <mark>dephosphorylation</mark> (GO:BP, corrected p ≈ 0.70, 11 genes including <em>Ppp2ca, Ppp1cc, Ppp1ca</em>), alongside <em>mRNA-splicing</em> Reactome terms that share genes <em>Prosc</em> and <em>Tpd52l2</em>. Preranked GSEA’s leading themes lean toward secretion and protein-transport regulation on the up side (top NES: <em>positive regulation of secretion by cell</em>) and mitotic cell-cycle / chromosome-organization on the down side — 40 terms clear a nominal p&nbsp;&lt;&nbsp;0.05 but none clear FDR (minimum q = 0.125). The UpSet panel shows where the top ORA leads share genes; by construction up- and down-side terms never overlap, so it reads as two disjoint clusters rather than a display error.</p>
+    <p>On the DOWN side, the best (still non-significant) ORA lead is <mark>dephosphorylation</mark> (GO:BP, corrected p ≈ 0.70, 11 genes including <em>Ppp2ca, Ppp1cc, Ppp1ca, Ppp5c</em> and <em>Ppm1a</em>), alongside <em>mRNA-splicing</em> Reactome terms that share the Sm-like genes <em>Lsm2</em> and <em>Lsm6</em>. The UP side is weaker still — its five best terms are all GO:MF entries sitting at a corrected p of exactly 1.0, each resting on one to three genes. Preranked GSEA’s leading themes lean toward mitotic cell-cycle and G2/M transition on the up side (top NES: <em>mitotic cell cycle phase transition</em>) and secretion / protein-transport regulation on the down side — 38 terms clear a nominal p&nbsp;&lt;&nbsp;0.05 but none clear FDR (minimum q = 0.127). The UpSet panel shows where the top ORA leads share genes; by construction up- and down-side terms never overlap, so it reads as two disjoint clusters rather than a display error.</p>
+    <p class="note">These term lists changed direction with the treatment-assignment correction, as expected. They also changed <em>membership</em>: re-running the enrichment against the corrected background pulled g:Profiler's actual intersecting-gene evidence, where the earlier pass had recorded gene attributions that did not stand up — “dephosphorylation” now resolves to a set of real phosphatases, and “mRNA Splicing” to real splicing factors. Both readings were non-significant, so no conclusion moves; but the current one is the one that can be checked.</p>
   </div>
 
   <div class="figrow reveal">
@@ -919,12 +928,12 @@ section{transition:opacity .4s,filter .4s}
       <p>Detected in one condition and genuinely zero in the other — the most dramatic candidate switches. Too few, and too extreme, to test with limma (a whole condition would have to be imputed), so they are kept as a labelled pool rather than forced through a model.</p>
     </div>
     <div class="lane B" style="background:linear-gradient(180deg,var(--up-wash),transparent 60%);border-right:0">
-      <div class="lhead"><span class="dot"></span>Single-condition · 606 proteins</div>
+      <div class="lhead"><span class="dot"></span>Single-condition · 604 proteins</div>
       <h3>Present in only one arm</h3>
       <p>Identified in control-only or treated-only, with no cross-condition ratio to compute. Excluded from limma by design — imputing an entire missing condition manufactures data — but retained as a rich, separate follow-up pool once biological replicates make their presence/absence pattern testable.</p>
     </div>
   </div>
-  <p class="note">Together these two pools account for the gap between the 1,938 tested and the 2,554 detected. Nothing is deleted silently; everything is filed where it can be picked up again.</p>
+  <p class="note">Together these two pools account for the gap between the 1,938 tested and the 2,552 detected. Nothing is deleted silently; everything is filed where it can be picked up again — including the two quarantined junk accessions, which are written to their own file rather than dropped on the floor.</p>
 </section>
 
 <!-- ==================================================== §15 FORWARD PATH === -->
@@ -934,19 +943,22 @@ section{transition:opacity .4s,filter .4s}
     <div class="htext">
       <span class="trackchip both"><span class="dot"></span>Forward path · both tracks</span>
       <h2 class="stitle">What unlocks with biological replicates</h2>
-      <p class="deck">The ceiling here is replication, not architecture. Because every analysis is gated on a sample count and every design choice lives in the sample sheet, growing the study is a <em>config change, not a rewrite.</em></p>
+      <p class="deck">The ceiling here is replication, not architecture. Growing the study starts with a config change — but it is not <em>only</em> a config change, and the honest version of that claim is worth more than the tidy one.</p>
     </div>
   </div>
 
   <div class="prose reveal">
-    <p>Adding biological replicates means appending rows to <span class="mono">sample_sheet.tsv</span> (new sample IDs, replicate index 3, 4, …); the design matrix <span class="mono">model.matrix(~group)</span> regenerates automatically, and the three-file contract is replicate-count-agnostic by construction. At that point the p-values graduate from “technical reproducibility” to “population-level biological significance” — and the caveat ribbon comes off. Each gated analysis switches itself on as its sample threshold is met:</p>
+    <p>Adding biological replicates starts by appending rows to <span class="mono">sample_sheet.tsv</span> (new sample IDs, replicate index 3, 4, …). From there the pipeline splits cleanly into two halves, and it is worth being precise about which is which.</p>
+    <p><strong>Genuinely automatic.</strong> The statistical core re-derives itself from the sheet with no code change at all: <span class="mono">etl/build_matrix.py</span> regenerates the intensity-matrix and design contracts, and <span class="mono">limma_test.R --design</span> builds <span class="mono">model.matrix(~group)</span> from whatever that file says — the design matrix really does regenerate. <span class="mono">viz/style.py</span> derives its sample maps the same way, so every figure relabels itself. And <span class="mono">gated/pca_cluster.py</span> hardcodes nothing about sample count: its gates re-evaluate against the sheet and flip themselves on, verified at n&nbsp;=&nbsp;6 and n&nbsp;=&nbsp;20. This is also what made the treatment-assignment correction above a one-line edit rather than a hunt through nine files.</p>
+    <p><strong>Guarded, but not automatic.</strong> Three stages do <em>not</em> generalise: <span class="mono">foldchange.py</span>, <span class="mono">replicate_check.py</span> and <span class="mono">qc/schema.py</span>. They pair replicate <em>i</em> of control with replicate <em>i</em> of treated, split the workbook by its two raw sheets, and restore a specific left-row-order and column dtype after the merge — none of which has a meaning at N replicates. They read the sheet to learn <em>which</em> samples are which, and they assert against it, so a changed design fails loudly with “this stage is 2-channel SILAC-specific” rather than silently analysing the wrong columns. That is a tripwire, not an adaptation: those three stages must be rewritten for a new design, and the error message says so instead of pretending otherwise.</p>
+    <p>So: the inference layer scales on a config change, the ingest layer needs work, and the pipeline is built to tell you which is which at runtime. Once the replicates exist, the p-values graduate from “technical reproducibility” to “population-level biological significance” — and only then does the caveat ribbon come off. Each gated analysis switches itself on as its sample threshold is met:</p>
   </div>
 
   <ul class="unlock reveal">
     <li><span class="gate">n ≥ 6</span><div class="what"><b>Real PCA &amp; bootstrapped clustering</b><p>Full-rank covariance; stable dendrogram topology; genuine biological-variance FDR power.</p></div></li>
     <li><span class="gate">n ≥ 15–20</span><div class="what"><b>WGCNA co-expression modules</b><p>Correlation networks become biologically meaningful; mixOmics sPLS-DA becomes viable.</p></div></li>
     <li><span class="gate">dozens+</span><div class="what"><b>UMAP / t-SNE sample structure</b><p>Low-dimensional embeddings stabilise; sample-level structure becomes interpretable.</p></div></li>
-    <li><span class="gate">config</span><div class="what"><b>No code rewrite required</b><p>The dispatcher turns each method on automatically once its <span class="mono">min_samples</span> gate is satisfied.</p></div></li>
+    <li><span class="gate">config</span><div class="what"><b>Gating needs no code change</b><p>The dispatcher turns each method on automatically once its <span class="mono">min_samples</span> gate is satisfied. The three 2-channel ingest stages above still need rewriting — they will say so, loudly, on the first run.</p></div></li>
   </ul>
 </section>
 
@@ -969,12 +981,12 @@ section{transition:opacity .4s,filter .4s}
     <div class="pc"><div class="pk">Statistics</div><dl>
       <dt>Engine</dt><dd><span class="v">limma 3.68.4</span> · R 4.6.1</dd>
       <dt>Imputation</dt><dd><span class="v">MinProb</span>, q = 0.01 · imputeLCMD 2.1</dd>
-      <dt>eBayes</dt><dd>vanilla (default) + trend/robust cross-check</dd>
+      <dt>eBayes</dt><dd>trend + robust (default) · vanilla kept as comparison</dd>
       <dt>Design</dt><dd><span class="v">~group</span> · coef = treated − control</dd>
     </dl></div>
     <div class="pc"><div class="pk">Enrichment</div><dl>
       <dt>ORA</dt><dd>g:Profiler <span class="v">e114_eg62_p19</span> · mmusculus · g:SCS</dd>
-      <dt>Background</dt><dd>custom detected proteome, n = 2,554</dd>
+      <dt>Background</dt><dd>custom detected proteome, n = 2,552</dd>
       <dt>GSEA</dt><dd>gseapy <span class="v">1.1.11</span> · seed 42 · 1,000 perms</dd>
       <dt>Network</dt><dd>STRING <span class="v">v12.0</span> · species 10090 · score ≥ 400</dd>
     </dl></div>
