@@ -1328,7 +1328,7 @@ workflow. No production file was touched.
    property. Both are flattened; a test asserts the committed bytes are exactly
    what the script produces today.
 
-3. **`tests/test_e2e_smoke.py` (45 tests)** — Level 1 runs the real
+3. **`tests/test_e2e_smoke.py` (46 tests)** — Level 1 runs the real
    `foldchange.py --input <fixture> --results-dir <tmp>` end to end **including
    the R limma leg** in ~2.5 s and checks every row against its designed branch;
    Level 2 (`slow` + `golden`) re-runs the DE leg on the real workbook into a temp
@@ -1363,10 +1363,10 @@ rescue in both directions · a D11 junk accession quarantined while a legitimate
 group on the same path survives · `n_imputed` ∈ {0,1,2,4}.
 
 **Verification (run, not assumed).**
-- Full suite **580 → 579 passed + 1 xfailed, 4 deselected** (was 508). +74 tests.
+- Full suite **580 passed + 1 xfailed, 4 deselected** (585 collected, was 510). **+75 tests.**
 - Level 2 `golden`: 2 passed — the DE leg reproduces all 16 artifacts and both
   frozen `_limma_*` files exactly.
-- No-R path forced by stripping PATH: **505 passed, 74 skipped, 0 failed.**
+- No-R path forced by stripping PATH: **506 passed, 74 skipped, 0 failed.**
 - `tools/freeze.py --check`: 79 OK / 0 CHANGED, before and after every run above.
 
 **Mutation testing — six deliberate breaks, each caught, each reverted.**
@@ -1383,7 +1383,7 @@ Mutation 5 is the one that justifies the whole `test_golden_outputs.py` module:
 the freeze gate passed a knowingly-wrong output because the hash had been
 re-baselined alongside it.
 
-**Counts before → after:** tests 510 → 584 collected. Frozen artifacts unchanged
+**Counts before → after:** tests 510 → 585 collected (+75: 29 + 46). Frozen artifacts unchanged
 (79). No production file modified.
 
 **Open follow-ups (findings, not chores).**
