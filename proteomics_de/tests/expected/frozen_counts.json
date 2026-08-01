@@ -1,0 +1,18 @@
+{
+  "_comment": "Row and class counts for the committed dataset (mouse SILAC, n=2 technical replicates per condition). These are DATASET-SPECIFIC EXPECTATIONS, lifted out of bare `assert len(df) == 1948`-style checks that were hardcoded across 8 pipeline source files. Source code should assert against this file, not against inline literals, so that the expected values live in exactly one place. Every number here was verified against the actual committed files under proteomics_de/results/ and General Sheet.xlsx at baseline_git_head. If the input data ever changes, these WILL change -- that is expected, and the correct response is to re-derive and update this file in the same commit as the data change, not to loosen the assertions.",
+  "baseline_git_head": "421814c9f623454c3df830fa96ba327eac4036f5",
+  "raw_sheet_L_rows": 2315,
+  "raw_sheet_H_rows": 2187,
+  "foldchange_all_rows": 1948,
+  "single_condition_rows": 606,
+  "onoff_rows": 10,
+  "qc_limma_rows": 1938,
+  "ipa_input_rows": 715,
+  "n_up": 206,
+  "n_down": 509,
+  "n_nochange_plus_onoff": 1233,
+  "background_union": 2554,
+  "n_significant_fdr05": 0,
+  "gsea_terms": 568,
+  "string_nodes": 694
+}

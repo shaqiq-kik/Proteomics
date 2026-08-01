@@ -1,0 +1,9 @@
+# Test-only dependencies. These are the ONLY packages installed into the
+# repo-local .venv itself; everything in requirements-lock.txt is inherited from
+# the Homebrew interpreter via --system-site-packages. See ENVIRONMENT.md.
+#
+#   python3 -m venv --system-site-packages .venv
+#   .venv/bin/pip install -r requirements-dev.txt
+
+pytest==9.1.1
+pytest-xdist==3.8.0
