@@ -3,8 +3,8 @@
 > **This file is GENERATED. Do not hand-edit.**
 > Regenerate with `.venv/bin/python tools/status.py` (source: `tools/status.py`). Every number below is read off the filesystem at generation time, so it cannot silently go stale.
 
-* Generated: **2026-07-31 23:54:22 EDT**
-* Git HEAD: **`96d16fd`**
+* Generated: **2026-07-31 23:59:19 EDT**
+* Git HEAD: **`c0d3b04`**
 * Repo root: `/Users/abrarshakik/Documents/Proteomics`
 
 Companions: `DECISIONS_LOG.md` (human decisions D1–D6) · `BUILD_LOG.md` (per-work-package history) · `../research1.md` §Build Log (per-bug narrative).
@@ -44,12 +44,14 @@ Companions: `DECISIONS_LOG.md` (human decisions D1–D6) · `BUILD_LOG.md` (per-
 
 ## b) Artifact inventory (`proteomics_de/results/`)
 
-**59 files**, 8.3 MB total, 19 tabular (`.csv`/`.tsv`).
+**61 files**, 8.4 MB total, 21 tabular (`.csv`/`.tsv`).
 
 Row counts EXCLUDE the header. Three files are header-only **by design** — they are the honest scientific result, not a failure. See `DECISIONS_LOG.md` D2 and D6.
 
 | File | Size | Data rows | Note |
 |---|---|---|---|
+| `results/de/design.tsv` | 69 B | 4 |  |
+| `results/de/intensity_matrix.tsv` | 110.8 KB | 1,938 |  |
 | `results/enrichment/gsea_meta.json` | 1.5 KB | — |  |
 | `results/enrichment/gsea_results.csv` | 113.2 KB | 568 | matches expected 568 |
 | `results/enrichment/ora_down.csv` | 91 B | **0 rows (expected -- 0 GO/KEGG/Reactome terms survive the honest detected-proteome background (DECISIONS_LOG D6))** |  |
@@ -129,9 +131,15 @@ Manifest: `proteomics_de/tests/expected/outputs.sha256` (62 files).
 | Test file | Test functions |
 |---|---|
 | `tests/test_accessions.py` | 14 |
+| `tests/test_build_matrix.py` | 11 |
 | `tests/test_design.py` | 20 |
+| `tests/test_freeze.py` | 7 |
+| `tests/test_limma_contract.py` | 11 |
+| `tests/test_limma_r.py` | 26 |
+| `tests/test_run_pipeline.py` | 40 |
+| `tests/test_style_samples.py` | 18 |
 
-**2 test files · 34 test functions.**
+**8 test files · 147 test functions.**
 
 Module coverage — a module counts as covered if a test file is named after it (`test_<module>.py`) or mentions it in its filename:
 
@@ -145,6 +153,7 @@ Module coverage — a module counts as covered if a test file is named after it 
 | `enrich/string_ppi.py` | ❌ none |
 | `enrich/upset.py` | ❌ none |
 | `etl/accessions.py` | ✅ yes |
+| `etl/build_matrix.py` | ✅ yes |
 | `export/ipa_export.py` | ❌ none |
 | `foldchange.py` | ❌ none |
 | `gated/pca_cluster.py` | ❌ none |
@@ -158,10 +167,10 @@ Module coverage — a module counts as covered if a test file is named after it 
 | `viz/heatmap.py` | ❌ none |
 | `viz/ma_plot.py` | ❌ none |
 | `viz/qc_plots.py` | ❌ none |
-| `viz/style.py` | ❌ none |
+| `viz/style.py` | ✅ yes |
 | `viz/volcano.py` | ❌ none |
 
-**1/23 pipeline modules have a matching test file.**
+**3/24 pipeline modules have a matching test file.**
 
 ---
 

@@ -21,7 +21,10 @@ MANIFEST = REPO_ROOT / "proteomics_de" / "tests" / "expected" / "outputs.sha256"
 
 def test_manifest_exists_and_parses():
     entries = freeze.read_manifest(MANIFEST)
-    assert len(entries) == 62, f"expected 62 frozen artifacts, got {len(entries)}"
+    # Deliberately an explicit number: adding a scientific artifact should be a
+    # conscious act that updates this manifest, not something silently absorbed.
+    # 62 baseline outputs + 2 research1.md §1 contract files (P2).
+    assert len(entries) == 64, f"expected 64 frozen artifacts, got {len(entries)}"
     modes = {mode for _sha, mode in entries.values()}
     assert modes == {"raw", "svg-canon"}, modes
 
@@ -42,7 +45,7 @@ def test_tree_matches_manifest():
     assert not changed, f"frozen outputs drifted: {changed}"
     assert not missing, f"frozen outputs missing: {missing}"
     assert not extra, f"untracked artifacts present: {extra}"
-    assert len(ok) == 62
+    assert len(ok) == 64
 
 
 def test_svg_canonicalization_absorbs_regeneration_noise(tmp_path):

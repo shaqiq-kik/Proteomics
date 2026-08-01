@@ -5,10 +5,12 @@
 #                   renumbering its randomly-salted element ids, which
 #                   differ between runs of identical code.
 # Source files are deliberately NOT frozen; git versions those.
-# entries: 62
+# entries: 64
 58290083bbb19240568be2491458d2ca54a04a58ff11f00b6558a28c34965715  raw  proteomics_de/_limma_input.csv
 132039e12e802af79112f992df7d4455b8ae96f1b8531ac970b8beda05121146  raw  proteomics_de/_limma_output.csv
 2cb89e66a7f5e4cbe2cd4011f6927b66a48a93e6e3670caf1621941ce4f3d075  raw  proteomics_de/_limma_versions.txt
+c5e39ee6f89b1e644df7e2948134101948ef4fb971d537417d80d7e28f11ade5  raw  proteomics_de/results/de/design.tsv
+c2ac0d53db2d53b17394585e35e852c32b67596d30bdc6f86b0a35924adfa93a  raw  proteomics_de/results/de/intensity_matrix.tsv
 4fea9fddc24432cef07aef3c34e697c602e7f194221daa418d5db2bb06110d4e  raw  proteomics_de/results/enrichment/gsea_meta.json
 0ae03cc45d51339b2cac2cbafa06d65cdcf638713aa37179b387506639fcba6c  raw  proteomics_de/results/enrichment/gsea_results.csv
 bab99e6169f074c7826602c5d6edecbb35ae489ce04861d7926ae1bf45a2602c  raw  proteomics_de/results/enrichment/ora_down.csv
