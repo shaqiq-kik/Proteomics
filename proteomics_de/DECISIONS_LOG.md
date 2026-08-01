@@ -166,3 +166,60 @@ groups and stay. *Decided by you (2026-07-31).*
 
 **⚪ D5 CLOSED — organism confirmed as mouse** by you (2026-07-31). All enrichment
 parameters (STRING 10090, g:Profiler `mmusculus`, Enrichr mouse libraries) stand.
+
+---
+
+## Effort complete (2026-08-01)
+
+All waves are built, tested and merged to `main`. **640 tests pass; 75 frozen
+artifacts, zero drift; a full end-to-end run completes in ~12 s in a single
+directory** — something this repo had never demonstrated before.
+
+**⚪ D12 — FINDING: `replicate_check.py` had the pre-D7 mapping.** Caught during
+the final pass. Because that module only *labels* two correlations and computes
+no contrast, the error was silent — the numbers were right and the names were
+swapped, so `qc_replicate_correlation.csv` reported the **treated** pair's
+r=0.8624 (n=1723) as `control_raw_r`, and the report repeated it. Corrected:
+control r=0.8407 (n=1656), treated r=0.8624 (n=1723). Now derived from the
+sample sheet. This is the same failure mode as D7 — a hardcoded condition
+assignment producing plausible output — and it is why the config-driven work
+mattered more than the individual fixes.
+
+**⚪ D13 — FINDING: `ipa_input_full.csv` shipped stale for one commit.** Its
+p-values were the vanilla eBayes numbers while the report quoted trend/robust.
+The code was right; `export/ipa_export.py` simply was not a `run_pipeline.py`
+stage, so `--all` refreshed `qc_limma.csv` and never rebuilt the file quoting
+it. Now stage 2 of 14. Found by the cross-file invariant suite, **not** by the
+byte-freeze — a manifest will happily freeze a self-consistent but stale file.
+
+**⚪ D14 — the byte-freeze gate was rebuilt twice, both times because it was
+wrong in a way that would have trained people to ignore it.** First it froze
+source files, so any refactor failed it by construction. Then it could not
+survive a re-run of its own pipeline (matplotlib salts SVG ids and stamps
+timestamps). It now covers 75 scientific outputs, is idempotent across
+consecutive full runs, and is verified in BOTH directions — it catches a single
+changed path coordinate and ignores pure regeneration noise.
+
+---
+
+## 🔵 STILL NEEDS YOU — nothing code can close
+
+1. **D8 — is the pipeline analysing the right quantity?** THE OPEN SCIENTIFIC
+   QUESTION. Each sample carries its own `Intensity L`, `Intensity H` and
+   `Ratio H/L`; the pipeline uses the **sum of both isotope channels** and never
+   touches the SILAC ratios. The two readouts correlate at **r = 0.066**. If
+   Heavy is a spike-in reference, the correct per-sample quantity is the ratio to
+   that reference and every result changes. Ask the lab before presenting.
+2. **D7 — confirm the corrected orientation** with whoever ran the experiment.
+   The evidence is strong (the lab's own Pilot Project labelling, plus r = +0.82
+   after correction versus -0.82 before), but it deserves a human yes.
+3. **Run QIAGEN IPA.** Upload `results/ipa_input_full.csv` — it now carries
+   `p_value` and `adj_p_value`, which unlock IPA's expression cutoffs.
+   `ipa_input_significant.csv` is header-only by design (0 pass FDR).
+4. **Biological replicates.** The only thing that lifts the n=2 ceiling. Adding
+   them is now genuinely a sample-sheet edit for the design matrix, viz labels
+   and the gated dispatcher (verified at n=6 and n=20); `foldchange.py`,
+   `replicate_check.py` and `qc/schema.py` will fail loudly as 2-channel-SILAC
+   specific and need regenerating.
+5. **Decide on CI.** `.github/workflows/tests.yml` exists but only runs if you
+   push to GitHub.
