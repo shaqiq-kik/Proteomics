@@ -232,3 +232,74 @@ def test_missing_required_column_is_rejected(tmp_path):
     )
     with pytest.raises(ValueError, match="missing required column"):
         design.read_sample_sheet(path)
+
+
+# ---------------------------------------------------------------------------
+# The reference-level invariant (DECISIONS_LOG D7)
+#
+# limma_test.R derives its factor levels as `unique(group)` in DESIGN-FILE ROW
+# ORDER, so whichever group appears first becomes the denominator. That makes
+# row order silently load-bearing: if a sample sheet ever listed treated first,
+# every logFC in the study would invert with nothing to signal it.
+#
+# D7 flips the control/treated assignment by editing sample_sheet.tsv. If that
+# flip also reordered the groups, the two inversions would cancel and the
+# correction would be a no-op that LOOKS applied. These tests pin the property
+# that makes the flip safe: design.py's canonical sort always emits control
+# first, whatever order the TSV happens to use.
+# ---------------------------------------------------------------------------
+
+def _write_sheet(path, rows):
+    lines = ["sample\tgroup\tchannel\treplicate"]
+    lines += [f"{s}\t{g}\tIntensity {s}\t{r}" for s, g, r in rows]
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return path
+
+
+def test_control_is_always_the_reference_level_whatever_the_row_order(tmp_path):
+    """Control must sort first even when the TSV lists treated first."""
+    treated_first = _write_sheet(
+        tmp_path / "treated_first.tsv",
+        [("31578", "treated", 1), ("31580", "treated", 2),
+         ("31579", "control", 1), ("31581", "control", 2)],
+    )
+    gv = design.group_vector(design.read_sample_sheet(treated_first))
+    assert gv[0] == "control", (
+        "control must be the reference level; a treated-first design file would "
+        "invert every logFC in the study"
+    )
+    assert gv == ["control", "control", "treated", "treated"]
+
+
+def test_d7_flipped_sheet_keeps_control_as_denominator(tmp_path):
+    """The D7 orientation must flip the sign exactly once, not twice.
+
+    Per D7 the lab's own Pilot Project labels 31579/31581 = Vehicle and
+    31578/31580 = Testosterone -- the opposite of what the pipeline shipped.
+    """
+    flipped = _write_sheet(
+        tmp_path / "d7.tsv",
+        [("31579", "control", 1), ("31581", "control", 2),
+         ("31578", "treated", 1), ("31580", "treated", 2)],
+    )
+    sheet = design.read_sample_sheet(flipped)
+    assert design.group_vector(sheet) == ["control", "control", "treated", "treated"]
+    assert design.control_columns(sheet) == ["Intensity 31579", "Intensity 31581"]
+    assert design.treated_columns(sheet) == ["Intensity 31578", "Intensity 31580"]
+    # Column order follows the groups, so the matrix handed to R is controls-first.
+    assert design.sample_columns(sheet) == [
+        "Intensity 31579", "Intensity 31581", "Intensity 31578", "Intensity 31580",
+    ]
+
+
+def test_d7_flip_preserves_the_replicate_pairing(tmp_path):
+    """D7 inverts direction only; Rep1 = 31578/31579, Rep2 = 31580/31581 stand."""
+    flipped = _write_sheet(
+        tmp_path / "d7.tsv",
+        [("31579", "control", 1), ("31581", "control", 2),
+         ("31578", "treated", 1), ("31580", "treated", 2)],
+    )
+    sheet = design.read_sample_sheet(flipped)
+    ctrl, trt = design.control_columns(sheet), design.treated_columns(sheet)
+    assert (ctrl[0], trt[0]) == ("Intensity 31579", "Intensity 31578")  # Rep1
+    assert (ctrl[1], trt[1]) == ("Intensity 31581", "Intensity 31580")  # Rep2
