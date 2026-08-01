@@ -1,5 +1,5 @@
 sample	group
-ctrl_31578	control
-ctrl_31580	control
-trt_31579	treated
-trt_31581	treated
+trt_31578	treated
+trt_31580	treated
+ctrl_31579	control
+ctrl_31581	control

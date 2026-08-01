@@ -1,2 +1,2 @@
 n_complete,mean_log2FC,median_log2FC,tolerance,verdict,centered_copy_written
-1578,-0.2768,-0.2834,0.1,WARN,True
+1578,0.2768,0.2834,0.1,WARN,True

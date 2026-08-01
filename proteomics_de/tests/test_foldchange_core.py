@@ -28,9 +28,26 @@ if str(_REPO_ROOT) not in sys.path:  # works with or without a rootdir conftest
 from proteomics_de.config.constants import LOG2_THRESHOLD  # noqa: E402
 from proteomics_de.etl import foldchange_core as core  # noqa: E402
 
-# The 2-channel SILAC layout, matching config/sample_sheet.tsv.
-CONTROL_COLS = ["Intensity 31578", "Intensity 31580"]
-TREATED_COLS = ["Intensity 31579", "Intensity 31581"]
+# The 2-channel SILAC layout. Sheet position and experimental condition are kept
+# as separate facts here, because they came apart at DECISIONS_LOG D7 -- and
+# conflating them is precisely the bug D7 exposed in
+# ``build_single_condition_frame`` (``left_only`` was hardcoded to
+# ``"control_only"``, mislabelling all 606 rescued proteins the moment the
+# assignment was corrected).
+
+#: Which channels live in which sheet of the workbook. A fact about the file;
+#: D7 did not change it, and neither does relabelling the conditions.
+SHEET_L_COLS = ["Intensity 31578", "Intensity 31580"]
+SHEET_H_COLS = ["Intensity 31579", "Intensity 31581"]
+#: Acquisition order, as ``foldchange.py``'s ``PHYSICAL_COLS``/``out_cols``.
+PHYSICAL_COLS = SHEET_L_COLS + SHEET_H_COLS
+
+#: Which of those is which condition, D7-corrected to match
+#: ``config/sample_sheet.tsv``: the lab's Pilot Project labels 31579/31581 =
+#: Vehicle (control) and 31578/31580 = Testosterone (treated), so sheet H holds
+#: the controls and sheet L the treated.
+CONTROL_COLS = SHEET_H_COLS
+TREATED_COLS = SHEET_L_COLS
 INTENSITY_COLS = CONTROL_COLS + TREATED_COLS
 BASE_COLS = ["UniProt Accession Number", "Gene names"] + INTENSITY_COLS
 
@@ -272,7 +289,7 @@ def two_sheets():
             ("B", "GeneB", 200.0, 200.0),
             ("L_ONLY", "GeneL", 900.0, 900.0),
         ],
-        columns=["UniProt Accession Number", "Gene names"] + CONTROL_COLS,
+        columns=["UniProt Accession Number", "Gene names"] + SHEET_L_COLS,
     )
     df_H = pd.DataFrame(
         [
@@ -281,7 +298,7 @@ def two_sheets():
             ("C", "GeneC", 300, 300),
             ("H_ONLY", "GeneH", 700, 700),
         ],
-        columns=["UniProt Accession Number", "Gene names"] + TREATED_COLS,
+        columns=["UniProt Accession Number", "Gene names"] + SHEET_H_COLS,
     )
     return df_L, df_H
 
@@ -292,20 +309,45 @@ def test_bug4_single_condition_rows_are_rescued_with_the_right_label(two_sheets)
     The inner join discarded these silently. ``detected_in`` records which side
     they came from, which is the only thing that distinguishes "off in treated"
     from "off in control".
+
+    D7-corrected: sheet L holds the Testosterone channels, so a protein seen only
+    in sheet L is ``treated_only``. (On the real data that is the 367/239 split
+    in ``single_condition_proteins.csv``, which D7 inverted.)
     """
     df_L, df_H = two_sheets
     merged = core.merge_with_indicator(df_L, df_H)
     _both, single = core.split_both_single(merged)
-    single = core.build_single_condition_frame(single)
+    single = core.build_single_condition_frame(
+        single, left_condition="treated", right_condition="control",
+    )
 
     labels = dict(zip(single["accession"], single["detected_in"]))
-    assert labels == {"L_ONLY": "control_only", "H_ONLY": "treated_only"}
+    assert labels == {"L_ONLY": "treated_only", "H_ONLY": "control_only"}
     assert set(single["gene"]) == {"GeneL", "GeneH"}
-    # The absent condition's intensities stay blank -- the blank is the finding.
+    # The absent sheet's intensities stay blank -- the blank is the finding.
     l_only = single.set_index("accession").loc["L_ONLY"]
-    assert pd.isna(l_only[TREATED_COLS]).all()
+    assert pd.isna(l_only[SHEET_H_COLS]).all()
     h_only = single.set_index("accession").loc["H_ONLY"]
-    assert pd.isna(h_only[CONTROL_COLS]).all()
+    assert pd.isna(h_only[SHEET_L_COLS]).all()
+
+
+def test_bug4_detected_in_follows_the_conditions_not_the_sheet_position(two_sheets):
+    """Same merge, opposite condition arguments: every label must flip.
+
+    ``left_only -> "control_only"`` used to be hardcoded, so the label tracked
+    SHEET POSITION and silently contradicted the sample sheet once D7 corrected
+    the assignment. This is the assertion that catches a regression to that.
+    """
+    df_L, df_H = two_sheets
+    merged = core.merge_with_indicator(df_L, df_H)
+    _both, single = core.split_both_single(merged)
+    single = core.build_single_condition_frame(
+        single, left_condition="control", right_condition="treated",
+    )
+
+    assert dict(zip(single["accession"], single["detected_in"])) == {
+        "L_ONLY": "control_only", "H_ONLY": "treated_only",
+    }
 
 
 def test_bug4_both_plus_single_covers_the_merge_exactly(two_sheets):
@@ -336,8 +378,8 @@ def test_bug4_matched_rows_are_restored_to_left_sheet_order(two_sheets):
 
     df = core.restore_left_order(
         both, df_L, df_H,
-        out_cols=["UniProt Accession Number", "Gene names"] + INTENSITY_COLS,
-        dtype_cols=TREATED_COLS,
+        out_cols=["UniProt Accession Number", "Gene names"] + PHYSICAL_COLS,
+        dtype_cols=SHEET_H_COLS,  # sheet-H channels: dtype, not condition
     )
     assert df["UniProt Accession Number"].tolist() == ["C", "A", "B"]
     assert df.index.tolist() == [0, 1, 2]  # reset, not merely reordered
@@ -350,29 +392,29 @@ def test_bug4_heavy_dtypes_are_restored_after_the_outer_join(two_sheets):
     CSV, so this is the difference between the byte-freeze passing and failing.
     """
     df_L, df_H = two_sheets
-    assert all(df_H[c].dtype == np.int64 for c in TREATED_COLS)
+    assert all(df_H[c].dtype == np.int64 for c in SHEET_H_COLS)
 
     merged = core.merge_with_indicator(df_L, df_H)
     both, _single = core.split_both_single(merged)
-    assert all(both[c].dtype == np.float64 for c in TREATED_COLS)  # coerced by the join
+    assert all(both[c].dtype == np.float64 for c in SHEET_H_COLS)  # coerced by the join
 
     df = core.restore_left_order(
         both, df_L, df_H,
-        out_cols=["UniProt Accession Number", "Gene names"] + INTENSITY_COLS,
-        dtype_cols=TREATED_COLS,
+        out_cols=["UniProt Accession Number", "Gene names"] + PHYSICAL_COLS,
+        dtype_cols=SHEET_H_COLS,
     )
-    assert all(df[c].dtype == df_H[c].dtype for c in TREATED_COLS)
+    assert all(df[c].dtype == df_H[c].dtype for c in SHEET_H_COLS)
 
 
 def test_bug4_gene_names_are_coalesced_left_first():
     """A protein with a symbol in only one sheet keeps it after the merge."""
     df_L = pd.DataFrame(
         [("A", "FromL", 1.0, 1.0), ("B", np.nan, 1.0, 1.0)],
-        columns=["UniProt Accession Number", "Gene names"] + CONTROL_COLS,
+        columns=["UniProt Accession Number", "Gene names"] + SHEET_L_COLS,
     )
     df_H = pd.DataFrame(
         [("A", "FromH", 1.0, 1.0), ("B", "FromH", 1.0, 1.0)],
-        columns=["UniProt Accession Number", "Gene names"] + TREATED_COLS,
+        columns=["UniProt Accession Number", "Gene names"] + SHEET_H_COLS,
     )
     merged = core.merge_with_indicator(df_L, df_H)
     genes = dict(zip(merged["UniProt Accession Number"], merged["Gene names"]))

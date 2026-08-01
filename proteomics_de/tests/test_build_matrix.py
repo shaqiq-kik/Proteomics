@@ -22,11 +22,13 @@ if str(_REPO_ROOT) not in sys.path:  # works with or without a rootdir conftest
 from proteomics_de.config import design  # noqa: E402
 from proteomics_de.etl import build_matrix  # noqa: E402
 
+# Canonical (control-first) order, D7-corrected: 31579/31581 are the controls
+# (Vehicle), 31578/31580 the treated (Testosterone). See DECISIONS_LOG D7.
 EXPECTED_SAMPLE_COLUMNS = [
-    "Intensity 31578",
-    "Intensity 31580",
     "Intensity 31579",
     "Intensity 31581",
+    "Intensity 31578",
+    "Intensity 31580",
 ]
 
 

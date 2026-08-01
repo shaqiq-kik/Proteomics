@@ -7,14 +7,15 @@ were the widest single copy of the design in the tree.
 
 Three things are pinned here:
 
-1. **No pixels moved.** The derived maps must equal the old literals *exactly*,
-   including dict key order -- ``viz/qc_plots.py`` and ``viz/heatmap.py`` iterate
-   ``SAMPLE_COLS`` to build DataFrame columns, so order is load-bearing for the
-   committed figures' bytes.
+1. **The maps are exactly what the figures were drawn from**, including dict key
+   order -- ``viz/qc_plots.py`` and ``viz/heatmap.py`` iterate ``SAMPLE_COLS`` to
+   build DataFrame columns, so order is load-bearing for the committed figures'
+   bytes. The literals below pin the **D7-corrected** orientation
+   (31579/31581 = control), which is what ``config/sample_sheet.tsv`` now says.
 2. **The derivation actually derives.** Point the loader at a synthetic sheet and
    the maps must follow it -- both when replicates are *added* (forward path) and
-   when the control/treated assignment is *flipped* (DECISIONS_LOG D7). If these
-   pass, the D7 flip is a one-line TSV edit rather than a code change.
+   when the control/treated assignment is *inverted* (DECISIONS_LOG D7). Because
+   these hold, D7 landed as a one-line TSV edit rather than a code change.
 3. **Import mechanics survive.** ``viz/*.py`` does a bare ``import style``
    relying on ``sys.path[0]``; ``enrich/network_figure.py`` does
    ``from viz.style import ...``. Adding a dependency on the
@@ -37,20 +38,34 @@ _REPO_ROOT = _PKG_DIR.parent
 _VIZ_DIR = _PKG_DIR / "viz"
 
 # ---------------------------------------------------------------------------
-# The literals that `viz/style.py` carried before this layer, copied verbatim
-# from the pre-refactor file (style.py:120-134 at commit 96d16fd). These are the
-# values baked into the 27 committed PNG/SVG figures; nothing may change them.
+# The maps `viz/style.py` must derive from today's `config/sample_sheet.tsv`.
+#
+# These pin the **D7-corrected** orientation: DECISIONS_LOG D7 records that the
+# control/treated assignment shipped inverted, and the lab's own Pilot Project
+# labels 31579/31581 = Vehicle (control), 31578/31580 = Testosterone (treated).
+# Controls sort first, so the D7 flip also inverted the column ORDER relative to
+# the pre-D7 literals these constants used to hold. The numbers below are
+# deliberate; the figures were regenerated to match.
 # ---------------------------------------------------------------------------
-LEGACY_SAMPLE_COLS = [
-    "Intensity 31578", "Intensity 31580", "Intensity 31579", "Intensity 31581",
+D7_SAMPLE_COLS = [
+    "Intensity 31579", "Intensity 31581", "Intensity 31578", "Intensity 31580",
 ]
-LEGACY_SAMPLE_LABELS = {
-    "Intensity 31578": "control_1",
-    "Intensity 31580": "control_2",
-    "Intensity 31579": "treated_1",
-    "Intensity 31581": "treated_2",
+D7_SAMPLE_LABELS = {
+    "Intensity 31579": "control_1",
+    "Intensity 31581": "control_2",
+    "Intensity 31578": "treated_1",
+    "Intensity 31580": "treated_2",
 }
-LEGACY_SAMPLE_CONDITION = {
+D7_SAMPLE_CONDITION = {
+    "Intensity 31579": "control",
+    "Intensity 31581": "control",
+    "Intensity 31578": "treated",
+    "Intensity 31580": "treated",
+}
+
+#: The pre-D7 assignment, kept only as the *counter*-example: a sheet that still
+#: carries it must derive maps that differ from every one above.
+PRE_D7_SAMPLE_CONDITION = {
     "Intensity 31578": "control",
     "Intensity 31580": "control",
     "Intensity 31579": "treated",
@@ -80,24 +95,24 @@ def _write_sheet(path: Path, rows) -> Path:
 
 
 # ---------------------------------------------------------------------------
-# 1. Derived == today's literals, exactly
+# 1. Derived == today's (D7-corrected) literals, exactly
 # ---------------------------------------------------------------------------
-def test_sample_cols_match_legacy_literals(style):
-    assert style.SAMPLE_COLS == LEGACY_SAMPLE_COLS
+def test_sample_cols_match_d7_literals(style):
+    assert style.SAMPLE_COLS == D7_SAMPLE_COLS
 
 
-def test_sample_labels_match_legacy_literals(style):
-    assert style.SAMPLE_LABELS == LEGACY_SAMPLE_LABELS
+def test_sample_labels_match_d7_literals(style):
+    assert style.SAMPLE_LABELS == D7_SAMPLE_LABELS
 
 
-def test_sample_condition_match_legacy_literals(style):
-    assert style.SAMPLE_CONDITION == LEGACY_SAMPLE_CONDITION
+def test_sample_condition_match_d7_literals(style):
+    assert style.SAMPLE_CONDITION == D7_SAMPLE_CONDITION
 
 
-def test_map_key_order_is_the_legacy_order(style):
+def test_map_key_order_is_the_d7_order(style):
     """Dict equality ignores order, but the figures do not."""
-    assert list(style.SAMPLE_LABELS) == LEGACY_SAMPLE_COLS
-    assert list(style.SAMPLE_CONDITION) == LEGACY_SAMPLE_COLS
+    assert list(style.SAMPLE_LABELS) == D7_SAMPLE_COLS
+    assert list(style.SAMPLE_CONDITION) == D7_SAMPLE_COLS
 
 
 def test_sample_order_still_aliases_sample_cols(style):
@@ -189,78 +204,79 @@ def test_derivation_grows_with_a_six_sample_sheet(style, tmp_path):
 
 def test_row_order_in_the_tsv_does_not_permute_the_maps(style, tmp_path):
     """Canonical order comes from the `group` column, not from file row order."""
+    # Same (D7-corrected) assignment as the committed sheet, rows scrambled.
     shuffled = _write_sheet(
         tmp_path / "shuffled.tsv",
         [
-            ("31581", "treated", "Intensity 31581", 2),
-            ("31578", "control", "Intensity 31578", 1),
-            ("31579", "treated", "Intensity 31579", 1),
-            ("31580", "control", "Intensity 31580", 2),
+            ("31580", "treated", "Intensity 31580", 2),
+            ("31579", "control", "Intensity 31579", 1),
+            ("31578", "treated", "Intensity 31578", 1),
+            ("31581", "control", "Intensity 31581", 2),
         ],
     )
     cols, labels, condition = style.derive_sample_maps(shuffled)
 
-    assert cols == LEGACY_SAMPLE_COLS
-    assert labels == LEGACY_SAMPLE_LABELS
-    assert condition == LEGACY_SAMPLE_CONDITION
+    assert cols == D7_SAMPLE_COLS
+    assert labels == D7_SAMPLE_LABELS
+    assert condition == D7_SAMPLE_CONDITION
 
 
 # ---------------------------------------------------------------------------
-# 4. The D7 flip -- control/treated inverted
+# 4. The D7 flip -- the assignment follows the sheet, never the sample id
 # ---------------------------------------------------------------------------
-def test_d7_flip_propagates_through_the_derivation(style, tmp_path):
+def test_condition_follows_the_sheet_not_the_sample_id(style, tmp_path):
     """DECISIONS_LOG D7: 31579/31581 are the controls (Vehicle), 31578/31580 the
-    treated (Testosterone). The flip must reach the figures by editing the TSV
-    alone. D7 also notes the replicate PAIRING is unaffected: Rep1 =
-    31578/31579, Rep2 = 31580/31581.
+    treated (Testosterone) -- the opposite of what the pipeline first shipped.
+    The correction reached the figures by editing the TSV alone, which is only
+    true if the derivation reads the `group` column and nothing else.
+
+    Proved here in the reverse direction: hand the loader the *pre-D7* sheet and
+    every map must invert back. D7 also notes the replicate PAIRING is
+    unaffected: Rep1 = 31578/31579, Rep2 = 31580/31581.
     """
-    flipped = _write_sheet(
-        tmp_path / "flipped.tsv",
+    pre_d7 = _write_sheet(
+        tmp_path / "pre_d7.tsv",
         [
-            ("31578", "treated", "Intensity 31578", 1),
-            ("31580", "treated", "Intensity 31580", 2),
-            ("31579", "control", "Intensity 31579", 1),
-            ("31581", "control", "Intensity 31581", 2),
+            ("31579", "treated", "Intensity 31579", 1),
+            ("31581", "treated", "Intensity 31581", 2),
+            ("31578", "control", "Intensity 31578", 1),
+            ("31580", "control", "Intensity 31580", 2),
         ],
     )
-    cols, labels, condition = style.derive_sample_maps(flipped)
+    cols, labels, condition = style.derive_sample_maps(pre_d7)
 
     # Condition follows the sheet, not the sample id.
-    assert condition == {
-        "Intensity 31579": "control",
-        "Intensity 31581": "control",
-        "Intensity 31578": "treated",
-        "Intensity 31580": "treated",
-    }
+    assert condition == PRE_D7_SAMPLE_CONDITION
     # Controls still sort first, so the column order inverts with the labels.
     assert cols == [
-        "Intensity 31579", "Intensity 31581", "Intensity 31578", "Intensity 31580",
+        "Intensity 31578", "Intensity 31580", "Intensity 31579", "Intensity 31581",
     ]
     assert labels == {
-        "Intensity 31579": "control_1",
-        "Intensity 31581": "control_2",
-        "Intensity 31578": "treated_1",
-        "Intensity 31580": "treated_2",
+        "Intensity 31578": "control_1",
+        "Intensity 31580": "control_2",
+        "Intensity 31579": "treated_1",
+        "Intensity 31581": "treated_2",
     }
-    # Every id that is control today is treated after the flip, and vice versa.
+    # Every channel that is control under the committed (D7) sheet is treated
+    # under the pre-D7 one, and vice versa.
     for channel, group in condition.items():
-        assert group != LEGACY_SAMPLE_CONDITION[channel]
+        assert group != D7_SAMPLE_CONDITION[channel]
 
 
 def test_condition_colors_cover_every_derived_group(style, tmp_path):
     """`qc_plots.py:201` does CONDITION_COLORS[SAMPLE_CONDITION[c]] -- a group
-    name the palette lacks would be a KeyError at figure time, including after
-    the D7 flip."""
-    flipped = _write_sheet(
-        tmp_path / "flipped.tsv",
+    name the palette lacks would be a KeyError at figure time, whichever way
+    round the control/treated assignment runs (D7)."""
+    pre_d7 = _write_sheet(
+        tmp_path / "pre_d7.tsv",
         [
-            ("31578", "treated", "Intensity 31578", 1),
-            ("31580", "treated", "Intensity 31580", 2),
-            ("31579", "control", "Intensity 31579", 1),
-            ("31581", "control", "Intensity 31581", 2),
+            ("31579", "treated", "Intensity 31579", 1),
+            ("31581", "treated", "Intensity 31581", 2),
+            ("31578", "control", "Intensity 31578", 1),
+            ("31580", "control", "Intensity 31580", 2),
         ],
     )
-    _cols, _labels, condition = style.derive_sample_maps(flipped)
+    _cols, _labels, condition = style.derive_sample_maps(pre_d7)
 
     for group in set(condition.values()) | set(style.SAMPLE_CONDITION.values()):
         assert group in style.CONDITION_COLORS
@@ -290,9 +306,9 @@ def test_bare_import_style_from_various_cwds(cwd, label):
         import sys
         sys.path.insert(0, {str(_VIZ_DIR)!r})   # what `python viz/volcano.py` does
         import style
-        assert style.SAMPLE_COLS == {LEGACY_SAMPLE_COLS!r}, style.SAMPLE_COLS
-        assert style.SAMPLE_LABELS == {LEGACY_SAMPLE_LABELS!r}, style.SAMPLE_LABELS
-        assert style.SAMPLE_CONDITION == {LEGACY_SAMPLE_CONDITION!r}, style.SAMPLE_CONDITION
+        assert style.SAMPLE_COLS == {D7_SAMPLE_COLS!r}, style.SAMPLE_COLS
+        assert style.SAMPLE_LABELS == {D7_SAMPLE_LABELS!r}, style.SAMPLE_LABELS
+        assert style.SAMPLE_CONDITION == {D7_SAMPLE_CONDITION!r}, style.SAMPLE_CONDITION
         assert len(style.CAVEAT_TEXT.encode()) == 202
         print("OK")
         """
@@ -314,7 +330,7 @@ def test_qualified_viz_style_import_still_works():
         sys.path.insert(0, {str(_REPO_ROOT)!r})
         from viz.style import CAVEAT_TEXT, add_caveat, SAMPLE_COLS
         assert len(CAVEAT_TEXT.encode()) == 202
-        assert SAMPLE_COLS == {LEGACY_SAMPLE_COLS!r}
+        assert SAMPLE_COLS == {D7_SAMPLE_COLS!r}
         print("OK")
         """
     )

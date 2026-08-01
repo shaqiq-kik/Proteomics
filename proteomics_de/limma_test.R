@@ -121,16 +121,29 @@ if (!requireNamespace("limma", quietly = TRUE) ||
   ))
 }
 
-# Resolve the experimental design: from --design when given, else the historical
-# hardcoded 2x2 SILAC layout. Both paths produce the same three values, so
-# everything downstream (including model.matrix) is a single code path.
+# Resolve the experimental design. --design is REQUIRED.
+#
+# There used to be a fallback here: no --design meant an inline 2x2 layout of
+# ctrl_31578/ctrl_31580/trt_31579/trt_31581. DECISIONS_LOG D7 established that
+# assignment is INVERTED -- 31578/31580 are testosterone, 31579/31581 are
+# vehicle -- so that fallback now encodes the wrong experiment. Left in place it
+# would either fail on column names (the handoff CSV is written in acquisition
+# order now) or, fed matching data, silently negate every logFC in the study.
+#
+# A hardcoded design is exactly the class of bug D7 was. Rather than update the
+# literals and keep a second source of truth, the fallback is removed: the
+# design comes from config/sample_sheet.tsv, through --design, or not at all.
 resolve_design <- function(design_tsv) {
   if (is.na(design_tsv)) {
-    return(list(
-      intensity_cols = c("ctrl_31578", "ctrl_31580", "trt_31579", "trt_31581"),
-      group          = c("control", "control", "treated", "treated"),
-      group_levels   = c("control", "treated")
-    ))
+    bug7_abort(
+      "BUG7 R ERROR: --design is required.\n",
+      "  The positional invocation used to assume a hardcoded control/treated\n",
+      "  layout. Per DECISIONS_LOG D7 that layout was inverted, so it has been\n",
+      "  removed rather than silently corrected -- a second source of truth for\n",
+      "  the design is how the original error survived.\n",
+      "  Pass --design <design.tsv> (columns: sample, group). limma_test.py\n",
+      "  generates it from config/sample_sheet.tsv automatically."
+    )
   }
   if (!file.exists(design_tsv)) {
     stop("BUG7 R ERROR: design file not found: ", design_tsv)
@@ -150,13 +163,24 @@ resolve_design <- function(design_tsv) {
     stop("BUG7 R ERROR: design file has fewer than two groups: ",
          paste(unique(group), collapse = ", "))
   }
+  # Reference level: "control" ALWAYS, explicitly -- never order-of-appearance.
+  #
+  # This used to be `unique(group)`, which made the design file's ROW ORDER
+  # silently decide the sign of every logFC in the study: list treated first and
+  # the whole contrast inverts with nothing to signal it. That is far too
+  # load-bearing for a property nobody can see when reading a TSV. The design
+  # file is now written in acquisition order (so MinProb imputation stays
+  # invariant under relabelling), which means row order genuinely can put
+  # treated first -- so the reference is pinned by NAME here instead.
+  if (!("control" %in% group)) {
+    stop("BUG7 R ERROR: design file has no 'control' group; cannot fix the ",
+         "reference level. Groups present: ", paste(unique(group), collapse = ", "))
+  }
+  levels_ordered <- c("control", setdiff(unique(group), "control"))
   list(
     intensity_cols = trimws(as.character(dz$sample)),
     group          = group,
-    # Levels in order of first appearance. The design file is written in
-    # canonical order (control group first), so level 1 is the reference and
-    # coef 2 stays "treated - control" -- the sign of every logFC depends on it.
-    group_levels   = unique(group)
+    group_levels   = levels_ordered
   )
 }
 

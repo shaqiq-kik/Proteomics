@@ -5,8 +5,8 @@
     "caption": "limma log2 fold change vs. -log10(raw p-value) for the 1938 proteins tested in both conditions, colored UP/DOWN/NO CHANGE at |log2FC| >= 0.585. With n=2 technical replicates per condition (no biological replication), 0 of 1938 proteins pass FDR < 0.05 (minimum adjusted p = 0.305) \u2014 no dashed FDR line is drawn because nothing crosses it; the raw p = 0.05 line is shown instead for orientation only. Top 10 proteins by smallest raw p-value are labeled; treat all calls here as hypothesis-generating, not confirmed significant.",
     "key_numbers": {
       "n_points": 1938,
-      "n_up": 206,
-      "n_down": 509,
+      "n_up": 509,
+      "n_down": 206,
       "n_no_change": 1223,
       "n_raw_p_lt_0.05": 63,
       "n_significant_fdr_lt_0.05": 0,
@@ -46,8 +46,8 @@
       "n_points_total": 1938,
       "n_points_plotted": 1938,
       "n_excluded_all_samples_missing": 0,
-      "n_up": 206,
-      "n_down": 509,
+      "n_up": 509,
+      "n_down": 206,
       "n_no_change": 1223,
       "fc_threshold": 0.585,
       "mean_log2_intensity_range": [
@@ -63,8 +63,8 @@
     "key_numbers": {
       "n_proteins": 40,
       "selection_method": "smallest raw p_value (limma), NOT largest |log2FC|",
-      "n_up": 9,
-      "n_down": 24,
+      "n_up": 24,
+      "n_down": 9,
       "n_missing_intensity_cells": 7,
       "z_score_abs_max": 1.463,
       "p_value_range": [
@@ -122,8 +122,8 @@
     "key_numbers": {
       "n_proteins_used": 1578,
       "n_proteins_universe": 2554,
-      "control1_vs_control2_r": 0.8697,
-      "treated1_vs_treated2_r": 0.8449,
+      "control1_vs_control2_r": 0.8449,
+      "treated1_vs_treated2_r": 0.8697,
       "control_vs_treated_r_range": [
         0.8311,
         0.9163
@@ -131,26 +131,26 @@
       "full_matrix": {
         "control_1": {
           "control_1": 1.0,
-          "control_2": 0.8697,
+          "control_2": 0.8449,
           "treated_1": 0.9136,
-          "treated_2": 0.8311
+          "treated_2": 0.8398
         },
         "control_2": {
-          "control_1": 0.8697,
+          "control_1": 0.8449,
           "control_2": 1.0,
-          "treated_1": 0.8398,
+          "treated_1": 0.8311,
           "treated_2": 0.9163
         },
         "treated_1": {
           "control_1": 0.9136,
-          "control_2": 0.8398,
+          "control_2": 0.8311,
           "treated_1": 1.0,
-          "treated_2": 0.8449
+          "treated_2": 0.8697
         },
         "treated_2": {
-          "control_1": 0.8311,
+          "control_1": 0.8398,
           "control_2": 0.9163,
-          "treated_1": 0.8449,
+          "treated_1": 0.8697,
           "treated_2": 1.0
         }
       }
@@ -162,22 +162,22 @@
     "caption": "Violin + box plots of log2 intensity for each of the 4 raw samples (zero/absent values excluded), colored by condition (control = blue, treated = red). Medians and spread are similar across all 4 samples, which is the QC basis for not applying an additional cross-sample normalization step upstream.",
     "key_numbers": {
       "n_values_per_sample": {
-        "control_1": 2113,
-        "control_2": 2085,
-        "treated_1": 1939,
-        "treated_2": 1994
+        "control_1": 1939,
+        "control_2": 1994,
+        "treated_1": 2113,
+        "treated_2": 2085
       },
       "median_log2_intensity": {
-        "control_1": 27.627,
-        "control_2": 27.657,
-        "treated_1": 27.406,
-        "treated_2": 27.812
+        "control_1": 27.406,
+        "control_2": 27.812,
+        "treated_1": 27.627,
+        "treated_2": 27.657
       },
       "mean_log2_intensity": {
-        "control_1": 27.865,
-        "control_2": 27.86,
-        "treated_1": 27.681,
-        "treated_2": 27.984
+        "control_1": 27.681,
+        "control_2": 27.984,
+        "treated_1": 27.865,
+        "treated_2": 27.86
       }
     }
   },
@@ -188,10 +188,10 @@
     "key_numbers": {
       "n_total_universe": 2554,
       "missing_or_zero_per_sample": {
-        "control_1": 441,
-        "control_2": 469,
-        "treated_1": 615,
-        "treated_2": 560
+        "control_1": 615,
+        "control_2": 560,
+        "treated_1": 441,
+        "treated_2": 469
       },
       "group_sizes": {
         "complete": 1578,
@@ -207,22 +207,22 @@
           "treated_2": 100.0
         },
         "partial": {
-          "control_1": 69.7,
-          "control_2": 69.4,
-          "treated_1": 55.3,
-          "treated_2": 66.1
+          "control_1": 55.3,
+          "control_2": 66.1,
+          "treated_1": 69.7,
+          "treated_2": 69.4
         },
         "on_off": {
-          "control_1": 50.0,
-          "control_2": 60.0,
-          "treated_1": 30.0,
-          "treated_2": 10.0
+          "control_1": 30.0,
+          "control_2": 10.0,
+          "treated_1": 50.0,
+          "treated_2": 60.0
         },
         "single_condition": {
-          "control_1": 46.0,
-          "control_2": 41.4,
-          "treated_1": 26.2,
-          "treated_2": 29.2
+          "control_1": 26.2,
+          "control_2": 29.2,
+          "treated_1": 46.0,
+          "treated_2": 41.4
         }
       }
     }

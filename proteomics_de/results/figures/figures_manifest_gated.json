@@ -38,26 +38,26 @@
       "pairwise_correlation_distance": {
         "control_1": {
           "control_1": 0.0,
-          "control_2": 0.1253,
+          "control_2": 0.1539,
           "treated_1": 0.0884,
-          "treated_2": 0.1667
+          "treated_2": 0.1602
         },
         "control_2": {
-          "control_1": 0.1253,
+          "control_1": 0.1539,
           "control_2": 0.0,
-          "treated_1": 0.1602,
+          "treated_1": 0.1667,
           "treated_2": 0.0833
         },
         "treated_1": {
           "control_1": 0.0884,
-          "control_2": 0.1602,
+          "control_2": 0.1667,
           "treated_1": 0.0,
-          "treated_2": 0.1539
+          "treated_2": 0.1253
         },
         "treated_2": {
-          "control_1": 0.1667,
+          "control_1": 0.1602,
           "control_2": 0.0833,
-          "treated_1": 0.1539,
+          "treated_1": 0.1253,
           "treated_2": 0.0
         }
       },

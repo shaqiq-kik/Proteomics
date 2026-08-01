@@ -31,8 +31,13 @@ from proteomics_de.etl import foldchange_core as core  # noqa: E402
 from proteomics_de.etl import merge_guard  # noqa: E402
 
 ACC = merge_guard.ACCESSION_COL
-CONTROL_COLS = ["Intensity 31578", "Intensity 31580"]
-TREATED_COLS = ["Intensity 31579", "Intensity 31581"]
+# Which channels live in which SHEET of the workbook -- a fact about the file,
+# independent of which condition each one is. (DECISIONS_LOG D7 corrected the
+# condition assignment to 31579/31581 = control, 31578/31580 = treated; it did
+# not, and could not, move a channel between sheets. The merge only cares about
+# sheet position, so nothing here changes with it.)
+SHEET_L_COLS = ["Intensity 31578", "Intensity 31580"]
+SHEET_H_COLS = ["Intensity 31579", "Intensity 31581"]
 
 _WORKBOOK = _REPO_ROOT / "Copy of General Sheet.xlsx"
 
@@ -52,8 +57,8 @@ def sheet(accessions, cols, start=100.0):
 @pytest.fixture
 def clean_sheets():
     """Three shared accessions plus one exclusive to each side. No duplicates."""
-    df_L = sheet(["A", "B", "C", "L_ONLY"], CONTROL_COLS)
-    df_H = sheet(["A", "B", "C", "H_ONLY"], TREATED_COLS)
+    df_L = sheet(["A", "B", "C", "L_ONLY"], SHEET_L_COLS)
+    df_H = sheet(["A", "B", "C", "H_ONLY"], SHEET_H_COLS)
     return df_L, df_H
 
 
@@ -75,7 +80,7 @@ def test_clean_sheets_report_zero_duplicates(clean_sheets):
 
 
 def test_duplicate_accessions_reports_the_accession_and_its_count():
-    df = sheet(["A", "B", "A", "C", "A"], CONTROL_COLS)
+    df = sheet(["A", "B", "A", "C", "A"], SHEET_L_COLS)
     dupes = merge_guard.duplicate_accessions(df)
 
     assert dupes.to_dict() == {"A": 3}
@@ -91,7 +96,7 @@ def test_missing_accessions_are_not_counted_as_duplicates():
     """
     df = pd.DataFrame(
         [(np.nan, "g1", 1.0, 1.0), (np.nan, "g2", 2.0, 2.0), ("A", "g3", 3.0, 3.0)],
-        columns=[ACC, "Gene names"] + CONTROL_COLS,
+        columns=[ACC, "Gene names"] + SHEET_L_COLS,
     )
     assert merge_guard.duplicate_accession_count(df) == 0
 

@@ -313,18 +313,31 @@ def build_ipa_frame(df, complete_col="complete", regulated_col="regulated"):
 
 
 def build_single_condition_frame(single_cond, key=ACCESSION_COL, gene_col=GENE_COL,
-                                 indicator=INDICATOR_COL):
+                                 indicator=INDICATOR_COL,
+                                 left_condition="control", right_condition="treated"):
     """Bug 4 rescue frame: proteins seen in exactly one sheet.
 
     Adds ``accession`` / ``gene`` aliases and a ``detected_in`` label derived
     from the merge indicator. The absent condition's intensity columns stay
     blank, which is the point: the blank *is* the finding. Mutates and returns
     the frame it was given (the caller passes a copy).
+
+    ``left_condition`` / ``right_condition`` name the conditions that the LEFT
+    ("Protein Report L") and RIGHT ("Protein Report H") sheets hold. These are
+    parameters rather than literals because sheet position and experimental
+    condition are independent facts: which sheet a channel sits in is fixed by
+    the workbook, but which condition it is comes from
+    ``config/sample_sheet.tsv``. Hardcoding ``left_only -> "control_only"``
+    silently mislabelled all 606 rescued proteins the moment DECISIONS_LOG D7
+    corrected the assignment -- the label said ``control_only`` for proteins
+    detected only in the *treated* channels.
     """
     single_cond["accession"] = single_cond[key]
     single_cond["gene"] = single_cond[gene_col]
     single_cond["detected_in"] = np.where(
-        single_cond[indicator] == "left_only", "control_only", "treated_only"
+        single_cond[indicator] == "left_only",
+        f"{left_condition}_only",
+        f"{right_condition}_only",
     )
     return single_cond
 

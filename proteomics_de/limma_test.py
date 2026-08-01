@@ -57,28 +57,54 @@ from proteomics_de.etl import build_matrix       # noqa: E402
 DEFAULT_RESULTS_DIR = os.path.join(_HERE, "results")
 DEFAULT_FOLDCHANGE_CSV = os.path.join(DEFAULT_RESULTS_DIR, "foldchange_all.csv")
 
-# The design, read from config/sample_sheet.tsv rather than hardcoded here. The
-# canonical order the sheet imposes -- control group first, treated second,
-# ascending replicate within a group -- IS the handoff order, and coef 2 of the
-# R design matrix is "treated - control" only because of it.
+# The design, read from config/sample_sheet.tsv rather than hardcoded here.
+#
+# COLUMN ORDER IS DELIBERATELY *PHYSICAL* (acquisition order), NOT grouped.
+# ------------------------------------------------------------------------
+# It is tempting to hand R the columns in canonical control-then-treated order
+# and let position imply the design. Doing so makes the matrix layout depend on
+# the condition labels, and MinProb imputation is stochastic *per column*: with
+# set.seed(42), reordering the columns hands different random draws to different
+# samples. Measured during the D7 relabelling: the 1578 fully-observed proteins
+# inverted exactly (max |new + old| = 0.0) but the 360 proteins with a missing
+# value did not, because they had been imputed from a different draw -- p-values
+# moved by up to 0.80 for a change that is supposed to be a pure relabelling.
+#
+# Keeping the matrix in acquisition order and letting design.tsv carry the group
+# labels makes the imputation invariant, so relabelling the conditions negates
+# logFC and leaves every p-value untouched -- which is the mathematically correct
+# behaviour for swapping the levels of a two-group contrast.
 _CTRL_COLS = design.control_columns()
 _TRT_COLS = design.treated_columns()
-_INTENSITY_COLS = design.sample_columns()
-_HANDOFF_NAMES = design.handoff_names()
-_HANDOFF_COLS = ["id", "gene"] + _HANDOFF_NAMES
-_GROUP_VECTOR = design.group_vector()
 
-# Guard the assumption the rest of this module makes: that the canonical sample
-# order really is "every control, then every treated". A sheet with interleaved
-# groups would still load, but would silently mis-order the handoff.
-if _INTENSITY_COLS != _CTRL_COLS + _TRT_COLS:
+#: Acquisition order: the order the channels appear in the workbook.
+_PHYSICAL_COLS = ["Intensity 31578", "Intensity 31580", "Intensity 31579", "Intensity 31581"]
+_INTENSITY_COLS = _PHYSICAL_COLS
+_COL_TO_GROUP = {c: "control" for c in _CTRL_COLS}
+_COL_TO_GROUP.update({c: "treated" for c in _TRT_COLS})
+_GROUP_VECTOR = [_COL_TO_GROUP[c] for c in _INTENSITY_COLS]
+
+# Handoff names follow the physical order and encode each column's group, so the
+# CSV header stays self-describing after a relabelling.
+_HANDOFF_NAMES = [
+    ("ctrl_" if _COL_TO_GROUP[c] == "control" else "trt_") + c.split()[-1]
+    for c in _INTENSITY_COLS
+]
+_HANDOFF_COLS = ["id", "gene"] + _HANDOFF_NAMES
+
+# The sheet must describe exactly this workbook's four channels.
+if sorted(_CTRL_COLS + _TRT_COLS) != sorted(_PHYSICAL_COLS):
     raise ValueError(
-        "BUG7: sample_sheet.tsv does not order controls before treated.\n"
-        f"  sample_columns()            : {_INTENSITY_COLS}\n"
-        f"  control_columns() + treated : {_CTRL_COLS + _TRT_COLS}\n"
-        "limma_test assumes a control-then-treated layout; see "
-        "proteomics_de/config/design.py."
+        "BUG7: sample_sheet.tsv does not describe this workbook.\n"
+        f"  sheet resolves to : {_CTRL_COLS + _TRT_COLS}\n"
+        f"  workbook provides : {_PHYSICAL_COLS}\n"
+        "See proteomics_de/config/design.py."
     )
+# R sets the reference level from the first group it sees, so control must be
+# present and must be the first label in the design file (see design.py's
+# canonical sort and tests/test_design.py).
+if "control" not in _GROUP_VECTOR or "treated" not in _GROUP_VECTOR:
+    raise ValueError(f"BUG7: design must contain both groups, got {_GROUP_VECTOR}")
 
 
 def _missing_to_blank(series):

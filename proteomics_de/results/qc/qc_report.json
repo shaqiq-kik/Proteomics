@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-07-12T22:03:20.086016+00:00",
+  "generated_at": "2026-08-01T04:23:17.468685+00:00",
   "environment": {
     "pandera_version": "0.32.1",
     "pandas_version": "2.3.3",
     "python_version": "3.13.7"
   },
-  "results_dir": "/Users/abrarshakik/Documents/Proteomics-config/proteomics_de/results",
+  "results_dir": "/Users/abrarshakik/Documents/Proteomics/proteomics_de/results",
   "overall_passed": true,
   "files": [
     {
       "file": "foldchange_all.csv",
-      "path": "/Users/abrarshakik/Documents/Proteomics-config/proteomics_de/results/foldchange_all.csv",
+      "path": "/Users/abrarshakik/Documents/Proteomics/proteomics_de/results/foldchange_all.csv",
       "expected_rows": 1948,
       "exists": true,
       "rows": 1948,
@@ -37,7 +37,7 @@
     },
     {
       "file": "qc_limma.csv",
-      "path": "/Users/abrarshakik/Documents/Proteomics-config/proteomics_de/results/qc_limma.csv",
+      "path": "/Users/abrarshakik/Documents/Proteomics/proteomics_de/results/qc_limma.csv",
       "expected_rows": 1938,
       "exists": true,
       "rows": 1938,
@@ -61,7 +61,7 @@
     },
     {
       "file": "ipa_input.csv",
-      "path": "/Users/abrarshakik/Documents/Proteomics-config/proteomics_de/results/ipa_input.csv",
+      "path": "/Users/abrarshakik/Documents/Proteomics/proteomics_de/results/ipa_input.csv",
       "expected_rows": 715,
       "exists": true,
       "rows": 715,
@@ -78,7 +78,7 @@
     },
     {
       "file": "single_condition_proteins.csv",
-      "path": "/Users/abrarshakik/Documents/Proteomics-config/proteomics_de/results/single_condition_proteins.csv",
+      "path": "/Users/abrarshakik/Documents/Proteomics/proteomics_de/results/single_condition_proteins.csv",
       "expected_rows": 606,
       "exists": true,
       "rows": 606,
@@ -98,7 +98,7 @@
     },
     {
       "file": "onoff_proteins.csv",
-      "path": "/Users/abrarshakik/Documents/Proteomics-config/proteomics_de/results/onoff_proteins.csv",
+      "path": "/Users/abrarshakik/Documents/Proteomics/proteomics_de/results/onoff_proteins.csv",
       "expected_rows": 10,
       "exists": true,
       "rows": 10,

@@ -325,7 +325,14 @@ def main(argv=None) -> int:
     # Bug 4 rescue file: single-condition proteins (no fold change computed). The
     # absent condition's intensity columns stay blank/NaN, which is expected and
     # visually shows the protein was off in that condition.
-    single_cond = core.build_single_condition_frame(single_cond)
+    # Sheet L holds SHEET_L_COLS and sheet H holds SHEET_H_COLS; which CONDITION
+    # each of those is comes from the sample sheet, so the detected_in labels are
+    # resolved rather than assumed (see D7).
+    left_condition = "control" if SHEET_L_COLS[0] in control_cols else "treated"
+    right_condition = "treated" if left_condition == "control" else "control"
+    single_cond = core.build_single_condition_frame(
+        single_cond, left_condition=left_condition, right_condition=right_condition
+    )
     single_path = os.path.join(results_dir, "single_condition_proteins.csv")
     single_cond[SINGLE_COLS].to_csv(single_path, index=False, encoding="utf-8")
     print(f"Saved {_display(single_path)} ({len(single_cond)} rows)")

@@ -8,11 +8,12 @@
   "onoff_rows": 10,
   "qc_limma_rows": 1938,
   "ipa_input_rows": 715,
-  "n_up": 206,
-  "n_down": 509,
+  "n_up": 509,
+  "n_down": 206,
   "n_nochange_plus_onoff": 1233,
   "background_union": 2554,
   "n_significant_fdr05": 0,
   "gsea_terms": 568,
-  "string_nodes": 694
+  "string_nodes": 694,
+  "_d7_note": "n_up/n_down swapped from 206/509 to 509/206 by the DECISIONS_LOG D7 correction (2026-08-01): the control/treated assignment shipped inverted relative to the lab's own Pilot Project labelling. Verified a pure sign inversion -- limma logFC max|new+old| = 0.0, p-values invariant to 1e-15, NO CHANGE (1223), ON_OFF (10) and the 715-row IPA total all unchanged."
 }

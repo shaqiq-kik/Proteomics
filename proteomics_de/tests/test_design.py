@@ -5,9 +5,12 @@ hardcoded literals with calls into ``config.design``. If any of them fails, the
 sample sheet and the frozen scripts have diverged, and the correct response is to
 investigate the sheet -- NOT to relax the assertion.
 
-The literals asserted below are copied from the frozen scripts:
-``foldchange.py:26`` (intensity columns), ``limma_test.R`` (group vector) and
-``limma_test.py:56`` (handoff names).
+The literals asserted below pin the **D7-corrected** design: DECISIONS_LOG D7
+records that the control/treated assignment shipped inverted, and the lab's own
+Pilot Project labels ``31579``/``31581`` = Vehicle (control) and
+``31578``/``31580`` = Testosterone (treated). ``config/sample_sheet.tsv`` now
+says so, and every expectation here follows from it. The numbers below are
+deliberate; do not "restore" them to the pre-D7 order.
 """
 
 from __future__ import annotations
@@ -23,15 +26,16 @@ if str(_REPO_ROOT) not in sys.path:  # works with or without a rootdir conftest
 
 from proteomics_de.config import design  # noqa: E402
 
-# The literals as they appear in the frozen scripts.
+# The design as the sample sheet spells it out, post-D7: canonical order is
+# control group first, so the control channels (31579, 31581) lead.
 EXPECTED_SAMPLE_COLUMNS = [
-    "Intensity 31578",
-    "Intensity 31580",
     "Intensity 31579",
     "Intensity 31581",
+    "Intensity 31578",
+    "Intensity 31580",
 ]
 EXPECTED_GROUP_VECTOR = ["control", "control", "treated", "treated"]
-EXPECTED_HANDOFF_NAMES = ["ctrl_31578", "ctrl_31580", "trt_31579", "trt_31581"]
+EXPECTED_HANDOFF_NAMES = ["ctrl_31579", "ctrl_31581", "trt_31578", "trt_31580"]
 
 
 # ---------------------------------------------------------------------------
@@ -50,8 +54,9 @@ def test_handoff_names_exact():
 
 
 def test_control_and_treated_columns():
-    assert design.control_columns() == ["Intensity 31578", "Intensity 31580"]
-    assert design.treated_columns() == ["Intensity 31579", "Intensity 31581"]
+    # D7-corrected: Vehicle = 31579/31581, Testosterone = 31578/31580.
+    assert design.control_columns() == ["Intensity 31579", "Intensity 31581"]
+    assert design.treated_columns() == ["Intensity 31578", "Intensity 31580"]
     # control block first, then treated -- the order limma's design matrix assumes
     assert design.control_columns() + design.treated_columns() == EXPECTED_SAMPLE_COLUMNS
 
@@ -64,7 +69,7 @@ def test_counts():
 
 def test_sample_ids_align_with_columns():
     ids = design.sample_ids()
-    assert ids == ["31578", "31580", "31579", "31581"]
+    assert ids == ["31579", "31581", "31578", "31580"]  # D7-corrected order
     for sample_id, column in zip(ids, design.sample_columns()):
         assert column.endswith(sample_id)
 
@@ -82,12 +87,13 @@ def test_default_path_is_file_relative_not_cwd(tmp_path, monkeypatch):
 def test_row_order_in_the_tsv_does_not_change_the_design(tmp_path):
     """Canonical order is derived from `group`, not from file row order."""
     shuffled = tmp_path / "shuffled.tsv"
+    # Same (D7-corrected) assignment as the committed sheet, rows scrambled.
     shuffled.write_text(
         "sample\tgroup\tchannel\treplicate\n"
-        "31581\ttreated\tIntensity 31581\t2\n"
-        "31580\tcontrol\tIntensity 31580\t2\n"
-        "31579\ttreated\tIntensity 31579\t1\n"
-        "31578\tcontrol\tIntensity 31578\t1\n",
+        "31580\ttreated\tIntensity 31580\t2\n"
+        "31581\tcontrol\tIntensity 31581\t2\n"
+        "31578\ttreated\tIntensity 31578\t1\n"
+        "31579\tcontrol\tIntensity 31579\t1\n",
         encoding="utf-8",
     )
     assert design.sample_columns(shuffled) == EXPECTED_SAMPLE_COLUMNS
@@ -190,8 +196,9 @@ def test_assert_matches_raises_on_a_wrong_list():
 
 
 def test_assert_matches_raises_on_wrong_order():
+    # The pre-D7 order: same four channels, treated block first. Must not pass.
     reordered = [
-        "Intensity 31579", "Intensity 31581", "Intensity 31578", "Intensity 31580",
+        "Intensity 31578", "Intensity 31580", "Intensity 31579", "Intensity 31581",
     ]
     with pytest.raises(ValueError, match="different order"):
         design.assert_matches(reordered, stage="fake_stage.py")
@@ -237,16 +244,15 @@ def test_missing_required_column_is_rejected(tmp_path):
 # ---------------------------------------------------------------------------
 # The reference-level invariant (DECISIONS_LOG D7)
 #
-# limma_test.R derives its factor levels as `unique(group)` in DESIGN-FILE ROW
-# ORDER, so whichever group appears first becomes the denominator. That makes
-# row order silently load-bearing: if a sample sheet ever listed treated first,
-# every logFC in the study would invert with nothing to signal it.
-#
-# D7 flips the control/treated assignment by editing sample_sheet.tsv. If that
-# flip also reordered the groups, the two inversions would cancel and the
+# D7 flipped the control/treated assignment by editing sample_sheet.tsv. If that
+# flip had also reordered the groups, the two inversions would cancel and the
 # correction would be a no-op that LOOKS applied. These tests pin the property
 # that makes the flip safe: design.py's canonical sort always emits control
 # first, whatever order the TSV happens to use.
+#
+# (limma_test.R no longer takes its reference level from design-file row order
+# either -- it pins "control" by name. See test_limma_r.py. The two layers are
+# independent: this one guarantees the ORDER, that one guarantees the SIGN.)
 # ---------------------------------------------------------------------------
 
 def _write_sheet(path, rows):
@@ -272,10 +278,13 @@ def test_control_is_always_the_reference_level_whatever_the_row_order(tmp_path):
 
 
 def test_d7_flipped_sheet_keeps_control_as_denominator(tmp_path):
-    """The D7 orientation must flip the sign exactly once, not twice.
+    """The D7 orientation flips the sign exactly once, not twice.
 
     Per D7 the lab's own Pilot Project labels 31579/31581 = Vehicle and
-    31578/31580 = Testosterone -- the opposite of what the pipeline shipped.
+    31578/31580 = Testosterone -- the opposite of what the pipeline originally
+    shipped. This is now the committed assignment (the sheet written inline here
+    is the same one ``config/sample_sheet.tsv`` holds), so the expectations agree
+    with ``EXPECTED_SAMPLE_COLUMNS`` above by construction.
     """
     flipped = _write_sheet(
         tmp_path / "d7.tsv",

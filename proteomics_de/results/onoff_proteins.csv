@@ -1,11 +1,11 @@
 accession,gene,onoff,Intensity 31578,Intensity 31580,Intensity 31579,Intensity 31581
-Q60604,Scin,off_with_treatment,19642000.0,14845000.0,0,0
-Q8CIG8,Prmt5,off_with_treatment,79637000.0,18136000.0,0,0
-Q9JI78,Ngly1,on_with_treatment,0.0,0.0,54721000,20271000
-Q61391,Mme,off_with_treatment,21032000.0,28573000.0,0,0
-P55937,Golga3,off_with_treatment,5696000.0,18883000.0,0,0
-Q60866,Pter,off_with_treatment,30424000.0,0.0,0,0
-Q9CPP0,Npm3,off_with_treatment,0.0,40432000.0,0,0
-Q8BIW1,Prune,on_with_treatment,0.0,0.0,37090000,0
-Q8BXC6,Commd2,on_with_treatment,0.0,0.0,7140100,0
-P62717,Rpl18a,off_with_treatment,0.0,123710000.0,0,0
+Q60604,Scin,on_with_treatment,19642000.0,14845000.0,0,0
+Q8CIG8,Prmt5,on_with_treatment,79637000.0,18136000.0,0,0
+Q9JI78,Ngly1,off_with_treatment,0.0,0.0,54721000,20271000
+Q61391,Mme,on_with_treatment,21032000.0,28573000.0,0,0
+P55937,Golga3,on_with_treatment,5696000.0,18883000.0,0,0
+Q60866,Pter,on_with_treatment,30424000.0,0.0,0,0
+Q9CPP0,Npm3,on_with_treatment,0.0,40432000.0,0,0
+Q8BIW1,Prune,off_with_treatment,0.0,0.0,37090000,0
+Q8BXC6,Commd2,off_with_treatment,0.0,0.0,7140100,0
+P62717,Rpl18a,on_with_treatment,0.0,123710000.0,0,0

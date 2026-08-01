@@ -8,10 +8,20 @@ numbers should *be* rather than merely that they did not change.
 The single most valuable assertion here is
 :func:`test_contrast_direction_treated_minus_control`. Nothing else in the
 repository checks the sign of the contrast, and coefficient 2 of
-``model.matrix(~ factor(group, levels = c("control", "treated")))`` is
-"treated - control" only because control sorts first. Invert that and every UP
-becomes a DOWN, silently, in the fold-change table, the volcano plot, the
-enrichment calls and the final report.
+``model.matrix(~ factor(group, levels = group_levels))`` is "treated - control"
+only because ``"control"`` is level 1. Invert that and every UP becomes a DOWN,
+silently, in the fold-change table, the volcano plot, the enrichment calls and
+the final report.
+
+That reference level used to be ``unique(group)`` -- order of first appearance --
+which made the design file's ROW ORDER decide the sign of every logFC in the
+study with nothing to signal it. DECISIONS_LOG D7 removed that landmine: the
+design file is now written in acquisition order (so MinProb imputation stays
+invariant under relabelling), and ``"control"`` is pinned as the reference BY
+NAME. Both halves of the new contract are asserted below --
+:func:`test_reference_level_is_control_by_name_not_row_order`,
+:func:`test_relabelling_negates_logfc_and_leaves_pvalues_invariant`, and
+:func:`test_design_without_a_control_group_fails_loudly`.
 """
 
 from __future__ import annotations
@@ -33,11 +43,26 @@ for _p in (str(_REPO_ROOT), str(_PKG_DIR)):
 
 R_SCRIPT = _PKG_DIR / "limma_test.R"
 REAL_INPUT = _PKG_DIR / "_limma_input.csv"
+REAL_DESIGN = _PKG_DIR / "_limma_design.tsv"
+COMMITTED_OUTPUT = _PKG_DIR / "_limma_output.csv"
 
-# The fixture reuses the real handoff column names so that BOTH invocation forms
-# (positional, which hardcodes them, and --design, which reads them) accept it.
+# The layout the POSITIONAL invocation hardcodes (limma_test.R:130). It is the
+# original 2x2 form, kept working byte-for-byte, so it still carries the pre-D7
+# naming: columns 1-2 named ctrl_*, columns 3-4 named trt_*.
+#
+# The synthetic fixture below is built with these names and this grouping, so
+# BOTH invocation forms accept it -- positional (which hardcodes them) and
+# --design (which reads them) -- which is what makes the equivalence tests
+# possible. Since DECISIONS_LOG D7 the REAL handoff no longer looks like this:
+# limma_test.py hands R the matrix in acquisition order, i.e.
+# trt_31578, trt_31580, ctrl_31579, ctrl_31581. See REAL_HANDOFF_COLS.
 HANDOFF_COLS = ["ctrl_31578", "ctrl_31580", "trt_31579", "trt_31581"]
 GROUPS = ["control", "control", "treated", "treated"]
+
+# The real handoff, D7-corrected: acquisition order, with each column's group in
+# its name. Must agree with the committed _limma_input.csv / _limma_design.tsv.
+REAL_HANDOFF_COLS = ["trt_31578", "trt_31580", "ctrl_31579", "ctrl_31581"]
+REAL_GROUPS = ["treated", "treated", "control", "control"]
 
 N_PROTEINS = 40
 N_PLANTED = 5           # proteins 0..4 carry a real, clean effect
@@ -173,48 +198,103 @@ def test_contrast_direction_flips_when_labels_are_swapped(tmp_path):
 
 
 @requires_r
-def test_reference_level_follows_design_row_order(tmp_path):
-    """Listing treated FIRST makes it the reference, inverting every logFC.
+def test_reference_level_is_control_by_name_not_row_order(tmp_path):
+    """Design-file ROW ORDER must not touch the sign of a single logFC. (D7)
 
-    This is why ``config.design`` canonically sorts control-before-treated
-    instead of trusting the sheet's row order: the reference level -- and
-    therefore the sign of every fold change in the study -- is decided by
-    whichever group appears first in the design file.
+    The worker used to derive its factor levels as ``unique(group)``, so the
+    group that happened to appear first in the design file became the reference
+    -- a silent landmine, since the sign of every fold change in the study rode
+    on the order of four lines in a TSV. That behaviour was deliberately
+    REMOVED: ``"control"`` is now level 1 by name.
+
+    It matters because the design file is no longer written control-first. It is
+    written in acquisition order, which for today's D7-corrected sheet genuinely
+    puts *treated* first (REAL_GROUPS above).
+
+    Run with no missing values so imputation cannot contribute any difference:
+    reordering the rows permutes the matrix columns, and MinProb is stochastic
+    per column.
     """
-    inp = _write_input(tmp_path)
+    inp = _write_input(tmp_path, _synthetic_frame(with_nas=False), name="complete.csv")
+    control_first = _write_design(tmp_path, name="control_first.tsv")
     treated_first = _write_design(
         tmp_path,
         samples=["trt_31579", "trt_31581", "ctrl_31578", "ctrl_31580"],
         groups=["treated", "treated", "control", "control"],
         name="treated_first.tsv",
     )
-    res = _run_flags(tmp_path, inp, tmp_path / "tf_out.csv", design=treated_first)
 
-    planted = res.iloc[:N_PLANTED]
-    assert (planted["limma_log2FC"] < 0).all(), planted["limma_log2FC"].tolist()
+    cf = _run_flags(tmp_path, inp, tmp_path / "cf_out.csv", design=control_first)
+    tf = _run_flags(tmp_path, inp, tmp_path / "tf_out.csv", design=treated_first)
+
+    # Same sample->group mapping, treated listed first: still treated - control.
+    planted = tf.iloc[:N_PLANTED]["limma_log2FC"]
+    assert (planted > 0).all(), (
+        "reference level followed design-file row order: listing treated first "
+        f"inverted the contrast. planted logFC = {planted.tolist()}"
+    )
+    assert planted.min() > 2.0
+
+    # And not merely the sign -- the whole result is unmoved by row order.
+    assert np.array_equal(tf["id"], cf["id"])
+    assert np.allclose(tf["limma_log2FC"], cf["limma_log2FC"], rtol=0, atol=1e-12)
+    assert np.allclose(tf["p_value"], cf["p_value"], rtol=0, atol=1e-12)
+    assert np.allclose(tf["adj_p_value"], cf["adj_p_value"], rtol=0, atol=1e-12)
 
 
 @requires_r
-def test_relabelling_and_reordering_together_cancel_out(tmp_path):
-    """The composition of the two flips above is a no-op -- a real invariant.
+def test_relabelling_negates_logfc_and_leaves_pvalues_invariant(tmp_path):
+    """Swapping the two labels negates logFC and moves no p-value at all. (D7)
 
-    Swapping the labels *and* the row order leaves the design matrix identical,
-    so the committed numbers are reproduced exactly.
+    This is the property the D7 correction rests on: swapping the levels of a
+    two-group contrast negates logFC and t, but leaves |t| -- and therefore p
+    and adj-p -- untouched. Verified on the real data when D7 landed (limma
+    logFC: max |new + old| = 0.000e+00; p_value invariant to ~1e-15).
+
+    It only holds because the matrix handed to R stays in acquisition order:
+    both runs below pass the SAME sample order and differ only in the `group`
+    column, so MinProb draws the same values for the same samples. Build the
+    input WITH missing values, so that is actually exercised.
     """
     inp = _write_input(tmp_path)
-    both = _write_design(
+    canonical = _write_design(tmp_path, name="canonical.tsv")
+    relabelled = _write_design(
         tmp_path,
         groups=["treated", "treated", "control", "control"],
-        name="both.tsv",
+        name="relabelled.tsv",
     )
-    canonical = _write_design(tmp_path, name="canonical.tsv")
 
-    a = tmp_path / "both_out.csv"
-    b = tmp_path / "canonical_out.csv"
-    _run_flags(tmp_path, inp, a, design=both)
-    _run_flags(tmp_path, inp, b, design=canonical)
+    a = _run_flags(tmp_path, inp, tmp_path / "canonical_out.csv", design=canonical)
+    b = _run_flags(tmp_path, inp, tmp_path / "relabelled_out.csv", design=relabelled)
 
-    assert a.read_bytes() == b.read_bytes()
+    assert np.array_equal(b["id"], a["id"])
+    assert np.allclose(b["limma_log2FC"], -a["limma_log2FC"], rtol=0, atol=1e-12)
+    assert np.allclose(b["p_value"], a["p_value"], rtol=0, atol=1e-12)
+    assert np.allclose(b["adj_p_value"], a["adj_p_value"], rtol=0, atol=1e-12)
+    # Sanity: the planted effect really did change sign, it was not ~0 already.
+    assert (a["limma_log2FC"].iloc[:N_PLANTED] > 2.0).all()
+
+
+@requires_r
+def test_design_without_a_control_group_fails_loudly(tmp_path, synthetic):
+    """No `control` group means no reference level to pin -- refuse to guess.
+
+    With the levels no longer taken from order of appearance, a design file that
+    never says "control" has nothing to anchor the sign of the contrast. Falling
+    back to alphabetical (or first-seen) order is exactly the silent behaviour
+    D7 removed, so the worker must abort instead.
+    """
+    inp, _ = synthetic
+    no_control = _write_design(
+        tmp_path,
+        groups=["vehicle", "vehicle", "testosterone", "testosterone"],
+        name="no_control.tsv",
+    )
+    proc = _run_r(tmp_path, "--in", inp, "--out", tmp_path / "o.csv",
+                  "--seed", 42, "--design", no_control)
+    _assert_bug7_error(proc)
+    assert "control" in proc.stderr
+    assert not (tmp_path / "o.csv").exists()
 
 
 # ---------------------------------------------------------------------------
@@ -309,43 +389,70 @@ def test_seed_is_irrelevant_without_missing_values(tmp_path):
 # --design equivalence: the core proof of this package
 # ---------------------------------------------------------------------------
 @requires_r
-def test_design_flag_matches_positional_on_synthetic(tmp_path, synthetic):
-    inp, dsn = synthetic
-    pos, flag = tmp_path / "pos.csv", tmp_path / "flag.csv"
+def test_positional_invocation_is_refused(tmp_path, synthetic):
+    """The design must come from the sample sheet or not at all.
 
-    proc = _run_r(tmp_path, inp, pos, 42, "vanilla")
-    assert proc.returncode == 0, proc.stderr
-    _run_flags(tmp_path, inp, flag, design=dsn)
+    limma_test.R used to fall back to an inline
+    ``ctrl_31578/ctrl_31580/trt_31579/trt_31581`` layout with groups
+    ``control, control, treated, treated`` when --design was absent. Per
+    DECISIONS_LOG D7 that assignment is INVERTED: 31578/31580 are testosterone,
+    31579/31581 are vehicle. Fed matching data the fallback would have silently
+    negated every logFC in the study.
 
-    assert pos.read_bytes() == flag.read_bytes()
+    It was removed rather than corrected, because a second hardcoded source of
+    truth for the design is precisely how the original error survived. This test
+    pins that: no --design is a loud, immediate failure.
+    """
+    inp, _dsn = synthetic
+    proc = _run_r(tmp_path, inp, tmp_path / "pos.csv", 42, "vanilla")
+    assert proc.returncode != 0, "positional invocation must fail, not guess a design"
+    assert "BUG7 R ERROR" in proc.stderr, proc.stderr
+    assert "--design is required" in proc.stderr, proc.stderr
+    assert not (tmp_path / "pos.csv").exists(), "no output may be written on refusal"
 
 
 @requires_r
 @pytest.mark.skipif(not REAL_INPUT.exists(), reason="_limma_input.csv not present")
-def test_design_flag_matches_positional_on_real_input(tmp_path):
-    """The committed 1938-protein handoff: --design must change nothing at all."""
-    dsn = _write_design(tmp_path)
-    pos, flag = tmp_path / "pos.csv", tmp_path / "flag.csv"
+def test_design_drives_the_real_input_end_to_end(tmp_path):
+    """1938 real proteins, real missingness, design read from the committed TSV.
 
-    proc = _run_r(tmp_path, REAL_INPUT, pos, 42, "vanilla")
-    assert proc.returncode == 0, proc.stderr
-    _run_flags(tmp_path, REAL_INPUT, flag, design=dsn)
-
-    assert pos.read_bytes() == flag.read_bytes(), (
-        "--design perturbed the design matrix on the real input"
+    Replaces the old positional-vs---design equivalence check: with the fallback
+    gone there is exactly one code path, so what matters now is that the
+    committed design file is the one actually in force and that it reproduces
+    the committed output byte-for-byte.
+    """
+    real = pd.read_csv(REAL_INPUT)
+    assert list(real.columns) == ["id", "gene"] + REAL_HANDOFF_COLS, (
+        f"committed handoff columns changed: {list(real.columns)}"
     )
+    out = tmp_path / "out.csv"
+    _run_flags(tmp_path, REAL_INPUT, out, design=REAL_DESIGN)
+    assert out.read_bytes() == COMMITTED_OUTPUT.read_bytes(), (
+        "re-running the committed design did not reproduce _limma_output.csv"
+    )
+
 
 
 @requires_r
 def test_design_flag_reproduces_committed_output(tmp_path):
-    """And it still reproduces the frozen _limma_output.csv byte-for-byte."""
+    """The committed _limma_design.tsv + _limma_input.csv reproduce _limma_output.csv.
+
+    Byte-for-byte, so this also pins the D7-corrected sign: the committed output
+    is the post-flip one (limma logFC negated relative to the pre-D7 artifact,
+    p-values unchanged).
+    """
     committed = _PKG_DIR / "_limma_output.csv"
-    if not (REAL_INPUT.exists() and committed.exists()):
+    if not (REAL_INPUT.exists() and committed.exists() and REAL_DESIGN.exists()):
         pytest.skip("committed limma intermediates not present")
 
-    dsn = _write_design(tmp_path)
+    # The design as the pipeline actually writes it: acquisition order, treated
+    # first. Read here rather than reconstructed, so a drift shows up as a diff.
+    dsn = pd.read_csv(REAL_DESIGN, sep="\t", dtype=str)
+    assert dsn["sample"].tolist() == REAL_HANDOFF_COLS
+    assert dsn["group"].tolist() == REAL_GROUPS
+
     out = tmp_path / "_limma_output.csv"
-    _run_flags(tmp_path, REAL_INPUT, out, design=dsn)
+    _run_flags(tmp_path, REAL_INPUT, out, design=REAL_DESIGN)
 
     assert out.read_bytes() == committed.read_bytes()
 

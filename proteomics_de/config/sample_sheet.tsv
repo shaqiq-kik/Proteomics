@@ -1,5 +1,5 @@
 sample	group	channel	replicate
-31578	control	Intensity 31578	1
-31580	control	Intensity 31580	2
-31579	treated	Intensity 31579	1
-31581	treated	Intensity 31581	2
+31579	control	Intensity 31579	1
+31581	control	Intensity 31581	2
+31578	treated	Intensity 31578	1
+31580	treated	Intensity 31580	2
