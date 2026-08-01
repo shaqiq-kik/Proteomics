@@ -220,13 +220,15 @@ prose, so nothing in the report is invented.
 
 | Module | Role |
 |---|---|
-| `viz/style.py` | Shared palette, `apply_style()`, `save_fig()`, and `record_manifest()`. Every figure goes through it. |
+| `viz/style.py` | Shared palette, `apply_style()`, `save_fig()`, and `record_manifest()`. Every figure goes through it; its sample maps are derived from `config/sample_sheet.tsv`. |
 | `enrich/enrich_common.py` | Shared background/query construction and the enrichment figure manifest. |
-| `config/config.yaml`, `config/sample_sheet.tsv` | The declarative design. **Descriptive only today** — the frozen scripts do not read them yet (D1). |
-| `config/design.py`, `config/constants.py` | Readers for the above, and one home for values currently duplicated across nine files. Wiring them in is a later wave. |
-| `etl/accessions.py` | One documented policy for UniProt accession fields, which today have three implicit and conflicting ones. |
-| `export/ipa_export.py`, `provenance.py`, `qc/boundaries.py` | Wave-0 shims with real docstrings and no-op bodies. They write no files, deliberately, so the sha256 freeze stays green. |
-| `tests/` | pytest suite. `tests/expected/frozen_counts.json` is the single source of expected row counts; `tests/expected/protected.sha256` is the byte-freeze manifest. |
+| `config/sample_sheet.tsv` | The design. **Load-bearing**, not descriptive — `config/design.py` reads it and drives the limma design matrix, `viz/style.py`'s sample maps, and `gated/pca_cluster.py`'s dispatcher. `foldchange.py`, `replicate_check.py` and `qc/schema.py` assert-match it and fail loudly on drift rather than deriving from it (D1: their logic is inherently 2-channel-SILAC-specific). `config/config.yaml` stays descriptive documentation only. |
+| `config/design.py`, `config/constants.py` | The design reader, and one home for thresholds/seed/caveat text previously duplicated across several files. |
+| `etl/accessions.py` | One documented policy for UniProt accession fields, replacing three implicit and conflicting ones. |
+| `export/ipa_export.py` | Builds `ipa_input_full.csv`/`.txt` (limma p-value + FDR joined onto the regulated set) and validates all four IPA deliverables. Pipeline stage 2. |
+| `provenance.py` | Writes `<name>.provenance.json` sidecars (caveat text, git commit, sha256, row count, tool versions) for the CSV deliverables. |
+| `qc/boundaries.py` | Real pandera validation at `foldchange.py`'s load/merge/foldchange boundaries; `after_load` is permissive (junk accessions route to quarantine), later stages are strict. Appends to `results/qc/qc_boundaries.json`. |
+| `tests/` | pytest suite. `tests/expected/frozen_counts.json` is the single source of expected row counts; `tests/expected/outputs.sha256` is the byte-freeze manifest (scientific outputs only — see `tools/freeze.py`). |
 
 ---
 
@@ -338,5 +340,5 @@ Byte-freeze status on demand:
 .venv/bin/python tools/status.py --check           # same verdict, inside STATUS.md
 ```
 
-Both read `tests/expected/protected.sha256` through the same `freeze_check()`
+Both read `tests/expected/outputs.sha256` through the same `freeze_check()`
 implementation in `tools/status.py`, so they cannot disagree.

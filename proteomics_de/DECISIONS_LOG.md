@@ -240,3 +240,15 @@ framing into a present-tense claim that was simply false post-D7). No code, no
 values, no committed output changed — comments and docstrings only, verified by
 running the full suite before and after. Found independently by two exploratory
 sessions; folded into one pass here rather than landing duplicate fixes.
+
+**⚪ D16 — deleted `tests/expected/protected.sha256`; nothing consumed it.**
+An exploratory session found the file — kept in D15's predecessor commit as an
+"honest sources inventory" — had caused a second, live bug: `run_pipeline.py
+--verify-frozen`'s banner still printed its path while the hashing it actually
+delegated to had moved to `outputs.sha256` (fixed since `226dffe`, but the
+banner string was a separate literal that fix missed). Grepped for every
+consumer of the file, `constants.PROTECTED_FILES`, and the `protected_sha256`
+fixture: zero. Deleted the file and all three dead readers rather than keep
+patching references to a manifest nothing reads — git already tracks source
+history better than a hand-copied hash list, and its mere presence had already
+caused two separate investigations to mistake it for the gate.

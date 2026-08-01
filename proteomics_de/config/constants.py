@@ -55,49 +55,17 @@ CAVEAT_TEXT = (
     "are hypothesis-generating only, not confirmed significant."
 )
 
-# ---------------------------------------------------------------------------
-# Protected files
-# ---------------------------------------------------------------------------
-
-_PROTECTED_MANIFEST = (
-    Path(__file__).resolve().parent.parent / "tests" / "expected" / "protected.sha256"
-)
-
-
-def _read_protected(manifest: Path = _PROTECTED_MANIFEST) -> list[str]:
-    """Parse the ``sha256sum``-format manifest into a list of repo-relative paths.
-
-    The manifest is authored by the refactor's baseline step and is NEVER
-    regenerated from here -- this function only reads it, so that the list of
-    protected paths cannot silently drift by being recomputed against a
-    already-modified tree.
-    """
-    if not manifest.exists():
-        return []
-    paths: list[str] = []
-    for line in manifest.read_text(encoding="utf-8").splitlines():
-        line = line.strip()
-        if not line:
-            continue
-        # "<64-hex>  <path>"  (two spaces, per sha256sum's text mode)
-        _digest, _sep, path = line.partition("  ")
-        path = path.strip()
-        if path:
-            paths.append(path)
-    return paths
-
-
-#: Repo-relative paths that must stay **byte-identical** through the refactor.
-#:
-#: "Protected" means: the file is either a frozen, individually-verified pipeline
-#: script or one of its committed outputs (CSV, JSON, PNG/SVG figure, report).
-#: The refactor is allowed to add new modules and to change *how* these files are
-#: produced, but re-running the pipeline must reproduce every one of them with an
-#: unchanged sha256. Any diff in this list is a regression, not an improvement,
-#: and must be explained before it is accepted.
-#:
-#: Derived by parsing ``proteomics_de/tests/expected/protected.sha256``.
-PROTECTED_FILES = _read_protected()
+# NOTE: this module used to also expose PROTECTED_FILES, parsed from a
+# tests/expected/protected.sha256 that froze all 93 tracked source AND output
+# files. Nothing in the codebase ever consumed the parsed list -- the actual
+# byte-freeze gate is tools/freeze.py + tests/expected/outputs.sha256, scoped to
+# scientific outputs only (see that module's docstring for why). The unused
+# file caused two separate incidents of confusion before it was deleted: a
+# runner banner that named it while hashing something else, and two separate
+# investigations mistaking it for the gate. Removed rather than kept "for
+# reference" -- git already tracks source history better than a hand-copied
+# hash list, and a file nothing reads cannot help anyone despite looking load-
+# bearing.
 
 __all__ = [
     "LOG2_THRESHOLD",
@@ -107,5 +75,4 @@ __all__ = [
     "MINPROB_Q",
     "MINPROB_TUNE_SIGMA",
     "CAVEAT_TEXT",
-    "PROTECTED_FILES",
 ]

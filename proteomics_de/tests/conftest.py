@@ -87,26 +87,10 @@ def frozen_counts() -> dict:
         return json.load(fh)
 
 
-@pytest.fixture(scope="session")
-def protected_sha256() -> dict[str, str]:
-    """{repo-relative path: sha256} from tests/expected/protected.sha256.
-
-    File is in ``sha256sum`` format (``<hash>  <path>``) and is maintained
-    outside this fixture -- read only, never regenerated here.
-    """
-    path = _TESTS_DIR / "expected" / "protected.sha256"
-    mapping: dict[str, str] = {}
-    with path.open(encoding="utf-8") as fh:
-        for line in fh:
-            line = line.strip()
-            if not line or line.startswith("#"):
-                continue
-            digest, _, relpath = line.partition("  ")
-            if not relpath:
-                # tolerate single-space or tab separators
-                digest, relpath = line.split(None, 1)
-            mapping[relpath.strip()] = digest.strip()
-    return mapping
+# NOTE: this module used to also provide a `protected_sha256` fixture reading
+# tests/expected/protected.sha256. No test ever used it -- the real byte-freeze
+# gate is tools/freeze.py against tests/expected/outputs.sha256, exercised
+# directly by test_freeze.py. Removed along with the manifest itself.
 
 
 @pytest.fixture(scope="session")

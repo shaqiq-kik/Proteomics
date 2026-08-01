@@ -564,6 +564,8 @@ def test_verify_frozen_delegates_to_tools_status(monkeypatch):
         "the freeze gate must not cover source files"
     )
 
+
+def test_verify_frozen_reports_changed_and_missing(monkeypatch):
     fake_rows = [("a.csv", "OK"), ("b.csv", "CHANGED"), ("c.csv", "MISSING")]
     fake_counts = {"OK": 1, "CHANGED": 1, "MISSING": 1}
     monkeypatch.setattr(rp, "_load_status_tool",
@@ -580,6 +582,35 @@ def test_verify_frozen_delegates_to_tools_status(monkeypatch):
     buf = io.StringIO()
     assert rp.verify_frozen(allow_drift=True, stream=buf) == 0
     assert "--allow-drift" in buf.getvalue()
+
+
+def test_verify_frozen_banner_names_the_manifest_it_actually_hashes(capsys):
+    """The printed banner must name the file the hashing is delegated to.
+
+    It didn't, once: --verify-frozen's banner hardcoded a literal path to the
+    old, deleted tests/expected/protected.sha256 while the hashing it called
+    into had already moved to outputs.sha256. Anyone following the banner
+    landed on a stale manifest and reported drift that did not exist. Found by
+    an exploratory session; pinned here so the two strings cannot diverge again.
+    """
+    rp.verify_frozen(allow_drift=True)
+    out = capsys.readouterr().out
+    assert "outputs.sha256" in out
+    assert "protected.sha256" not in out
+
+
+def test_no_dead_freeze_manifest_on_disk():
+    """The old, unused byte-freeze manifest must not reappear.
+
+    tests/expected/protected.sha256 froze all tracked files (source and output
+    alike) and was superseded by tools/freeze.py + outputs.sha256, scoped to
+    scientific outputs only. It was deleted once nothing in the codebase turned
+    out to read it -- but a future edit could recreate it by habit (e.g. a
+    `git ls-files | xargs shasum` one-liner run again). If this test starts
+    failing, the fix is almost certainly to delete the file again, not to wire
+    it back in: check for a real consumer first.
+    """
+    assert not (rp.PDE / "tests" / "expected" / "protected.sha256").exists()
 
 
 def test_verify_frozen_exits_zero_when_clean(monkeypatch):

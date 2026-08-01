@@ -57,8 +57,6 @@ TESTS = PDE / "tests"
 # activity the gate exists to make safe. See tools/freeze.py for the rationale
 # and for why SVGs are hashed canonically rather than raw.
 PROTECTED_MANIFEST = TESTS / "expected" / "outputs.sha256"
-#: Retained for reference only; NOT a gate. Source files are versioned by git.
-SOURCES_MANIFEST = TESTS / "expected" / "protected.sha256"
 OUTPUT = PDE / "STATUS.md"
 
 STATUS_OK = "✅ implemented"

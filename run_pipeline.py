@@ -529,7 +529,7 @@ def verify_frozen(allow_drift: bool = False, stream=None) -> int:
     out = stream or sys.stdout
     print(_rule(), file=out)
     print("FROZEN-OUTPUT VERIFICATION", file=out)
-    print(f"  manifest: {STATUS_TOOL_PATH.parent.parent / 'proteomics_de/tests/expected/protected.sha256'}",
+    print(f"  manifest: {STATUS_TOOL_PATH.parent.parent / 'proteomics_de/tests/expected/outputs.sha256'}",
           file=out)
     print(f"  hashing via: {STATUS_TOOL_PATH} (freeze_check)", file=out)
     print(_rule(), file=out)
