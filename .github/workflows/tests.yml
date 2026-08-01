@@ -1,0 +1,153 @@
+# Test suite for the proteomics_de SILAC differential-expression pipeline.
+#
+# NOT YET LIVE
+# ------------
+# This workflow only ever runs if the repository is pushed to GitHub. As of
+# writing it has not been -- the project lives in a local checkout, and putting
+# it on GitHub is a decision for the repository owner (the input workbook and
+# every derived result are unpublished lab data). The file is committed anyway
+# so the contract is written down and reviewable: it states exactly which
+# subset of the suite is expected to be portable, and why the rest is not.
+# Nothing here needs to change on the day it is pushed.
+#
+# WHAT RUNS
+# ---------
+#   -m "not network and not slow and not golden"
+#
+# Each exclusion is deliberate; none of them is a workaround for a flaky test.
+#
+#   network -- enrich/ora.py, gsea.py and string_ppi.py make live outbound calls
+#              to g:Profiler, Enrichr and STRING with the mouse gene list. CI
+#              must not depend on a third party's uptime, and it must not send
+#              unpublished identifiers anywhere on every push.
+#   slow    -- end-to-end runs over the full workbook. Covered locally.
+#   golden  -- see below. This is the important one.
+#
+# WHY `golden` IS DESELECTED, AND WHY THAT MUST NOT BE "FIXED"
+# ------------------------------------------------------------
+# The `golden` tests assert BYTE IDENTITY: that re-running the pipeline
+# reproduces the committed results exactly, and that the sha256 manifest still
+# matches. That is a *this-machine* guarantee and it was never anything else.
+# limma's moderated t-statistics, scipy/sklearn PCA coordinates and GSEA
+# enrichment scores all depend on the BLAS/LAPACK build behind numpy, and on the
+# exact R and Bioconductor builds -- different builds legitimately disagree in
+# the last float digit, which is enough to change a CSV byte and therefore a
+# hash. requirements-lock.txt records the stack the committed results were
+# produced with (Homebrew CPython 3.13.7 on macOS arm64, R 4.6.1 + limma 3.68.4);
+# a GitHub-hosted ubuntu runner is not that stack and cannot be made into it by
+# pinning pip versions.
+#
+# So a `golden` failure on CI would say nothing about the code. The danger is
+# not the red build -- it is the "fix": somebody adds a tolerance, or rounds the
+# comparison, or re-baselines the manifest from the runner. Any of those
+# permanently destroys the guarantee for the machine where it IS meaningful, in
+# exchange for green on a machine where it never was.
+#
+#   DO NOT enable `golden` here.
+#   DO NOT loosen a `golden` assertion to make CI pass.
+#
+# Run them locally, on the machine that produced the results:
+#
+#     .venv/bin/pytest -m golden
+#     .venv/bin/python tools/freeze.py --check
+#
+# R IS OPTIONAL
+# -------------
+# The `r`-marked tests need Rscript with limma + imputeLCMD. R is NOT installed
+# below: a Bioconductor install adds several minutes to every run, and the
+# statistics it produces are exercised far more sharply by the local `golden`
+# tests than they could be here. The suite is written so this degrades to a SKIP
+# and never to a failure -- tests/conftest.py exposes a `has_rscript` fixture and
+# every R-dependent test consults it. The step below prints which way it went,
+# so a silent all-skipped run is visible in the log rather than looking green
+# for the wrong reason.
+#
+# To turn R on later, add a step before the test run:
+#     - uses: r-lib/actions/setup-r@v2
+#     - run: Rscript -e 'install.packages("BiocManager"); BiocManager::install("limma"); install.packages("imputeLCMD")'
+# The `r` tests will then execute instead of skipping. `golden` stays off
+# regardless: a different R build is exactly the float-drift case above.
+
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pytest:
+    name: pytest (python 3.13, no R, no network)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          # 3.13 because that is what produced the committed results
+          # (see requirements-lock.txt and ENVIRONMENT.md). The patch level is
+          # deliberately unpinned: the `golden` tests that would care about it
+          # do not run here.
+          python-version: '3.13'
+          cache: pip
+          cache-dependency-path: |
+            requirements-lock.txt
+            requirements-dev.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # requirements-lock.txt is a RECORD of the versions the committed
+          # results were produced with, not a curated install manifest -- see
+          # its header. Installing it here is the closest a Linux runner can get
+          # to that stack, and it is what makes a CI failure attributable to the
+          # code rather than to a version drift nobody chose.
+          pip install -r requirements-lock.txt
+          pip install -r requirements-dev.txt
+
+      - name: Report the R situation
+        # Never fails. The point is that "the R tests were skipped" appears in
+        # the log as an explicit statement, so nobody reads a green run as
+        # evidence the limma leg was exercised.
+        run: |
+          if command -v Rscript >/dev/null 2>&1; then
+            echo "Rscript found: $(Rscript --version 2>&1) -- the 'r' tests will RUN"
+          else
+            echo "Rscript NOT found -- every 'r'-marked test will SKIP (expected)."
+            echo "The limma statistics are covered locally by 'pytest -m golden'."
+          fi
+
+      - name: Run the portable subset of the suite
+        # The -m here OVERRIDES the default in pyproject.toml's addopts
+        # ("not network and not slow"); `golden` is added for the reasons in the
+        # header comment. -ra prints the skip/xfail reasons in the summary, which
+        # is how the deselected R tests stay visible.
+        run: pytest -m "not network and not slow and not golden" -ra --durations=10
+
+      - name: Frozen artifacts are unmodified in git
+        # Not the byte-freeze gate (that is `golden`, and it is off). This is the
+        # much weaker, fully portable claim that running the test suite did not
+        # leave the working tree dirty. The suite runs the pipeline into
+        # temporary directories, and a stage that writes into the committed tree
+        # instead is a real bug -- one such leak has already been found and
+        # fixed once (results/qc/qc_boundaries.json).
+        if: always()
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::the test run modified tracked files:"
+            git status --porcelain
+            git diff --stat
+            exit 1
+          fi
+          echo "working tree clean after the test run"
