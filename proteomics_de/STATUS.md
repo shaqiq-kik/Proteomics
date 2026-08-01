@@ -3,8 +3,8 @@
 > **This file is GENERATED. Do not hand-edit.**
 > Regenerate with `.venv/bin/python tools/status.py` (source: `tools/status.py`). Every number below is read off the filesystem at generation time, so it cannot silently go stale.
 
-* Generated: **2026-08-01 01:33:27 EDT**
-* Git HEAD: **`d81524b`**
+* Generated: **2026-08-01 02:00:08 EDT**
+* Git HEAD: **`ca2c53c`**
 * Repo root: `/Users/abrarshakik/Documents/Proteomics`
 
 Companions: `DECISIONS_LOG.md` (human decisions D1–D6) · `BUILD_LOG.md` (per-work-package history) · `../research1.md` §Build Log (per-bug narrative).
@@ -84,7 +84,7 @@ Row counts EXCLUDE the header. Three files are header-only **by design** — the
 | `results/figures/intensity_distributions.svg` | 34.3 KB | — |  |
 | `results/figures/ma_plot.png` | 248.6 KB | — |  |
 | `results/figures/ma_plot.svg` | 226.7 KB | — |  |
-| `results/figures/missing_values.png` | 203.2 KB | — |  |
+| `results/figures/missing_values.png` | 204.1 KB | — |  |
 | `results/figures/missing_values.svg` | 32.3 KB | — |  |
 | `results/figures/ora_dotplot.png` | 214.4 KB | — |  |
 | `results/figures/ora_dotplot.svg` | 25.6 KB | — |  |
@@ -116,7 +116,7 @@ Row counts EXCLUDE the header. Three files are header-only **by design** — the
 | `results/ipa_input_significant.csv` | 65 B | **0 rows (expected -- 0/1938 proteins pass FDR<0.05 at n=2 technical replicates (DECISIONS_LOG D2))** |  |
 | `results/onoff_proteins.csv` | 620 B | 10 | matches expected 10 |
 | `results/qc/qc_boundaries.json` | 4.6 KB | — |  |
-| `results/qc/qc_report.json` | 6.1 KB | — |  |
+| `results/qc/qc_report.json` | 5.7 KB | — |  |
 | `results/qc/qc_report.md` | 3.5 KB | — |  |
 | `results/qc/quarantine_accessions.csv` | 33.3 KB | 2 |  |
 | `results/qc_centering.csv` | 110 B | 1 |  |
@@ -148,6 +148,7 @@ Manifest: `proteomics_de/tests/expected/outputs.sha256` (79 files).
 | `tests/test_accessions.py` | 14 |
 | `tests/test_boundaries.py` | 36 |
 | `tests/test_build_matrix.py` | 11 |
+| `tests/test_build_report.py` | 21 |
 | `tests/test_design.py` | 23 |
 | `tests/test_enrich_common.py` | 27 |
 | `tests/test_foldchange_core.py` | 29 |
@@ -158,12 +159,13 @@ Manifest: `proteomics_de/tests/expected/outputs.sha256` (79 files).
 | `tests/test_limma_r.py` | 37 |
 | `tests/test_merge_guard.py` | 16 |
 | `tests/test_provenance.py` | 30 |
+| `tests/test_report_facts.py` | 24 |
 | `tests/test_run_pipeline.py` | 40 |
 | `tests/test_schemas.py` | 18 |
 | `tests/test_string_ppi.py` | 36 |
 | `tests/test_style_samples.py` | 18 |
 
-**17 test files · 433 test functions.**
+**19 test files · 478 test functions.**
 
 Module coverage — a module counts as covered if a test file is named after it (`test_<module>.py`) or mentions it in its filename:
 
@@ -189,14 +191,15 @@ Module coverage — a module counts as covered if a test file is named after it 
 | `qc/schema.py` | ✅ yes |
 | `qc/validate.py` | ❌ none |
 | `replicate_check.py` | ❌ none |
-| `report/build_report.py` | ❌ none |
+| `report/build_facts.py` | ❌ none |
+| `report/build_report.py` | ✅ yes |
 | `viz/heatmap.py` | ❌ none |
 | `viz/ma_plot.py` | ❌ none |
 | `viz/qc_plots.py` | ❌ none |
 | `viz/style.py` | ✅ yes |
 | `viz/volcano.py` | ❌ none |
 
-**12/26 pipeline modules have a matching test file.**
+**13/27 pipeline modules have a matching test file.**
 
 ---
 

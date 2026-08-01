@@ -41,10 +41,10 @@
       "fc_pearson_r": 0.2703,
       "fc_sign_agree_n": 889,
       "fc_sign_agree_pct": 56.3,
-      "control_raw_r": 0.8624,
-      "control_raw_n": 1723,
-      "treated_raw_r": 0.8407,
-      "treated_raw_n": 1656,
+      "control_raw_r": 0.8407,
+      "control_raw_n": 1656,
+      "treated_raw_r": 0.8624,
+      "treated_raw_n": 1723,
       "fc_r_min": 0.5,
       "verdict": "WARN"
     },
@@ -574,7 +574,7 @@
       "caption": "Pairwise Pearson correlation of log2 intensity across the 4 raw samples, computed over the full 2554-protein identified universe (pairwise-complete, zero/absent treated as missing). Within-condition replicate pairs (control_1 vs control_2; treated_1 vs treated_2) are the QC check for technical reproducibility; cf. qc_replicate_correlation.csv, which reports a similar check on the derived fold-change ratios rather than raw intensities.",
       "key_numbers": {
         "n_proteins_used": 1578,
-        "n_proteins_universe": 2554,
+        "n_proteins_universe": 2552,
         "control1_vs_control2_r": 0.8449,
         "treated1_vs_treated2_r": 0.8697,
         "control_vs_treated_r_range": [
@@ -637,20 +637,20 @@
     {
       "file": "figures/missing_values.png",
       "title": "Missingness summary",
-      "caption": "Left: count of missing/zero-intensity proteins per sample across the full 2554-protein identified universe. Right: % of proteins present (non-zero) per sample, broken out by protein category — complete both-condition (n=1578), partial both-condition (n=360), ON/OFF (n=10), and single-condition-only (n=606) — showing that most 'missingness' is structural (proteins genuinely absent from one condition) rather than random dropout.",
+      "caption": "Left: count of missing/zero-intensity proteins per sample across the full 2554-protein identified universe. Right: % of proteins present (non-zero) per sample, broken out by protein category — complete both-condition (n=1578), partial both-condition (n=360), ON/OFF (n=10), and single-condition-only (n=604) — showing that most 'missingness' is structural (proteins genuinely absent from one condition) rather than random dropout.",
       "key_numbers": {
-        "n_total_universe": 2554,
+        "n_total_universe": 2552,
         "missing_or_zero_per_sample": {
-          "control_1": 615,
-          "control_2": 560,
-          "treated_1": 441,
-          "treated_2": 469
+          "control_1": 613,
+          "control_2": 558,
+          "treated_1": 439,
+          "treated_2": 467
         },
         "group_sizes": {
           "complete": 1578,
           "partial": 360,
           "on_off": 10,
-          "single_condition": 606
+          "single_condition": 604
         },
         "pct_present_matrix": {
           "complete": {
@@ -672,10 +672,10 @@
             "treated_2": 60.0
           },
           "single_condition": {
-            "control_1": 26.2,
-            "control_2": 29.2,
-            "treated_1": 46.0,
-            "treated_2": 41.4
+            "control_1": 26.3,
+            "control_2": 29.3,
+            "treated_1": 46.2,
+            "treated_2": 41.6
           }
         }
       }

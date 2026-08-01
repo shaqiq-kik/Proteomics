@@ -26,6 +26,7 @@ Guardrails honored here:
 """
 
 import os
+import sys
 
 import numpy as np
 import pandas as pd
@@ -39,12 +40,28 @@ REPLICATE_FC_R_MIN = 0.50
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _ROOT = os.path.dirname(_HERE)
+if _ROOT not in sys.path:  # importable however the caller was launched
+    sys.path.insert(0, _ROOT)
+
+from proteomics_de.config import design  # noqa: E402
+
 DEFAULT_RESULTS_DIR = os.path.join(_HERE, "results")
 DEFAULT_FOLDCHANGE_CSV = os.path.join(DEFAULT_RESULTS_DIR, "foldchange_all.csv")
 
-# Raw-intensity column mapping (confirmed against the foldchange_all.csv header).
-CONTROL_RAW = ("Intensity 31578", "Intensity 31580")  # control rep1, rep2
-TREATED_RAW = ("Intensity 31579", "Intensity 31581")  # treated rep1, rep2
+# Raw-intensity column mapping, DERIVED from config/sample_sheet.tsv.
+#
+# These were hardcoded as CONTROL = 31578/31580, TREATED = 31579/31581 -- the
+# assignment DECISIONS_LOG D7 established is INVERTED. Because this module only
+# ever *labels* two correlations (it does not compute a contrast), the error was
+# silent: the numbers were right and the names were swapped, so
+# qc_replicate_correlation.csv reported the treated pair's r = 0.8624 (n=1723)
+# under `control_raw_r`, and the report repeated it.
+#
+# Nothing here needs to know which group is which -- it correlates replicate 1
+# against replicate 2 within each group -- so deriving the mapping removes the
+# only thing that could be wrong.
+CONTROL_RAW = tuple(design.control_columns())  # control rep1, rep2
+TREATED_RAW = tuple(design.treated_columns())  # treated rep1, rep2
 
 
 def _pearson(a, b):

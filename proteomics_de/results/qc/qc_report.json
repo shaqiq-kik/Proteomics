@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-08-01T05:28:22.162961+00:00",
+  "generated_at": "2026-08-01T05:58:52.903871+00:00",
   "environment": {
     "pandera_version": "0.32.1",
     "pandas_version": "2.3.3",
     "python_version": "3.13.7"
   },
-  "results_dir": "/Users/abrarshakik/Documents/Proteomics/.claude/worktrees/agent-aa190f041a9afcc43/proteomics_de/results",
+  "results_dir": "/Users/abrarshakik/Documents/Proteomics/proteomics_de/results",
   "overall_passed": true,
   "files": [
     {
       "file": "foldchange_all.csv",
-      "path": "/Users/abrarshakik/Documents/Proteomics/.claude/worktrees/agent-aa190f041a9afcc43/proteomics_de/results/foldchange_all.csv",
+      "path": "/Users/abrarshakik/Documents/Proteomics/proteomics_de/results/foldchange_all.csv",
       "expected_rows": 1948,
       "exists": true,
       "rows": 1948,
@@ -37,7 +37,7 @@
     },
     {
       "file": "qc_limma.csv",
-      "path": "/Users/abrarshakik/Documents/Proteomics/.claude/worktrees/agent-aa190f041a9afcc43/proteomics_de/results/qc_limma.csv",
+      "path": "/Users/abrarshakik/Documents/Proteomics/proteomics_de/results/qc_limma.csv",
       "expected_rows": 1938,
       "exists": true,
       "rows": 1938,
@@ -65,7 +65,7 @@
     },
     {
       "file": "ipa_input.csv",
-      "path": "/Users/abrarshakik/Documents/Proteomics/.claude/worktrees/agent-aa190f041a9afcc43/proteomics_de/results/ipa_input.csv",
+      "path": "/Users/abrarshakik/Documents/Proteomics/proteomics_de/results/ipa_input.csv",
       "expected_rows": 715,
       "exists": true,
       "rows": 715,
@@ -82,7 +82,7 @@
     },
     {
       "file": "single_condition_proteins.csv",
-      "path": "/Users/abrarshakik/Documents/Proteomics/.claude/worktrees/agent-aa190f041a9afcc43/proteomics_de/results/single_condition_proteins.csv",
+      "path": "/Users/abrarshakik/Documents/Proteomics/proteomics_de/results/single_condition_proteins.csv",
       "expected_rows": 604,
       "exists": true,
       "rows": 604,
@@ -102,7 +102,7 @@
     },
     {
       "file": "onoff_proteins.csv",
-      "path": "/Users/abrarshakik/Documents/Proteomics/.claude/worktrees/agent-aa190f041a9afcc43/proteomics_de/results/onoff_proteins.csv",
+      "path": "/Users/abrarshakik/Documents/Proteomics/proteomics_de/results/onoff_proteins.csv",
       "expected_rows": 10,
       "exists": true,
       "rows": 10,
@@ -122,7 +122,7 @@
     },
     {
       "file": "de/intensity_matrix.tsv",
-      "path": "/Users/abrarshakik/Documents/Proteomics/.claude/worktrees/agent-aa190f041a9afcc43/proteomics_de/results/de/intensity_matrix.tsv",
+      "path": "/Users/abrarshakik/Documents/Proteomics/proteomics_de/results/de/intensity_matrix.tsv",
       "expected_rows": 1938,
       "exists": true,
       "rows": 1938,
@@ -141,7 +141,7 @@
     },
     {
       "file": "de/design.tsv",
-      "path": "/Users/abrarshakik/Documents/Proteomics/.claude/worktrees/agent-aa190f041a9afcc43/proteomics_de/results/de/design.tsv",
+      "path": "/Users/abrarshakik/Documents/Proteomics/proteomics_de/results/de/design.tsv",
       "expected_rows": 4,
       "exists": true,
       "rows": 4,
@@ -156,7 +156,7 @@
     },
     {
       "file": "de/limma_results.tsv",
-      "path": "/Users/abrarshakik/Documents/Proteomics/.claude/worktrees/agent-aa190f041a9afcc43/proteomics_de/results/de/limma_results.tsv",
+      "path": "/Users/abrarshakik/Documents/Proteomics/proteomics_de/results/de/limma_results.tsv",
       "expected_rows": 1938,
       "exists": true,
       "rows": 1938,
@@ -180,7 +180,7 @@
     },
     {
       "file": "ipa_input_full.csv",
-      "path": "/Users/abrarshakik/Documents/Proteomics/.claude/worktrees/agent-aa190f041a9afcc43/proteomics_de/results/ipa_input_full.csv",
+      "path": "/Users/abrarshakik/Documents/Proteomics/proteomics_de/results/ipa_input_full.csv",
       "expected_rows": 715,
       "exists": true,
       "rows": 715,

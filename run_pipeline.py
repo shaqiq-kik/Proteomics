@@ -498,7 +498,7 @@ def _load_status_tool():
 
 
 def verify_frozen(allow_drift: bool = False, stream=None) -> int:
-    """sha256 every entry of tests/expected/protected.sha256.
+    """sha256 every frozen SCIENTIFIC OUTPUT (tests/expected/outputs.sha256).
 
     Delegates to ``tools.status.freeze_check()``, which owns the manifest
     parsing and hashing; this function only presents the result and decides the
@@ -832,7 +832,7 @@ def build_parser() -> argparse.ArgumentParser:
                    help="skip the stages that make live outbound API calls "
                         "(STRING, g:Profiler, Enrichr); report them SKIPPED")
     p.add_argument("--verify-frozen", action="store_true",
-                   help="sha256 every entry of tests/expected/protected.sha256 "
+                   help="sha256 every frozen output (tests/expected/outputs.sha256) "
                         "and report OK/CHANGED/MISSING per file")
     p.add_argument("--allow-drift", action="store_true",
                    help="with --verify-frozen: report drift but exit 0")

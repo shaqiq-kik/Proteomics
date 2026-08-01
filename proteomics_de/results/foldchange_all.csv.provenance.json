@@ -2,11 +2,11 @@
   "describes": "proteomics_de/results/foldchange_all.csv",
   "caveat": "SILAC design: n = 2 technical replicates per condition (no biological replication) — 0 / 1938 proteins pass FDR < 0.05 (limma); results below are hypothesis-generating only, not confirmed significant.",
   "caveat_source": "proteomics_de/config/constants.py::CAVEAT_TEXT",
-  "git_commit": "d81524b957e14004ffc050d472081a54e71a13d0",
+  "git_commit": "ca2c53c8683d4d320daf8313fc68aa9dea758212",
   "git_dirty": true,
   "sha256": "6fef9264491d33e27c2dec434fe585b7c193065d5a994f447ca394156a67bdf8",
   "n_rows": 1948,
-  "generated_at": "2026-08-01T05:31:51+00:00",
+  "generated_at": "2026-08-01T05:58:59+00:00",
   "tool_versions": {
     "python": "3.13.7",
     "pandas": "2.3.3",

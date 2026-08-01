@@ -46,13 +46,19 @@ design:
   n_technical_replicates_per_group: 2
   n_biological_replicates_per_group: 1
   sample_sheet: "proteomics_de/config/sample_sheet.tsv"
+  # CORRECTED by DECISIONS_LOG D7 (2026-08-01). This block previously read
+  # control = 31578/31580, treated = 31579/31581 -- the inverted assignment.
+  # The lab's own Pilot Project labels them the other way round, and the data
+  # agrees (pilot vs pipeline log2FC correlated at r = -0.82 before the fix,
+  # +0.82 after). The authoritative source is config/sample_sheet.tsv, which the
+  # code actually reads; this block is documentation of what that sheet says.
   groups:
     control:
-      label: "Light (control)"
-      channels: ["Intensity 31578", "Intensity 31580"]
-    treated:
-      label: "Heavy (treated)"
+      label: "Vehicle control"
       channels: ["Intensity 31579", "Intensity 31581"]
+    treated:
+      label: "Testosterone-treated"
+      channels: ["Intensity 31578", "Intensity 31580"]
   contrast:
     name: "treated_vs_control"
     numerator: "treated"

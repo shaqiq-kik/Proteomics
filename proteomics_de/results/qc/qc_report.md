@@ -1,6 +1,6 @@
 # proteomics_de QC validation report
 
-Generated: 2026-08-01T05:28:22.162961+00:00
+Generated: 2026-08-01T05:58:52.903871+00:00
 pandera 0.32.1 / pandas 2.3.3 / Python 3.13.7
 
 **Overall: PASS** (9/9 files passed)
