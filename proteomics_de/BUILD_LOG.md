@@ -225,3 +225,108 @@ the time of writing (a parallel wave — sibling agents may have added more sinc
   `foldchange.py` and `limma_test.py` rather than as standalone modules. Whether
   "inlined" counts as "implemented" is a judgement call; `STATUS.md` reports the
   mapping so a reader can make it themselves.
+
+---
+
+## P5 — `viz/style.py` sample maps derived from the sample sheet (2026-07-31)
+**Wave:** 2 (Tier 2) · **Commit:** see below · **Status:** ✅ done
+**Closes:** the widest single copy of the design literals; unblocks D7's one-line flip.
+
+**What changed.** `viz/style.py` no longer hardcodes `SAMPLE_COLS`,
+`SAMPLE_LABELS`, `SAMPLE_CONDITION`. A new `derive_sample_maps(sheet=None)` reads
+`config/sample_sheet.tsv` through `config.design.read_sample_sheet()` and returns
+the three maps; module scope calls it once. Labels are built as
+`f"{group}_{replicate}"` from the sheet's own columns, so nothing pins a sample id
+to a group. `CAVEAT_TEXT` is now `_constants.CAVEAT_TEXT` — a re-export, not a
+second copy — and `style.CAVEAT_TEXT` keeps resolving for the 10+ `add_caveat()`
+call sites and `viz/heatmap.py`'s direct reference. `SAMPLE_ORDER` still aliases
+`SAMPLE_COLS`.
+
+**Why.** `style` is imported by all five `viz/*` scripts plus `gated/pca_cluster.py`
+and four `enrich/*` modules, so it was the broadest hardcoded copy of the design in
+the tree. Deriving it once propagates to every figure. Per D7 the control/treated
+assignment is inverted and will be flipped by editing the TSV; after this change
+that flip reaches the figures with no code edit.
+
+**Import mechanics.** `viz/*.py` runs as a file path, so `sys.path[0]` is `viz/`
+and the repo root is not importable. `style.py` tries the plain
+`from proteomics_de.config import ...` first (so pytest and `python -m` reuse the
+already-imported package rather than loading a second copy — a duplicate module
+would mean two `CAVEAT_TEXT` objects and a false identity re-export) and only on
+`ImportError` appends `REPO_ROOT`, derived from `__file__`, never from the cwd. It
+appends rather than prepends so it cannot shadow a caller's resolution.
+
+**Files touched:** `proteomics_de/viz/style.py` (modified),
+`proteomics_de/tests/test_style_samples.py` (new, 20 tests). No viz/enrich/gated
+script was touched.
+
+**Verification.**
+* Derived maps equal the pre-refactor literals exactly, including dict key order
+  (`qc_plots.py`/`heatmap.py` build DataFrame columns by iterating `SAMPLE_COLS`,
+  so order is load-bearing for figure bytes).
+* `CAVEAT_TEXT` identity holds against `config.constants`; digest pinned at
+  sha256 `02edd2eb…5446`, 202 bytes, em dash asserted present.
+* Forward path: a synthetic 6-sample sheet yields 6 entries with `control_3` /
+  `treated_3`. Row order in the TSV does not permute the maps.
+* D7 flip: a synthetic sheet with `31579/31581 = control` inverts
+  `SAMPLE_CONDITION`, the column order, and the labels. Every channel's group is
+  asserted to differ from today's.
+* Import mechanics exercised by subprocess from three cwds (viz dir, repo root,
+  `/`) plus the `from viz.style import ...` form that `enrich/network_figure.py`
+  uses.
+* Regenerated all four viz scripts. **All 13 PNGs byte-identical; all 4 JSON
+  manifests byte-identical.** The 13 SVGs are content-identical but not
+  byte-identical — see below.
+* `pytest proteomics_de/tests/` → **71 passed** (51 pre-existing + 20 new).
+
+**🔴 Finding — the SVG byte-freeze is not achievable, and never was.**
+`tools/status.py --check` reports `91 OK, 2 CHANGED, 0 MISSING` (exit 1). Neither
+CHANGED file is a figure:
+1. `proteomics_de/DECISIONS_LOG.md` — **pre-existing**, drifted before this package
+   began. The manifest was frozen at `0c41b20`; `96d16fd` then added D7–D11.
+2. `proteomics_de/viz/style.py` — the file this package exists to modify.
+   `protected.sha256` freezes 20 `.py` sources alongside the outputs, so *any*
+   refactor of a frozen script shows as CHANGED by construction. The "93 OK"
+   target is unreachable for any package that edits a frozen script.
+
+Separately, re-running a viz script rewrites its SVG with different bytes **even
+with completely unmodified code**. Proven by control experiment: `git stash`ed the
+change, re-ran `volcano.py` on the pristine committed `style.py`, and
+`volcano.svg` still drifted while `volcano.png` stayed byte-identical. Two
+consecutive runs of the *same* pristine code also differ from each other. Causes,
+both matplotlib-internal and 100% of the diff:
+* `<dc:date>` — a wall-clock timestamp embedded in every SVG.
+* Randomly salted element ids (`p<10hex>`, `m<10hex>`, `image<10hex>`) regenerated
+  per run.
+Normalizing only those two, every regenerated SVG is **identical** to its committed
+counterpart. The embedded base64 rasters match exactly. So this change moved zero
+pixels; the SVG rows of the freeze are simply not a valid byte-level gate.
+**No figure was re-baselined** — the working tree's figures are the committed bytes.
+
+*Remedy (needs a human decision, not done here):* set
+`plt.rcParams["svg.hashsalt"]` to a fixed string in `apply_style()` and pass
+`metadata={"Date": None}` in `save_fig`'s SVG call. That makes SVG output
+deterministic, but it changes every committed SVG's bytes once, so it requires a
+deliberate re-baseline of the 13 SVG entries in `protected.sha256`.
+
+**Counts before → after.**
+
+| | before | after |
+|---|---|---|
+| Design literals in `style.py` | 12 (4 cols + 4 labels + 4 conditions) | 0 |
+| Copies of `CAVEAT_TEXT` | 2 (`style.py`, `constants.py`) | 1 (`constants.py`) |
+| Modules reached by the derivation | 0 | 10 (5 `viz/`, 4 `enrich/`, `gated/pca_cluster.py`) |
+| Tests | 51 | 71 |
+| Figures content-changed | — | **0** |
+
+**Open follow-ups.**
+* `style.FC_THRESHOLD` (0.585) and `style.RAW_P_THRESHOLD` (0.05) are still
+  literals, duplicating `constants.LOG2_THRESHOLD` / `constants.RAW_P_THRESHOLD`.
+  Left alone deliberately — out of this package's scope and `foldchange.py` was
+  being edited concurrently.
+* `protected.sha256` needs a decision on its two weak rows: the 13 SVGs (not
+  byte-reproducible, see above) and the 20 `.py` sources (guaranteed to drift as
+  the refactor proceeds). Suggest splitting it into an *outputs* freeze that gates
+  CI and a *sources* inventory that does not.
+* `DECISIONS_LOG.md`'s manifest row is stale and will keep failing the gate until
+  someone re-baselines that single entry.

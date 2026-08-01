@@ -25,6 +25,7 @@ Color jobs used in this report:
 """
 
 import json
+import sys
 import warnings
 from pathlib import Path
 
@@ -47,10 +48,32 @@ np.random.seed(SEED)
 # ----------------------------------------------------------------------------
 VIZ_DIR = Path(__file__).resolve().parent
 PROTEOMICS_DE_DIR = VIZ_DIR.parent
+REPO_ROOT = PROTEOMICS_DE_DIR.parent
 RESULTS_DIR = PROTEOMICS_DE_DIR / "results"
 FIGURES_DIR = RESULTS_DIR / "figures"
 FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 MANIFEST_PATH = FIGURES_DIR / "figures_manifest.json"
+
+# ----------------------------------------------------------------------------
+# config package bootstrap
+# ----------------------------------------------------------------------------
+# `viz/*.py` scripts are run as file paths (`python proteomics_de/viz/volcano.py`),
+# so sys.path[0] is *this* directory and the repo root is not importable. Tests,
+# by contrast, get the repo root from tests/conftest.py. Try the normal import
+# first (so pytest / `python -m` reuse the already-imported package object rather
+# than a second copy) and only fall back to extending sys.path.
+#
+# The path is derived from `__file__`, never from the cwd, so this works from any
+# working directory. It is appended, not prepended, so it can never shadow a
+# module the caller already resolves.
+try:  # pragma: no cover - exercised by both branches across entry points
+    from proteomics_de.config import constants as _constants
+    from proteomics_de.config import design as _design
+except ImportError:
+    if str(REPO_ROOT) not in sys.path:
+        sys.path.append(str(REPO_ROOT))
+    from proteomics_de.config import constants as _constants
+    from proteomics_de.config import design as _design
 
 # ----------------------------------------------------------------------------
 # Palette (verbatim from the dataviz skill's references/palette.md)
@@ -117,28 +140,54 @@ REGULATED_LEGEND_ORDER = ["UP", "DOWN", "NO CHANGE", "ON_OFF"]
 
 CONDITION_COLORS = {"control": CATEGORICAL["blue"], "treated": CATEGORICAL["red"]}
 
-SAMPLE_COLS = [
-    "Intensity 31578", "Intensity 31580", "Intensity 31579", "Intensity 31581",
-]
-SAMPLE_LABELS = {
-    "Intensity 31578": "control_1",
-    "Intensity 31580": "control_2",
-    "Intensity 31579": "treated_1",
-    "Intensity 31581": "treated_2",
-}
-SAMPLE_CONDITION = {
-    "Intensity 31578": "control",
-    "Intensity 31580": "control",
-    "Intensity 31579": "treated",
-    "Intensity 31581": "treated",
-}
-SAMPLE_ORDER = SAMPLE_COLS  # control_1, control_2, treated_1, treated_2
+def derive_sample_maps(sheet=None):
+    """Derive the three sample maps from ``config/sample_sheet.tsv``.
 
-CAVEAT_TEXT = (
-    "SILAC design: n = 2 technical replicates per condition (no biological "
-    "replication) — 0 / 1938 proteins pass FDR < 0.05 (limma); results below "
-    "are hypothesis-generating only, not confirmed significant."
-)
+    Returns ``(cols, labels, condition)`` where
+
+    * ``cols`` is the intensity column names in canonical order (control group
+      first, then treated; ascending replicate within a group),
+    * ``labels`` maps each intensity column to its display label
+      ``f"{group}_{replicate}"`` (e.g. ``"control_1"``),
+    * ``condition`` maps each intensity column to its group name.
+
+    Both dicts are keyed in canonical order, so ``list(labels)`` == ``cols``.
+
+    Everything is read from the sheet, nothing is assumed. In particular no
+    sample id is hardwired to a group: DECISIONS_LOG D7 records that the
+    control/treated assignment is inverted and will be flipped by editing the
+    TSV, and that flip propagates through here (and thus through every figure)
+    with no code change. Adding biological replicates likewise only means adding
+    rows -- the maps grow to match.
+
+    Parameters
+    ----------
+    sheet :
+        Optional sheet / path override forwarded to ``config.design``. Defaults
+        to the committed ``config/sample_sheet.tsv``.
+    """
+    df = _design.read_sample_sheet(sheet) if sheet is not None else _design.read_sample_sheet()
+    cols = df["channel"].tolist()
+    groups = df["group"].tolist()
+    labels = {
+        channel: f"{group}_{replicate}"
+        for channel, group, replicate in zip(cols, groups, df["replicate"].tolist())
+    }
+    condition = dict(zip(cols, groups))
+    return cols, labels, condition
+
+
+#: For the committed sheet these are exactly the literals this module used to
+#: hardcode: ``["Intensity 31578", "Intensity 31580", "Intensity 31579",
+#: "Intensity 31581"]`` with labels control_1/control_2/treated_1/treated_2.
+#: `tests/test_style_samples.py` asserts that equality.
+SAMPLE_COLS, SAMPLE_LABELS, SAMPLE_CONDITION = derive_sample_maps()
+SAMPLE_ORDER = SAMPLE_COLS  # canonical order: control group first, then treated
+
+#: Re-exported so there is one source of truth. This exact string is stamped
+#: onto 10+ committed figures via `add_caveat()` (and directly by
+#: `viz/heatmap.py`), so the name must keep resolving here.
+CAVEAT_TEXT = _constants.CAVEAT_TEXT
 
 FC_THRESHOLD = 0.585  # |log2FC| >= 0.585 is the up/down call boundary used upstream
 RAW_P_THRESHOLD = 0.05
