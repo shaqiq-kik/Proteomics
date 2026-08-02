@@ -240,7 +240,8 @@ def main(argv=None) -> int:
     df = core.mark_complete(df, INTENSITY_COLS)
     print(f"Complete proteins (all 4 intensities present & non-zero): {df['complete'].sum()}")
 
-    # 4) Per-replicate SILAC ratios (Heavy / Light), only on complete rows.
+    # 4) Per-replicate treated/control ratios on summed H+L intensity (not the
+    #    native SILAC H/L channel -- DECISIONS_LOG D8), only on complete rows.
     #    Restricting to complete rows means denominators are never 0, so no inf can
     #    be produced (Bug 3).
     mask = df["complete"]

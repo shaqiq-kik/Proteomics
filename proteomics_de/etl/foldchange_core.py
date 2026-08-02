@@ -181,7 +181,8 @@ def mark_complete(df, intensity_cols, column="complete"):
 # 4-5) Ratios and log2 fold change
 # ---------------------------------------------------------------------------
 def compute_ratios(df, control_cols, treated_cols, mask, prefix="ratio_rep"):
-    """Per-replicate SILAC ratios (treated / control), on `mask` rows only.
+    """Per-replicate treated/control ratios on summed H+L intensity, on `mask`
+    rows only. Not the native SILAC H/L channel -- see DECISIONS_LOG D8.
 
     Replicate *i* pairs ``treated_cols[i]`` over ``control_cols[i]``, producing
     ``ratio_rep1``, ``ratio_rep2``, ... Every column is created as NaN first and
