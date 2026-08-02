@@ -205,6 +205,22 @@ STAGES: tuple[Stage, ...] = (
         ),
     ),
     Stage(
+        id="regulated_lists",
+        description=(
+            "Split ipa_input_full.csv into UP/DOWN CSVs with a linear "
+            "fold_change column, sorted by descending magnitude of change "
+            "-- for handing to a person rather than QIAGEN"
+        ),
+        script="proteomics_de/export/regulated_lists.py",
+        depends_on=("ipa_export",),
+        outputs=(
+            Output("proteomics_de/results/regulated_up.csv",
+                   kind="table", expected_rows="n_up"),
+            Output("proteomics_de/results/regulated_down.csv",
+                   kind="table", expected_rows="n_down"),
+        ),
+    ),
+    Stage(
         id="qc_validate",
         description="pandera schema validation of the DE outputs; writes results/qc/qc_report.{json,md}",
         script="proteomics_de/qc/validate.py",

@@ -80,11 +80,12 @@ class _FakeCompleted:
 # --------------------------------------------------------------------------
 # Stage table integrity
 # --------------------------------------------------------------------------
-def test_fourteen_stages_in_the_documented_order():
+def test_fifteen_stages_in_the_documented_order():
     """The order is the deliverable; pin it explicitly so a reorder is visible."""
     assert [s.id for s in rp.STAGES] == [
         "foldchange",
         "ipa_export",
+        "regulated_lists",
         "qc_validate",
         "viz_qc_plots",
         "viz_volcano",
@@ -153,7 +154,7 @@ def test_documented_ordering_constraints_are_encoded():
 
     assert "enrich_string_ppi" in anc["enrich_network_figure"], "8 must follow 7"
     assert "enrich_ora" in anc["enrich_upset"], "10 must follow 9"
-    assert rp.STAGES[-1].id == "report", "13 must be last"
+    assert rp.STAGES[-1].id == "report", "report must be last"
     # Everything is downstream of stage 1.
     for stage in rp.STAGES[1:]:
         assert "foldchange" in anc[stage.id], f"{stage.id} must be downstream of foldchange"
@@ -366,15 +367,15 @@ def test_no_selection_returns_nothing():
 # --------------------------------------------------------------------------
 # --list
 # --------------------------------------------------------------------------
-def test_list_enumerates_all_fourteen_stages(capsys, no_subprocess):
+def test_list_enumerates_all_fifteen_stages(capsys, no_subprocess):
     code, out = _run_cli(["--list"], capsys)
     assert code == 0
     for stage in rp.STAGES:
         assert stage.id in out, f"--list omitted {stage.id}"
         assert stage.script in out
     assert f"{len(rp.STAGES)} stages" in out
-    assert "14 stages" in out
-    # Numbered 1..13.
+    assert "15 stages" in out
+    # Numbered 1..15.
     for n in range(1, len(rp.STAGES) + 1):
         assert f"{n:>2}. " in out
 
