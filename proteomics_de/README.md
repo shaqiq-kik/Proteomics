@@ -9,7 +9,7 @@ read the [repo README](../README.md) first.
 
 | File | Answers |
 |---|---|
-| [`DECISIONS_LOG.md`](DECISIONS_LOG.md) | *Why* — human decisions D1–D11, open questions, what still needs a person. |
+| [`DECISIONS_LOG.md`](DECISIONS_LOG.md) | *Why* — human decisions D1–D16, open questions, what still needs a person. |
 | [`BUILD_LOG.md`](BUILD_LOG.md) | *How it got built* — append-only, per work package, with verification evidence. |
 | [`STATUS.md`](STATUS.md) | *What exists right now* — generated from the filesystem by `tools/status.py`. Never hand-edited, always re-runnable. |
 | [`../research1.md`](../research1.md) | *The design* — the original technical doc and its Section 6 build list (items 1–20), which every module traces back to. |
@@ -76,10 +76,12 @@ replicate ratio *before* averaging; symmetric ±log2(1.5) = ±0.585 thresholds;
 never emit inf/NaN. It also replaces the legacy inner join with an outer merge,
 so proteins seen in only one condition are kept rather than silently dropped.
 
-* **In:** `Copy of General Sheet.xlsx`, sheets `Protein Report L` (control,
-  intensities 31578 / 31580) and `Protein Report H` (treated, 31579 / 31581).
+* **In:** `Copy of General Sheet.xlsx`, sheets `Protein Report L` (treated,
+  intensities 31578 / 31580) and `Protein Report H` (control, 31579 / 31581).
+  Sheet residency is not condition — which sheet is which is set by
+  `config/sample_sheet.tsv` alone, per **D7**.
 * **Out:** `results/foldchange_all.csv` (1948) · `single_condition_proteins.csv`
-  (606) · `onoff_proteins.csv` (10) · `ipa_input.csv` (715 regulated).
+  (604) · `onoff_proteins.csv` (10) · `ipa_input.csv` (715 regulated).
 
 It then chains three modules in-process, each of which only ever *adds* files:
 
@@ -183,7 +185,7 @@ produced an empty plot.
 gseapy prerank (seed 42, 1000 permutations) over all 1938 `qc_limma.csv`
 proteins ranked by `sign(log2FC) × −log10(p)`, against mouse Enrichr libraries
 (GO_Biological_Process_2021 + KEGG_2019_Mouse). 568 gene sets survive the
-min 15 / max 500 size filter. Minimum FDR q = 0.125 — nothing passes 0.05.
+min 15 / max 500 size filter. Minimum FDR q = 0.127 — nothing passes 0.05.
 
 * **In:** `results/qc_limma.csv`.
 * **Out:** `results/enrichment/gsea_results.csv` (568) · `gsea_meta.json` ·
@@ -226,6 +228,7 @@ prose, so nothing in the report is invented.
 | `config/design.py`, `config/constants.py` | The design reader, and one home for thresholds/seed/caveat text previously duplicated across several files. |
 | `etl/accessions.py` | One documented policy for UniProt accession fields, replacing three implicit and conflicting ones. |
 | `export/ipa_export.py` | Builds `ipa_input_full.csv`/`.txt` (limma p-value + FDR joined onto the regulated set) and validates all four IPA deliverables. Pipeline stage 2. |
+| `export/regulated_lists.py` | Splits `ipa_input_full.csv` into `regulated_up.csv`/`regulated_down.csv` with a linear `fold_change` column, sorted by descending magnitude of change. Pipeline stage 3. |
 | `provenance.py` | Writes `<name>.provenance.json` sidecars (caveat text, git commit, sha256, row count, tool versions) for the CSV deliverables. |
 | `qc/boundaries.py` | Real pandera validation at `foldchange.py`'s load/merge/foldchange boundaries; `after_load` is permissive (junk accessions route to quarantine), later stages are strict. Appends to `results/qc/qc_boundaries.json`. |
 | `tests/` | pytest suite. `tests/expected/frozen_counts.json` is the single source of expected row counts; `tests/expected/outputs.sha256` is the byte-freeze manifest (scientific outputs only — see `tools/freeze.py`). |
@@ -240,15 +243,16 @@ most defensible finding in this project.
 
 | File | Rows | Why |
 |---|---|---|
-| `results/ipa_input_significant.csv` | 0 | 0 of 1938 proteins pass FDR < 0.05; the minimum adjusted p-value in the experiment is 0.305. The expected ceiling of n=2 **technical** replicates. **D2.** |
+| `results/ipa_input_significant.csv` | 0 | 0 of 1938 proteins pass FDR < 0.05; the minimum adjusted p-value in the experiment is 0.116. The expected ceiling of n=2 **technical** replicates. **D2.** |
 | `results/enrichment/ora_up.csv` | 0 | 0 GO/KEGG/Reactome terms survive g:SCS correction against the detected-proteome background. **D6.** |
 | `results/enrichment/ora_down.csv` | 0 | Same. **D6.** |
 
 The ORA pair carries the sharper point. The identical UP query against
-g:Profiler's *default whole-genome* background returns **196 "significant"**
-terms, top p = 1.9e-23 ("cytoplasm") — a textbook background-inflation artifact.
-The honest detected-proteome background returns zero. Both were reproduced by a
-fresh live re-query. The zero is the result.
+g:Profiler's *default whole-genome* background returns **326 "significant"**
+terms, top p = 9.0e-70 ("cytoplasm"); the DOWN query returns **196**, top
+p = 1.9e-23 (same term) — a textbook background-inflation artifact either way.
+The honest detected-proteome background returns zero for both. Both were
+reproduced by a fresh live re-query. The zero is the result.
 
 `run_pipeline.py` encodes this directly: each output declares its expected shape,
 and a table contracted to have 0 rows that has 0 rows reports
@@ -291,31 +295,35 @@ refinement sharpens the extremes without crossing the line.
 
 ---
 
-## Two things to know before trusting a number
+## Two things we caught, and had to check with the lab
 
-Both are open items in `DECISIONS_LOG.md`, and neither is a code defect.
+Both are corrected-and-verified items now. Both are in `DECISIONS_LOG.md`,
+and neither was a code defect.
 
-* **D7 — the control/treated direction was inverted.** `proteomics_de/` inherited
-  `31578, 31580 = control` from research1.md line 10. The lab's own earlier
-  Pilot Project (`Pilot Project/Analysis/General Analysis/step1_data_cleaning.py`)
-  says the opposite, and the 30 proteins shared between the two tables confirm
-  it: correlation −0.82, sign agreement 2/30. The direction has been decided —
-  the pilot is right and the pipeline is being flipped — but **the artifacts
-  currently in `results/` are still the pre-flip orientation**. When the flip
-  lands, every log2FC negates and the UP/DOWN counts swap to 509 UP / 206 DOWN.
-  The 715-row IPA total is unchanged, and **p-values are unchanged**: swapping
-  group labels negates logFC and t but leaves |t| and p invariant. So the
-  headline "0 significant at FDR<0.05" survives the flip untouched. Read any
-  directional claim in the committed results with D7 in hand.
-* **D8 — the SILAC quantity is an open question.** Each sample carries its own
+* **D7 — the control/treated direction was inverted, and has been corrected.**
+  `proteomics_de/` originally inherited `31578, 31580 = control` from
+  research1.md line 10. The lab's own earlier Pilot Project
+  (`Pilot Project/Analysis/General Analysis/step1_data_cleaning.py`) says the
+  opposite, and the 30 proteins shared between the two tables confirmed it:
+  correlation −0.82, sign agreement 2/30 pre-fix. The pilot was right;
+  `config/sample_sheet.tsv` now carries the corrected orientation, and the fix
+  was verified as a pure sign inversion (foldchange and limma logFC negate to
+  within float noise; p-values are exactly unchanged, as they must be —
+  swapping group labels negates logFC and t but leaves |t| and p invariant).
+  Every artifact in `results/` reflects the corrected orientation: UP/DOWN is
+  **509 UP / 206 DOWN** (post-fix correlation with the pilot: +0.82, sign
+  agreement 93.3%), the 715-row IPA total is unchanged, and the headline
+  "0 significant at FDR<0.05" is untouched. Full evidence in
+  `DECISIONS_LOG.md` D7.
+* **D8 — the SILAC quantity question, resolved.** Each sample carries its own
   `Intensity L`, `Intensity H` and `Ratio H/L` (verified: `Intensity L +
   Intensity H == Intensity` exactly). The pipeline uses combined `Intensity` —
   the sum of both isotope channels — and never touches the ratios; the two
-  correlate at r = 0.066. All four samples show median log2(H/L) between −1.05
-  and −1.53, the same direction every run, so this is not a reciprocal
-  label-swap design. If Heavy is a common spike-in reference (super-SILAC), the
-  ratio is the correct abundance measure and every result changes. **Unresolved;
-  needs the lab.**
+  correlate at r = 0.066. The professor confirmed the SILAC metabolic-labelling
+  step wasn't actually completed during the experiment, so `Ratio H/L` carries
+  no real signal and was never a valid alternative. Since the pipeline has
+  never used it, **nothing about the results changes.** Full evidence in
+  `DECISIONS_LOG.md` D8.
 
 ---
 

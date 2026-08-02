@@ -204,25 +204,22 @@ changed path coordinate and ignores pure regeneration noise.
 
 ## 🔵 STILL NEEDS YOU — nothing code can close
 
-1. **D8 — is the pipeline analysing the right quantity?** THE OPEN SCIENTIFIC
-   QUESTION. Each sample carries its own `Intensity L`, `Intensity H` and
-   `Ratio H/L`; the pipeline uses the **sum of both isotope channels** and never
-   touches the SILAC ratios. The two readouts correlate at **r = 0.066**. If
-   Heavy is a spike-in reference, the correct per-sample quantity is the ratio to
-   that reference and every result changes. Ask the lab before presenting.
-2. **D7 — confirm the corrected orientation** with whoever ran the experiment.
+1. **D7 — confirm the corrected orientation** with whoever ran the experiment.
    The evidence is strong (the lab's own Pilot Project labelling, plus r = +0.82
    after correction versus -0.82 before), but it deserves a human yes.
-3. **Run QIAGEN IPA.** Upload `results/ipa_input_full.csv` — it now carries
+2. **Run QIAGEN IPA.** Upload `results/ipa_input_full.csv` — it now carries
    `p_value` and `adj_p_value`, which unlock IPA's expression cutoffs.
    `ipa_input_significant.csv` is header-only by design (0 pass FDR).
-4. **Biological replicates.** The only thing that lifts the n=2 ceiling. Adding
+3. **Biological replicates.** The only thing that lifts the n=2 ceiling. Adding
    them is now genuinely a sample-sheet edit for the design matrix, viz labels
    and the gated dispatcher (verified at n=6 and n=20); `foldchange.py`,
    `replicate_check.py` and `qc/schema.py` will fail loudly as 2-channel-SILAC
    specific and need regenerating.
-5. **Decide on CI.** `.github/workflows/tests.yml` exists but only runs if you
+4. **Decide on CI.** `.github/workflows/tests.yml` exists but only runs if you
    push to GitHub.
+
+(D8 — is the pipeline analysing the right quantity — closed 2026-08-02, see
+"SILAC quantity resolved" above.)
 
 ---
 
@@ -252,3 +249,33 @@ fixture: zero. Deleted the file and all three dead readers rather than keep
 patching references to a manifest nothing reads — git already tracks source
 history better than a hand-copied hash list, and its mere presence had already
 caused two separate investigations to mistake it for the gate.
+
+---
+
+## SILAC quantity resolved (2026-08-02)
+
+**⚪ D8 CLOSED — confirmed by the lab: the SILAC labelling step was not
+actually completed, so `Ratio H/L` carries no real signal.** The professor
+replied to the report (`for_dr_walker.html`) confirming that the SILAC
+metabolic-labelling step wasn't correctly executed during the wet-lab
+experiment — an intended addition was omitted — so the native `Intensity L`
+/ `Intensity H` / `Ratio H/L` channels do not reflect a real heavy/light
+label split and should not be used. He asked whether this changes the
+pipeline's interpretation.
+
+It does not, because the premise of D8 already assumed this might be true and
+the pipeline was built defensively: it has **never** read, computed from, or
+exported anything derived from the native `Ratio H/L` columns. Every
+consumer of intensity data — `foldchange.py` (the fold-change/regulation
+call), `limma_test.R` (the moderated t-test), `enrich/gsea.py` (the GSEA
+prerank ranking metric), and `enrich/ora.py` (the UP/DOWN query gene sets) —
+has exclusively used the combined/summed `Intensity` (H+L) column from the
+start. No result in `results/` changes, no re-analysis is needed, and no
+number in the report moves as a consequence of this confirmation.
+
+D8's original open question — "is Heavy a spike-in reference, making the
+ratio the correct quantity?" — is now answered "no": there is no valid H/L
+ratio to have used in the first place. The `r = 0.066` correlation noted in
+the original D8 entry was, in hindsight, exactly what you'd expect from
+comparing a real intensity signal against a ratio computed from a labelling
+step that didn't run as designed.

@@ -18,7 +18,7 @@ self-contained HTML report.
 finding.**
 
 * **0 of 1938** tested proteins pass FDR < 0.05. The smallest adjusted p-value
-  in the entire experiment is **0.305**. (63 proteins reach an *uncorrected*
+  in the entire experiment is **0.116**. (55 proteins reach an *uncorrected*
   p < 0.05 — fewer than the ~97 you would expect from 1938 tests by chance
   alone at that threshold.)
 * **0** GO / KEGG / Reactome terms survive over-representation testing against
@@ -100,7 +100,8 @@ Run the tests with:
 | `proteomics_de/results/figures/` | All PNG + SVG figures, plus per-figure JSON manifests with captions and key numbers. |
 | **`proteomics_de/report/report.html`** | **The deliverable.** One self-contained interactive HTML file — open it in a browser, no server, no assets. |
 | `proteomics_de/results/ipa_input.csv` | 715 regulated proteins, formatted for QIAGEN IPA upload. |
-| `proteomics_de/DECISIONS_LOG.md` | Human decisions D1–D11: what was chosen, why, and what still needs a person. |
+| `proteomics_de/results/regulated_up.csv`, `regulated_down.csv` | The same 715 proteins split UP/DOWN (509/206) with a linear `fold_change` column, sorted by magnitude of change — for handing to a person rather than QIAGEN. |
+| `proteomics_de/DECISIONS_LOG.md` | Human decisions D1–D16: what was chosen, why, and what still needs a person. |
 | `proteomics_de/STATUS.md` | Generated inventory of what exists. `.venv/bin/python tools/status.py` to refresh. |
 | `proteomics_de/BUILD_LOG.md` | Append-only build history, per work package. |
 | `research1.md` | The original technical design doc (the Section 6 build list everything traces back to). |
@@ -111,23 +112,28 @@ Run the tests with:
 
 ## What still needs a human
 
-Two items are open and no amount of code can close them. Both are in
-`proteomics_de/DECISIONS_LOG.md` in full.
+Both open scientific questions are now resolved. Full detail is in
+`proteomics_de/DECISIONS_LOG.md`.
 
-* **D8 — is the pipeline analysing the right SILAC quantity?** Each sample
-  carries its own `Intensity L`, `Intensity H` and `Ratio H/L`. The pipeline
-  uses the combined `Intensity` (the sum of both isotope channels) and never
-  touches the SILAC ratios; the two approaches correlate at only r = 0.066. If
-  Heavy is a common spike-in reference (super-SILAC), the ratio is the correct
-  abundance measure and every result would change. **This needs an answer from
-  the lab before the results are presented.**
-* **D7 — the control/treated direction was found inverted and is being
-  flipped.** The lab's own earlier Pilot Project assigns the samples the other
-  way round, and the 30 shared proteins confirm it (correlation −0.82, sign
-  agreement 2/30). Direction has been decided; the flip is landing. Until it
-  does, the committed UP/DOWN labels in `results/` are the pre-flip orientation
-  and will swap. p-values are unaffected — swapping group labels negates the
-  fold change but leaves |t| and p invariant.
+Resolved: **D8 — the SILAC labelling step was not actually completed.** Each
+sample carries its own `Intensity L`, `Intensity H` and `Ratio H/L`, and the
+pipeline was flagged as possibly analysing the wrong quantity if those
+channels were meaningful (D8, correlate at only r = 0.066 with the combined
+`Intensity`). The professor confirmed the SILAC metabolic-labelling step
+wasn't correctly executed during the experiment, so `Ratio H/L` carries no
+real signal and only total intensity should be used. **This changes nothing:**
+the pipeline has, from the start, used only the combined `Intensity` (H+L)
+across `foldchange.py`, `limma_test.R`, `enrich/gsea.py` and `enrich/ora.py`,
+and has never read or computed from the native SILAC ratio.
+
+Resolved: **D7 — the control/treated direction was inverted.** The lab's own
+earlier Pilot Project assigns the samples the other way round, and the 30
+shared proteins confirmed it (correlation −0.82, sign agreement 2/30). The
+flip has landed (`config/sample_sheet.tsv` now carries the corrected
+orientation) and was verified as a pure sign inversion; every artifact in
+`results/` reflects it — UP/DOWN is **509 UP / 206 DOWN**. p-values were
+unaffected throughout — swapping group labels negates the fold change but
+leaves |t| and p invariant.
 
 Optional: `results/ipa_input.csv` is ready to upload to QIAGEN IPA, which is a
 licensed manual tool no script can drive (D4).
