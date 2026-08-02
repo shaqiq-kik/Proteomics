@@ -113,7 +113,7 @@ def _make_figure(rep1, rep2, fc_pearson_r, results_dir):
     ax.set_aspect("equal")
     ax.set_xlabel("log2 fold-change, run 1 (log2_rep1)")
     ax.set_ylabel("log2 fold-change, run 2 (log2_rep2)")
-    ax.set_title("Replicate fold-change agreement (Bug 6)")
+    ax.set_title("Replicate fold-change agreement")
     r_text = "n/a" if fc_pearson_r is None else f"{fc_pearson_r:.3f}"
     ax.annotate(
         f"Pearson r = {r_text}\nn = {len(rep1)}",
