@@ -3,8 +3,8 @@
 > **This file is GENERATED. Do not hand-edit.**
 > Regenerate with `.venv/bin/python tools/status.py` (source: `tools/status.py`). Every number below is read off the filesystem at generation time, so it cannot silently go stale.
 
-* Generated: **2026-08-01 02:12:11 EDT**
-* Git HEAD: **`ea86ea6`**
+* Generated: **2026-08-03 10:55:53 EDT**
+* Git HEAD: **`434f996`**
 * Repo root: `/Users/abrarshakik/Documents/Proteomics`
 
 Companions: `DECISIONS_LOG.md` (human decisions D1–D6) · `BUILD_LOG.md` (per-work-package history) · `../research1.md` §Build Log (per-bug narrative).
@@ -44,7 +44,7 @@ Companions: `DECISIONS_LOG.md` (human decisions D1–D6) · `BUILD_LOG.md` (per-
 
 ## b) Artifact inventory (`proteomics_de/results/`)
 
-**76 files**, 20.7 MB total, 24 tabular (`.csv`/`.tsv`).
+**86 files**, 20.9 MB total, 29 tabular (`.csv`/`.tsv`).
 
 Row counts EXCLUDE the header. Three files are header-only **by design** — they are the honest scientific result, not a failure. See `DECISIONS_LOG.md` D2 and D6.
 
@@ -124,7 +124,17 @@ Row counts EXCLUDE the header. Three files are header-only **by design** — the
 | `results/qc_limma.csv.provenance.json` | 800 B | — |  |
 | `results/qc_limma_vanilla.csv` | 317.9 KB | 1,938 |  |
 | `results/qc_replicate_correlation.csv` | 179 B | 1 |  |
-| `results/replicate_correlation.png` | 99.7 KB | — |  |
+| `results/qualitative_changes.csv` | 164.5 KB | 614 |  |
+| `results/qualitative_changes.csv.provenance.json` | 810 B | — |  |
+| `results/regulated_down.csv` | 17.9 KB | 206 |  |
+| `results/regulated_down.csv.provenance.json` | 805 B | — |  |
+| `results/regulated_down_partial.csv` | 7.7 KB | 96 |  |
+| `results/regulated_down_partial.csv.provenance.json` | 812 B | — |  |
+| `results/regulated_up.csv` | 43.2 KB | 509 |  |
+| `results/regulated_up.csv.provenance.json` | 803 B | — |  |
+| `results/regulated_up_partial.csv` | 11.8 KB | 152 |  |
+| `results/regulated_up_partial.csv.provenance.json` | 811 B | — |  |
+| `results/replicate_correlation.png` | 98.4 KB | — |  |
 | `results/single_condition_proteins.csv` | 28.8 KB | 604 | matches expected 604 |
 
 All 7 headline row counts match the contract in `config/config.yaml`.
@@ -133,9 +143,9 @@ All 7 headline row counts match the contract in `config/config.yaml`.
 
 ## c) Byte-freeze drift
 
-Manifest: `proteomics_de/tests/expected/outputs.sha256` (75 files).
+Manifest: `proteomics_de/tests/expected/outputs.sha256` (80 files).
 
-**75 OK · 0 CHANGED · 0 MISSING**
+**80 OK · 0 CHANGED · 0 MISSING**
 
 ✅ **No drift.** Every frozen file is byte-identical to its baseline.
 
@@ -155,19 +165,21 @@ Manifest: `proteomics_de/tests/expected/outputs.sha256` (75 files).
 | `tests/test_foldchange_core.py` | 29 |
 | `tests/test_freeze.py` | 7 |
 | `tests/test_gating.py` | 22 |
-| `tests/test_golden_outputs.py` | 27 |
+| `tests/test_golden_outputs.py` | 31 |
 | `tests/test_ipa_export.py` | 41 |
 | `tests/test_limma_contract.py` | 28 |
 | `tests/test_limma_r.py` | 37 |
 | `tests/test_merge_guard.py` | 16 |
 | `tests/test_provenance.py` | 30 |
+| `tests/test_regulated_lists.py` | 19 |
 | `tests/test_report_facts.py` | 24 |
-| `tests/test_run_pipeline.py` | 40 |
+| `tests/test_run_pipeline.py` | 43 |
 | `tests/test_schemas.py` | 18 |
 | `tests/test_string_ppi.py` | 36 |
 | `tests/test_style_samples.py` | 18 |
+| `tests/test_supplementary_lists.py` | 23 |
 
-**21 test files · 527 test functions.**
+**23 test files · 576 test functions.**
 
 Module coverage — a module counts as covered if a test file is named after it (`test_<module>.py`) or mentions it in its filename:
 
@@ -185,6 +197,8 @@ Module coverage — a module counts as covered if a test file is named after it 
 | `etl/foldchange_core.py` | ✅ yes |
 | `etl/merge_guard.py` | ✅ yes |
 | `export/ipa_export.py` | ✅ yes |
+| `export/regulated_lists.py` | ✅ yes |
+| `export/supplementary_lists.py` | ✅ yes |
 | `foldchange.py` | ✅ yes |
 | `gated/pca_cluster.py` | ❌ none |
 | `limma_test.py` | ❌ none |
@@ -201,7 +215,7 @@ Module coverage — a module counts as covered if a test file is named after it 
 | `viz/style.py` | ✅ yes |
 | `viz/volcano.py` | ❌ none |
 
-**13/27 pipeline modules have a matching test file.**
+**15/29 pipeline modules have a matching test file.**
 
 ---
 

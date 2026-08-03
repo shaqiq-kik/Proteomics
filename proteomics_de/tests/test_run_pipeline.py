@@ -80,12 +80,13 @@ class _FakeCompleted:
 # --------------------------------------------------------------------------
 # Stage table integrity
 # --------------------------------------------------------------------------
-def test_fifteen_stages_in_the_documented_order():
+def test_sixteen_stages_in_the_documented_order():
     """The order is the deliverable; pin it explicitly so a reorder is visible."""
     assert [s.id for s in rp.STAGES] == [
         "foldchange",
         "ipa_export",
         "regulated_lists",
+        "regulated_lists_supplementary",
         "qc_validate",
         "viz_qc_plots",
         "viz_volcano",
@@ -367,15 +368,15 @@ def test_no_selection_returns_nothing():
 # --------------------------------------------------------------------------
 # --list
 # --------------------------------------------------------------------------
-def test_list_enumerates_all_fifteen_stages(capsys, no_subprocess):
+def test_list_enumerates_all_sixteen_stages(capsys, no_subprocess):
     code, out = _run_cli(["--list"], capsys)
     assert code == 0
     for stage in rp.STAGES:
         assert stage.id in out, f"--list omitted {stage.id}"
         assert stage.script in out
     assert f"{len(rp.STAGES)} stages" in out
-    assert "15 stages" in out
-    # Numbered 1..15.
+    assert "16 stages" in out
+    # Numbered 1..16.
     for n in range(1, len(rp.STAGES) + 1):
         assert f"{n:>2}. " in out
 

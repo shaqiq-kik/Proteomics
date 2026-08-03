@@ -5,7 +5,7 @@
 #                   renumbering its randomly-salted element ids, which
 #                   differ between runs of identical code.
 # Source files are deliberately NOT frozen; git versions those.
-# entries: 77
+# entries: 80
 bb470083ec4388f34842a26bc81e96036b6a4766d8d26958ae6c7b80004a561e  raw  proteomics_de/_limma_input.csv
 7f561ebd1c113b6cb24675911cdb9edda056aea6969386a3ab8b10673d8289a5  raw  proteomics_de/_limma_output.csv
 4889043fb3fd3c50e28209e864f7281e8bd33ae1857ed3f5996ff829d1bd2433  raw  proteomics_de/_limma_versions.txt
@@ -79,7 +79,10 @@ ccea3c6fafa4fde54e11085fbe51f6ed13f0268978b78747d7cd97f469a9ed77  ts-canon  prot
 a93b6f96814805282122a84a12656e19eb8fbeabd6a6f5fa183ac85e2e6db794  raw  proteomics_de/results/qc_limma.csv
 7f84157f98b689ff6bc13cb91fb93342238d4d669a8ba4c3adad6534342b0229  raw  proteomics_de/results/qc_limma_vanilla.csv
 823089c5d98bc4dd1456d3cf736213d5426f5a05ba0d033164b2d884d2189088  raw  proteomics_de/results/qc_replicate_correlation.csv
+f917bca39877a01aefd9f8a17a6b986b18984b46ae37277b881e57d01913ed8c  raw  proteomics_de/results/qualitative_changes.csv
 865e052d69d4e6f55dca0aea925b791f694ad4b72e13c1f20a84383385446730  raw  proteomics_de/results/regulated_down.csv
+aca6b0cf3912e58bec395cfeba90a32e5c6a6d7340b00a49e523a8099e69da13  raw  proteomics_de/results/regulated_down_partial.csv
 1f46526fb964be49b9c53e8b70e371da3e520b0fe3c1b1e7f5d22417c99a38b6  raw  proteomics_de/results/regulated_up.csv
+06b34085e4d48313cb635392bc5266e5c8fd45bff494dcc590ccca9b25ef6e20  raw  proteomics_de/results/regulated_up_partial.csv
 caa8a8be39166fe2c3d7f587f33104dd2eb4066626391dc5542e7eb25f66d789  raw  proteomics_de/results/replicate_correlation.png
 80b480693b04222e88a1c57b00f6cbd83b29eb295b3c38f68078a7a72de68f40  raw  proteomics_de/results/single_condition_proteins.csv

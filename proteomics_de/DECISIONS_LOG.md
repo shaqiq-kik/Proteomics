@@ -279,3 +279,80 @@ ratio to have used in the first place. The `r = 0.066` correlation noted in
 the original D8 entry was, in hindsight, exactly what you'd expect from
 comparing a real intensity signal against a ratio computed from a labelling
 step that didn't run as designed.
+
+---
+
+## Supplementary regulated exports (2026-08-03)
+
+**⚪ D17 — Three tiers of missing-data proteins never reached
+`regulated_up.csv`/`regulated_down.csv`; two new additive files close the
+gap.** A professor review of the 509 UP / 206 DOWN lists noticed EGF, EREG
+missing from DOWN and FRZB missing from UP, despite FRZB being highly
+induced in the earlier Pilot Project (log2FC +4.42 there). He also asked how
+many of the ~40 proteins identified in that earlier analysis still show up
+in the current lists.
+
+Root cause: `regulated_up.csv`/`regulated_down.csv` are keyed on
+`complete=True` — every one of the 4 raw replicate intensities present and
+non-zero (`etl/foldchange_core.mark_complete`) — decided BEFORE limma ever
+runs. That correctly excludes two tiers of otherwise-real signal:
+
+* **360 "tier-3" partial-missingness proteins** (1-2 of 4 replicates
+  zero/missing, e.g. FRZB P97401, GAS6 Q61592, LUM P51885, SLIT3 Q9WVB4)
+  never get a raw log2FC or regulated call (parked in the default "NO
+  CHANGE"), but ARE tested by limma after standard MinProb imputation —
+  `qc_limma.csv` already carries a legitimate `limma_log2FC`/`p_value`/
+  `adj_p_value`/`n_imputed` for every one of them. Reclassifying at the
+  existing `LOG2_THRESHOLD` (0.585) newly calls 248 of the 360 (**152 UP,
+  96 DOWN**); 0/360 pass FDR<0.05, consistent with the dataset-wide 0/1938
+  finding (D2).
+* **614 "tier-1/2" fully-undetected proteins** (EGF P01132, EREG Q61521
+  among them) split across `single_condition_proteins.csv` (604 — absent
+  from one whole raw MaxQuant sheet; EGF/EREG are `detected_in=control_only`)
+  and `onoff_proteins.csv` (10 — present in both sheets structurally, every
+  replicate on one side null/zero). Both are correctly excluded from limma
+  (testing them would invent an entire absent condition) and so never reach
+  any regulated file, complete or otherwise.
+
+*Decided with the professor's evidence in hand, not by loosening the raw
+classifier*: `ipa_input.csv`, `ipa_input_full.csv`, `regulated_up.csv` and
+`regulated_down.csv` stay byte-for-byte untouched (all four ripple into
+STRING/GSEA/ORA/the report, and the first is already uploaded to QIAGEN).
+Two new files are added instead, both purely additive, built by the new
+`export/supplementary_lists.py` module:
+
+* `results/regulated_up_partial.csv` / `results/regulated_down_partial.csv`
+  — the 152/96 tier-3 proteins, reclassified from `qc_limma.csv`'s
+  `limma_log2FC` at the existing threshold, carrying `n_imputed` on every
+  row so a reader can never mistake an imputed call for a complete-case one.
+* `results/qualitative_changes.csv` — the 614 tier-1/2 proteins (372 UP /
+  242 DOWN: UP = detected only in treated / `on_with_treatment`, i.e. gained
+  after testosterone; DOWN = detected only in control / `off_with_treatment`,
+  i.e. lost), with NO fold-change or p-value column — neither is
+  statistically valid when one whole condition has zero data points or zero
+  variance — and an explicit `note` column stating why.
+
+New `run_pipeline.py` stage `regulated_lists_supplementary` (depends only on
+`foldchange`, since all three source files are `foldchange` outputs); new
+keys in `frozen_counts.json`; new regression tests in `test_golden_outputs.py`
+(`test_frzb_gas6_lum_slit3_are_in_regulated_up_partial`,
+`test_egf_ereg_are_in_qualitative_changes_as_down`,
+`test_supplementary_files_are_disjoint_from_the_core_regulated_set`) pinning
+FRZB/GAS6/LUM/SLIT3 into `regulated_up_partial.csv` and EGF/EREG into
+`qualitative_changes.csv` with `direction=DOWN`, so this exact gap can never
+silently regress again.
+
+Separately, a one-off reconciliation (`tools/reconcile_pilot_panel.py`, not
+a pipeline stage — it answers one specific email, and its input lives
+entirely outside `proteomics_de/`) against the Pilot Project's 42-gene
+panel, matching by UniProt accession first and gene symbol as fallback,
+finds **33/42** pilot proteins present somewhere in the union of all five
+current deliverables. Accession matching resolves the pilot's `C4A/C4B`
+(human dual-gene nomenclature — the mouse carries one gene, `C4b`, at the
+very accession the pilot cites, P01029) and three gene-symbol mismatches
+(`LYZ`→`Lyz2`, `NAXE`→`Apoa1bp`, `CYRIB`→`Fam49b`) that a symbol-only match
+would silently miss. The 9 still unmatched (AOC1, BGN, AGT, AMH, TGFBI,
+CST3, CST12, CRISP1/CRISP3, BMP1) are all genuinely detected in the current
+dataset — 8 `complete=True, regulated="NO CHANGE"` with real log2FC between
+0.20 and 0.58, 1 tier-3-tested (AOC1, Q8JZQ5) at 0.174 — simply below the
+±0.585 threshold in this larger, more complete run. Not a pipeline gap.

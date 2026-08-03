@@ -229,6 +229,7 @@ prose, so nothing in the report is invented.
 | `etl/accessions.py` | One documented policy for UniProt accession fields, replacing three implicit and conflicting ones. |
 | `export/ipa_export.py` | Builds `ipa_input_full.csv`/`.txt` (limma p-value + FDR joined onto the regulated set) and validates all four IPA deliverables. Pipeline stage 2. |
 | `export/regulated_lists.py` | Splits `ipa_input_full.csv` into `regulated_up.csv`/`regulated_down.csv` with a linear `fold_change` column, sorted by descending magnitude of change. Pipeline stage 3. |
+| `export/supplementary_lists.py` | Two more files closing the gap `regulated_up/down.csv` structurally cannot: `regulated_up_partial.csv`/`regulated_down_partial.csv` (152/96 tier-3 proteins reclassified from limma's imputed log2FC) and `qualitative_changes.csv` (614 tier-1/2 proteins never identified on one side at all, with a `direction` call but no fold change). Pipeline stage 4. **D17.** |
 | `provenance.py` | Writes `<name>.provenance.json` sidecars (caveat text, git commit, sha256, row count, tool versions) for the CSV deliverables. |
 | `qc/boundaries.py` | Real pandera validation at `foldchange.py`'s load/merge/foldchange boundaries; `after_load` is permissive (junk accessions route to quarantine), later stages are strict. Appends to `results/qc/qc_boundaries.json`. |
 | `tests/` | pytest suite. `tests/expected/frozen_counts.json` is the single source of expected row counts; `tests/expected/outputs.sha256` is the byte-freeze manifest (scientific outputs only — see `tools/freeze.py`). |
@@ -260,6 +261,28 @@ and a table contracted to have 0 rows that has 0 rows reports
 failure only where rows were expected. The inverse is also enforced: if one of
 these ever becomes non-empty the runner FAILs and says so, because that is a
 scientific event a human must sign off on, not a silent improvement.
+
+---
+
+## Two supplementary files, and why they exist
+
+`regulated_up.csv`/`regulated_down.csv` are gated on `complete=True` --
+every one of the 4 raw replicate intensities present and non-zero -- decided
+before limma ever runs. That gate is correct for the frozen QIAGEN
+deliverable, but it silently drops two tiers of real signal: 360 proteins
+with 1-2 missing replicates that limma still tests after MinProb imputation
+(FRZB, GAS6, LUM, SLIT3 among them), and 614 proteins never identified at
+all on one side (EGF, EREG among them). Both tiers were the subject of a
+direct professor report ("EGF, EREG, FRZB are missing"). D17 adds two files
+rather than loosening the gate, keeping `ipa_input.csv`/`ipa_input_full.csv`/
+`regulated_up.csv`/`regulated_down.csv` byte-for-byte untouched:
+
+| File | Rows | Source | What it is NOT |
+|---|---|---|---|
+| `results/regulated_up_partial.csv` / `..._down_partial.csv` | 152 / 96 | `qc_limma.csv` filtered to `n_imputed > 0`, reclassified at `LOG2_THRESHOLD` | Not complete-case data -- every row carries `n_imputed >= 1`. |
+| `results/qualitative_changes.csv` | 614 (372 UP / 242 DOWN) | `single_condition_proteins.csv` + `onoff_proteins.csv`, unioned | Has no fold-change or p-value column, on purpose -- neither is valid when one whole condition has zero data points or zero variance. |
+
+See DECISIONS_LOG D17 for the full evidence and the pilot-panel reconciliation.
 
 ---
 

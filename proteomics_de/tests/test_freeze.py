@@ -26,7 +26,9 @@ def test_manifest_exists_and_parses():
     # Grew during the D7 enrichment re-run: the previously-uncached STRING and
     # g:Profiler responses are now recorded under results/enrichment/raw/.
     # 75 -> 77: regulated_up.csv/regulated_down.csv added (PI export stage).
-    assert len(entries) == 77, f"expected 77 frozen artifacts, got {len(entries)}"
+    # 77 -> 80: regulated_up_partial.csv/regulated_down_partial.csv/
+    # qualitative_changes.csv added (D17 supplementary export stage).
+    assert len(entries) == 80, f"expected 80 frozen artifacts, got {len(entries)}"
     modes = {mode for _sha, mode in entries.values()}
     assert modes <= {"raw", "svg-canon", "ts-canon"}, modes
 
@@ -47,7 +49,7 @@ def test_tree_matches_manifest():
     assert not changed, f"frozen outputs drifted: {changed}"
     assert not missing, f"frozen outputs missing: {missing}"
     assert not extra, f"untracked artifacts present: {extra}"
-    assert len(ok) == 77  # 75 -> 77: regulated_up.csv/regulated_down.csv added
+    assert len(ok) == 80  # 77 -> 80: the D17 supplementary export stage's 3 files
 
 
 def test_svg_canonicalization_absorbs_regeneration_noise(tmp_path):

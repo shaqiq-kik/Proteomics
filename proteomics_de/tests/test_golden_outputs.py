@@ -97,6 +97,40 @@ def onoff_proteins(results_dir) -> pd.DataFrame:
     return _read(results_dir / "onoff_proteins.csv")
 
 
+@pytest.fixture(scope="module")
+def regulated_up(results_dir) -> pd.DataFrame:
+    return _read(results_dir / "regulated_up.csv")
+
+
+@pytest.fixture(scope="module")
+def regulated_down(results_dir) -> pd.DataFrame:
+    return _read(results_dir / "regulated_down.csv")
+
+
+@pytest.fixture(scope="module")
+def regulated_up_partial(results_dir) -> pd.DataFrame:
+    path = results_dir / "regulated_up_partial.csv"
+    if not path.exists():
+        pytest.skip(f"{path} not present")
+    return _read(path)
+
+
+@pytest.fixture(scope="module")
+def regulated_down_partial(results_dir) -> pd.DataFrame:
+    path = results_dir / "regulated_down_partial.csv"
+    if not path.exists():
+        pytest.skip(f"{path} not present")
+    return _read(path)
+
+
+@pytest.fixture(scope="module")
+def qualitative_changes(results_dir) -> pd.DataFrame:
+    path = results_dir / "qualitative_changes.csv"
+    if not path.exists():
+        pytest.skip(f"{path} not present")
+    return _read(path)
+
+
 # ---------------------------------------------------------------------------
 # 1. Population invariants -- who is in which file
 # ---------------------------------------------------------------------------
@@ -649,10 +683,85 @@ def test_frozen_counts_are_internally_consistent(frozen_counts):
         "frozen_counts.json now claims a significant protein -- see D2 before "
         "believing it"
     )
+    # D17 supplementary-export counts. tier3_missing_rows counts EVERY row
+    # qc_limma tested after imputation (n_imputed > 0), most of which stay
+    # below threshold and are correctly excluded -- so this is <=, not a
+    # partition, unlike the pairs below which genuinely are.
+    assert c["n_up_partial"] + c["n_down_partial"] <= c["tier3_missing_rows"]
+    assert c["single_condition_up"] + c["single_condition_down"] == c["single_condition_rows"]
+    assert c["onoff_up"] + c["onoff_down"] == c["onoff_rows"]
+    assert c["n_qualitative"] == c["single_condition_rows"] + c["onoff_rows"]
+    assert c["n_qualitative_up"] == c["single_condition_up"] + c["onoff_up"]
+    assert c["n_qualitative_down"] == c["single_condition_down"] + c["onoff_down"]
+    assert c["n_qualitative"] == c["n_qualitative_up"] + c["n_qualitative_down"]
 
 
 #: The one non-count, non-comment key: the commit the counts were derived at.
 _PROVENANCE_KEYS = {"baseline_git_head"}
+
+
+# ---------------------------------------------------------------------------
+# 8. D17 -- the supplementary exports must actually close the reported gap
+# ---------------------------------------------------------------------------
+# A professor review of regulated_up.csv/regulated_down.csv found EGF, EREG
+# missing from DOWN and FRZB missing from UP -- see DECISIONS_LOG D17. These
+# tests pin the exact named proteins in place so this cannot silently regress
+# back to invisible; they are deliberately about specific genes, not just
+# counts, because a count-only check could pass while these four proteins
+# individually vanished again.
+
+
+def test_frzb_gas6_lum_slit3_are_in_regulated_up_partial(regulated_up_partial):
+    """FRZB was highly induced in the earlier Pilot Project (log2FC +4.42
+    there) but was silently absent from regulated_up.csv because it has one
+    missing raw replicate. GAS6, LUM and SLIT3 share the exact same failure
+    mode. All four must appear here, reclassified from limma's imputed
+    log2FC, or the gap the professor reported is back.
+    """
+    genes = set(regulated_up_partial["Gene names"].str.upper())
+    for gene in ("FRZB", "GAS6", "LUM", "SLIT3"):
+        assert gene in genes, f"{gene} missing from regulated_up_partial.csv"
+
+
+def test_egf_ereg_are_in_qualitative_changes_as_down(qualitative_changes):
+    """EGF and EREG were never identified in the treated condition at all, so
+    they never got a fold change and never reached regulated_down.csv -- but
+    they must still show up somewhere as a qualitative DOWN call (lost after
+    testosterone), not silently vanish.
+    """
+    for gene, acc in (("Egf", "P01132"), ("Ereg", "Q61521")):
+        row = qualitative_changes[qualitative_changes["UniProt Accession Number"] == acc]
+        assert len(row) == 1, f"{gene} ({acc}) missing from qualitative_changes.csv"
+        assert row.iloc[0]["direction"] == "DOWN", f"{gene} direction should be DOWN"
+
+
+def test_supplementary_files_are_disjoint_from_the_core_regulated_set(
+    regulated_up, regulated_down, regulated_up_partial, regulated_down_partial,
+    qualitative_changes,
+):
+    """Tier-3 and tier-1/2 proteins must never overlap the complete&regulated
+    core -- structurally impossible by construction (complete=False rows and
+    single/onoff rows never reach ipa_input.csv), but "impossible" is exactly
+    the kind of claim that deserves an assertion, not just a comment.
+    """
+    core = (
+        set(regulated_up["UniProt Accession Number"])
+        | set(regulated_down["UniProt Accession Number"])
+    )
+    supplementary = (
+        set(regulated_up_partial["UniProt Accession Number"])
+        | set(regulated_down_partial["UniProt Accession Number"])
+        | set(qualitative_changes["UniProt Accession Number"])
+    )
+    assert core & supplementary == set()
+
+
+def test_regulated_up_partial_and_down_partial_are_disjoint(
+    regulated_up_partial, regulated_down_partial,
+):
+    up_ids = set(regulated_up_partial["UniProt Accession Number"])
+    down_ids = set(regulated_down_partial["UniProt Accession Number"])
+    assert up_ids & down_ids == set()
 
 
 def test_frozen_counts_json_documents_every_number(repo_root):

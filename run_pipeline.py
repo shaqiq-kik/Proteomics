@@ -221,6 +221,25 @@ STAGES: tuple[Stage, ...] = (
         ),
     ),
     Stage(
+        id="regulated_lists_supplementary",
+        description=(
+            "Two more files closing the gap regulated_up/down.csv structurally "
+            "cannot: tier-3 partial-missingness proteins reclassified from "
+            "limma's imputed log2FC, and tier-1/2 fully-undetected proteins "
+            "unioned with a qualitative direction call (DECISIONS_LOG D17)"
+        ),
+        script="proteomics_de/export/supplementary_lists.py",
+        depends_on=("foldchange",),
+        outputs=(
+            Output("proteomics_de/results/regulated_up_partial.csv",
+                   kind="table", expected_rows="n_up_partial"),
+            Output("proteomics_de/results/regulated_down_partial.csv",
+                   kind="table", expected_rows="n_down_partial"),
+            Output("proteomics_de/results/qualitative_changes.csv",
+                   kind="table", expected_rows="n_qualitative"),
+        ),
+    ),
+    Stage(
         id="qc_validate",
         description="pandera schema validation of the DE outputs; writes results/qc/qc_report.{json,md}",
         script="proteomics_de/qc/validate.py",
