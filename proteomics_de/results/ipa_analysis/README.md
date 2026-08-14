@@ -39,8 +39,31 @@ proteins pass FDR < 0.05 (minimum adjusted p = 0.116) with n = 2 technical repli
 | `qualitative_up372_canonical_pathways.txt` | Qualitative UP 372 | 875 | Canonical pathways (no z-scores — see below) |
 | `qualitative_up372_summary.txt` | Qualitative UP 372 | — | Full analysis summary, all sections |
 | `qualitative_down242_canonical_pathways.txt` | Qualitative DOWN 242 | 750 | Canonical pathways (no z-scores — see below) |
+| `core963_networks.txt` | Quantitative 963 | 25 | Networks, score, focus molecules, top diseases/functions |
 
 Tab-delimited, UTF-8. Each file carries a QIAGEN copyright line then a header row.
+
+### Figures (`figures/`)
+
+| File | Analysis | Size |
+|---|---|---|
+| `core963_canonical_pathways.png` | Quantitative 963 | 2030 × 828 |
+| `core963_diseases_and_functions_heatmap.png` | Quantitative 963 | 2293 × 800 |
+| `core963_graphical_summary.png` | Quantitative 963 | 1823 × 1724 |
+| `qualitative_up372_canonical_pathways.png` | Qualitative UP 372 | 2030 × 867 |
+| `qualitative_down242_canonical_pathways.png` | Qualitative DOWN 242 | 2030 × 828 |
+
+PNG, 150 dpi, exported with analysis details embedded.
+
+**The bar charts are truncated to roughly the top 20 pathways**, so they are readable rather than
+complete — the full ranking is in the matching `.txt`. IPA has no "top N" control, so the cap was
+applied through its `-log(p-value)` score cutoff, set from the 20th-ranked value in each exported
+table: **12.05** for core963 (exactly 20 pathways), **3.13** for DOWN (exactly 20), and **3.04** for
+UP (**21** pathways — ranks 20 and 21 are tied at 3.04, so no cutoff separates them). Bar colour is
+z-score; grey means no activity pattern is available, which is every bar on the two qualitative
+charts.
+
+Only the quantitative analysis has a Graphical Summary — see the z-score note below.
 
 These are **external tool outputs**, not pipeline artifacts: they are not in `outputs.sha256` and
 `run_pipeline.py --verify-frozen` does not check them. Re-running IPA will not reproduce them
@@ -76,6 +99,23 @@ no p-value, because neither is valid when one whole condition has zero data poin
 runs over-representation on them but produces **no activation z-scores** (the `z-score` column reads
 `NaN`), since z-scores are driven by fold-change direction. Fabricating a sentinel ±1 log2FC to
 force z-scores was considered and rejected (D18).
+
+IPA confirms this downstream: **neither qualitative analysis can produce a Graphical Summary**, and
+says so explicitly — *"Unable to create Graphical Summary for this analysis. This occurs when the
+analysis does not contain enough connectable entities with sufficiently high z-scores."* That is the
+predicted consequence of an identifier-only upload, not an error.
+
+### The DOWN analysis is flagged "failed" in IPA — read this before assuming its results are bad
+
+IPA's status bar reports the Qualitative DOWN 242 analysis as `failed`. **The failure is confined to
+one step.** On its Summary tab every stage reads `Done` — Molecules, Canonical Pathways, My
+Pathways, ML Disease Pathways, My Lists, Tox Lists, Diseases & Functions, Upstream Regulators,
+Regulator Effects, Graphical Summary, Networks — except **Causal Networks**, which never left
+`Coming soon...`. That single incomplete step is what marks the whole analysis failed.
+
+The exported `qualitative_down242_canonical_pathways.txt` is complete and populated (750 pathways,
+with EGF appearing as a member molecule of three of them). No Causal Networks results exist for this
+analysis, and none are included here.
 
 ## Results worth noting
 
