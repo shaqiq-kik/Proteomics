@@ -9,7 +9,7 @@ read the [repo README](../README.md) first.
 
 | File | Answers |
 |---|---|
-| [`DECISIONS_LOG.md`](DECISIONS_LOG.md) | *Why* — human decisions D1–D16, open questions, what still needs a person. |
+| [`DECISIONS_LOG.md`](DECISIONS_LOG.md) | *Why* — human decisions D1–D18, open questions, what still needs a person. |
 | [`BUILD_LOG.md`](BUILD_LOG.md) | *How it got built* — append-only, per work package, with verification evidence. |
 | [`STATUS.md`](STATUS.md) | *What exists right now* — generated from the filesystem by `tools/status.py`. Never hand-edited, always re-runnable. |
 | [`../research1.md`](../research1.md) | *The design* — the original technical doc and its Section 6 build list (items 1–20), which every module traces back to. |
@@ -230,6 +230,7 @@ prose, so nothing in the report is invented.
 | `export/ipa_export.py` | Builds `ipa_input_full.csv`/`.txt` (limma p-value + FDR joined onto the regulated set) and validates all four IPA deliverables. Pipeline stage 2. |
 | `export/regulated_lists.py` | Splits `ipa_input_full.csv` into `regulated_up.csv`/`regulated_down.csv` with a linear `fold_change` column, sorted by descending magnitude of change. Pipeline stage 3. |
 | `export/supplementary_lists.py` | Two more files closing the gap `regulated_up/down.csv` structurally cannot: `regulated_up_partial.csv`/`regulated_down_partial.csv` (152/96 tier-3 proteins reclassified from limma's imputed log2FC) and `qualitative_changes.csv` (614 tier-1/2 proteins never identified on one side at all, with a `direction` call but no fold change). Pipeline stage 4. **D17.** |
+| `export/ipa_extended.py` | Carries D17's two supplementary tiers into the QIAGEN uploads, which the core export structurally cannot see: `ipa_input_extended.csv`/`.txt` (963 rows, `tier`-tagged) plus `ipa_qualitative_up.txt`/`ipa_qualitative_down.txt` (372/242 bare accessions). Reads only; re-hashes the six byte-frozen IPA/regulated files around every build. Pipeline stage 5. **D18.** |
 | `provenance.py` | Writes `<name>.provenance.json` sidecars (caveat text, git commit, sha256, row count, tool versions) for the CSV deliverables. |
 | `qc/boundaries.py` | Real pandera validation at `foldchange.py`'s load/merge/foldchange boundaries; `after_load` is permissive (junk accessions route to quarantine), later stages are strict. Appends to `results/qc/qc_boundaries.json`. |
 | `tests/` | pytest suite. `tests/expected/frozen_counts.json` is the single source of expected row counts; `tests/expected/outputs.sha256` is the byte-freeze manifest (scientific outputs only — see `tools/freeze.py`). |
@@ -283,6 +284,44 @@ rather than loosening the gate, keeping `ipa_input.csv`/`ipa_input_full.csv`/
 | `results/qualitative_changes.csv` | 614 (372 UP / 242 DOWN) | `single_condition_proteins.csv` + `onoff_proteins.csv`, unioned | Has no fold-change or p-value column, on purpose -- neither is valid when one whole condition has zero data points or zero variance. |
 
 See DECISIONS_LOG D17 for the full evidence and the pilot-panel reconciliation.
+
+---
+
+## What to upload to QIAGEN IPA
+
+D17 wrote the two supplementary files but nothing carried them to QIAGEN: every
+IPA file is built through the same `complete=True` gate, so the 862 proteins
+D17 recovered had **zero** overlap with the 715 in `ipa_input.csv` —
+Frzb/Egf/Ereg included. D18 adds three uploads rather than editing the frozen
+ones, and registers `ipa_extended.py` as a pipeline stage so they cannot go
+stale the way `ipa_input_full.csv` once did (**D13**).
+
+| Upload | Rows | What it is |
+|---|---|---|
+| `results/ipa_input_extended.txt` (`.csv` twin) | 963 | The quantitative dataset: the 715 core rows **verbatim** from `ipa_input_full.csv`, plus the 248 tier-3 partial rows, with `log2FC`, `p_value`, `adj_p_value` and a `tier` column. |
+| `results/ipa_qualitative_up.txt` | 372 | ID-only list — gained after testosterone. Run as its own Core Analysis. |
+| `results/ipa_qualitative_down.txt` | 242 | ID-only list — lost after testosterone. Same. |
+
+The three are pairwise disjoint and cover 1577 distinct accessions. The older
+`ipa_input.csv`/`ipa_input_full.csv` remain valid and byte-identical; the
+extended file is a superset of the latter, not a replacement for it.
+
+> **The `tier` column is not cosmetic.** In `ipa_input_extended`, `log2FC`
+> carries **two different quantities**: for `tier=core` it is the raw
+> mean-of-log2-ratios on unimputed data, for `tier=partial` it is limma's
+> estimate after MinProb imputation of 1–2 of the 4 replicates. Both are
+> legitimate IPA input; reading a partial row as a complete-case measurement is
+> not. Say so in any methods write-up, and split on `tier` when it matters.
+
+The two qualitative lists carry no fold change and no p-value on purpose —
+neither is defined when one whole condition has zero data points. IPA accepts
+an identifier-only list, so over-representation still runs, but **no activation
+z-scores come back**, since those are driven by fold-change direction. Inventing
+a sentinel ±1 log2FC to force them was considered and rejected (**D18**).
+
+Still open: ORA and STRING are seeded with the same 715 and would need widening
+to the 963 to match these uploads. GSEA already covers all 1938. Actually
+running the analyses in IPA is manual — **D4**.
 
 ---
 

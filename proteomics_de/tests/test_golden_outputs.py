@@ -88,6 +88,11 @@ def ipa_input(results_dir) -> pd.DataFrame:
 
 
 @pytest.fixture(scope="module")
+def ipa_input_full(results_dir) -> pd.DataFrame:
+    return _read(results_dir / "ipa_input_full.csv")
+
+
+@pytest.fixture(scope="module")
 def single_condition(results_dir) -> pd.DataFrame:
     return _read(results_dir / "single_condition_proteins.csv")
 
@@ -126,6 +131,30 @@ def regulated_down_partial(results_dir) -> pd.DataFrame:
 @pytest.fixture(scope="module")
 def qualitative_changes(results_dir) -> pd.DataFrame:
     path = results_dir / "qualitative_changes.csv"
+    if not path.exists():
+        pytest.skip(f"{path} not present")
+    return _read(path)
+
+
+@pytest.fixture(scope="module")
+def ipa_input_extended(results_dir) -> pd.DataFrame:
+    path = results_dir / "ipa_input_extended.csv"
+    if not path.exists():
+        pytest.skip(f"{path} not present")
+    return _read(path)
+
+
+@pytest.fixture(scope="module")
+def ipa_qualitative_up(results_dir) -> pd.DataFrame:
+    path = results_dir / "ipa_qualitative_up.txt"
+    if not path.exists():
+        pytest.skip(f"{path} not present")
+    return _read(path)
+
+
+@pytest.fixture(scope="module")
+def ipa_qualitative_down(results_dir) -> pd.DataFrame:
+    path = results_dir / "ipa_qualitative_down.txt"
     if not path.exists():
         pytest.skip(f"{path} not present")
     return _read(path)
@@ -694,6 +723,16 @@ def test_frozen_counts_are_internally_consistent(frozen_counts):
     assert c["n_qualitative_up"] == c["single_condition_up"] + c["onoff_up"]
     assert c["n_qualitative_down"] == c["single_condition_down"] + c["onoff_down"]
     assert c["n_qualitative"] == c["n_qualitative_up"] + c["n_qualitative_down"]
+    # D18 extended-upload counts. The extended IPA file is exactly the core
+    # upload plus the tier-3 rows -- no third population, no row dropped -- and
+    # the two qualitative ID lists are the qualitative file's own split, just
+    # re-emitted one column wide.
+    assert (
+        c["n_ipa_extended"]
+        == c["ipa_input_rows"] + c["n_up_partial"] + c["n_down_partial"]
+    )
+    assert c["n_ipa_qualitative_up"] == c["n_qualitative_up"]
+    assert c["n_ipa_qualitative_down"] == c["n_qualitative_down"]
 
 
 #: The one non-count, non-comment key: the commit the counts were derived at.
@@ -762,6 +801,116 @@ def test_regulated_up_partial_and_down_partial_are_disjoint(
     up_ids = set(regulated_up_partial["UniProt Accession Number"])
     down_ids = set(regulated_down_partial["UniProt Accession Number"])
     assert up_ids & down_ids == set()
+
+
+# ---------------------------------------------------------------------------
+# 9. D18 -- the QIAGEN uploads must actually contain the recovered proteins
+# ---------------------------------------------------------------------------
+# D17 produced the supplementary CSVs but nothing carried them to QIAGEN: every
+# IPA file is built from the complete==True gate, so the 862 recovered proteins
+# were absent from the upload. export/ipa_extended.py fixes that additively.
+# These tests are about specific named proteins as well as counts, for the same
+# reason the D17 block above is: a count-only check can pass while the exact
+# proteins the professor asked about individually vanish.
+
+
+def test_ipa_extended_is_the_core_plus_the_partial_tier(
+    ipa_input_extended, ipa_input_full, regulated_up_partial, regulated_down_partial,
+    frozen_counts,
+):
+    """963 rows, split 715 core / 248 partial, and the split is DERIVED.
+
+    Checked against the other files rather than against the stored number
+    alone: the point is that ``n_ipa_extended`` is the sum of two populations
+    that exist on disk, not a value someone typed.
+    """
+    c = frozen_counts
+    assert len(ipa_input_extended) == c["n_ipa_extended"]
+    assert c["n_ipa_extended"] == c["ipa_input_rows"] + c["n_up_partial"] + c["n_down_partial"]
+
+    tiers = ipa_input_extended["tier"].value_counts().to_dict()
+    assert tiers == {"core": len(ipa_input_full),
+                     "partial": len(regulated_up_partial) + len(regulated_down_partial)}
+
+
+def test_ipa_extended_core_rows_are_ipa_input_full_unchanged(
+    ipa_input_extended, ipa_input_full,
+):
+    """The 715 core rows must be the uploaded file's rows, exactly.
+
+    Same accessions, same order, and EXACT float equality on all three
+    measurement columns -- ``ipa_input.csv`` is already at QIAGEN, and the whole
+    justification for shipping a second file instead of editing the first is
+    that the overlap did not move. Exact, not ``approx``: both frames are read
+    with ``float_precision="round_trip"`` (see :func:`_read`), so a difference
+    here is a real regression, never parser noise.
+    """
+    core = ipa_input_extended[ipa_input_extended["tier"] == "core"].reset_index(drop=True)
+    assert core["UniProt Accession Number"].tolist() == \
+        ipa_input_full["UniProt Accession Number"].tolist()
+    for col in ("log2FC", "p_value", "adj_p_value", "regulated"):
+        assert core[col].equals(ipa_input_full[col]), f"{col} moved in the core rows"
+
+
+def test_ipa_extended_and_the_qualitative_lists_partition_1577_proteins(
+    ipa_input_extended, ipa_qualitative_up, ipa_qualitative_down, frozen_counts,
+):
+    """Pairwise disjoint, and every recovered protein reaches IPA exactly once.
+
+    1577 is derived from the three frozen counts, never typed: a file that
+    gained or lost rows would fail the count assertion above, and a file that
+    started double-counting a protein fails here.
+    """
+    c = frozen_counts
+    assert len(ipa_qualitative_up) == c["n_ipa_qualitative_up"] == c["n_qualitative_up"]
+    assert len(ipa_qualitative_down) == c["n_ipa_qualitative_down"] == c["n_qualitative_down"]
+
+    ext = set(ipa_input_extended["UniProt Accession Number"])
+    up = set(ipa_qualitative_up["UniProt Accession Number"])
+    down = set(ipa_qualitative_down["UniProt Accession Number"])
+    assert ext & up == set()
+    assert ext & down == set()
+    assert up & down == set()
+    assert len(ext | up | down) == (
+        c["n_ipa_extended"] + c["n_ipa_qualitative_up"] + c["n_ipa_qualitative_down"]
+    )
+
+
+def test_frzb_reaches_ipa_as_an_up_regulated_partial_row(ipa_input_extended):
+    """FRZB P97401 -- the protein the professor review named -- must be IN the
+    QIAGEN upload, labelled UP, and labelled ``partial`` so nobody reads its
+    post-imputation log2FC as a complete-case measurement.
+    """
+    row = ipa_input_extended[ipa_input_extended["UniProt Accession Number"] == "P97401"]
+    assert len(row) == 1, "Frzb P97401 missing from ipa_input_extended.csv"
+    assert row.iloc[0]["regulated"] == "UP"
+    assert row.iloc[0]["tier"] == "partial"
+
+
+def test_egf_and_ereg_reach_ipa_on_the_qualitative_down_list(
+    ipa_qualitative_down, ipa_input_extended,
+):
+    """EGF P01132 and EREG Q61521 have no valid fold change (never identified
+    in the treated condition at all), so they must travel on the ID-only DOWN
+    list and must NOT appear in the quantitative file -- putting them there
+    would require inventing the number they do not have.
+    """
+    ids = set(ipa_qualitative_down["UniProt Accession Number"])
+    quantitative = set(ipa_input_extended["UniProt Accession Number"])
+    for gene, acc in (("Egf", "P01132"), ("Ereg", "Q61521")):
+        assert acc in ids, f"{gene} ({acc}) missing from ipa_qualitative_down.txt"
+        assert acc not in quantitative, f"{gene} ({acc}) must carry no fold change"
+
+
+def test_the_qualitative_id_lists_carry_no_measurement_columns(
+    ipa_qualitative_up, ipa_qualitative_down,
+):
+    """One column, the identifier. A placeholder log2FC/p-value column here
+    would be fabricated data, not a formatting improvement -- neither quantity
+    is defined when one whole condition has zero data points (D17/D18).
+    """
+    for frame in (ipa_qualitative_up, ipa_qualitative_down):
+        assert list(frame.columns) == ["UniProt Accession Number"]
 
 
 def test_frozen_counts_json_documents_every_number(repo_root):

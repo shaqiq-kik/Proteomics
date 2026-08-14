@@ -5,7 +5,7 @@
 #                   renumbering its randomly-salted element ids, which
 #                   differ between runs of identical code.
 # Source files are deliberately NOT frozen; git versions those.
-# entries: 80
+# entries: 84
 bb470083ec4388f34842a26bc81e96036b6a4766d8d26958ae6c7b80004a561e  raw  proteomics_de/_limma_input.csv
 7f561ebd1c113b6cb24675911cdb9edda056aea6969386a3ab8b10673d8289a5  raw  proteomics_de/_limma_output.csv
 4889043fb3fd3c50e28209e864f7281e8bd33ae1857ed3f5996ff829d1bd2433  raw  proteomics_de/_limma_versions.txt
@@ -67,9 +67,13 @@ e57abd69720499815a6537bd56c2dad54d238049638aec67d12c30b254b39a08  raw  proteomic
 58cc5d71cfcdd900514646bab2c6c6d04e104d2658414d2e8fef5c36200551ee  raw  proteomics_de/results/gated/pca_variance.csv
 c26261434805a0ff919dc0691f4e0fe2b167349ecb1d965856a7767541c07453  raw  proteomics_de/results/gated/skip_log.csv
 0b55122b78912a7f439491cfe9e53ba4dbdec1ab79cab166dc7e11b187dbfeb5  raw  proteomics_de/results/ipa_input.csv
+20c3f5a0e37d66aceb72dabcdd4718849c9824bcfe25d58ef3d8194185ad6ce4  raw  proteomics_de/results/ipa_input_extended.csv
+b75626ccd48d4bd38b1f907c465d1043e58adc8bb63a4c6631be41c7e44015b3  raw  proteomics_de/results/ipa_input_extended.txt
 ad94ac2536a9c6d38ea256ee3c963acca06cbad4605a90a8388f3c580c3682e5  raw  proteomics_de/results/ipa_input_full.csv
 9511067f966a23f80a8e0c81f7a228a11fff5f60487581dd65b902218464317f  raw  proteomics_de/results/ipa_input_full.txt
 c8c2f5959c797f9554c9903f852e99d0e77ef4c4a1c34c270d33d9f48a51402b  raw  proteomics_de/results/ipa_input_significant.csv
+ea01ca00716a52c0a37822c833818de717362205de1d6150a62b26580375a1de  raw  proteomics_de/results/ipa_qualitative_down.txt
+235577e4f258efc007da288333142972674fa29c4070b8569f2f7ffb4f3a6628  raw  proteomics_de/results/ipa_qualitative_up.txt
 eee8496fcb7db6de230fef1f70c79bd59a9b847a17c2b498cb554ee5b42e7669  raw  proteomics_de/results/onoff_proteins.csv
 e1e70fa24638f2ae4437070af994737e98b9b6055ce15224d26bb0a5e9763aa0  raw  proteomics_de/results/qc/qc_boundaries.json
 3424e8d224088879455c66fbdb50105a0ca41cb4994df958c9e08afd699184de  ts-canon  proteomics_de/results/qc/qc_report.json

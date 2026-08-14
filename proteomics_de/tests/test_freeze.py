@@ -28,7 +28,10 @@ def test_manifest_exists_and_parses():
     # 75 -> 77: regulated_up.csv/regulated_down.csv added (PI export stage).
     # 77 -> 80: regulated_up_partial.csv/regulated_down_partial.csv/
     # qualitative_changes.csv added (D17 supplementary export stage).
-    assert len(entries) == 80, f"expected 80 frozen artifacts, got {len(entries)}"
+    # 80 -> 84: ipa_input_extended.csv/.txt and ipa_qualitative_up.txt/
+    # ipa_qualitative_down.txt added (D18 extended IPA export stage). Purely
+    # additive -- the other 80 hashes are unchanged.
+    assert len(entries) == 84, f"expected 84 frozen artifacts, got {len(entries)}"
     modes = {mode for _sha, mode in entries.values()}
     assert modes <= {"raw", "svg-canon", "ts-canon"}, modes
 
@@ -49,7 +52,7 @@ def test_tree_matches_manifest():
     assert not changed, f"frozen outputs drifted: {changed}"
     assert not missing, f"frozen outputs missing: {missing}"
     assert not extra, f"untracked artifacts present: {extra}"
-    assert len(ok) == 80  # 77 -> 80: the D17 supplementary export stage's 3 files
+    assert len(ok) == 84  # 80 -> 84: the D18 extended IPA export stage's 4 files
 
 
 def test_svg_canonicalization_absorbs_regeneration_noise(tmp_path):

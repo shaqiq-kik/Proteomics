@@ -25,11 +25,26 @@ is in the unbuilt layers, not in restructuring working code.
 deliverable in its own right (e.g., for reproducibility grading).
 
 **⚪ D2 — The headline scientific result is "0 significant at FDR<0.05".**
-limma reports 0/1938 proteins significant (min adj.p = 0.305; 63 at raw p<0.05).
+limma reports 0/1938 proteins significant (min adj.p = 0.305; 63 at raw p<0.05
+— **the parenthesis is superseded; see D2 CORRECTED immediately below**).
 This is the *expected* n=2 technical-replicate ceiling (research1.md §5), not a
 bug — corr(limma log2FC, pipeline log2FC) = 1.0000. Every report figure/output
 must carry the "technical replicates → hypothesis-generating only" caveat. No
 action needed; flagging so it is a conscious, owned framing in the final report.
+
+**⚪ D2 CORRECTED (2026-08-13) — those two numbers are the VANILLA run's, not
+the shipped run's. D2's headline claim is unaffected.** `min adj.p = 0.305; 63
+at raw p<0.05` was written pre-**D9**, when plain `eBayes()` was what shipped;
+both figures match `results/qc_limma_vanilla.csv` today (0.304713459848272 and
+63 rows), not the deliverable. Since D9 made `trend=TRUE, robust=TRUE` the
+default, the shipped `results/qc_limma.csv` gives **min adj p =
+0.116075908668444 and 55 rows at raw p<0.05**. What D2 actually asserts —
+**0/1938 significant at FDR<0.05** — is true in BOTH flavours and does not
+move, which is exactly why the stale pair survived unnoticed: it supported a
+conclusion that was right either way. The original sentence is annotated rather
+than rewritten, as with D5/D8. D9 already recorded the 0.305 → 0.116 move, and
+`README.md` § "Reproducing the trend/robust limma variant" already quotes
+0.116/55 correctly, so this log was the last place still carrying the old pair.
 
 **🔵 D3 — Enrichment layer (items 15–18) needs a data-source choice.**
 GO/KEGG/Reactome ORA+GSEA and STRING PPI are not yet built. Two routes:
@@ -356,3 +371,114 @@ CST3, CST12, CRISP1/CRISP3, BMP1) are all genuinely detected in the current
 dataset — 8 `complete=True, regulated="NO CHANGE"` with real log2FC between
 0.20 and 0.58, 1 tier-3-tested (AOC1, Q8JZQ5) at 0.174 — simply below the
 ±0.585 threshold in this larger, more complete run. Not a pipeline gap.
+
+---
+
+## Extended IPA uploads (2026-08-13)
+
+**⚪ D18 — every IPA file QIAGEN has ever seen holds 715 proteins and NONE of
+the 862 D17 recovered; three new upload files close that, additively.** The
+uploads were stale in *scope*, not in content. `ipa_input.csv` and
+`ipa_input_full.csv` carry the same 715 core proteins, and their overlap with
+D17's 862 recovered proteins (248 tier-3 partial + 614 tier-1/2 qualitative) is
+**exactly 0** — verified, not assumed. Frzb (P97401), Egf (P01132) and Ereg
+(Q61521), the three proteins the professor named, are absent from **all six**
+frozen deliverables: `ipa_input.csv`, `ipa_input_full.csv`,
+`ipa_input_full.txt`, `ipa_input_significant.csv`, `regulated_up.csv`,
+`regulated_down.csv`.
+
+Root cause, and why re-running fixes nothing: `etl/foldchange_core.py:313`
+(`build_ipa_frame`, line 307) selects `df[complete] & (regulated != "NO
+CHANGE")` — the same `complete == True` gate D17 diagnosed, decided BEFORE
+limma ever runs. D17 was deliberately additive and said so in as many words
+(lines 317–320 above: "`ipa_input.csv`, `ipa_input_full.csv`,
+`regulated_up.csv` and `regulated_down.csv` stay byte-for-byte untouched"), so
+it left the IPA path alone. `--all` therefore reproduces the same 715 rows for
+ever; re-running `export/ipa_export.py` was verified to emit byte-identical
+output.
+
+**This is D13's failure mode recurring** — a self-consistent but stale
+deliverable. Every value in `ipa_input_full.csv` traces correctly to
+`qc_limma.csv`, every file passes `validate_ipa`, and the byte-freeze is
+perfectly content, because *a manifest will happily freeze a stale file* (D13).
+D13 was stale in its **values**; D18 is stale in its **scope**. Hashing cannot
+catch either.
+
+*Decision: additive again, on D17's precedent, not by loosening the gate.* New
+module `export/ipa_extended.py`; new `run_pipeline.py` stage
+`ipa_export_extended` (stage 5 of 17, registered for precisely the reason D13
+gives — an export that is not a stage goes stale the moment an upstream stage
+re-runs); new filenames beside the old ones. The six files above stay
+byte-for-byte untouched: `ipa_input.csv` is **already uploaded to QIAGEN**, and
+the rest ripple into STRING/GSEA/ORA/the report. That is not a promise in prose
+— `ipa_extended.assert_frozen_inputs_untouched` re-hashes all six around every
+build and raises if one moved.
+
+Three new files, all read-only over existing results — nothing is recomputed,
+imputed or invented:
+
+* `results/ipa_input_extended.csv` + `.txt` — **963 rows = 715 core + 248
+  tier-3 partial**, columns `UniProt Accession Number, Gene names, log2FC,
+  regulated, p_value, adj_p_value, tier`. The core block is lifted verbatim
+  from `ipa_input_full.csv`, same rows in the same order, so a reviewer diffing
+  the two sees 715 identical lines followed by 248 additions.
+  `assert_core_rows_are_verbatim` compares the raw CSV *cells* rather than the
+  parsed floats: dropping `float_precision="round_trip"` on any read in the
+  module would move **87 of the 715** `log2FC` values in the last ULP, with no
+  other symptom.
+* `results/ipa_qualitative_up.txt` (**372** accessions) and
+  `results/ipa_qualitative_down.txt` (**242**) — one bare identifier column, no
+  measurements, for a SEPARATE ID-only Core Analysis.
+
+The three partition the recovered proteome: 963 + 372 + 242 = **1577 distinct
+accessions, pairwise disjoint**, with the 1577 derived from `frozen_counts.json`
+rather than typed.
+
+**The scientific caveat, which must be repeated in any methods write-up:** in
+`ipa_input_extended`, the `log2FC` column carries **two different quantities**.
+For `tier=core` it is the raw mean-of-log2-ratios on unimputed data; for
+`tier=partial` it is limma's estimate after MinProb imputation of 1–2 of the 4
+replicates. Both are legitimate IPA input; conflating them is not. The `tier`
+column is mandatory on every row so that the distinction is auditable and a
+reader can split the file on it.
+
+**Why the 614 qualitative proteins ship as identifiers only:** they carry no
+fold change and no p-value *deliberately* — neither quantity is valid when one
+whole condition has zero data points. QIAGEN treats an ID-only list as a
+first-class upload (research1.md SECTION 3), so nothing is lost structurally,
+but one consequence must be stated plainly: **IPA will run over-representation
+on these two lists and produce NO activation z-scores**, because z-scores are
+driven by fold-change direction. Fabricating a sentinel ±1 log2FC to force
+z-scores out of them was considered and **REJECTED** — it invents a magnitude
+the data does not contain, and would put a made-up number in the same column as
+two real ones.
+
+Statistics are unchanged, and D18 improves none of them: **0/963 pass
+FDR<0.05** (min adj p 0.116), consistent with **D2** and the dataset-wide
+0/1938.
+
+Pinned by six new tests in `tests/test_golden_outputs.py`
+(`test_ipa_extended_is_the_core_plus_the_partial_tier`,
+`test_ipa_extended_core_rows_are_ipa_input_full_unchanged`,
+`test_ipa_extended_and_the_qualitative_lists_partition_1577_proteins`,
+`test_frzb_reaches_ipa_as_an_up_regulated_partial_row`,
+`test_egf_and_ereg_reach_ipa_on_the_qualitative_down_list`,
+`test_the_qualitative_id_lists_carry_no_measurement_columns`), the
+`n_ipa_extended` / `n_ipa_qualitative_up` / `n_ipa_qualitative_down` keys in
+`frozen_counts.json`, and 4 new byte-freeze entries (80 → 84).
+
+**🔵 Still needs YOU — D18 does not close these:**
+
+1. **Running IPA is manual** (**D4**): licensed Salesforce app, no automation
+   possible. Upload `results/ipa_input_extended.txt` as the quantitative
+   dataset, then `ipa_qualitative_up.txt` and `ipa_qualitative_down.txt` as two
+   separate ID-only Core Analyses. Expect pathways/functions from those two but
+   no z-scores, per the paragraph above.
+2. **ORA and STRING still run on the 715.** `enrich/ora.py`'s UP/DOWN queries
+   (509/206) and `enrich/string_ppi.py`'s seed set both come from
+   `foldchange_all.csv`'s `regulated` column — the same complete-gated set.
+   Widening them to the 963 would make the enrichment layer agree with what
+   QIAGEN is now being given; **D18 does not do that, and it stays open.** GSEA
+   is unaffected: it already ranks all 1938 `qc_limma.csv` proteins, so the 248
+   tier-3 proteins are in its ranking (the 614 never enter limma at all, and by
+   D17's reasoning cannot).

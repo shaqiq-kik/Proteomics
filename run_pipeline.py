@@ -240,6 +240,39 @@ STAGES: tuple[Stage, ...] = (
         ),
     ),
     Stage(
+        id="ipa_export_extended",
+        description=(
+            "QIAGEN uploads that also carry the 862 proteins D17 recovered: a "
+            "963-row quantitative file (715 core + 248 tier-3 partial, tagged "
+            "by tier) plus two ID-only lists for the 614 qualitative proteins "
+            "that have no valid fold change (DECISIONS_LOG D18)"
+        ),
+        # Registered here for the reason D13 gives: an export that is not in
+        # this table goes stale the moment an upstream stage is re-run and
+        # nothing notices. ipa_input_full.csv reached QIAGEN carrying vanilla
+        # p-values exactly that way. Depends on BOTH producers because it reads
+        # ipa_export's ipa_input_full.csv and supplementary_lists'
+        # regulated_{up,down}_partial.csv + qualitative_changes.csv.
+        script="proteomics_de/export/ipa_extended.py",
+        depends_on=("ipa_export", "regulated_lists_supplementary"),
+        outputs=(
+            Output("proteomics_de/results/ipa_input_extended.csv",
+                   kind="table", expected_rows="n_ipa_extended"),
+            # kind="text", following ipa_input_full.txt: the runner's
+            # data_row_count() reads .txt with a comma separator, so a
+            # tab-delimited multi-column file only counts right by accident.
+            # The row count of this twin is asserted properly by
+            # ipa_extended.assert_twins_agree, which knows the delimiter.
+            Output("proteomics_de/results/ipa_input_extended.txt", kind="text"),
+            # These two ARE row-counted despite the .txt extension: they are
+            # single-column, so there is no delimiter to get wrong.
+            Output("proteomics_de/results/ipa_qualitative_up.txt",
+                   kind="table", expected_rows="n_ipa_qualitative_up"),
+            Output("proteomics_de/results/ipa_qualitative_down.txt",
+                   kind="table", expected_rows="n_ipa_qualitative_down"),
+        ),
+    ),
+    Stage(
         id="qc_validate",
         description="pandera schema validation of the DE outputs; writes results/qc/qc_report.{json,md}",
         script="proteomics_de/qc/validate.py",
