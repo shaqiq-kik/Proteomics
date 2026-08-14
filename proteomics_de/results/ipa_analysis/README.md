@@ -27,7 +27,7 @@ To make them comparable, upload the full measured proteome (the 2,552-row backgr
 
 Second caveat, from D2: **nothing in this dataset is statistically significant.** 0 of 1,938
 proteins pass FDR < 0.05 (minimum adjusted p = 0.116) with n = 2 technical replicates. The uploaded
-963 are fold-change calls (|log2FC| > 0.585), not significance calls.
+963 are fold-change calls (|log2FC| >= 0.585), not significance calls.
 
 ## Files
 
@@ -81,7 +81,7 @@ Settings: Expression Analysis on **Expr Log Ratio**; `p_value` → Expr p-value,
 False Discovery Rate; identifier type **UniProt/Swiss-Prot Accession only** (IPA also auto-detected
 GenPept — removing it left the mapped count unchanged at 930, so it was contributing nothing).
 **No expression cutoff was applied in IPA**, because the uploaded file is already filtered to
-|log2FC| > 0.585; a second cutoff would double-filter. Biological filters were left at IPA defaults
+|log2FC| >= 0.585; a second cutoff would double-filter. Biological filters were left at IPA defaults
 (direct + indirect relationships, experimentally observed confidence, species All).
 
 ### 33 proteins failed to map
@@ -128,11 +128,29 @@ z 2.94), GAIT Translation Signaling (21.3, z **-3.24**), Eukaryotic Translation 
 z 4.32), Microautophagy (20.0), Neutrophil degranulation (19.1, z 4.57). Subject to the background
 caveat above.
 
-**The androgen signal is present and was not put there by us.** Among 2,370 upstream regulators,
-**metribolone (R1881), a synthetic androgen-receptor agonist, is predicted Activated with
-z = 3.379**, alongside beta-estradiol (Activated, z 2.157) and ESR2. For a testosterone-treated
-experiment this is the sanity check you want, and it is derived from IPA's own knowledge base rather
-than from anything this pipeline asserts.
+**The androgen signal is present and was not put there by us.** The androgen-axis entries among the
+2,370 upstream regulators are below. IPA calls an activation state only at |z| >= 2 — verified
+directly against this file: no row carries a state below that, and the smallest |z| among called
+rows is exactly 2.000.
+
+| Upstream regulator | Predicted state | Activation z-score | p-value of overlap | Flags |
+|---|---|---|---|---|
+| **AR** (androgen receptor) | Activated | 2.080 | 3.99E-07 | — |
+| mibolerone (synthetic androgen) | Activated | 2.744 | 7.39E-06 | — |
+| metribolone / R1881 (synthetic androgen) | Activated | 3.379 | 2.51E-18 | **bias** |
+| beta-estradiol | Activated | 2.157 | 1.29E-26 | — |
+| testosterone | *(none called)* | 1.954 | 2.83E-04 | — |
+| dihydrotestosterone | *(none called)* | 1.723 | 4.78E-13 | — |
+| ESR2 | *(none called)* | 1.117 | 2.14E-21 | — |
+
+**Read this as directional, not quantitative.** `AR` and `mibolerone` are the cleanest evidence in
+the group: both are called Activated and neither carries a flag. **`metribolone` has the largest
+z-score here but IPA flags that row `bias`**, so it should not be quoted as the headline — 442 of
+the 2,370 rows in this file (19%) carry the same flag. Two further reasons to keep it directional:
+the analysis-ready input is 68.9% up-regulated (640 of 929), which pushes z-scores upward across the
+board, and every p-value in the table inherits the background inflation described at the top of this
+file. What survives all of that is the qualitative point — AR surfacing in a testosterone-treated
+experiment comes from IPA's own knowledge base, not from anything this pipeline asserts.
 
 **The D17 fix is visible end-to-end.** EGF — one of the two proteins reported missing from the
 down-regulated list — now appears as a member molecule of Ephrin A Signaling, Lysosome Positioning
