@@ -84,13 +84,17 @@ GenPept — removing it left the mapped count unchanged at 930, so it was contri
 |log2FC| > 0.585; a second cutoff would double-filter. Biological filters were left at IPA defaults
 (direct + indirect relationships, experimentally observed confidence, species All).
 
-### 33 proteins failed to map, including the largest fold change
+### 33 proteins failed to map
 
 The 33 unmapped rows in the quantitative file are almost all semicolon-joined MaxQuant protein
-groups (`Q6ZWY9;Q64525;Q64478;P10854`, log2FC 10.10 — the single largest fold change in the whole
-dataset) that IPA cannot parse as one accession. **This is pre-existing and affects the original
-`ipa_input.csv` too**, not something D18 introduced. Splitting to the leading accession would
-recover most of them; that is not done here.
+groups (e.g. `Q6ZWY9;Q64525;Q64478;P10854`, log2FC 10.10) that IPA cannot parse as one accession.
+**This is pre-existing and affects the original `ipa_input.csv` too**, not something D18 introduced.
+Splitting to the leading accession would recover most of them; that is not done here.
+
+At 930/963 (96.6%) the mapping rate is unremarkable, and no result quoted here depends on the
+missing 33. Note the largest fold change in `ipa_input_extended` is **Tuba1a (P68369) at 10.55**, a
+`tier=partial` row that maps to IPA without trouble — the unmapped histone group at 10.10 is second,
+and a four-gene protein group is not a row to draw biology from either way.
 
 ### The two qualitative lists have no z-scores, by design
 
