@@ -61,6 +61,26 @@ FROZEN_GLOBS = (
 # failure anyone cares about, and it caught exactly that during D9.
 FROZEN_EXCLUDE_SUFFIXES = (".provenance.json",)
 
+#: Deliberately NOT frozen: outputs of an external, manually-driven tool.
+#
+# `results/ipa_analysis/` holds QIAGEN IPA exports -- tables and figures a human
+# obtained by uploading our inputs to IPA's web UI and exporting what came back.
+# The pipeline cannot regenerate them, so `--verify-frozen` could never
+# meaningfully check them; freezing them would assert a reproducibility this
+# project does not have. Worse, a legitimate re-run of the analysis returns
+# different bytes, which would then read as drift and train people to ignore the
+# gate -- the exact failure the byte-freeze exists to prevent. That directory's
+# own README already states these are outside `outputs.sha256`; this is where
+# that stated intent is actually implemented.
+#
+# Excluded as a DIRECTORY, not as a list of filenames, so the next IPA export
+# lands outside the gate by construction instead of turning the tree red.
+#
+# Scoped to `results/ipa_analysis/` ONLY. The `results/ipa_*` files we hand TO
+# IPA (ipa_input_*, ipa_qualitative_*, ipa_background_measured.txt) are genuine
+# pipeline outputs, live one directory up, and stay frozen.
+FROZEN_EXCLUDE_DIRS = ("proteomics_de/results/ipa_analysis",)
+
 # matplotlib's SVG volatility.
 _SVG_DATE = re.compile(rb"<dc:date>[^<]*</dc:date>")
 
@@ -129,15 +149,48 @@ def digest(path: Path) -> tuple[str, str]:
     return hashlib.sha256(data).hexdigest(), mode
 
 
-def frozen_files(root: Path | None = None) -> list[Path]:
-    """Every frozen artifact, sorted, as absolute paths."""
-    root = root or REPO_ROOT
+def _glob_matches(root: Path) -> set[Path]:
+    """Every file the globs reach, before policy exclusions are applied."""
     found: set[Path] = set()
     for pattern in FROZEN_GLOBS:
         for p in root.glob(pattern):
-            if p.is_file() and not p.name.endswith(FROZEN_EXCLUDE_SUFFIXES):
+            if p.is_file():
                 found.add(p)
-    return sorted(found)
+    return found
+
+
+def exclusion_reason(path: Path, root: Path | None = None) -> str | None:
+    """Why *path* is kept out of the manifest, or ``None`` if it is frozen.
+
+    Exclusions are a policy, not an oversight, so they are named and reportable
+    rather than applied silently -- ``--check`` prints them and
+    ``test_freeze.py`` pins them. A skip nobody can see is indistinguishable
+    from a file we simply forgot to freeze.
+    """
+    root = root or REPO_ROOT
+    if path.name.endswith(FROZEN_EXCLUDE_SUFFIXES):
+        return "provenance sidecar"
+    rel = path.relative_to(root).as_posix()
+    for d in FROZEN_EXCLUDE_DIRS:
+        if rel.startswith(d + "/"):
+            return f"external tool output ({d}/)"
+    return None
+
+
+def frozen_files(root: Path | None = None) -> list[Path]:
+    """Every frozen artifact, sorted, as absolute paths."""
+    root = root or REPO_ROOT
+    return sorted(p for p in _glob_matches(root) if exclusion_reason(p, root) is None)
+
+
+def excluded_files(root: Path | None = None) -> list[tuple[str, str]]:
+    """[(relpath, reason)] for files the globs reach but policy does not freeze."""
+    root = root or REPO_ROOT
+    return sorted(
+        (p.relative_to(root).as_posix(), reason)
+        for p in _glob_matches(root)
+        if (reason := exclusion_reason(p, root)) is not None
+    )
 
 
 def build_manifest(root: Path | None = None) -> list[tuple[str, str, str]]:
@@ -218,11 +271,18 @@ if __name__ == "__main__":
         print(f"wrote {mpath.relative_to(REPO_ROOT)} ({n} artifacts)")
     if args.check:
         ok, changed, missing, extra = verify(mpath)
-        print(f"freeze: {len(ok)} OK, {len(changed)} CHANGED, {len(missing)} MISSING, {len(extra)} UNTRACKED")
+        excluded = excluded_files()
+        print(
+            f"freeze: {len(ok)} OK, {len(changed)} CHANGED, {len(missing)} MISSING, "
+            f"{len(extra)} UNTRACKED, {len(excluded)} EXCLUDED by policy"
+        )
         for rel in changed:
             print(f"  CHANGED  {rel}")
         for rel in missing:
             print(f"  MISSING  {rel}")
         for rel in extra:
             print(f"  UNTRACKED {rel}")
+        # Reported, never silent: an excluded file is a decision on the record.
+        for rel, reason in excluded:
+            print(f"  EXCLUDED {rel}  [{reason}]")
         sys.exit(1 if (changed or missing) else 0)

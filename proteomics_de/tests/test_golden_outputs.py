@@ -160,6 +160,14 @@ def ipa_qualitative_down(results_dir) -> pd.DataFrame:
     return _read(path)
 
 
+@pytest.fixture(scope="module")
+def ipa_background_measured(results_dir) -> pd.DataFrame:
+    path = results_dir / "ipa_background_measured.txt"
+    if not path.exists():
+        pytest.skip(f"{path} not present")
+    return _read(path)
+
+
 # ---------------------------------------------------------------------------
 # 1. Population invariants -- who is in which file
 # ---------------------------------------------------------------------------
@@ -733,6 +741,20 @@ def test_frozen_counts_are_internally_consistent(frozen_counts):
     )
     assert c["n_ipa_qualitative_up"] == c["n_qualitative_up"]
     assert c["n_ipa_qualitative_down"] == c["n_qualitative_down"]
+    # D19 Reference Set. Two separate statements, both load-bearing: the IPA
+    # background is the measured proteome (foldchange_all + single_condition),
+    # and it is the SAME universe the ORA already uses (background_union). If
+    # those ever diverge, IPA and g:Profiler are testing against different
+    # denominators and their enrichment p-values are not comparable.
+    assert (
+        c["n_ipa_background_measured"]
+        == c["foldchange_all_rows"] + c["single_condition_rows"]
+    )
+    assert c["n_ipa_background_measured"] == c["background_union"]
+    # Strictly bigger than the three uploads it has to contain.
+    assert c["n_ipa_background_measured"] > (
+        c["n_ipa_extended"] + c["n_ipa_qualitative_up"] + c["n_ipa_qualitative_down"]
+    )
 
 
 #: The one non-count, non-comment key: the commit the counts were derived at.
@@ -911,6 +933,109 @@ def test_the_qualitative_id_lists_carry_no_measurement_columns(
     """
     for frame in (ipa_qualitative_up, ipa_qualitative_down):
         assert list(frame.columns) == ["UniProt Accession Number"]
+
+
+# ---------------------------------------------------------------------------
+# 10. D19 -- the IPA Reference Set must be the measured proteome
+# ---------------------------------------------------------------------------
+# D18 got the recovered proteins to QIAGEN but left every Core Analysis testing
+# them against IPA's full knowledge base, which overstates enrichment for
+# anything the mass-spec assay could never have detected. The in-house ORA has
+# used a custom background since D6; ipa_background_measured.txt is the same
+# correction for IPA, keyed on accession instead of gene symbol.
+
+
+def test_ipa_background_is_exactly_the_measured_proteome(
+    ipa_background_measured, foldchange_all, single_condition, frozen_counts,
+):
+    """2552 accessions, and the SET is derived from the two source files.
+
+    The count alone would pass if the file were 2552 arbitrary accessions, so
+    the set identity is checked against ``foldchange_all.csv`` (quantified in
+    both conditions) and ``single_condition_proteins.csv`` (quantified in
+    exactly one) as they sit on disk. Those two are the whole measured
+    proteome: nothing the experiment saw falls outside them.
+    """
+    c = frozen_counts
+    assert list(ipa_background_measured.columns) == ["UniProt Accession Number"]
+    assert len(ipa_background_measured) == c["n_ipa_background_measured"]
+
+    ids = set(ipa_background_measured["UniProt Accession Number"])
+    assert len(ids) == len(ipa_background_measured), "duplicate rows in the background"
+
+    both = set(foldchange_all["UniProt Accession Number"])
+    one = set(single_condition["accession"])
+    assert both & one == set(), "the two background sources must be disjoint"
+    assert ids == both | one
+
+
+def test_ipa_background_matches_the_ora_background_universe(
+    ipa_background_measured, frozen_counts,
+):
+    """One universe for IPA and g:Profiler, not two.
+
+    ``enrich/enrich_common.load_background_and_queries`` unions the same two
+    files for its ``domain_scope`` background (D6/D11). It then projects each
+    row onto a single gene SYMBOL and dedupes to 2530, because g:Profiler takes
+    one identifier per query; this file keeps the accession, which is what IPA
+    is configured for. Same rows, different key -- and if the row count ever
+    stops matching, one of the two analyses has silently changed denominator.
+    """
+    c = frozen_counts
+    assert len(ipa_background_measured) == c["background_union"]
+
+
+def test_ipa_background_strictly_contains_every_foreground_upload(
+    ipa_background_measured, ipa_input_extended, ipa_qualitative_up,
+    ipa_qualitative_down, frozen_counts,
+):
+    """A background that does not contain its own foreground is not a background.
+
+    IPA would be handed tested molecules that lie outside the universe they
+    were supposedly drawn from, and every enrichment p-value from that pair is
+    arithmetic on an incoherent table. Asserted as a STRICT superset: equality
+    would mean the measured-but-unregulated proteins had gone missing, leaving
+    a reference set with nothing to discriminate against.
+    """
+    c = frozen_counts
+    background = set(ipa_background_measured["UniProt Accession Number"])
+    foreground = (
+        set(ipa_input_extended["UniProt Accession Number"])
+        | set(ipa_qualitative_up["UniProt Accession Number"])
+        | set(ipa_qualitative_down["UniProt Accession Number"])
+    )
+    orphans = sorted(foreground - background)
+    assert not orphans, (
+        f"{len(orphans)} uploaded accession(s) are outside the reference set: "
+        f"{orphans[:5]}"
+    )
+    assert background > foreground
+    assert len(foreground) == (
+        c["n_ipa_extended"] + c["n_ipa_qualitative_up"] + c["n_ipa_qualitative_down"]
+    )
+    assert len(background - foreground) == (
+        c["n_ipa_background_measured"] - len(foreground)
+    )
+
+
+def test_ipa_background_keeps_whole_protein_group_accessions(
+    ipa_background_measured, ipa_input_extended,
+):
+    """Group strings like ``P05132;P68181`` must survive verbatim.
+
+    ``etl/accessions.py``'s policy is that a protein group is an identity, not
+    a set, and the foreground files carry the whole string. A background built
+    from first tokens would look fine and upload cleanly while silently
+    excluding the 95 foreground rows that are groups -- so the presence of at
+    least one group here, and the superset check above, are what pin the key.
+    """
+    background = set(ipa_background_measured["UniProt Accession Number"])
+    groups = {a for a in background if ";" in a}
+    assert groups, "no protein-group accessions -- were first tokens taken?"
+    foreground_groups = {
+        a for a in ipa_input_extended["UniProt Accession Number"] if ";" in a
+    }
+    assert foreground_groups <= groups
 
 
 def test_frozen_counts_json_documents_every_number(repo_root):

@@ -40,6 +40,18 @@ What it writes, and why the split
     line 195); the ``.csv`` because it is the format the rest of this pipeline
     speaks.
 
+``ipa_background_measured.txt``
+    2552 bare accessions, one column: the **Reference Set** -- every protein
+    this experiment actually measured, for IPA to test the foreground against
+    instead of its full knowledge base. Without it a Core Analysis compares the
+    963/372/242 uploads to every gene QIAGEN knows, which silently overstates
+    enrichment for anything the assay was simply never able to see; a
+    mass-spec run is not an unbiased sample of the proteome. This is the same
+    correction the in-house ORA already applies via g:Profiler's custom
+    ``domain_scope`` (DECISIONS_LOG D6), reusing the *same two source files*, so
+    the two analyses cannot end up testing against two different universes --
+    see :data:`BACKGROUND_SOURCES`.
+
 ``ipa_qualitative_up.txt`` / ``ipa_qualitative_down.txt``
     372 + 242 bare accessions, one column, no fold change and no p-value. That
     omission is the whole point, not an incomplete implementation: neither
@@ -55,8 +67,11 @@ Additive only
 -------------
 Following the precedent D17 set (``export/supplementary_lists.py``), nothing
 here rewrites ``ipa_input.csv``, ``ipa_input_full.csv``, ``ipa_input_full.txt``,
-``ipa_input_significant.csv``, ``regulated_up.csv`` or ``regulated_down.csv``.
-This module only READS them and writes new filenames beside them.
+``ipa_input_significant.csv``, ``regulated_up.csv``, ``regulated_down.csv``, or
+the reference set's two sources ``foldchange_all.csv`` and
+``single_condition_proteins.csv``. This module only READS them and writes new
+filenames beside them -- see :data:`BYTE_FROZEN_INPUTS`, which is re-hashed
+around every build so the promise is checked rather than asserted in prose.
 
 The float-precision landmine, again
 -----------------------------------
@@ -89,6 +104,10 @@ _ROOT = _PKG_DIR.parent
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
+from proteomics_de.etl.accessions import (  # noqa: E402
+    is_junk_index_list,
+    is_valid_group,
+)
 from proteomics_de.export.ipa_export import (  # noqa: E402
     IPA_FULL_COLS,
     IPA_ID_COL,
@@ -124,10 +143,48 @@ IPA_EXTENDED_TXT_FILENAME = "ipa_input_extended.txt"
 IPA_QUALITATIVE_UP_FILENAME = "ipa_qualitative_up.txt"
 IPA_QUALITATIVE_DOWN_FILENAME = "ipa_qualitative_down.txt"
 
+IPA_BACKGROUND_FILENAME = "ipa_background_measured.txt"
+
 #: ``qualitative_changes.csv``'s direction label -> output filename.
 QUALITATIVE_SOURCES = (
     ("UP", IPA_QUALITATIVE_UP_FILENAME, "n_ipa_qualitative_up"),
     ("DOWN", IPA_QUALITATIVE_DOWN_FILENAME, "n_ipa_qualitative_down"),
+)
+
+#: The three quantitative/qualitative uploads, with the frozen-count key each
+#: one's size is pinned to. One list, used both by :func:`assert_partition` (the
+#: three must partition 1577 proteins) and by
+#: :func:`assert_background_covers_foreground` (the background must strictly
+#: contain all three). Keeping it in one place is what stops a fourth upload
+#: being added to one check and forgotten by the other.
+FOREGROUND_UPLOADS = (
+    (IPA_EXTENDED_CSV_FILENAME, "n_ipa_extended"),
+    (IPA_QUALITATIVE_UP_FILENAME, "n_ipa_qualitative_up"),
+    (IPA_QUALITATIVE_DOWN_FILENAME, "n_ipa_qualitative_down"),
+)
+
+#: ``(filename, accession column)`` of the two files that between them enumerate
+#: every protein the experiment measured -- the Reference Set's definition.
+#:
+#: This is DELIBERATELY the same pair ``enrich/enrich_common.py``'s
+#: ``load_background_and_queries`` unions to build the ORA ``domain_scope``
+#: background (DECISIONS_LOG D6/D11): ``foldchange_all.csv`` is every protein
+#: quantified in BOTH conditions, ``single_condition_proteins.csv`` every protein
+#: quantified in exactly one, and nothing measured falls outside those two. The
+#: two files are disjoint by accession, so the union is ``1948 + 604`` rows --
+#: the ``background_union`` key of ``frozen_counts.json``, asserted below rather
+#: than restated here.
+#:
+#: The ONE difference from the ORA background is the key. ORA projects each row
+#: onto a single gene symbol (falling back to the accession's first token) and
+#: dedupes to 2530 unique symbols, because g:Profiler takes one identifier per
+#: query. This file is keyed on the accession instead -- IPA's identifier type is
+#: set to UniProt/Swiss-Prot Accession for the other uploads, and a background in
+#: a different namespace than the foreground would not match. See
+#: :func:`build_measured_background` for why the WHOLE group string is kept.
+BACKGROUND_SOURCES = (
+    ("foldchange_all.csv", "UniProt Accession Number"),
+    ("single_condition_proteins.csv", "accession"),
 )
 
 #: Files this module reads and must never write. Enforced by
@@ -141,6 +198,11 @@ BYTE_FROZEN_INPUTS = (
     "ipa_input_significant.csv",
     "regulated_up.csv",
     "regulated_down.csv",
+    # The two Reference Set sources. Read by build_measured_background; they are
+    # the fold-change stage's frozen outputs and the ORA background's inputs, so
+    # an accidental write here would silently move the enrichment universe too.
+    "foldchange_all.csv",
+    "single_condition_proteins.csv",
 )
 
 
@@ -340,6 +402,87 @@ def write_id_list(ids, path, header=IPA_ID_COL):
 
 
 # ---------------------------------------------------------------------------
+# ipa_background_measured.txt -- the IPA Reference Set
+# ---------------------------------------------------------------------------
+def build_measured_background(source_frames):
+    """Every accession the experiment measured, deduplicated and sorted.
+
+    `source_frames` is an iterable of ``(frame, column, label)`` -- typically the
+    two files named in :data:`BACKGROUND_SOURCES`, whose docstring gives the
+    derivation. `label` is only used in error messages.
+
+    The WHOLE accession string is kept, semicolons and all
+    -------------------------------------------------------
+    95 of the 1577 foreground accessions are protein groups like
+    ``P05132;P68181``, and ``etl/accessions.py``'s stated policy is that merging
+    is on the whole string -- "a protein group is an identity, not a set". So the
+    foreground files carry group strings verbatim, and a background built from
+    ``first_token`` would be a set of 2531 single accessions that does NOT
+    contain those 95 rows. It would look plausible, upload cleanly, and quietly
+    exclude 95 measured proteins from the reference set. Keeping the whole string
+    makes the background live in the same namespace as the foreground, which is
+    what lets :func:`assert_background_covers_foreground` be a real check rather
+    than a formality.
+
+    Sorted ascending by the accession string, purely for determinism: this file
+    is a SET, its order carries no meaning, and the byte-freeze gate
+    (DECISIONS_LOG D14) requires a re-run to reproduce identical bytes.
+
+    Returns
+    -------
+    pandas.Series
+        Accessions, ``RangeIndex``, named :data:`IPA_ID_COL`.
+    """
+    seen = {}
+    for frame, column, label in source_frames:
+        if column not in frame.columns:
+            raise IpaExtendedError(f"{label} is missing its accession column {column!r}")
+        values = frame[column]
+        if values.isna().any():
+            raise IpaExtendedError(
+                f"{label}: {int(values.isna().sum())} blank accession(s); a "
+                "measured protein with no identifier cannot go in the reference set"
+            )
+        ids = values.astype(str).str.strip()
+        if (ids == "").any():
+            raise IpaExtendedError(f"{label}: empty-string accession(s)")
+        if not ids.is_unique:
+            dupes = ids[ids.duplicated()].tolist()
+            raise IpaExtendedError(f"{label}: duplicate accessions: {dupes[:10]}")
+
+        # The two sources are disjoint by construction -- a protein is quantified
+        # in both conditions or in exactly one, never both -- and that is what
+        # makes background_union a plain 1948 + 604 sum. An overlap means one of
+        # the two files was rebuilt from the wrong mask, so it is an error here
+        # rather than something the set union quietly absorbs.
+        overlap = sorted(set(ids) & set(seen))
+        if overlap:
+            raise IpaExtendedError(
+                f"{label} shares {len(overlap)} accession(s) with "
+                f"{seen[overlap[0]]}; the background sources must be disjoint: "
+                f"{overlap[:10]}"
+            )
+        for acc in ids:
+            seen[acc] = label
+
+    # Junk-index quarantine, re-checked at the point of upload. DECISIONS_LOG D11
+    # found two rows of single_condition_proteins.csv carrying a ';'-joined list
+    # of bare MaxQuant row indices where an accession belongs; they are dropped
+    # upstream now, but this file is the one place where such a row would become
+    # a reference-set member that IPA cannot map and nobody would notice.
+    bad = sorted(acc for acc in seen if not is_valid_group(acc))
+    if bad:
+        junk = [acc for acc in bad if is_junk_index_list(acc)]
+        raise IpaExtendedError(
+            f"{len(bad)} accession(s) are not well-formed UniProt groups "
+            f"({len(junk)} look like MaxQuant row-index lists, cf. D11): "
+            f"{[acc[:40] for acc in bad[:5]]}"
+        )
+
+    return pd.Series(sorted(seen), name=IPA_ID_COL)
+
+
+# ---------------------------------------------------------------------------
 # Cross-file validation
 # ---------------------------------------------------------------------------
 def _measurement_cells(path, id_col=IPA_ID_COL):
@@ -434,11 +577,13 @@ def assert_partition(results_dir, counts_path=None):
     up = set(_read(results_dir / IPA_QUALITATIVE_UP_FILENAME)[IPA_ID_COL])
     down = set(_read(results_dir / IPA_QUALITATIVE_DOWN_FILENAME)[IPA_ID_COL])
 
-    for label, ids, key in (
-        (IPA_EXTENDED_CSV_FILENAME, ext, "n_ipa_extended"),
-        (IPA_QUALITATIVE_UP_FILENAME, up, "n_ipa_qualitative_up"),
-        (IPA_QUALITATIVE_DOWN_FILENAME, down, "n_ipa_qualitative_down"),
-    ):
+    by_name = {
+        IPA_EXTENDED_CSV_FILENAME: ext,
+        IPA_QUALITATIVE_UP_FILENAME: up,
+        IPA_QUALITATIVE_DOWN_FILENAME: down,
+    }
+    for label, key in FOREGROUND_UPLOADS:
+        ids = by_name[label]
         if len(ids) != counts[key]:
             raise IpaExtendedError(
                 f"{label}: {len(ids)} distinct accessions, expected "
@@ -470,6 +615,59 @@ def assert_partition(results_dir, counts_path=None):
         )
     return {"n_extended": len(ext), "n_up": len(up), "n_down": len(down),
             "n_union": len(union)}
+
+
+def assert_background_covers_foreground(results_dir, counts_path=None):
+    """The Reference Set must be a STRICT superset of all three uploads.
+
+    A background that does not contain its own foreground is not a background:
+    IPA would be told that some tested molecules are outside the universe they
+    were drawn from, and every enrichment p-value computed from that pair is
+    arithmetic on an incoherent contingency table. So this is an error, not a
+    warning -- and *strict* is asserted too, because a background exactly equal
+    to the foreground would mean 975 measured-but-unregulated proteins had
+    silently gone missing from the file, leaving a "background" that cannot
+    discriminate anything.
+
+    Returns
+    -------
+    dict
+        ``{"n_background", "n_foreground", "n_background_only"}``.
+    """
+    results_dir = Path(results_dir)
+    counts = _frozen_counts(counts_path)
+
+    background = set(_read(results_dir / IPA_BACKGROUND_FILENAME)[IPA_ID_COL])
+    expected = int(counts["n_ipa_background_measured"])
+    if len(background) != expected:
+        raise IpaExtendedError(
+            f"{IPA_BACKGROUND_FILENAME}: {len(background)} distinct accessions, "
+            f"expected {expected} (frozen_counts n_ipa_background_measured)"
+        )
+
+    foreground = set()
+    for label, _key in FOREGROUND_UPLOADS:
+        ids = set(_read(results_dir / label)[IPA_ID_COL])
+        orphans = sorted(ids - background)
+        if orphans:
+            raise IpaExtendedError(
+                f"{len(orphans)} accession(s) in {label} are absent from "
+                f"{IPA_BACKGROUND_FILENAME}. The reference set must contain "
+                f"every uploaded molecule: {orphans[:10]}"
+            )
+        foreground |= ids
+
+    if not background > foreground:
+        raise IpaExtendedError(
+            f"{IPA_BACKGROUND_FILENAME} ({len(background)}) is not a STRICT "
+            f"superset of the {len(foreground)} foreground accessions -- the "
+            "measured-but-unregulated proteins are what make it a background"
+        )
+    return {
+        "n_background": len(background),
+        "n_foreground": len(foreground),
+        "n_background_only": len(background - foreground),
+    }
 
 
 def assert_frozen_inputs_untouched(results_dir, before):
@@ -504,24 +702,28 @@ def _hash_frozen_inputs(results_dir):
 # CLI
 # ---------------------------------------------------------------------------
 def build_extended_from_results(results_dir=None, *, validate=True, counts_path=None):
-    """Build all four new IPA files from the committed results directory.
+    """Build all five new IPA files from the committed results directory.
 
     Reads ``ipa_input_full.csv``, ``regulated_up_partial.csv``,
-    ``regulated_down_partial.csv`` and ``qualitative_changes.csv`` -- every
-    number is lifted from a file that already exists; nothing is recomputed,
-    imputed or invented here.
+    ``regulated_down_partial.csv``, ``qualitative_changes.csv`` and the two
+    :data:`BACKGROUND_SOURCES` -- every number is lifted from a file that already
+    exists; nothing is recomputed, imputed or invented here.
 
     Returns
     -------
     list[pathlib.Path]
-        ``[extended.csv, extended.txt, qualitative_up.txt, qualitative_down.txt]``.
+        ``[extended.csv, extended.txt, qualitative_up.txt, qualitative_down.txt,
+        background_measured.txt]``.
     """
     results_dir = Path(results_dir) if results_dir else _PKG_DIR / "results"
 
     full_path = results_dir / "ipa_input_full.csv"
     qual_path = results_dir / "qualitative_changes.csv"
     partial_paths = [(results_dir / name, label) for name, label in PARTIAL_SOURCES]
-    for p in [full_path, qual_path] + [pp for pp, _ in partial_paths]:
+    background_paths = [(results_dir / name, col) for name, col in BACKGROUND_SOURCES]
+    for p in ([full_path, qual_path]
+              + [pp for pp, _ in partial_paths]
+              + [bp for bp, _ in background_paths]):
         if not p.exists():
             raise FileNotFoundError(
                 f"{p} not found -- run run_pipeline.py --only "
@@ -543,6 +745,11 @@ def build_extended_from_results(results_dir=None, *, validate=True, counts_path=
         ids = select_qualitative_ids(qualitative, direction)
         written.append(write_id_list(ids, results_dir / filename))
 
+    background_frames = [(_read(p), col, p.name) for p, col in background_paths]
+    background = build_measured_background(background_frames)
+    background_path = results_dir / IPA_BACKGROUND_FILENAME
+    written.append(write_id_list(background, background_path))
+
     if validate:
         counts = _frozen_counts(counts_path)
         n_extended = int(counts["n_ipa_extended"])
@@ -562,6 +769,32 @@ def build_extended_from_results(results_dir=None, *, validate=True, counts_path=
                 required_columns=[IPA_ID_COL],
                 measurement_columns=[],
             )
+        validate_ipa(
+            background_path,
+            expected_rows=int(counts["n_ipa_background_measured"]),
+            required_columns=[IPA_ID_COL],
+            measurement_columns=[],
+        )
+
+        # The Reference Set's size is the two sources' row counts, and that has
+        # to be the SAME number the ORA background is built from -- the whole
+        # point of reusing BACKGROUND_SOURCES is that IPA and g:Profiler test
+        # against one universe. Checked against background_union rather than
+        # only against its own key, so the two cannot drift apart silently.
+        n_background = len(background)
+        n_source_rows = sum(len(f) for f, _col, _name in background_frames)
+        if n_background != n_source_rows:
+            raise IpaExtendedError(
+                f"{n_background} background accessions from {n_source_rows} source "
+                "rows -- the two sources are supposed to be disjoint and unique"
+            )
+        if n_background != int(counts["background_union"]):
+            raise IpaExtendedError(
+                f"{n_background} background accessions, but frozen_counts "
+                f"background_union (the ORA domain_scope background) is "
+                f"{counts['background_union']}; IPA and g:Profiler would be "
+                "testing against different universes"
+            )
 
         n_core = len(df_full)
         n_partial = sum(len(f) for f, _ in partial_frames)
@@ -578,6 +811,7 @@ def build_extended_from_results(results_dir=None, *, validate=True, counts_path=
         assert_core_rows_are_verbatim(csv_path, full_path)
         assert_twins_agree(csv_path, txt_path)
         assert_partition(results_dir, counts_path)
+        assert_background_covers_foreground(results_dir, counts_path)
         assert_frozen_inputs_untouched(results_dir, before)
 
     return written
@@ -588,6 +822,7 @@ def main(argv=None):
     ap.add_argument("--results-dir", default=None,
                     help="directory holding ipa_input_full.csv / "
                          "regulated_{up,down}_partial.csv / qualitative_changes.csv "
+                         "/ foldchange_all.csv / single_condition_proteins.csv "
                          "(default: proteomics_de/results)")
     ap.add_argument("--no-sidecars", action="store_true",
                     help="skip writing the .provenance.json sidecars")
@@ -607,6 +842,7 @@ def main(argv=None):
         IPA_EXTENDED_TXT_FILENAME: (counts["n_ipa_extended"], IPA_EXTENDED_COLS, None),
         IPA_QUALITATIVE_UP_FILENAME: (counts["n_ipa_qualitative_up"], [IPA_ID_COL], []),
         IPA_QUALITATIVE_DOWN_FILENAME: (counts["n_ipa_qualitative_down"], [IPA_ID_COL], []),
+        IPA_BACKGROUND_FILENAME: (counts["n_ipa_background_measured"], [IPA_ID_COL], []),
     }
     for p in written:
         expected, columns, measurements = contracts[p.name]
@@ -620,6 +856,13 @@ def main(argv=None):
         f"Partition OK: {summary['n_extended']} quantitative + {summary['n_up']} "
         f"qualitative UP + {summary['n_down']} qualitative DOWN = "
         f"{summary['n_union']} distinct accessions, pairwise disjoint"
+    )
+
+    coverage = assert_background_covers_foreground(results_dir)
+    print(
+        f"Reference Set OK: {coverage['n_background']} measured accessions "
+        f"strictly contain all {coverage['n_foreground']} foreground accessions "
+        f"({coverage['n_background_only']} measured but not uploaded)"
     )
 
     if not args.no_sidecars:
@@ -637,19 +880,24 @@ __all__ = [
     "IPA_EXTENDED_COLS",
     "PARTIAL_SOURCES",
     "QUALITATIVE_SOURCES",
+    "FOREGROUND_UPLOADS",
+    "BACKGROUND_SOURCES",
     "IPA_EXTENDED_CSV_FILENAME",
     "IPA_EXTENDED_TXT_FILENAME",
     "IPA_QUALITATIVE_UP_FILENAME",
     "IPA_QUALITATIVE_DOWN_FILENAME",
+    "IPA_BACKGROUND_FILENAME",
     "BYTE_FROZEN_INPUTS",
     "IpaExtendedError",
     "build_extended_frame",
     "write_ipa_extended",
     "select_qualitative_ids",
     "write_id_list",
+    "build_measured_background",
     "assert_core_rows_are_verbatim",
     "assert_twins_agree",
     "assert_partition",
+    "assert_background_covers_foreground",
     "assert_frozen_inputs_untouched",
     "build_extended_from_results",
     "main",

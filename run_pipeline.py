@@ -245,16 +245,21 @@ STAGES: tuple[Stage, ...] = (
             "QIAGEN uploads that also carry the 862 proteins D17 recovered: a "
             "963-row quantitative file (715 core + 248 tier-3 partial, tagged "
             "by tier) plus two ID-only lists for the 614 qualitative proteins "
-            "that have no valid fold change (DECISIONS_LOG D18)"
+            "that have no valid fold change (DECISIONS_LOG D18), plus the "
+            "2552-accession measured-proteome Reference Set (D19)"
         ),
         # Registered here for the reason D13 gives: an export that is not in
         # this table goes stale the moment an upstream stage is re-run and
         # nothing notices. ipa_input_full.csv reached QIAGEN carrying vanilla
         # p-values exactly that way. Depends on BOTH producers because it reads
         # ipa_export's ipa_input_full.csv and supplementary_lists'
-        # regulated_{up,down}_partial.csv + qualitative_changes.csv.
+        # regulated_{up,down}_partial.csv + qualitative_changes.csv. `foldchange`
+        # is named explicitly as well, though it is already a transitive
+        # dependency of both: D19's Reference Set reads foldchange_all.csv and
+        # single_condition_proteins.csv DIRECTLY, and a dependency that is only
+        # true by accident of another stage's edges is one refactor from wrong.
         script="proteomics_de/export/ipa_extended.py",
-        depends_on=("ipa_export", "regulated_lists_supplementary"),
+        depends_on=("foldchange", "ipa_export", "regulated_lists_supplementary"),
         outputs=(
             Output("proteomics_de/results/ipa_input_extended.csv",
                    kind="table", expected_rows="n_ipa_extended"),
@@ -270,6 +275,13 @@ STAGES: tuple[Stage, ...] = (
                    kind="table", expected_rows="n_ipa_qualitative_up"),
             Output("proteomics_de/results/ipa_qualitative_down.txt",
                    kind="table", expected_rows="n_ipa_qualitative_down"),
+            # The Reference Set (D19). Also single-column, so row-countable.
+            # Belongs to this stage rather than a new one: it is written by the
+            # same script, and its contract is a cross-file one -- it must be a
+            # strict superset of the three files above, which only holds if all
+            # four are regenerated together.
+            Output("proteomics_de/results/ipa_background_measured.txt",
+                   kind="table", expected_rows="n_ipa_background_measured"),
         ),
     ),
     Stage(
