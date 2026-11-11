@@ -1,0 +1,165 @@
+{
+  "note": "the 715-protein core list re-run with the walker run's API versions (control for database drift). Top 5 terms from EACH direction, selected exactly as enrich/ora.py selects them: stable sort by g:SCS-corrected p_value within direction. Many corrected p-values are exactly 1.0, and ties keep the API's order, so a block of p=1.0 terms is NOT a ranking -- use comparison_vs_715.csv (which breaks ties with the uncorrected hypergeometric p) for an ordered view. Terms significant at g:SCS<0.05: UP 0, DOWN 0; see significant_g_SCS_0.05 per term. Hypothesis-generating only.",
+  "terms": [
+    {
+      "direction": "UP",
+      "source": "GO:MF",
+      "term_id": "GO:0000030",
+      "term_name": "mannosyltransferase activity",
+      "p_value": 1.0,
+      "term_size": 1,
+      "query_size": 473,
+      "intersection_size": 1,
+      "intersecting_genes": [
+        "Tmtc3"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "UP",
+      "source": "GO:MF",
+      "term_id": "GO:0000049",
+      "term_name": "tRNA binding",
+      "p_value": 1.0,
+      "term_size": 17,
+      "query_size": 473,
+      "intersection_size": 3,
+      "intersecting_genes": [
+        "Trnt1",
+        "Eif2s3x",
+        "Eif1ax"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "UP",
+      "source": "GO:MF",
+      "term_id": "GO:0000104",
+      "term_name": "succinate dehydrogenase activity",
+      "p_value": 1.0,
+      "term_size": 1,
+      "query_size": 473,
+      "intersection_size": 1,
+      "intersecting_genes": [
+        "Sdha"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "UP",
+      "source": "GO:MF",
+      "term_id": "GO:0000146",
+      "term_name": "microfilament motor activity",
+      "p_value": 1.0,
+      "term_size": 6,
+      "query_size": 473,
+      "intersection_size": 1,
+      "intersecting_genes": [
+        "Myh9"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "UP",
+      "source": "GO:MF",
+      "term_id": "GO:0000149",
+      "term_name": "SNARE binding",
+      "p_value": 1.0,
+      "term_size": 5,
+      "query_size": 473,
+      "intersection_size": 1,
+      "intersecting_genes": [
+        "Napa"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "DOWN",
+      "source": "GO:BP",
+      "term_id": "GO:0016311",
+      "term_name": "dephosphorylation",
+      "p_value": 0.7029801000701202,
+      "term_size": 31,
+      "query_size": 196,
+      "intersection_size": 11,
+      "intersecting_genes": [
+        "Fbp1",
+        "Ppp2ca",
+        "Ppp1cc",
+        "Ppp1ca",
+        "Ppp5c",
+        "Ppm1l",
+        "Lhpp",
+        "Ppm1a",
+        "Thnsl2",
+        "Ptp4a2",
+        "Timm50"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "DOWN",
+      "source": "REAC",
+      "term_id": "REAC:R-MMU-372708",
+      "term_name": "p130Cas linkage to MAPK signaling for integrins",
+      "p_value": 1.0,
+      "term_size": 7,
+      "query_size": 196,
+      "intersection_size": 2,
+      "intersecting_genes": [
+        "Fga",
+        "Rap1b"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "DOWN",
+      "source": "REAC",
+      "term_id": "REAC:R-MMU-430039",
+      "term_name": "mRNA decay by 5' to 3' exoribonuclease",
+      "p_value": 1.0,
+      "term_size": 6,
+      "query_size": 196,
+      "intersection_size": 2,
+      "intersecting_genes": [
+        "Lsm2",
+        "Lsm6"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "DOWN",
+      "source": "REAC",
+      "term_id": "REAC:R-MMU-72165",
+      "term_name": "mRNA Splicing - Minor Pathway",
+      "p_value": 1.0,
+      "term_size": 25,
+      "query_size": 196,
+      "intersection_size": 1,
+      "intersecting_genes": [
+        "Snrpg"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "DOWN",
+      "source": "REAC",
+      "term_id": "REAC:R-MMU-72163",
+      "term_name": "mRNA Splicing - Major Pathway",
+      "p_value": 1.0,
+      "term_size": 81,
+      "query_size": 196,
+      "intersection_size": 7,
+      "intersecting_genes": [
+        "Lsm2",
+        "Lsm6",
+        "Lsm8",
+        "Snrpg",
+        "Srrt",
+        "Prpf19",
+        "Ddx46"
+      ],
+      "significant_g_SCS_0.05": false
+    }
+  ]
+}

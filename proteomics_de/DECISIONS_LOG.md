@@ -482,3 +482,267 @@ Pinned by six new tests in `tests/test_golden_outputs.py`
    is unaffected: it already ranks all 1938 `qc_limma.csv` proteins, so the 248
    tier-3 proteins are in its ranking (the 614 never enter limma at all, and by
    D17's reasoning cannot).
+
+---
+
+## Dr. Walker's additions (2026-11-09)
+
+**⚪ D20 — the regulated list for Dr. Walker: 715 core + FRZB (measured) + 5
+control-only proteins with an ASSIGNED 100-fold decrease + 247 partial-tier
+proteins admitted by a rule the user widened. Additive; assigned values are
+labelled everywhere.** Dr. Walker reviewed the 715-protein list and decided (the
+user approved each point):
+
+1. **EGF (P01132), EREG (Q61521)**, plus three control-only proteins the user
+   chose — **Efna4 (O08542), Tyro3 (P55144), Mfap4 (Q9D1H9)** — are added as
+   **DOWN with an assigned fold change of 0.01** (a 100-fold decrease),
+   `log2FC = log2(0.01) = -6.643856`. All five were **verified from the data,
+   not assumed**: each is `detected_in=control_only` in
+   `single_condition_proteins.csv`, detected (> 0) in **both** control readings
+   (Intensity 31579, 31581 per `sample_sheet.tsv`, D7) and absent in **both**
+   testosterone readings (31578, 31580), and each is a `DOWN` row of
+   `qualitative_changes.csv`. The builder re-checks this on every run and refuses
+   to assign a value to a protein that fails it (`verify_control_only`). It also
+   refuses an assigned `|log2FC|` below the pipeline's regulation cutoff (0.585),
+   so a factor such as 1.2 cannot produce a "regulated DOWN" row the pipeline
+   itself would call NO CHANGE.
+2. **FRZB (P97401)** is added with its **real measured values**: log2FC 4.40696
+   (~21.2x UP), p 0.0203, adj.P 0.998, `n_imputed = 1`, copied unchanged from
+   `regulated_up_partial.csv`. The 100-fold rule is **not** applied to it.
+3. **The "~860 recovered proteins".** Dr. Walker wanted only those altered by at
+   least 50% with "no problems".
+
+**What the "~860" is.** It is the **862** proteins D17/D18 recovered
+(`ipa_export_extended`'s stage description and D18 name the number): **248**
+tier-3 partial rows (152 UP + 96 DOWN; 1–2 of 4 readings missing, limma-imputed)
+plus **614** tier-1/2 qualitative rows (never identified on one side, no fold
+change). That is unambiguous in the repo.
+
+**The rule, and how it was widened.** The user first chose a *strict* rule:
+`|log2FC| >= 0.585` AND seen in both replicates of both groups AND
+`n_imputed == 0`. Rows surviving each filter were 862 → 856 (not already listed)
+→ 247 (`|log2FC| >= 0.585`; only partial rows have a log2FC) → **0** (all four
+readings seen) → **0** (`n_imputed == 0`). That emptiness is structural: every
+tier-3 row is in that tier *because* a reading is missing, so it has
+`n_imputed >= 1` (179 with 1, 69 with 2, FRZB included); none of the 614
+qualitative rows has a fold change. I did not loosen the rule myself; I reported
+it, and **the user then decided to widen it**:
+
+> add every **partial-tier** protein with a real log2FC and `|log2FC| >= 0.585`
+> that is not already on the list, **even though one replicate was imputed**.
+
+`config.yaml: walker_additions.recovered_rule` now reads `min_abs_log2fc: 0.585`,
+`require_partial_tier: true`, `require_all_replicates_seen: false`,
+`require_no_imputed_values: false`. The last two are the old "no problems"
+conditions kept as switches: setting both back to `true` restores the strict rule
+(and the build then adds 0). Qualitative rows still never qualify under either
+rule. Rows surviving each active filter: **862 → 856 → 247 → 247**.
+
+**The 247 do have a problem, and the files say so.** Dr. Walker said "no
+problems"; each of these proteins has one: a missing replicate imputed by the
+pipeline (MinProb), `n_imputed` **1 (178 proteins) or 2 (69)**. They are **151
+UP and 96 DOWN**. Each rests on **one biological replicate** (the design has two
+*technical* replicates, D2) in which one technical replicate was imputed rather
+than measured. Their `log2FC`, `p_value` and `adj_p_value` are the real limma
+values, copied unchanged from `regulated_up_partial.csv` /
+`regulated_down_partial.csv`, `value_source=measured`, `tier=partial` (as in the
+source files). The manifest carries `n_imputed` per protein and a `reason` that
+says the rule was widened by the user's decision and names the imputed replicate
+count. `ipa_input_walker.csv`/`.txt` carry no `n_imputed` column (their column
+set is unchanged); it lives in the manifest only.
+
+**The statistics are unchanged and still do not support confident calls:** 0 of
+the 247 (and of FRZB) pass FDR < 0.05. Minimum adj.P is 0.116 (Tuba1a); 246 of
+the 247 sit at adj.P = 0.998, as FRZB does, and 4 have a raw p < 0.05. This is
+the same picture as the core list (0 of the 715 pass FDR < 0.05, D2): n=2
+technical replicates, hypothesis-generating only.
+
+**Row counts:** 715 core → **716** (+FRZB) → **721** (+5 assigned) → **968**
+(+247 recovered; 715 + 1 + 5 + 247 = 968, as expected).
+
+**ASSIGNED IS NOT MEASURED — and this is the one place the repo knowingly writes
+such a number into a fold-change column.** D18 considered and REJECTED a
+sentinel ±1 log2FC for the qualitative lists because "it invents a magnitude the
+data does not contain". D20 supersedes that **for these five proteins only**, on
+the professor's explicit decision, and pays for it with labelling that cannot be
+filtered away by accident:
+
+* `value_source` column — `assigned` on the five rows, `measured` on the other
+  963;
+* `p_value` and `adj_p_value` are **blank** on assigned rows (a test statistic
+  for an unmeasured value would be invented), in `ipa_input_walker.csv` and
+  `.txt`. The manifest has no p-value columns; there, assigned rows are marked by
+  `value_source=assigned`, a blank `n_imputed`, and a `reason` that says "NOT
+  measured";
+* the provenance sidecars (`assigned_values_are_not_measurements: true`, the
+  assignment note, the rule's step counts), the manifest `reason` column, the
+  README methods note, and this entry all say the 100-fold decrease is assigned;
+* **"not detected" may mean below the detection limit.** The true change is
+  unknown and could be much smaller or larger than 100-fold. Treat these five as
+  "lost or strongly reduced after testosterone", not as a 100x measurement.
+
+Consequence for IPA: unlike D18's ID-only lists, these rows *do* carry a
+fold-change direction, so IPA can include them in activation z-scores. Five
+proteins at −6.64 can dominate a z-score computed from 963 real values that are
+mostly within ±1.5; say so in any methods write-up.
+
+**Files (all NEW; nothing existing is rewritten).** `export/walker_additions.py`;
+`results/ipa_input_walker.csv` + `.txt` (**968** rows; columns `UniProt
+Accession Number, Gene names, log2FC, regulated, p_value, adj_p_value, tier,
+value_source`; core block verbatim from `ipa_input_full.csv` in the same order,
+then FRZB, the five assigned in config order, then the 247 by descending
+`|log2FC|`); `results/walker_additions_manifest.csv` (253 rows: source, reason,
+value_source and n_imputed of each addition); three provenance sidecars;
+`config.yaml: walker_additions` (the 100, the five accessions, FRZB and the rule
+— no magic numbers in code); `run_pipeline.py` stage `ipa_export_walker`;
+frozen-count keys `n_walker_measured_added` (1) / `n_walker_assigned` (5) /
+`n_walker_recovered` (247) / `n_walker_additions_listed` (253) / `n_ipa_walker`
+(968); 3 new byte-freeze entries (85 → 88). `ipa_input.csv`, `ipa_input_full.*`,
+`ipa_input_extended.*` and the other existing results stay byte-for-byte
+untouched, and the builder re-hashes them around every run. The builder stages
+its three files in a scratch directory, validates them there, and only then
+renames them into place, so a failed validation leaves no deliverable behind.
+
+**Two existing assertions changed, deliberately, not weakened:**
+`test_freeze.py` pinned 85 frozen artifacts (now 88, +3 new files) and
+`test_run_pipeline.py` pinned 17 stages and their order (now 18, with
+`ipa_export_walker` after `ipa_export_extended`). Both are explicit counts whose
+purpose is to force a conscious update when something is added.
+
+**🔵 Still needs YOU:** (1) run IPA manually on `ipa_input_walker.txt` (**D4**);
+(2) decide whether Dr. Walker should be told plainly that the 247 are *not* the
+"no problems" set he asked for — they were included at the user's decision, and
+the manifest says so per protein; (3) the same n=2 technical-replicate caveat
+applies to everything on this list: 0 of the core 715, of FRZB and of the 247
+pass FDR < 0.05, and the five assigned rows have no p-value at all.
+
+---
+
+## ORA and STRING on Dr. Walker's list (2026-11-09)
+
+**⚪ D21 — g:Profiler ORA and STRING now also run on the 968-protein walker list, additively; 0 terms are
+significant; the database versions moved since the 715 run, so a same-version 715 control was added.**
+Dr. Walker wants the D20 list run through IPA, g:Profiler and STRING. `enrich/ora.py` and `enrich/string_ppi.py`
+still run only on the 715 (D18 left that open); nothing there was changed.
+
+*What was built (all NEW).* `enrich/walker_enrichment.py` (reuses `ora._post`, `_query_order`,
+`_rows_from_result` and the `string_ppi` graph/metric recipe; never calls their `main()`); `config.yaml:
+walker_enrichment`; `run_pipeline.py` stage `enrich_walker` (stage 16 of 19); `results/enrichment_walker/`
+(`ora_up/down.csv`, `ora_meta.json`, `ora_top_terms_detail.json`, `string_edges.tsv`, `string_node_metrics.csv`,
+`string_meta.json`, `string_focus_proteins.csv`, `string_comparison_vs_715.json`, `comparison_vs_715.csv`,
+`raw/`, `README.md`, and `control_715_same_version/` with the same files); `results/ipa_analysis_walker/
+UPLOAD_STEPS.md`; `tools/freeze.py` excludes `results/ipa_analysis_walker/` (future manual IPA exports land
+there; the prefix test does not match `ipa_analysis`). `results/enrichment/*` and every existing hash are
+byte-identical (the run hashes the old tree before and after and raises on any change; the 88 prior freeze
+entries are unchanged, 38 new ones added: 88 to 126).
+
+*Input and background.* Query = `regulated` of `ipa_input_walker.csv`: **UP 661 / DOWN 307**, queried separately,
+one symbol per row as `enrich_common` resolves them. Background = the same measured proteome as the 715 run
+(2552 rows / 2530 unique symbols; also the IPA Reference Set, D19). **Checked:** all 968 query symbols are inside
+it (the 5 assigned proteins are rows of `single_condition_proteins.csv`; the partial tier is in
+`foldchange_all.csv`), and all 968 accessions are in `ipa_background_measured.txt`, so the universe was **not
+extended** (a missing symbol makes the code refuse, never silently extend or drop).
+
+*Assigned values are not used.* ORA and STRING use membership and direction only. The five assigned
+log2FC = -6.643856 never reach either analysis; the STRING node table leaves their `log2FC` blank; no p-value
+is attached to anything. A test scrambles every number in the list and demands identical query symbols.
+
+*Results.* **ORA: 0 terms pass g:SCS < 0.05 in either direction** (same null as D6). g:Profiler mapped 618/661
+UP and 294/307 DOWN symbols (37 and 9 obsolete/mangled symbols failed to map and 6 and 4 were ambiguous and
+dropped; the 715 run lost 31+5 and 7+3).
+`comparison_vs_715.csv` (66 terms: significant or top 20 by rank in any of the committed 715, same-version 715
+and 968 runs; rank = corrected p, then the uncorrected hypergeometric p computed from the response's own counts)
+shows UP leads mostly kept (10 kept / 10 gained / 10 lost; translation initiation, ribosome, COPII, spliceosome)
+and DOWN leads almost wholly replaced (4 kept / 16 / 16). **12 of the top 20 DOWN leads contain an assigned
+protein**, and only four of them (the ERBB/EGFR 3-gene terms, hits exactly Egf, Ereg, Egfr) are artefacts of the
+additions; the other eight contain an assigned protein but are also driven by core and recovered proteins (an
+approximate leave-the-five-out recomputation moves them rank, it does not remove them), and the 96 recovered DOWN
+additions move the DOWN ranks too. Nothing is significant, so ranks are tie-break aids only. The 715 run's best DOWN term ("dephosphorylation", corrected p 0.703) is diluted to 1.0 by the
+larger DOWN list. **STRING: 937/968 map, 937 nodes, 10,696 edges** (control 694 nodes / 6,796 edges); the
+walker network is exactly the control's 6,796 core-core edges plus 3,900 edges touching an added protein.
+Egf degree 66 (68th of 937, community 0 of 299), Ereg 11, Tyro3 8, Mfap4 16, Efna4 2 (neighbours Egfr, Efnb1),
+Frzb 3. That is STRING's prior knowledge of these genes, not evidence from this data.
+
+**⚠ Version drift, and what was done about it.** The committed 715 run used **STRING 12.0** and g:Profiler
+**e114_eg62_p19_27110d83**; today's API answers **STRING 12.5** and **e114_eg62_p19_9dc92ac8**. A walker-vs-committed
+comparison would therefore confound the list with the databases. STRING 12.5 alone changes the 715 network from
+5,963 to 6,796 edges and from 57 to 35 communities; the g:Profiler change moved no term rank in the comparison
+(committed and same-version ranks are identical on every row). The 715 list was re-run under today's versions
+into `control_715_same_version/`, and the comparison file carries both `*_vs_committed` and `*_vs_control`
+flags. **Compare the 968 run with the control, not the committed files.** The committed 715 outputs (and the
+`ppi_network` figure, the `ora_dotplot` and the report built on them) remain at STRING 12.0 / the older
+g:Profiler release; refreshing them is a separate decision (the new code can pin a release via
+`string.api_base`, e.g. `version-12-0.string-db.org`).
+
+*Offline replay and caching.* Every response is cached verbatim in `raw/` with a request fingerprint
+(`request_manifest.json`; the g:Profiler responses also carry the query they answered). The default mode REPLAYS
+the cache and makes no network call; a missing, unfingerprinted or mismatched response is an error, never a silent
+live query; `--fetch` queries only what is missing and never overwrites. The stage is therefore `network=False`,
+deterministic, and run twice gave byte-identical frozen files. The same code replays the *committed 715 cache*
+into byte-identical `ora_up/down.csv`, `string_edges.tsv` and `string_node_metrics.csv` (a test), which is what
+licenses attributing differences to the list rather than the code. `raw/` is committed (about 10.5 MB across both
+runs; the large `*_all` responses are gzipped, mtime 0).
+
+*Tests.* `tests/test_walker_enrichment.py` (list, UP/DOWN split from the file, background coverage, no invented
+numbers, old files byte-identical, equivalence on the 715, replay determinism offline, cache mismatch/miss,
+comparison schema and flags, version drift, stage, freeze, README, IPA files). Existing assertions changed only
+as forced counts: `test_freeze.py` 88 to 126; `test_run_pipeline.py` 18 to 19 stages.
+
+*IPA.* `ipa_input_walker.txt` has the same layout as `ipa_input_extended.txt` plus one trailing `value_source`
+column; every accession is in `ipa_background_measured.txt`, so no new reference set was needed.
+`UPLOAD_STEPS.md` covers the column mapping, the reference set, the four analyses and the warning that **IPA
+computes activation z-scores from fold-change direction, so the five assigned rows at -6.64 can move them**. The
+sensitivity check needs no new file: `ipa_input_extended.txt` is exactly the walker list minus the 5 assigned
+rows (verified), so uploading it as a second run, with the same reference set, shows which z-scores survive.
+
+**🔵 Still needs YOU:** (1) upload to IPA by hand (D4) and run the sensitivity check; (2) decide whether to
+refresh the committed 715 STRING/ORA outputs to the current database versions or leave them at 12.0;
+(3) `Gene names` carry Excel-mangled values (e.g. `2018-09-09 00:00:00`) and obsolete symbols that g:Profiler cannot
+map (46 of the 968 here, plus 10 ambiguous); querying by UniProt accession instead would recover them, but it would change the 715
+method too and was not done; (4) all caveats of D20 and D2 apply: 0 of 968 pass FDR < 0.05.
+
+
+---
+
+## IPA on Dr. Walker's list (2026-11-10)
+
+**⚪ D22 — IPA was run on the 968-protein walker list; the first run silently dropped the 5 assigned proteins
+(blank p-values), so it was rerun with the p-value columns ignored; the 5 assigned values move many z-scores;
+IPA refused the measured-proteome reference, so both runs use the default reference.**
+All IPA work is manual (D4) and its exports live in `results/ipa_analysis_walker/` (outside the byte-freeze).
+Nothing in the code, the frozen results or the tests changed.
+
+*What happened.* Run 1 (`walker968_default_reference`) used the dataset `ipa_input_walker` with `p_value` and
+`adj_p_value` mapped to Expr p-value / Expr False Discovery Rate, as `UPLOAD_STEPS.md` first said. IPA mapped 935 of
+968 IDs but only **929** were analysis-ready (289 down, 640 up). The 963-protein dataset
+(`ipa_input_extended`, the list minus the 5) also gives exactly 929, so the 5 assigned proteins (Egf, Ereg, Efna4,
+Tyro3, Mfap4) were mapped but never analysed: **IPA drops every row that is blank in a mapped column**, and the
+assigned rows have blank p-values by design (D20). Run 2 (`walker968_assigned_included`, dataset
+`walker968_no_pvalues`) maps only `log2FC`; with no cutoffs the p-value columns are not needed, and **934**
+molecules are analysis-ready (294 down, 640 up). Run 1 is therefore effectively the 963-protein run and doubles as
+the "without the assigned values" comparison. `UPLOAD_STEPS.md` was corrected (Ignore the p-value columns).
+
+*Reference set.* IPA refused the 2,552-protein measured proteome as the Reference Set ("too large of an overlap
+with the reference set you have chosen"; the only fix IPA offers is a stricter cutoff, which this project does
+not use). **Both runs use IPA's default reference (the whole Knowledge Base)**, as the D18 runs did, so the IPA
+p-values carry the same background inflation D6 rejected for ORA. Compare rankings and z-scores, not p-values,
+and do not compare them with the in-house ORA.
+
+*What the 5 assigned proteins change (run 2 against run 1; the only input difference is those 5 rows).* 60
+canonical-pathway, 156 upstream-regulator and 393 diseases-and-functions z-scores change; 1, 9 and 20 flip sign;
+3, 4 and 14 cross the abs z = 2 line. Results that list an assigned protein: 81, 237 and 727, of which 6, 16 and
+79 have abs z >= 2 (for example Organismal death z -6.08, Cell death of tumor cell lines -4.89, Cell
+proliferation of carcinoma cell lines 4.60; regulators lipopolysaccharide 2.96 with Ereg, GABA -2.89 with Egf).
+**Their z-scores rest partly on the assigned placeholder (-6.64), so they are not findings.** The androgen
+entries barely moved: AR z 2.080 in both runs (Activated), metribolone 3.379 in both (Activated), testosterone
+1.954 to 1.662 (no state). EGF itself as a regulator: z 1.088 to 0.825, no state.
+
+*Files.* `run1_assigned_dropped_*` and `run2_assigned_included_*`, four IPA tab-delimited tables each (canonical
+pathways, upstream regulators, diseases and functions, networks), and `README.md` (settings, the comparison table,
+caveats).
+
+**🔵 Still needs YOU:** (1) whether to report IPA numbers from run 2 at all, given that the 5 assigned values
+shape 6 + 16 + 79 of the z-scored results (report run 1, the without-assigned analysis, as the defensible
+version, with run 2 as a sensitivity result, or the reverse); (2) whether to rerun IPA with a log2FC cutoff so
+the measured-proteome reference is accepted (this changes the analysed set and was not done); (3) all caveats of
+D20, D21 and D2 apply: 0 of 968 pass FDR < 0.05, n = 2 technical replicates, one biological replicate.

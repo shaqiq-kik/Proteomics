@@ -33,7 +33,13 @@ def test_manifest_exists_and_parses():
     # additive -- the other 80 hashes are unchanged.
     # 84 -> 85: ipa_background_measured.txt added (D19 IPA Reference Set, the
     # same stage). Again purely additive -- the other 84 hashes are unchanged.
-    assert len(entries) == 85, f"expected 85 frozen artifacts, got {len(entries)}"
+    # 85 -> 88: ipa_input_walker.csv/.txt and walker_additions_manifest.csv added
+    # (D20 Walker-additions stage). Purely additive -- the other 85 hashes are
+    # unchanged (verified by diffing the regenerated manifest against the old).
+    # 88 -> 126: D21's ORA/STRING over the 968 list (results/enrichment_walker/:
+    # 6 tables/JSONs + README per run dir, raw API cache of both runs, comparison
+    # files). Purely additive -- the other 88 hashes are unchanged (diffed).
+    assert len(entries) == 126, f"expected 126 frozen artifacts, got {len(entries)}"
     modes = {mode for _sha, mode in entries.values()}
     assert modes <= {"raw", "svg-canon", "ts-canon"}, modes
 
@@ -59,7 +65,9 @@ def test_tree_matches_manifest():
     # Stays 85 after results/ipa_analysis/ was committed: those are QIAGEN IPA's
     # own exports, excluded from the walk by policy rather than added here.
     # See FROZEN_EXCLUDE_DIRS in tools/freeze.py.
-    assert len(ok) == 85
+    # 85 -> 88: D20's three Walker-additions files.
+    # 88 -> 126: D21's results/enrichment_walker/ (38 files).
+    assert len(ok) == 126
 
 
 def test_ipa_analysis_is_excluded_by_policy_and_says_so():

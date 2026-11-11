@@ -1,0 +1,47 @@
+{
+  "gprofiler_down.json": {
+    "endpoint": "gprofiler/gost/profile",
+    "generated_at": "2026-11-09T20:08:13+00:00",
+    "request_sha256": "5af1fc3d7c4532ac1c34f3cfe20b0d0fa9a76b899cd819ff3fce41a23fabf82f"
+  },
+  "gprofiler_down_all.json.gz": {
+    "endpoint": "gprofiler/gost/profile",
+    "generated_at": "2026-11-09T20:08:15+00:00",
+    "request_sha256": "f678dc3fbd64dc76f8aa8213338ae83c5ac51e381ad031ee9d8e6d23f64e2452"
+  },
+  "gprofiler_down_all_evidence.json.gz": {
+    "endpoint": "gprofiler/gost/profile",
+    "generated_at": "2026-11-09T20:08:25+00:00",
+    "request_sha256": "e280476d05501581b590b1f88fd17066a5d4c788a9bf4ccf30391b8ae2ef6e04"
+  },
+  "gprofiler_up.json": {
+    "endpoint": "gprofiler/gost/profile",
+    "generated_at": "2026-11-09T20:08:08+00:00",
+    "request_sha256": "c313a3be1a93e8673773358270027a8d26c4cf92d673b98ba8a13a0495d3f58c"
+  },
+  "gprofiler_up_all.json.gz": {
+    "endpoint": "gprofiler/gost/profile",
+    "generated_at": "2026-11-09T20:08:11+00:00",
+    "request_sha256": "626b0363343bc5466591dc0f2812e7a9af8e0b2ae767a5942c402913f9b03f41"
+  },
+  "gprofiler_up_all_evidence.json.gz": {
+    "endpoint": "gprofiler/gost/profile",
+    "generated_at": "2026-11-09T20:08:21+00:00",
+    "request_sha256": "18bbdcc8d313680f7cbb92d96febac3248f29159751e6db7a0b3163f7aee7cd1"
+  },
+  "string_get_ids.json": {
+    "endpoint": "string/json/get_string_ids",
+    "generated_at": "2026-11-09T20:08:29+00:00",
+    "request_sha256": "993704a5c6f416e8866f4a8f8a663bfae014305c0d2be2fc0ec9308e3d0766b5"
+  },
+  "string_network.tsv": {
+    "endpoint": "string/tsv-no-header/network",
+    "generated_at": "2026-11-09T20:08:33+00:00",
+    "request_sha256": "1aab65758018813287884f135e9f80327828fcc838baf9d3a93856159233c8da"
+  },
+  "string_version.json": {
+    "endpoint": "string/json/version",
+    "generated_at": "2026-11-09T20:08:26+00:00",
+    "request_sha256": "70598785c063a7520b8bd4af129ff6b30a19b8bff0a339a55e307d10a7b0de13"
+  }
+}

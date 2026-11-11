@@ -1,0 +1,70 @@
+{
+  "describes": "proteomics_de/results/ipa_input_walker.csv",
+  "caveat": "SILAC design: n = 2 technical replicates per condition (no biological replication) — 0 / 1938 proteins pass FDR < 0.05 (limma); results below are hypothesis-generating only, not confirmed significant.",
+  "caveat_source": "proteomics_de/config/constants.py::CAVEAT_TEXT",
+  "git_commit": "3169b20338cbce2b6ab3241e6c50fd410bfed099",
+  "git_dirty": true,
+  "sha256": "3ea58425e9d5f6deee78394338bc1752457837898071379c50a83fe6d9e3d9df",
+  "n_rows": 968,
+  "generated_at": "2026-11-09T19:59:36+00:00",
+  "tool_versions": {
+    "python": "3.13.16",
+    "pandas": "2.3.3",
+    "numpy": "2.3.5",
+    "scipy": "1.16.3",
+    "matplotlib": "3.10.7",
+    "R": "4.6.1",
+    "limma": "3.68.4",
+    "imputeLCMD": "2.1",
+    "r_seed": "42"
+  },
+  "value_source_counts_scope": "all rows of ipa_input_walker.csv/.txt",
+  "value_source_counts": {
+    "measured": 963,
+    "assigned": 5
+  },
+  "assigned_values_are_not_measurements": true,
+  "assigned_fold_change": 0.01,
+  "assigned_log2FC": -6.643856,
+  "assigned_accessions": [
+    "P01132",
+    "Q61521",
+    "O08542",
+    "P55144",
+    "Q9D1H9"
+  ],
+  "assignment_note": "The 100-fold decrease on value_source=assigned rows is ASSIGNED by Dr. Walker's decision, not measured. These proteins were detected in both control readings and in neither testosterone reading; 'not detected' may mean below the detection limit. p_value / adj_p_value are blank on those rows on purpose (DECISIONS_LOG D20).",
+  "recovered_rule": {
+    "min_abs_log2fc": 0.585,
+    "require_partial_tier": true,
+    "require_all_replicates_seen": false,
+    "require_no_imputed_values": false
+  },
+  "recovered_rule_steps": [
+    {
+      "step": "recovered pool (partial + qualitative)",
+      "n": 862
+    },
+    {
+      "step": "not already on the list",
+      "n": 856
+    },
+    {
+      "step": "partial tier with a real log2FC",
+      "n": 247
+    },
+    {
+      "step": "|log2FC| >= 0.585",
+      "n": 247
+    }
+  ],
+  "recovered_rule_note": "The recovered-protein rule was WIDENED by the user's decision: Dr. Walker asked for proteins with 'no problems', but the strict rule (all four readings seen, n_imputed == 0) admits nothing, so partial-tier proteins with |log2FC| >= the cutoff are added although one replicate was imputed by the pipeline. They rest on one biological replicate with an imputed technical replicate. Real limma p_value / adj_p_value are kept; see the manifest's n_imputed and reason columns.",
+  "measured_additions_n_imputed": {
+    "P97401": 1
+  },
+  "recovered_n_imputed_counts": {
+    "1": 178,
+    "2": 69
+  },
+  "decision": "DECISIONS_LOG D20"
+}

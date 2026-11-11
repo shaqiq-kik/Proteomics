@@ -9,7 +9,7 @@ read the [repo README](../README.md) first.
 
 | File | Answers |
 |---|---|
-| [`DECISIONS_LOG.md`](DECISIONS_LOG.md) | *Why* — human decisions D1–D18, open questions, what still needs a person. |
+| [`DECISIONS_LOG.md`](DECISIONS_LOG.md) | *Why* — human decisions D1–D22, open questions, what still needs a person. |
 | [`BUILD_LOG.md`](BUILD_LOG.md) | *How it got built* — append-only, per work package, with verification evidence. |
 | [`STATUS.md`](STATUS.md) | *What exists right now* — generated from the filesystem by `tools/status.py`. Never hand-edited, always re-runnable. |
 | [`../research1.md`](../research1.md) | *The design* — the original technical doc and its Section 6 build list (items 1–20), which every module traces back to. |
@@ -231,6 +231,8 @@ prose, so nothing in the report is invented.
 | `export/regulated_lists.py` | Splits `ipa_input_full.csv` into `regulated_up.csv`/`regulated_down.csv` with a linear `fold_change` column, sorted by descending magnitude of change. Pipeline stage 3. |
 | `export/supplementary_lists.py` | Two more files closing the gap `regulated_up/down.csv` structurally cannot: `regulated_up_partial.csv`/`regulated_down_partial.csv` (152/96 tier-3 proteins reclassified from limma's imputed log2FC) and `qualitative_changes.csv` (614 tier-1/2 proteins never identified on one side at all, with a `direction` call but no fold change). Pipeline stage 4. **D17.** |
 | `export/ipa_extended.py` | Carries D17's two supplementary tiers into the QIAGEN uploads, which the core export structurally cannot see: `ipa_input_extended.csv`/`.txt` (963 rows, `tier`-tagged) plus `ipa_qualitative_up.txt`/`ipa_qualitative_down.txt` (372/242 bare accessions). Reads only; re-hashes the six byte-frozen IPA/regulated files around every build. Pipeline stage 5. **D18.** |
+| `export/walker_additions.py` | Dr. Walker's list (**D20**): the 715 core rows + FRZB (real values) + 5 control-only proteins with an **assigned** 100-fold decrease (`value_source=assigned`, p-values blank) + the 247 partial-tier proteins admitted by the user's widened recovered rule: `ipa_input_walker.csv`/`.txt` (968 rows) and `walker_additions_manifest.csv`. Driven by `config.yaml: walker_additions`. Pipeline stage `ipa_export_walker`. |
+| `enrich/walker_enrichment.py` | ORA (g:Profiler) + STRING over Dr. Walker's 968-protein list (**D21**), additive: writes `results/enrichment_walker/` (and a same-version re-run of the 715 list, `control_715_same_version/`, plus `comparison_vs_715.csv`), reusing `ora.py`/`string_ppi.py` pieces and never touching `results/enrichment/`. **Replays its committed `raw/` API cache offline**; live calls only with `--fetch`. Driven by `config.yaml: walker_enrichment`. Pipeline stage `enrich_walker`. |
 | `provenance.py` | Writes `<name>.provenance.json` sidecars (caveat text, git commit, sha256, row count, tool versions) for the CSV deliverables. |
 | `qc/boundaries.py` | Real pandera validation at `foldchange.py`'s load/merge/foldchange boundaries; `after_load` is permissive (junk accessions route to quarantine), later stages are strict. Appends to `results/qc/qc_boundaries.json`. |
 | `tests/` | pytest suite. `tests/expected/frozen_counts.json` is the single source of expected row counts; `tests/expected/outputs.sha256` is the byte-freeze manifest (scientific outputs only — see `tools/freeze.py`). |
@@ -285,6 +287,8 @@ rather than loosening the gate, keeping `ipa_input.csv`/`ipa_input_full.csv`/
 
 See DECISIONS_LOG D17 for the full evidence and the pilot-panel reconciliation.
 
+Dr. Walker's follow-up decision on these gaps (FRZB added with its real values, EGF/EREG plus three more control-only proteins added with an *assigned* 100-fold decrease) is in the section "Dr. Walker's list (D20)" below.
+
 ---
 
 ## What to upload to QIAGEN IPA
@@ -322,6 +326,109 @@ a sentinel ±1 log2FC to force them was considered and rejected (**D18**).
 Still open: ORA and STRING are seeded with the same 715 and would need widening
 to the 963 to match these uploads. GSEA already covers all 1938. Actually
 running the analyses in IPA is manual — **D4**.
+
+---
+
+## Dr. Walker's list (D20): measured vs ASSIGNED values
+
+Dr. Walker reviewed the 715-protein list (the professor's report that EGF, EREG
+and FRZB were missing, D17/D18) and decided what to add. The result is a **new**
+upload, `results/ipa_input_walker.txt` (`.csv` twin), alongside the unchanged
+older files:
+
+| Step | Rows | What it is |
+|---|---|---|
+| core regulated list | 715 | `ipa_input_full.csv`, verbatim (`value_source=measured`) |
+| + FRZB P97401 | 716 | its **real** values: log2FC +4.407 (~21x UP), p 0.0203, adj.P 0.998, one imputed replicate (`value_source=measured`) |
+| + 5 control-only proteins | 721 | EGF, EREG, Efna4, Tyro3, Mfap4: **DOWN, assigned 100-fold decrease** (`value_source=assigned`) |
+| + 247 recovered partial-tier proteins | 968 | real limma values, `value_source=measured`, `tier=partial`, **each with an imputed replicate** (178 with one, 69 with two; 151 UP, 96 DOWN) |
+
+`results/walker_additions_manifest.csv` (253 rows) lists every addition with its
+source, reason, `value_source` and `n_imputed`.
+
+> **Methods note -- the assigned values are not measurements.** EGF, EREG, Efna4,
+> Tyro3 and Mfap4 were detected in both control readings and in neither
+> testosterone reading, so no fold change can be computed from the data. By
+> Dr. Walker's decision each is **assigned** a 100-fold decrease (fold change
+> 0.01, log2FC = -6.643856). `value_source = assigned` marks these rows, and
+> `p_value`/`adj_p_value` are blank on purpose. "Not detected" may mean *below the
+> detection limit*, so the true change is unknown and may be smaller or larger
+> than 100-fold. Report them as "lost or strongly reduced after testosterone",
+> never as a measured 100-fold change. Unlike the ID-only lists above, these rows
+> carry a fold-change direction, so IPA can include them in activation z-scores;
+> five values at -6.64 can dominate a z-score built from mostly-small real ones.
+
+**The "~860 recovered proteins"** are the 862 that D17/D18 recovered (248 partial
++ 614 qualitative). Dr. Walker asked for only those altered by at least 50% with
+"no problems". The strict rule the user first chose (`|log2FC| >= 0.585`, seen in
+both replicates of both groups, `n_imputed == 0`) admits **none**: every
+partial-tier protein is in that tier *because* a reading is missing and imputed,
+and no qualitative protein has a fold change (862 -> 856 not already listed -> 247
+clear the cutoff -> 0 -> 0). **The user then widened the rule**: every partial-tier
+protein with `|log2FC| >= 0.585` is added even though one replicate was imputed, so
+the 247 (the 248 partial rows minus FRZB) are on the list. They do **not** meet
+"no problems": each rests on one biological replicate with an imputed technical
+replicate. Their p-values are the real limma ones and none is significant (0 of
+the 247 pass FDR < 0.05; minimum adj.P 0.116, and 246 sit at 0.998, like FRZB and
+the core list), so they are hypothesis-generating leads, not results. The two
+"no problems" conditions remain config switches
+(`walker_additions.recovered_rule.require_all_replicates_seen` /
+`require_no_imputed_values`, both now `false`); setting them to `true` restores the
+strict rule. See DECISIONS_LOG D20.
+
+Everything is generated by `run_pipeline.py --only ipa_export_walker`; no existing
+result file is modified, and the builder re-hashes them around every run.
+
+---
+
+## ORA and STRING on Dr. Walker's list (D21)
+
+Dr. Walker wants his 968-protein list (D20) run through IPA, g:Profiler and STRING. IPA is a manual
+upload (steps in `results/ipa_analysis_walker/UPLOAD_STEPS.md`). g:Profiler and STRING are done, **additively**,
+in `results/enrichment_walker/` (see its `README.md` for the numbers); the 715-based `results/enrichment/`
+is untouched and still what `enrich_ora` / `enrich_string_ppi` produce.
+
+* **List and background.** UP 661 / DOWN 307, queried separately. The background is the same measured
+  proteome as the 715 run (2530 unique symbols); all 968 query symbols were verified to be inside it, so it
+  was not extended, and the code refuses to run if that stops holding.
+* **Membership only.** The 5 assigned proteins (Egf, Ereg, Efna4, Tyro3, Mfap4) enter ORA/STRING as DOWN
+  gene-list members; their assigned -6.64 is never used, STRING leaves their `log2FC` blank, and no p-value
+  reaches any output. FRZB and the 247 recovered proteins rest on one biological replicate with an imputed
+  replicate; none is FDR-significant.
+* **Result.** 0 g:SCS-significant terms in either direction (the D6 null again). STRING: 937/968 mapped,
+  937 nodes, 10,696 edges. `comparison_vs_715.csv` shows which leads came and went; 12 of the top 20 DOWN
+  leads contain an assigned protein. Only the four ERBB/EGFR 3-gene leads (hits exactly Egf + Ereg + Egfr) are
+  artefacts of the five assigned proteins; the other eight contain an assigned protein but are also driven by core
+  and recovered proteins (they move rank when the five are removed, they do not vanish). The 96 recovered DOWN
+  additions move the DOWN ranks too. Nothing is significant (corrected p = 1.0), so ranks are tie-break aids only.
+* **Version drift.** The committed 715 run used STRING 12.0 and g:Profiler `e114_eg62_p19_27110d83`; this run
+  uses STRING 12.5 and `e114_eg62_p19_9dc92ac8`. STRING 12.5 alone adds 833 edges to the 715 network (5,963 to
+  6,796), so the 715 list was re-run under today's versions (`control_715_same_version/`) and **the 968 run
+  must be compared with that control**, not with the committed files.
+* **Offline by default.** `python run_pipeline.py --only enrich_walker` replays the committed `raw/` cache
+  and makes no network call (a missing/mismatched cache is an error). `python
+  proteomics_de/enrich/walker_enrichment.py --fetch` queries the live APIs for anything not cached.
+
+---
+
+## IPA on Dr. Walker's list (D22)
+
+IPA is a manual upload; the exports are in `results/ipa_analysis_walker/` (outside the byte-freeze) and its
+`README.md` has the numbers. Two runs were made on 2026-11-10:
+
+* **Run 1, `assigned_dropped`:** `p_value` / `adj_p_value` mapped. IPA drops rows that are blank in a mapped column,
+  so the 5 assigned proteins (blank p-values) were mapped but never analysed: 929 analysis-ready molecules, the
+  same as the 963-protein dataset without them. It serves as the "without the assigned values" analysis.
+* **Run 2, `assigned_included`:** only `log2FC` mapped, no cutoffs: 934 analysis-ready molecules, the 5 included.
+  This is the run Dr. Walker asked for.
+* **Reference set.** IPA refused the measured-proteome reference (overlap too large), so both runs use IPA's
+  default Knowledge Base reference. IPA p-values are inflated by that; compare rankings and z-scores, never
+  p-values, and not with the in-house ORA.
+* **What the 5 assigned values change.** Adding them changes 60 pathway, 156 regulator and 393 function z-scores;
+  6 pathways, 16 regulators and 79 functions with abs z >= 2 list an assigned protein (e.g. Organismal death, z -6.08).
+  Those z-scores rest partly on the assigned -6.64 placeholder and must not be quoted as findings. The androgen
+  entries barely move (AR z 2.08 and metribolone z 3.38 in both runs).
+* 0 of 968 pass FDR < 0.05; every IPA number is exploratory. See DECISIONS_LOG D22.
 
 ---
 

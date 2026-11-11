@@ -1,0 +1,27 @@
+{
+  "describes": "proteomics_de/results/enrichment_walker/string_focus_proteins.csv",
+  "caveat": "SILAC design: n = 2 technical replicates per condition (no biological replication) — 0 / 1938 proteins pass FDR < 0.05 (limma); results below are hypothesis-generating only, not confirmed significant.",
+  "caveat_source": "proteomics_de/config/constants.py::CAVEAT_TEXT",
+  "git_commit": "3169b20338cbce2b6ab3241e6c50fd410bfed099",
+  "git_dirty": true,
+  "sha256": "42d75139ddc6bee73fb3fb9512ce6e658337e8d6e24e3ee8f19a776a035b7633",
+  "n_rows": 6,
+  "generated_at": "2026-11-09T20:10:08+00:00",
+  "tool_versions": {
+    "python": "3.13.16",
+    "pandas": "2.3.3",
+    "numpy": "2.3.5",
+    "scipy": "1.16.3",
+    "matplotlib": "3.10.7",
+    "R": "4.6.1",
+    "limma": "3.68.4",
+    "imputeLCMD": "2.1",
+    "r_seed": "42"
+  },
+  "list": "Dr. Walker's 968-protein list (DECISIONS_LOG D20/D21)",
+  "uses_values": "list membership and direction only; the 5 assigned log2FC values (-6.643856, NOT measured) are never used",
+  "assigned_values_are_not_measurements": true,
+  "gprofiler_version": "e114_eg62_p19_9dc92ac8",
+  "string_version": "12.5",
+  "enrichment_walker_caveat": "n=2 technical replicates per condition, one biological replicate; 0/1938 proteins pass per-protein FDR<0.05 (limma). The list is Dr. Walker's 968-protein regulated list (DECISIONS_LOG D20): 715 core proteins, FRZB and 247 partial-tier proteins that rest on a single biological replicate with an imputed replicate and are not FDR-significant, plus 5 control-only proteins whose 100-fold decrease is ASSIGNED, not measured. ORA and STRING use gene-list membership and direction only. Exploratory, hypothesis-generating."
+}

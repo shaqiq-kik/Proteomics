@@ -80,7 +80,7 @@ class _FakeCompleted:
 # --------------------------------------------------------------------------
 # Stage table integrity
 # --------------------------------------------------------------------------
-def test_seventeen_stages_in_the_documented_order():
+def test_nineteen_stages_in_the_documented_order():
     """The order is the deliverable; pin it explicitly so a reorder is visible."""
     assert [s.id for s in rp.STAGES] == [
         "foldchange",
@@ -88,6 +88,7 @@ def test_seventeen_stages_in_the_documented_order():
         "regulated_lists",
         "regulated_lists_supplementary",
         "ipa_export_extended",
+        "ipa_export_walker",
         "qc_validate",
         "viz_qc_plots",
         "viz_volcano",
@@ -97,6 +98,7 @@ def test_seventeen_stages_in_the_documented_order():
         "enrich_network_figure",
         "enrich_ora",
         "enrich_upset",
+        "enrich_walker",
         "enrich_gsea",
         "gated_pca_cluster",
         "report",
@@ -224,6 +226,9 @@ def test_the_three_by_design_empty_outputs_are_declared_with_reasons(frozen):
         "proteomics_de/results/ipa_input_significant.csv",
         "proteomics_de/results/enrichment/ora_up.csv",
         "proteomics_de/results/enrichment/ora_down.csv",
+        # D21: the same null on the 968-protein walker list (enrich_walker stage).
+        "proteomics_de/results/enrichment_walker/ora_up.csv",
+        "proteomics_de/results/enrichment_walker/ora_down.csv",
     }
     for path, out in empty.items():
         assert out.empty_reason, f"{path} expects 0 rows but gives no reason"
@@ -369,15 +374,15 @@ def test_no_selection_returns_nothing():
 # --------------------------------------------------------------------------
 # --list
 # --------------------------------------------------------------------------
-def test_list_enumerates_all_seventeen_stages(capsys, no_subprocess):
+def test_list_enumerates_all_nineteen_stages(capsys, no_subprocess):
     code, out = _run_cli(["--list"], capsys)
     assert code == 0
     for stage in rp.STAGES:
         assert stage.id in out, f"--list omitted {stage.id}"
         assert stage.script in out
     assert f"{len(rp.STAGES)} stages" in out
-    assert "17 stages" in out
-    # Numbered 1..17.
+    assert "19 stages" in out
+    # Numbered 1..19.
     for n in range(1, len(rp.STAGES) + 1):
         assert f"{n:>2}. " in out
 
@@ -386,7 +391,8 @@ def test_list_marks_the_by_design_empty_outputs(capsys, no_subprocess):
     _, out = _run_cli(["--list"], capsys)
     # The bracketed form is the per-output marker; the legend at the foot of
     # --list quotes it instead, so this counts the outputs, not the prose.
-    assert out.count("[0 rows EXPECTED") == 3
+    # 3 -> 5: D21's two walker ORA tables (enrich_walker stage), header-only too.
+    assert out.count("[0 rows EXPECTED") == 5
     assert "DECISIONS_LOG D2" in out
     assert "DECISIONS_LOG D6" in out
 
@@ -425,7 +431,8 @@ def test_dry_run_writes_no_files(tmp_path, capsys, no_subprocess, monkeypatch):
 def test_dry_run_honours_from_and_skip_network(capsys, no_subprocess):
     code, out = _run_cli(["--from", "viz_volcano", "--dry-run", "--skip-network"], capsys)
     assert code == 0
-    assert "10 stage(s) selected" in out
+    # 10 -> 11: D21's offline enrich_walker stage runs after viz_volcano.
+    assert "11 stage(s) selected" in out
     assert "enrich_string_ppi  ->  SKIPPED" in out
     assert "enrich_ora  ->  SKIPPED" in out
     assert "enrich_gsea  ->  SKIPPED" in out

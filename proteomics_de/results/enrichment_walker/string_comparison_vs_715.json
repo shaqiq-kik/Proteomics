@@ -1,0 +1,40 @@
+{
+  "committed_715": {
+    "string_version": "12.0",
+    "n_seeds": 715,
+    "n_mapped": 694,
+    "mapping_rate": 0.9706,
+    "n_nodes_in_network": 694,
+    "n_edges": 5963,
+    "n_communities": 57
+  },
+  "control_715_same_version": {
+    "string_version": "12.5",
+    "n_seeds": 715,
+    "n_mapped": 694,
+    "mapping_rate": 0.9706,
+    "n_nodes_in_network": 694,
+    "n_edges": 6796,
+    "n_communities": 35
+  },
+  "walker_968": {
+    "string_version": "12.5",
+    "n_seeds": 968,
+    "n_mapped": 937,
+    "mapping_rate": 0.968,
+    "n_nodes_in_network": 937,
+    "n_edges": 10696,
+    "n_communities": 39
+  },
+  "walker_nodes_added_tiers": 243,
+  "walker_edges_between_two_core_proteins": 6796,
+  "walker_edges_touching_an_added_protein": 3900,
+  "control_715_edges": 6796,
+  "core_core_edges_equal_control": true,
+  "same_string_version_as_committed": false,
+  "same_string_version_as_control": true,
+  "gprofiler_version_committed_715": "e114_eg62_p19_27110d83",
+  "gprofiler_version_control_715": "e114_eg62_p19_9dc92ac8",
+  "gprofiler_version_walker_968": "e114_eg62_p19_9dc92ac8",
+  "same_gprofiler_version_as_committed": false
+}

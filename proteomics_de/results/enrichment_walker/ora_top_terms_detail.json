@@ -1,0 +1,196 @@
+{
+  "note": "Dr. Walker's 968-protein regulated list (D20). Top 5 terms from EACH direction, selected exactly as enrich/ora.py selects them: stable sort by g:SCS-corrected p_value within direction. Many corrected p-values are exactly 1.0, and ties keep the API's order, so a block of p=1.0 terms is NOT a ranking -- use comparison_vs_715.csv (which breaks ties with the uncorrected hypergeometric p) for an ordered view. Terms significant at g:SCS<0.05: UP 0, DOWN 0; see significant_g_SCS_0.05 per term. Hypothesis-generating only.",
+  "terms": [
+    {
+      "direction": "UP",
+      "source": "GO:MF",
+      "term_id": "GO:0000030",
+      "term_name": "mannosyltransferase activity",
+      "p_value": 1.0,
+      "term_size": 1,
+      "query_size": 618,
+      "intersection_size": 1,
+      "intersecting_genes": [
+        "Tmtc3"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "UP",
+      "source": "GO:MF",
+      "term_id": "GO:0000049",
+      "term_name": "tRNA binding",
+      "p_value": 1.0,
+      "term_size": 17,
+      "query_size": 618,
+      "intersection_size": 4,
+      "intersecting_genes": [
+        "Trnt1",
+        "Eif2s3x",
+        "Eif1ax",
+        "Eif1a"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "UP",
+      "source": "GO:MF",
+      "term_id": "GO:0000104",
+      "term_name": "succinate dehydrogenase activity",
+      "p_value": 1.0,
+      "term_size": 1,
+      "query_size": 618,
+      "intersection_size": 1,
+      "intersecting_genes": [
+        "Sdha"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "UP",
+      "source": "GO:MF",
+      "term_id": "GO:0000146",
+      "term_name": "microfilament motor activity",
+      "p_value": 1.0,
+      "term_size": 6,
+      "query_size": 618,
+      "intersection_size": 1,
+      "intersecting_genes": [
+        "Myh9"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "UP",
+      "source": "GO:MF",
+      "term_id": "GO:0000149",
+      "term_name": "SNARE binding",
+      "p_value": 1.0,
+      "term_size": 5,
+      "query_size": 618,
+      "intersection_size": 2,
+      "intersecting_genes": [
+        "Napa",
+        "Nsf"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "DOWN",
+      "source": "GO:MF",
+      "term_id": "GO:0000049",
+      "term_name": "tRNA binding",
+      "p_value": 1.0,
+      "term_size": 17,
+      "query_size": 294,
+      "intersection_size": 1,
+      "intersecting_genes": [
+        "Dtd1"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "DOWN",
+      "source": "GO:MF",
+      "term_id": "GO:0000149",
+      "term_name": "SNARE binding",
+      "p_value": 1.0,
+      "term_size": 5,
+      "query_size": 294,
+      "intersection_size": 1,
+      "intersecting_genes": [
+        "Sec22b"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "DOWN",
+      "source": "GO:MF",
+      "term_id": "GO:0000166",
+      "term_name": "nucleotide binding",
+      "p_value": 1.0,
+      "term_size": 355,
+      "query_size": 294,
+      "intersection_size": 45,
+      "intersecting_genes": [
+        "Actb",
+        "Mov10",
+        "Tcp1",
+        "Cct5",
+        "Cct6a",
+        "Cct7",
+        "Fbp1",
+        "G6pdx",
+        "Hsph1",
+        "Ube2l3",
+        "Nqo2",
+        "Me2",
+        "Ruvbl1",
+        "Adk",
+        "Arf1",
+        "Ppp5c",
+        "Hint1",
+        "Rac1",
+        "Rap1b",
+        "Atp6v1b2",
+        "Ivd",
+        "Sephs1",
+        "Guk1",
+        "Actr1a",
+        "Rab5c",
+        "Ehd1",
+        "Itm2b",
+        "Ddx46",
+        "Rab21",
+        "Ak1",
+        "Phgdh",
+        "Ift22",
+        "Katnal2",
+        "Tyro3",
+        "Dtymk",
+        "Arl1",
+        "Dnm1l",
+        "Rheb",
+        "Impdh2",
+        "Rock2",
+        "Tubb2b",
+        "Cmpk2",
+        "Egfr",
+        "Mcm2",
+        "Ldhd"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "DOWN",
+      "source": "GO:MF",
+      "term_id": "GO:0000287",
+      "term_name": "magnesium ion binding",
+      "p_value": 1.0,
+      "term_size": 60,
+      "query_size": 294,
+      "intersection_size": 3,
+      "intersecting_genes": [
+        "Arf1",
+        "Ppm1a",
+        "Rheb"
+      ],
+      "significant_g_SCS_0.05": false
+    },
+    {
+      "direction": "DOWN",
+      "source": "GO:MF",
+      "term_id": "GO:0000774",
+      "term_name": "adenyl-nucleotide exchange factor activity",
+      "p_value": 1.0,
+      "term_size": 6,
+      "query_size": 294,
+      "intersection_size": 2,
+      "intersecting_genes": [
+        "Hsph1",
+        "Bag2"
+      ],
+      "significant_g_SCS_0.05": false
+    }
+  ]
+}

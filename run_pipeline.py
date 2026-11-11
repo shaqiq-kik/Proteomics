@@ -154,6 +154,11 @@ _WHY_NO_ORA = (
     "0 GO/KEGG/Reactome terms survive the honest detected-proteome background "
     "— DECISIONS_LOG D6; this is the report's headline finding"
 )
+_WHY_NO_ORA_WALKER = (
+    "0 GO/KEGG/Reactome terms pass g:SCS<0.05 on Dr. Walker's 968-protein list "
+    "either, against the same measured-proteome background — DECISIONS_LOG D21 "
+    "(the same null as D6)"
+)
 
 STAGES: tuple[Stage, ...] = (
     Stage(
@@ -285,6 +290,36 @@ STAGES: tuple[Stage, ...] = (
         ),
     ),
     Stage(
+        id="ipa_export_walker",
+        description=(
+            "Dr. Walker's regulated list: the 715 core rows + FRZB (real "
+            "values) + 5 control-only proteins with an ASSIGNED 100-fold "
+            "decrease (value_source=assigned, not measured, p-values blank) + "
+            "the 247 partial-tier proteins admitted by the user's widened "
+            "recovered rule (real values, one imputed replicate each); plus a "
+            "manifest of every addition (DECISIONS_LOG D20)"
+        ),
+        # Registered for the same reason as ipa_export_extended (D13): a file
+        # that is not a stage goes stale when an upstream stage re-runs. Reads
+        # ipa_input_full.csv (ipa_export), regulated_{up,down}_partial.csv and
+        # qualitative_changes.csv (regulated_lists_supplementary), and
+        # qc_limma.csv + single_condition_proteins.csv (foldchange) directly.
+        # It does NOT read ipa_input_extended.*, so it does not depend on
+        # ipa_export_extended; it simply runs after it.
+        script="proteomics_de/export/walker_additions.py",
+        depends_on=("foldchange", "ipa_export", "regulated_lists_supplementary"),
+        outputs=(
+            Output("proteomics_de/results/ipa_input_walker.csv",
+                   kind="table", expected_rows="n_ipa_walker"),
+            # kind="text": tab-delimited multi-column twin; its row count and
+            # agreement with the CSV are asserted by assert_twins_agree.
+            Output("proteomics_de/results/ipa_input_walker.txt", kind="text"),
+            Output("proteomics_de/results/walker_additions_manifest.csv",
+                   kind="table",
+                   expected_rows="n_walker_additions_listed"),
+        ),
+    ),
+    Stage(
         id="qc_validate",
         description="pandera schema validation of the DE outputs; writes results/qc/qc_report.{json,md}",
         script="proteomics_de/qc/validate.py",
@@ -392,6 +427,48 @@ STAGES: tuple[Stage, ...] = (
         outputs=(
             Output("proteomics_de/results/figures/upset.png", kind="figure"),
             Output("proteomics_de/results/figures/upset.svg", kind="figure"),
+        ),
+    ),
+    Stage(
+        id="enrich_walker",
+        description=(
+            "ORA (g:Profiler) + STRING over Dr. Walker's 968-protein list, plus a "
+            "same-version re-run of the 715 list and a term-level comparison; "
+            "REPLAYS the committed raw/ API cache offline (live calls only with "
+            "`walker_enrichment.py --fetch`) (DECISIONS_LOG D21)"
+        ),
+        # NOT network=True: the stage replays results/enrichment_walker/**/raw/
+        # and fails (CacheMiss) rather than silently going live if a response is
+        # missing or belongs to a different list. The live query is a separate,
+        # explicit command. Reads results/enrichment/ (the 715 run) read-only for
+        # the comparison, hence the dependencies on enrich_ora / enrich_string_ppi.
+        script="proteomics_de/enrich/walker_enrichment.py",
+        depends_on=("ipa_export_walker", "enrich_string_ppi", "enrich_ora"),
+        outputs=(
+            Output("proteomics_de/results/enrichment_walker/ora_up.csv",
+                   expected_rows=0, empty_reason=_WHY_NO_ORA_WALKER),
+            Output("proteomics_de/results/enrichment_walker/ora_down.csv",
+                   expected_rows=0, empty_reason=_WHY_NO_ORA_WALKER),
+            Output("proteomics_de/results/enrichment_walker/ora_meta.json", kind="json"),
+            Output("proteomics_de/results/enrichment_walker/ora_top_terms_detail.json",
+                   kind="json"),
+            Output("proteomics_de/results/enrichment_walker/string_node_metrics.csv",
+                   expected_rows="n_walker_string_nodes"),
+            Output("proteomics_de/results/enrichment_walker/string_edges.tsv",
+                   expected_rows="n_walker_string_edges"),
+            Output("proteomics_de/results/enrichment_walker/string_meta.json", kind="json"),
+            Output("proteomics_de/results/enrichment_walker/string_focus_proteins.csv"),
+            Output("proteomics_de/results/enrichment_walker/string_comparison_vs_715.json",
+                   kind="json"),
+            Output("proteomics_de/results/enrichment_walker/comparison_vs_715.csv",
+                   expected_rows="n_walker_comparison_rows"),
+            Output("proteomics_de/results/enrichment_walker/raw/gprofiler_up.json",
+                   kind="json"),
+            Output("proteomics_de/results/enrichment_walker/raw/gprofiler_down.json",
+                   kind="json"),
+            Output("proteomics_de/results/enrichment_walker/raw/string_get_ids.json",
+                   kind="json"),
+            Output("proteomics_de/results/enrichment_walker/raw/string_network.tsv"),
         ),
     ),
     Stage(

@@ -79,7 +79,15 @@ FROZEN_EXCLUDE_SUFFIXES = (".provenance.json",)
 # Scoped to `results/ipa_analysis/` ONLY. The `results/ipa_*` files we hand TO
 # IPA (ipa_input_*, ipa_qualitative_*, ipa_background_measured.txt) are genuine
 # pipeline outputs, live one directory up, and stay frozen.
-FROZEN_EXCLUDE_DIRS = ("proteomics_de/results/ipa_analysis",)
+#
+# D21 adds `results/ipa_analysis_walker/` on the same grounds: it is where the
+# manual IPA exports for Dr. Walker's 968-protein list land (plus the hand-written
+# UPLOAD_STEPS.md checklist). The prefix test below is `startswith(d + "/")`, so
+# `ipa_analysis` does NOT already cover it.
+FROZEN_EXCLUDE_DIRS = (
+    "proteomics_de/results/ipa_analysis",
+    "proteomics_de/results/ipa_analysis_walker",
+)
 
 # matplotlib's SVG volatility.
 _SVG_DATE = re.compile(rb"<dc:date>[^<]*</dc:date>")

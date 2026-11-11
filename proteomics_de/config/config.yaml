@@ -217,3 +217,96 @@ notes:
     limma log2FC vs. pipeline log2FC = 1.0000). Every downstream figure/table
     must carry a "technical replicates -> hypothesis-generating only" caveat
     until biological replicates are added per the FORWARD-PATH section.
+
+# -----------------------------------------------------------------------------
+# walker_additions -- DECISIONS_LOG D20.
+#
+# UNLIKE the rest of this file, this section is LOAD-BEARING: it is read at run
+# time by export/walker_additions.py, so the numbers below are the only place
+# they live (no magic numbers in code). Everything above remains descriptive.
+#
+# Dr. Walker's additions to the regulated list, approved by the user. They are
+# written to NEW files (results/ipa_input_walker.{csv,txt} and
+# results/walker_additions_manifest.csv); the originals stay byte-identical.
+# -----------------------------------------------------------------------------
+walker_additions:
+  # ASSIGNED, NOT MEASURED. These proteins were detected in both control
+  # readings and in neither testosterone reading (single_condition_proteins.csv,
+  # detected_in=control_only), so no fold change can be computed from the data.
+  # By decision of Dr. Walker each is given a fixed 100-fold DECREASE:
+  #   fold_change = 1/100 = 0.01 ;  log2FC = log2(0.01) = -6.643856
+  # The value is a labelled placeholder for "strongly lost after testosterone".
+  # "Not detected" can also mean "below the detection limit", so the true
+  # decrease is unknown and may be smaller or larger than 100-fold.
+  assigned_fold_change:
+    decrease_factor: 100
+    log2fc_decimals: 6
+    direction: "DOWN"
+    expected_detected_in: "control_only"
+    p_value_policy: "blank"   # p_value / adj_p_value are NOT invented
+  assigned_proteins:
+    - {accession: "P01132", gene: "Egf"}
+    - {accession: "Q61521", gene: "Ereg"}
+    # Chosen by the user (not named by Dr. Walker):
+    - {accession: "O08542", gene: "Efna4"}
+    - {accession: "P55144", gene: "Tyro3"}
+    - {accession: "Q9D1H9", gene: "Mfap4"}
+
+  # MEASURED, taken verbatim from the partial tier (one replicate imputed by
+  # limma MinProb). The 100-fold rule is NOT applied to these.
+  measured_additions:
+    - {accession: "P97401", gene: "Frzb"}
+
+  # The ~860 proteins D17/D18 "recovered" (248 tier-3 partial + 614 tier-1/2
+  # qualitative = 862). Dr. Walker asked for only those altered by >= 50% with
+  # "no problems". The user first chose a STRICT rule (|log2FC| >= 0.585 AND all
+  # four readings seen AND n_imputed == 0), which admits nothing -- every
+  # tier-3 row is in that tier because a reading is missing -- and then WIDENED
+  # it (DECISIONS_LOG D20): add every partial-tier protein with a real log2FC
+  # and |log2FC| >= min_abs_log2fc, even though one replicate was imputed by the
+  # pipeline (n_imputed 1 or 2). Set the two "require_*" switches back to true to
+  # restore the strict rule. Qualitative rows have no log2FC and never qualify.
+  # Proteins already on the list (core, measured additions, assigned) are never
+  # duplicated.
+  recovered_rule:
+    min_abs_log2fc: 0.585          # = thresholds.log2fc_regulation_cutoff
+    require_partial_tier: true     # tier-3 rows with a real log2FC only
+    require_all_replicates_seen: false   # strict rule: all 4 readings present and > 0
+    require_no_imputed_values: false     # strict rule: n_imputed == 0
+
+# -----------------------------------------------------------------------------
+# walker_enrichment -- DECISIONS_LOG D21.
+#
+# LOAD-BEARING: read at run time by enrich/walker_enrichment.py (the keys below
+# are the only place these values live). ORA and STRING over Dr. Walker's
+# 968-protein list (results/ipa_input_walker.csv, D20), written ADDITIVELY to
+# results/enrichment_walker/; results/enrichment/ (the 715 run) is read-only here.
+#
+# Everything the 715 run fixes in code stays there and is reused, not copied:
+# g:Profiler sources / g:SCS / user_threshold 0.05 / domain_scope=custom (ora.py),
+# STRING species 10090 / required_score 400 (string_ppi.py). The BACKGROUND is the
+# same measured-proteome universe (2552 rows / 2530 unique symbols, also the IPA
+# Reference Set, D19); it already contains all 968 query symbols, so it is NOT
+# extended -- enrich/walker_enrichment.py refuses to run if that stops being true.
+# -----------------------------------------------------------------------------
+walker_enrichment:
+  output_dir: "proteomics_de/results/enrichment_walker"
+  # Re-run the committed 715 list under TODAY's g:Profiler/STRING versions into
+  # <output_dir>/<control_dir_name>/, so list effects can be told from database
+  # drift (the committed 715 run is STRING 12.0 / g:Profiler e114_eg62_p19_27110d83).
+  control_715_rerun: true
+  control_dir_name: "control_715_same_version"
+  string:
+    # The default API follows STRING's current release. The stable address of a
+    # given release (e.g. https://version-12-0.string-db.org/api) pins a version.
+    api_base: "https://string-db.org/api"
+    caller_identity: "proteomics_de_pipeline_walker"
+  comparison:
+    top_n: 20            # a term is listed if significant, or in the top-N by rank, in any run
+  focus_proteins:        # reported by name in string_focus_proteins.csv
+    - {accession: "P01132", gene: "Egf"}
+    - {accession: "Q61521", gene: "Ereg"}
+    - {accession: "O08542", gene: "Efna4"}
+    - {accession: "P55144", gene: "Tyro3"}
+    - {accession: "Q9D1H9", gene: "Mfap4"}
+    - {accession: "P97401", gene: "Frzb"}
