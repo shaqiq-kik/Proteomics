@@ -16,5 +16,5 @@
   "network_batched": false,
   "network_n_batches": 1,
   "rate_limit_seconds_between_calls": 1.2,
-  "caveat": "n=2 technical replicates per condition (no biological replication); 0/1938 proteins survive FDR<0.05 (limma). The 715 seed proteins are the |log2FC|>=0.585 HYPOTHESIS-GENERATING set, not confirmed significant hits. This PPI network shows structure among candidate proteins and is exploratory."
+  "caveat": "n=2 biological replicates per group, from 2 separate experiments (low power); 0/1938 proteins survive FDR<0.05 (limma). The 715 seed proteins are the |log2FC|>=0.585 HYPOTHESIS-GENERATING set, not confirmed significant hits. This PPI network shows structure among candidate proteins and is exploratory."
 }

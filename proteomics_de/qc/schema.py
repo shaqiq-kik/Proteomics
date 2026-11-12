@@ -424,7 +424,7 @@ LIMMA_RESULTS_SCHEMA = pa.DataFrameSchema(
         # Today every row is "NS" (0/1938 survive FDR<0.05, DECISIONS_LOG D2).
         # The schema still admits UP/DOWN: pinning it to {"NS"} would encode
         # the null result as a contract and fail the moment the study gains
-        # biological replicates, which is the FORWARD-PATH case config.yaml
+        # more replicates, which is the FORWARD-PATH case config.yaml
         # is explicitly designed for.
         "direction": pa.Column(str, pa.Check.isin(DIRECTION_CATEGORIES), coerce=True),
     },

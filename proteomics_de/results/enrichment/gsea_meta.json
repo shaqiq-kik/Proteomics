@@ -22,7 +22,7 @@
   "n_fdr_lt_0.25": 6,
   "n_nom_p_lt_0.05": 38,
   "min_fdr_q_value": 0.12668414154652688,
-  "note": "No gene set passes FDR q < 0.05 (min FDR q = 0.127), consistent with the weak per-protein signal (0/1938 proteins at limma FDR<0.05). This is expected given n=2 technical replicates and is reported honestly, not tuned away. 38 terms have nominal (uncorrected) NOM p-value < 0.05 and are listed as hypothesis-generating leads only -- this GSEA FDR is a SEPARATE test from per-protein FDR and neither should be read as confirming the other.",
+  "note": "No gene set passes FDR q < 0.05 (min FDR q = 0.127), consistent with the weak per-protein signal (0/1938 proteins at limma FDR<0.05). This is expected given n=2 biological replicates per group (low power) and is reported honestly, not tuned away. 38 terms have nominal (uncorrected) NOM p-value < 0.05 and are listed as hypothesis-generating leads only -- this GSEA FDR is a SEPARATE test from per-protein FDR and neither should be read as confirming the other.",
   "score_min": -3.8003692604238344,
   "score_max": 4.185158385833153,
   "semicolon_split_n": 45,

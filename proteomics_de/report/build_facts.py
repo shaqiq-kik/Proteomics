@@ -156,7 +156,9 @@ def dataset_block() -> dict:
         "n_samples": design_cfg.n_samples(),
         "replicates_per_group": n_rep,
         "replicates": (
-            f"n={n_rep} TECHNICAL replicates per group (no biological replication)"
+            f"n={n_rep} biological replicates per group, from {n_rep} separate "
+            f"experiments (D23); low power, so results are exploratory / "
+            f"hypothesis-generating"
         ),
         "design_source": "config/sample_sheet.tsv",
         "channel_note": (

@@ -1,13 +1,15 @@
 """
-ORA (g:Profiler) and STRING over Dr. Walker's 968-protein list (DECISIONS_LOG D21).
+ORA (g:Profiler) and STRING over Dr. Walker's 721-protein list (DECISIONS_LOG D21, D24).
 
 WHAT THIS IS
 ------------
 ``enrich/ora.py`` and ``enrich/string_ppi.py`` still run on the 715-protein core
 list and write to ``results/enrichment/``. Dr. Walker's list
-(``results/ipa_input_walker.csv``, D20) has 968 rows: 715 core + FRZB + 5 control-only
-proteins with an ASSIGNED fold change + 247 recovered partial-tier proteins.
-This module runs the same two analyses on the 968, ADDITIVELY:
+(``results/ipa_input_walker.csv``, D20/D24) has 721 rows: 715 core + FRZB + 5 control-only
+proteins with an ASSIGNED fold change (the 247 recovered partial-tier proteins of the
+first 968-protein version were dropped at Dr. Walker's request, D24; that version is in
+git history, commits b9c75b9 and 9e345d9). This module runs the same two analyses on the 721,
+ADDITIVELY:
 
 * it imports the low-level pieces of ``ora.py`` / ``string_ppi.py`` (payload,
   term-row builder, g:Profiler gene-order resolver, node metric recipe) but
@@ -21,7 +23,7 @@ This module runs the same two analyses on the 968, ADDITIVELY:
 
 WHICH INPUT, WHICH BACKGROUND
 -----------------------------
-Query: ``regulated`` (UP 661 / DOWN 307) of ``ipa_input_walker.csv``; one gene
+Query: ``regulated`` (UP 510 / DOWN 211) of ``ipa_input_walker.csv``; one gene
 symbol per row exactly as ``enrich_common.build_symbol_list`` resolves them (first
 listed symbol, accession fallback). UP and DOWN are queried SEPARATELY, as in
 ora.py.
@@ -30,9 +32,9 @@ Background: the SAME custom universe as the 715 run -- the measured proteome,
 the 2552-row union of foldchange_all.csv and single_condition_proteins.csv
 (2530 unique symbols; it is also the IPA Reference Set,
 ``ipa_background_measured.txt``, D19). That universe already contains every one
-of the 968 query symbols, including the 5 control-only proteins (they are rows
-of single_condition_proteins.csv) and the 248 partial-tier proteins (rows of
-foldchange_all.csv), so it needs no extension. ``assert_queries_in_background``
+of the 721 query symbols, including the 5 control-only proteins (they are rows
+of single_condition_proteins.csv) and FRZB (a row of foldchange_all.csv), so it
+needs no extension. ``assert_queries_in_background``
 fails loudly if that ever stops being true; it never silently extends or drops.
 
 ASSIGNED VALUES ARE NEVER USED
@@ -113,13 +115,13 @@ RUN_FILES = (
 )
 
 WALKER_CAVEAT = (
-    "n=2 technical replicates per condition, one biological replicate; 0/1938 "
-    "proteins pass per-protein FDR<0.05 (limma). The list is Dr. Walker's "
-    "968-protein regulated list (DECISIONS_LOG D20): 715 core proteins, FRZB and "
-    "247 partial-tier proteins that rest on a single biological replicate with an "
-    "imputed replicate and are not FDR-significant, plus 5 control-only proteins "
-    "whose 100-fold decrease is ASSIGNED, not measured. ORA and STRING use gene-list "
-    "membership and direction only. Exploratory, hypothesis-generating."
+    "n=2 biological replicates per group, from 2 separate experiments (low power); "
+    "0/1938 proteins pass per-protein FDR<0.05 (limma). The list is Dr. Walker's "
+    "721-protein regulated list (DECISIONS_LOG D20, D24): 715 core proteins and FRZB "
+    "(which rests on the samples that were measured, with the missing value imputed, and "
+    "is not FDR-significant), plus 5 control-only proteins whose 100-fold decrease is "
+    "ASSIGNED, not measured. ORA and STRING use gene-list membership and direction only. "
+    "Exploratory, hypothesis-generating."
 )
 
 
@@ -153,7 +155,7 @@ def _frozen(counts_path=None) -> dict:
 
 
 def load_walker_list(results_dir=None, counts_path=None) -> pd.DataFrame:
-    """The 968-row list, with the checks that make it safe to enrich."""
+    """The 721-row list, with the checks that make it safe to enrich."""
     results_dir = Path(results_dir or RESULTS_DIR)
     df = pd.read_csv(results_dir / "ipa_input_walker.csv", float_precision="round_trip")
     counts = _frozen(counts_path)
@@ -781,8 +783,8 @@ def build_comparison(committed_raw, control_raw, walker_raw, top_n) -> pd.DataFr
     """Term-level old-vs-new table (see comparison_vs_715.csv in the README).
 
     committed715 = results/enrichment/raw (the committed 715 run, old data versions);
-    control715   = the 715 list re-run today (same versions as walker968);
-    walker968    = Dr. Walker's list.
+    control715   = the 715 list re-run today (same versions as walker721);
+    walker721    = Dr. Walker's list.
     A term is listed if it is significant (g:SCS<0.05) or in the top ``top_n`` by rank
     in ANY of the three runs. ``sig_flag_*`` compares the significant sets;
     ``top{n}_flag_*`` compares top-n membership; both: kept / gained / lost, blank
@@ -790,7 +792,7 @@ def build_comparison(committed_raw, control_raw, walker_raw, top_n) -> pd.DataFr
     the other run only.
     """
     runs = {"committed715": committed_raw, "control715": control_raw,
-            "walker968": walker_raw}
+            "walker721": walker_raw}
     out = []
     for direction in ("up", "down"):
         tabs = {name: all_terms_table(path, direction).set_index("term_id")
@@ -817,15 +819,15 @@ def build_comparison(committed_raw, control_raw, walker_raw, top_n) -> pd.DataFr
                         rec[f"{name}_{c}"] = np.nan
                     in_sig[name] = in_top[name] = False
             for tag, other in (("committed", "committed715"), ("control", "control715")):
-                rec[f"sig_flag_vs_{tag}"] = _flag(in_sig[other], in_sig["walker968"])
-                rec[f"top{top_n}_flag_vs_{tag}"] = _flag(in_top[other], in_top["walker968"])
+                rec[f"sig_flag_vs_{tag}"] = _flag(in_sig[other], in_sig["walker721"])
+                rec[f"top{top_n}_flag_vs_{tag}"] = _flag(in_top[other], in_top["walker721"])
             rec["_sort"] = min(
                 (rec[f"{n}_rank"] for n in runs if not math.isnan(rec[f"{n}_rank"])),
                 default=10**9,
             )
             out.append(rec)
     df = pd.DataFrame(out)
-    df = df.sort_values(["direction", "walker968_rank", "_sort", "term_id"],
+    df = df.sort_values(["direction", "walker721_rank", "_sort", "term_id"],
                         ascending=[False, True, True, True], na_position="last",
                         kind="mergesort")
     df = df.drop(columns="_sort").reset_index(drop=True)
@@ -884,7 +886,7 @@ def focus_table(result: StringResult, focus: list) -> pd.DataFrame:
 
 
 def string_comparison(committed_dir, control: StringResult, walker: StringResult) -> dict:
-    """Node/edge counts: committed 715, same-version 715, walker 968."""
+    """Node/edge counts: committed 715, same-version 715, walker 721."""
     committed = json.loads((Path(committed_dir) / "string_meta.json").read_text())
 
     def pick(m):
@@ -899,7 +901,7 @@ def string_comparison(committed_dir, control: StringResult, walker: StringResult
     return {
         "committed_715": pick(committed),
         "control_715_same_version": pick(control.meta),
-        "walker_968": pick(walker.meta),
+        "walker_721": pick(walker.meta),
         "walker_nodes_added_tiers": added_nodes,
         "walker_edges_between_two_core_proteins": core_core,
         "walker_edges_touching_an_added_protein": int(walker.meta["n_edges"] - core_core),
@@ -971,8 +973,8 @@ def run(*, fetch=False, results_dir=None, cfg=None, control=None, sidecars=True,
           f"mode: {'FETCH (live API for anything not cached)' if fetch else 'replay from cache'}")
     w_ora, w_str, w_store = run_list(
         walker_df, out_dir, background=background, bg_meta=bg_meta, fetch=fetch,
-        api_base=api_base, caller_identity=who, label="walker968",
-        description="Dr. Walker's 968-protein regulated list (D20)", caveat=WALKER_CAVEAT,
+        api_base=api_base, caller_identity=who, label="walker721",
+        description="Dr. Walker's 721-protein regulated list (D20, D24)", caveat=WALKER_CAVEAT,
     )
 
     c_ora = c_str = c_store = None
@@ -999,7 +1001,7 @@ def run(*, fetch=False, results_dir=None, cfg=None, control=None, sidecars=True,
         sc["gprofiler_version_committed_715"] = json.loads(
             (old_dir / "ora_meta.json").read_text())["gprofiler_version"]
         sc["gprofiler_version_control_715"] = c_ora.version
-        sc["gprofiler_version_walker_968"] = w_ora.version
+        sc["gprofiler_version_walker_721"] = w_ora.version
         sc["same_gprofiler_version_as_committed"] = (
             sc["gprofiler_version_committed_715"] == w_ora.version)
         (out_dir / STRING_COMPARISON_NAME).write_text(json.dumps(sc, indent=2))
@@ -1025,8 +1027,8 @@ def run(*, fetch=False, results_dir=None, cfg=None, control=None, sidecars=True,
 
 def string_ppi_caveat() -> str:
     return (
-        "n=2 technical replicates per condition (no biological replication); 0/1938 "
-        "proteins survive FDR<0.05 (limma). The 715 seed proteins are the "
+        "n=2 biological replicates per group, from 2 separate experiments (low power); "
+        "0/1938 proteins survive FDR<0.05 (limma). The 715 seed proteins are the "
         "|log2FC|>=0.585 HYPOTHESIS-GENERATING set. Same-version CONTROL run of the "
         "committed 715 list; exploratory."
     )
@@ -1037,7 +1039,7 @@ def write_sidecars(out_dir, w_ora, w_str, c_ora, c_str, has_comparison):
     from proteomics_de.provenance import sha256_file, sidecar
 
     facts = {
-        "list": "Dr. Walker's 968-protein list (DECISIONS_LOG D20/D21)",
+        "list": "Dr. Walker's 721-protein list (DECISIONS_LOG D20/D21/D24)",
         "uses_values": "list membership and direction only; the 5 assigned log2FC "
                        "values (-6.643856, NOT measured) are never used",
         "assigned_values_are_not_measurements": True,

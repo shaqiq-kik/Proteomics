@@ -1,0 +1,75 @@
+{
+  "describes": "proteomics_de/results/ipa_input_walker_without_assigned.csv",
+  "caveat": "SILAC design: n = 2 biological replicates per group, from 2 separate experiments — 0 / 1938 proteins pass FDR < 0.05 (limma); n = 2 is low power, so results below are exploratory / hypothesis-generating, not confirmed significant.",
+  "caveat_source": "proteomics_de/config/constants.py::CAVEAT_TEXT",
+  "git_commit": "9e345d9ec98de1f1929e4761431739cebb416ec9",
+  "git_dirty": true,
+  "sha256": "74a4ffd360ea8b3b658b51a3224795b79303872c6d210c4f182d0061bcf46b43",
+  "n_rows": 716,
+  "generated_at": "2026-11-12T02:48:35+00:00",
+  "tool_versions": {
+    "python": "3.13.16",
+    "pandas": "2.3.3",
+    "numpy": "2.3.5",
+    "scipy": "1.16.3",
+    "matplotlib": "3.10.7",
+    "R": "4.6.1",
+    "limma": "3.68.4",
+    "imputeLCMD": "2.1",
+    "r_seed": "42"
+  },
+  "value_source_counts_scope": "all rows of ipa_input_walker_without_assigned.csv/.txt (the list minus its value_source=assigned rows)",
+  "value_source_counts": {
+    "measured": 716
+  },
+  "assigned_values_are_not_measurements": true,
+  "assigned_fold_change": 0.01,
+  "assigned_log2FC": -6.643856,
+  "assigned_accessions": [
+    "P01132",
+    "Q61521",
+    "O08542",
+    "P55144",
+    "Q9D1H9"
+  ],
+  "assignment_note": "The 100-fold decrease on value_source=assigned rows is ASSIGNED by Dr. Walker's decision, not measured. These proteins were detected in both control readings and in neither testosterone reading; 'not detected' may mean below the detection limit. p_value / adj_p_value are blank on those rows on purpose (DECISIONS_LOG D20).",
+  "recovered_rule": {
+    "min_abs_log2fc": 0.585,
+    "require_partial_tier": true,
+    "require_all_replicates_seen": true,
+    "require_no_imputed_values": true
+  },
+  "recovered_rule_steps": [
+    {
+      "step": "recovered pool (partial + qualitative)",
+      "n": 862
+    },
+    {
+      "step": "not already on the list",
+      "n": 856
+    },
+    {
+      "step": "partial tier with a real log2FC",
+      "n": 247
+    },
+    {
+      "step": "|log2FC| >= 0.585",
+      "n": 247
+    },
+    {
+      "step": "seen in all 4 readings (both replicates of both groups)",
+      "n": 0
+    },
+    {
+      "step": "n_imputed == 0",
+      "n": 0
+    }
+  ],
+  "recovered_rule_note": "The recovered-protein rule is STRICT (Dr. Walker's original 'no problems' wording, restored by his final answer, DECISIONS_LOG D24): a protein must be seen in all four readings with n_imputed == 0. That admits 0 proteins on the committed data, so the recovered pool is empty; the 247 proteins the widened rule had admitted (D20) were dropped at his request.",
+  "measured_additions_n_imputed": {
+    "P97401": 1
+  },
+  "recovered_n_imputed_counts": {},
+  "decision": "DECISIONS_LOG D20; D24 (Dr. Walker's final answers)",
+  "without_assigned_note": "This file is ipa_input_walker.csv minus its value_source=assigned rows (the 5 control-only proteins whose -6.643856 is assigned, not measured). It exists for the IPA sensitivity run 'without the assigned values' (D24); every row is a measured row, unchanged."
+}

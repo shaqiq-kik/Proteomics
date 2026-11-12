@@ -4,11 +4,13 @@ Three things are being defended:
 
 1. **The additions are exactly what Dr. Walker approved**: 715 core rows + FRZB
    (REAL values, ``value_source=measured``) + 5 control-only proteins with an
-   ASSIGNED 100-fold decrease (``value_source=assigned``, blank p-values) + the
-   247 partial-tier proteins admitted by the user's WIDENED recovered rule
-   (measured, with an imputed replicate). The original strict rule (all four
-   readings seen, ``n_imputed == 0``) admits nothing; it is restored by two
-   config switches and tested that way too.
+   ASSIGNED 100-fold decrease (``value_source=assigned``, blank p-values) = 721.
+   Since D24 (his final answer) the recovered-protein rule is the original STRICT
+   one again (all four readings seen, ``n_imputed == 0``), which admits nothing, so
+   the 247 partial-tier proteins the user's WIDENED rule (D20) had admitted are
+   gone; that widened code path is still tested, by setting the two config
+   switches to false in a tmp copy of the config (``widened_cfg``). The file
+   WITHOUT the 5 assigned rows (716, the IPA sensitivity dataset) is tested too.
 2. **Assigned numbers can never pass as measurements**: labelled on every row,
    p-values blank, stated in the provenance sidecar and the manifest.
 3. **Nothing that already exists moves**: the originals stay byte-identical and
@@ -60,6 +62,23 @@ def _read(path):
 @pytest.fixture(scope="module")
 def cfg():
     return wa.load_config()
+
+
+@pytest.fixture(scope="module")
+def widened_cfg(cfg):
+    """The committed config with both 'no problems' switches OFF, in a copy (D24)."""
+    w = copy.deepcopy(cfg)
+    w["recovered_rule"].update(require_all_replicates_seen=False,
+                               require_no_imputed_values=False)
+    return w
+
+
+@pytest.fixture(scope="module")
+def without(results_dir):
+    path = results_dir / wa.WALKER_NOASSIGNED_CSV_FILENAME
+    if not path.exists():
+        pytest.skip(f"{path} not generated yet")
+    return _read(path)
 
 
 @pytest.fixture(scope="module")
@@ -301,21 +320,32 @@ def test_every_regulated_row_clears_the_threshold(walker):
 # ---------------------------------------------------------------------------
 # The "recovered" rule -- on the committed data
 # ---------------------------------------------------------------------------
-def test_the_recovered_set_is_862_and_the_widened_rule_admits_247(results_dir, cfg, frozen_counts):
-    """What the "~860" is, and what the widened rule keeps of it."""
+def test_the_recovered_set_is_862_and_the_committed_strict_rule_admits_none(results_dir, cfg, frozen_counts):
+    """What the "~860" is, and what the committed (strict, D24) rule keeps of it: nothing."""
     result = wa.compute_walker(results_dir, cfg)
     pool = result.counts["recovered_pool"]
     assert pool == (frozen_counts["n_up_partial"] + frozen_counts["n_down_partial"]
                     + frozen_counts["n_qualitative"]) == 862
-    assert result.counts["recovered"] == frozen_counts["n_walker_recovered"] == 247
+    assert result.counts["recovered"] == frozen_counts["n_walker_recovered"] == 0
+    assert result.counts["total"] == 715 + 1 + 5 + 0 == 721 == frozen_counts["n_ipa_walker"]
+    counts = [n for _label, n in result.steps]
+    assert counts == [862, 856, 247, 247, 0, 0]
+    assert counts == sorted(counts, reverse=True), "each step may only remove rows"
+
+
+def test_the_widened_rule_still_admits_247_when_the_switches_are_set_false(results_dir, widened_cfg):
+    """The D20 code path stays covered: switches false in a tmp config -> 247 recovered, 968 rows."""
+    result = wa.compute_walker(results_dir, widened_cfg)
+    assert result.counts["recovered"] == 247
     assert result.counts["total"] == 715 + 1 + 5 + 247 == 968
+    assert result.counts["without_assigned"] == 963
     counts = [n for _label, n in result.steps]
     assert counts == [862, 856, 247, 247]
     assert counts == sorted(counts, reverse=True), "each step may only remove rows"
 
 
 def test_the_original_strict_rule_still_admits_none(results_dir, cfg):
-    """Flipping the two switches back restores the strict rule: 0 pass, by construction."""
+    """Flipping the two switches (to true, as committed) gives the strict rule: 0 pass, by construction."""
     strict = copy.deepcopy(cfg)
     strict["recovered_rule"].update(require_all_replicates_seen=True,
                                     require_no_imputed_values=True)
@@ -324,11 +354,13 @@ def test_the_original_strict_rule_still_admits_none(results_dir, cfg):
     assert result.counts["recovered"] == 0 and result.counts["total"] == 721
 
 
-def test_the_247_recovered_proteins_are_the_partial_tier_minus_frzb(walker, results_dir, frozen_counts):
+def test_the_247_recovered_proteins_are_the_partial_tier_minus_frzb(inputs_dir, widened_cfg, results_dir, frozen_counts):
+    """The widened rule's 247, checked from a tmp-config run (they are NOT in the committed file)."""
     up = _read(results_dir / "regulated_up_partial.csv")
     down = _read(results_dir / "regulated_down_partial.csv")
     partial = pd.concat([up.assign(d="UP"), down.assign(d="DOWN")], ignore_index=True)
     partial = partial[partial[ID] != "P97401"]
+    walker = wa.compute_walker(inputs_dir, widened_cfg).frame
     n_core = frozen_counts["ipa_input_rows"]
     rec = walker.iloc[n_core + 1 + 5:]
     assert set(rec[ID]) == set(partial[ID]) and len(rec) == len(partial) == 247
@@ -344,9 +376,24 @@ def test_the_247_recovered_proteins_are_the_partial_tier_minus_frzb(walker, resu
     assert rec["regulated"].value_counts().to_dict() == {"UP": 151, "DOWN": 96}
 
 
-def test_the_recovered_proteins_all_have_adj_p_near_one_like_the_core(walker, full):
-    """The caveat the docs state, checked here: none of them is FDR-significant."""
-    rec = walker[(walker["tier"] == "partial")]
+def test_the_committed_walker_file_contains_none_of_the_247(walker, results_dir):
+    """Dr. Walker's answer (D24): the 247 are dropped. FRZB is the only partial-tier row left."""
+    up = _read(results_dir / "regulated_up_partial.csv")
+    down = _read(results_dir / "regulated_down_partial.csv")
+    partial_ids = (set(up[ID]) | set(down[ID])) - {"P97401"}
+    assert len(partial_ids) == 247
+    assert not partial_ids & set(walker[ID])
+    assert list(walker.loc[walker["tier"] == "partial", ID]) == ["P97401"]
+
+
+def test_the_recovered_proteins_all_have_adj_p_near_one_like_the_core(inputs_dir, widened_cfg, walker, full):
+    """The caveat the docs state, checked here: none of them is FDR-significant.
+
+    Checked on the widened frame (the 247 plus FRZB), since the committed file now holds only FRZB.
+    """
+    rec = wa.compute_walker(inputs_dir, widened_cfg).frame.query("tier == 'partial'")
+    assert len(rec) == 248
+    assert (walker.loc[walker["tier"] == "partial", "adj_p_value"] >= 0.05).all()
     assert (rec["adj_p_value"] >= 0.05).all() and rec["adj_p_value"].min() > 0.1
     assert (rec["adj_p_value"] > 0.9).mean() > 0.99
     assert (full["adj_p_value"] >= 0.05).all()                # 0 of the core 715 pass
@@ -363,11 +410,11 @@ def test_every_tier3_row_has_imputed_values_and_no_qualitative_row_has_a_fold_ch
 def test_rule_threshold_matches_the_pipeline_threshold(cfg):
     rule = cfg["recovered_rule"]
     assert rule["min_abs_log2fc"] == constants.LOG2_THRESHOLD
-    # The widened rule (user's decision): the two "no problems" conditions are OFF
-    # but remain config switches, so the strict rule can be restored by flipping them.
     assert rule["require_partial_tier"] is True
-    assert rule["require_all_replicates_seen"] is False
-    assert rule["require_no_imputed_values"] is False
+    # D24 (Dr. Walker: drop the 247): both "no problems" switches are TRUE again, i.e. the
+    # strict rule. They stay config switches, so the widened rule is one edit away.
+    assert rule["require_all_replicates_seen"] is True
+    assert rule["require_no_imputed_values"] is True
 
 
 # ---------------------------------------------------------------------------
@@ -457,9 +504,9 @@ def test_rule_counts_every_step_in_order():
     assert [n for _l, n in strict] == [6, 5, 5, 4, 0, 0]
 
 
-def test_a_partial_row_with_imputed_values_reaches_the_file_end_to_end(inputs_dir, cfg):
-    """Widened rule: an n_imputed=1 or 2 partial row is added, measured, labelled."""
-    result = wa.compute_walker(inputs_dir, cfg)
+def test_a_partial_row_with_imputed_values_reaches_the_file_end_to_end(inputs_dir, widened_cfg):
+    """Widened rule (tmp config): an n_imputed=1 or 2 partial row is added, measured, labelled."""
+    result = wa.compute_walker(inputs_dir, widened_cfg)
     n_fixed = result.counts["core"] + result.counts["measured"] + result.counts["assigned"]
     rec = result.frame.iloc[n_fixed:]
     assert len(rec) == 247 and result.counts["total"] == 968
@@ -641,7 +688,9 @@ def test_load_config_rejects_a_missing_or_malformed_section(tmp_path):
 # Provenance and labelling
 # ---------------------------------------------------------------------------
 @pytest.mark.parametrize("name", [wa.WALKER_CSV_FILENAME, wa.WALKER_TXT_FILENAME,
-                                  wa.WALKER_MANIFEST_FILENAME])
+                                  wa.WALKER_MANIFEST_FILENAME,
+                                  wa.WALKER_NOASSIGNED_CSV_FILENAME,
+                                  wa.WALKER_NOASSIGNED_TXT_FILENAME])
 def test_sidecars_exist_say_assigned_and_match_the_file(results_dir, name):
     path = results_dir / name
     side = results_dir / f"{name}.provenance.json"
@@ -653,16 +702,23 @@ def test_sidecars_exist_say_assigned_and_match_the_file(results_dir, name):
     assert "not measured" in rec["assignment_note"]
     assert "below the detection limit" in rec["assignment_note"]
     assert rec["assigned_log2FC"] == ASSIGNED_LOG2FC
-    assert rec["value_source_counts"]["assigned"] == 5
     assert [s["n"] for s in rec["recovered_rule_steps"]][0] == 862
-    assert rec["recovered_rule_steps"][-1]["n"] == 247
-    assert "WIDENED" in rec["recovered_rule_note"]
-    assert "imputed" in rec["recovered_rule_note"]
+    # D24: the committed rule is the strict one, so the last step admits nobody.
+    assert rec["recovered_rule_steps"][-1]["n"] == 0
+    assert rec["recovered_rule"]["require_all_replicates_seen"] is True
+    assert rec["recovered_rule"]["require_no_imputed_values"] is True
+    assert "STRICT" in rec["recovered_rule_note"] and "WIDENED" not in rec["recovered_rule_note"]
+    assert "D24" in rec["recovered_rule_note"]
     # value_source_counts must describe THIS file, not the list the others describe.
     if name == wa.WALKER_MANIFEST_FILENAME:
-        assert rec["value_source_counts"] == {"measured": 1 + 247, "assigned": 5}
+        assert rec["value_source_counts"] == {"measured": 1, "assigned": 5}
+    elif name.startswith("ipa_input_walker_without_assigned"):
+        assert rec["value_source_counts"] == {"measured": 716}
+        assert "assigned" not in rec["value_source_counts"]
+        assert "without_assigned" in rec["value_source_counts_scope"]
+        assert "without_assigned_note" in rec
     else:
-        assert rec["value_source_counts"] == {"measured": 715 + 1 + 247, "assigned": 5}
+        assert rec["value_source_counts"] == {"measured": 715 + 1, "assigned": 5}
     assert "added_measured_n_imputed_counts" not in rec
 
 
@@ -711,14 +767,20 @@ def test_pipeline_stage_is_registered_and_pinned_to_frozen_counts(frozen_counts)
     assert {"foldchange", "ipa_export", "regulated_lists_supplementary"} <= set(stage.depends_on)
     paths = {o.path: o for o in stage.outputs}
     csv_out = paths["proteomics_de/results/ipa_input_walker.csv"]
-    assert rp.resolve_expected_rows(csv_out, frozen_counts) == frozen_counts["n_ipa_walker"] == 968
+    assert rp.resolve_expected_rows(csv_out, frozen_counts) == frozen_counts["n_ipa_walker"] == 721
     manifest_out = paths["proteomics_de/results/walker_additions_manifest.csv"]
-    assert rp.resolve_expected_rows(manifest_out, frozen_counts) == 253
+    assert rp.resolve_expected_rows(manifest_out, frozen_counts) == 6
+    # D24: the list without the five assigned rows is a registered, row-counted output too.
+    na_out = paths["proteomics_de/results/ipa_input_walker_without_assigned.csv"]
+    assert rp.resolve_expected_rows(na_out, frozen_counts) == frozen_counts[
+        "n_ipa_walker_without_assigned"] == 716
+    assert "proteomics_de/results/ipa_input_walker_without_assigned.txt" in paths
 
 
 def test_new_outputs_are_frozen():
     entries = freeze.read_manifest(MANIFEST)
-    for name in (wa.WALKER_CSV_FILENAME, wa.WALKER_TXT_FILENAME, wa.WALKER_MANIFEST_FILENAME):
+    for name in (wa.WALKER_CSV_FILENAME, wa.WALKER_TXT_FILENAME, wa.WALKER_MANIFEST_FILENAME,
+                 wa.WALKER_NOASSIGNED_CSV_FILENAME, wa.WALKER_NOASSIGNED_TXT_FILENAME):
         assert f"proteomics_de/results/{name}" in entries, f"{name} is not in the manifest"
 
 
@@ -734,16 +796,18 @@ def test_value_source_counts_are_scoped_to_the_file_each_sidecar_describes(resul
     lst, man = _facts(results_dir, "list"), _facts(results_dir, "manifest")
     assert lst["value_source_counts"] == walker["value_source"].value_counts().to_dict()
     assert man["value_source_counts"] == manifest_df["value_source"].value_counts().to_dict()
-    assert lst["value_source_counts"] == {"measured": 963, "assigned": 5}
-    assert man["value_source_counts"] == {"measured": 248, "assigned": 5}
+    assert lst["value_source_counts"] == {"measured": 716, "assigned": 5}
+    assert man["value_source_counts"] == {"measured": 1, "assigned": 5}
     assert lst["value_source_counts"] != man["value_source_counts"]
     assert "walker.csv" in lst["value_source_counts_scope"]
     assert "manifest" in man["value_source_counts_scope"]
 
 
-def test_the_committed_sidecars_carry_their_own_value_source_counts(results_dir, walker, manifest_df):
+def test_the_committed_sidecars_carry_their_own_value_source_counts(results_dir, walker, manifest_df, without):
     for name, frame in ((wa.WALKER_CSV_FILENAME, walker), (wa.WALKER_TXT_FILENAME, walker),
-                        (wa.WALKER_MANIFEST_FILENAME, manifest_df)):
+                        (wa.WALKER_MANIFEST_FILENAME, manifest_df),
+                        (wa.WALKER_NOASSIGNED_CSV_FILENAME, without),
+                        (wa.WALKER_NOASSIGNED_TXT_FILENAME, without)):
         side = results_dir / f"{name}.provenance.json"
         if not side.exists():
             pytest.skip("sidecar not generated yet")
@@ -759,24 +823,111 @@ def test_an_unknown_sidecar_scope_is_refused(results_dir):
         wa.sidecar_facts(result, cfg, "everything")
 
 
-def test_frzb_n_imputed_is_reported_separately_from_the_recovered_counts(results_dir):
-    for which in ("list", "manifest"):
-        facts = _facts(results_dir, which)
+def test_frzb_n_imputed_is_reported_separately_from_the_recovered_counts(results_dir, widened_cfg):
+    cfg = wa.load_config()
+    for which in ("list", "manifest", "without_assigned"):
+        # committed (strict) config: FRZB only, no recovered protein.
+        facts = wa.sidecar_facts(wa.compute_walker(results_dir, cfg), cfg, which)
         assert facts["measured_additions_n_imputed"] == {"P97401": 1}
-        assert facts["recovered_n_imputed_counts"] == {"1": 178, "2": 69}
-        assert sum(facts["recovered_n_imputed_counts"].values()) == 247
+        assert facts["recovered_n_imputed_counts"] == {}
         assert "added_measured_n_imputed_counts" not in facts
+        # widened rule (tmp config): the 247 are counted on their own, FRZB is not among them.
+        wide = wa.sidecar_facts(wa.compute_walker(results_dir, widened_cfg), widened_cfg, which)
+        assert wide["measured_additions_n_imputed"] == {"P97401": 1}
+        assert wide["recovered_n_imputed_counts"] == {"1": 178, "2": 69}
+        assert sum(wide["recovered_n_imputed_counts"].values()) == 247
 
 
-def test_the_sidecar_n_imputed_numbers_agree_with_the_manifest_and_the_docs(results_dir, manifest_df, frozen_counts):
+def test_the_sidecar_n_imputed_numbers_agree_with_the_manifest_and_the_docs(results_dir, manifest_df, frozen_counts, widened_cfg):
     rec = manifest_df[manifest_df[ID] != "P97401"]
     rec = rec[rec["value_source"] == "measured"]
-    counts = rec["n_imputed"].astype(int).value_counts().to_dict()
-    assert counts == {1: 178, 2: 69}
-    assert len(rec) == frozen_counts["n_walker_recovered"]
+    assert len(rec) == frozen_counts["n_walker_recovered"] == 0     # D24: none recovered
     for name in (wa.WALKER_CSV_FILENAME, wa.WALKER_MANIFEST_FILENAME):
         side = results_dir / f"{name}.provenance.json"
         if side.exists():
             r = json.loads(side.read_text(encoding="utf-8"))
-            assert {int(k): v for k, v in r["recovered_n_imputed_counts"].items()} == counts
+            assert r["recovered_n_imputed_counts"] == {}
             assert r["measured_additions_n_imputed"] == {"P97401": 1}
+    # The widened rule's manifest, from a tmp config: 178 with one imputed reading, 69 with two.
+    wide = wa.compute_walker(results_dir, widened_cfg).manifest
+    wide = wide[(wide[ID] != "P97401") & (wide["value_source"] == "measured")]
+    assert wide["n_imputed"].astype(int).value_counts().to_dict() == {1: 178, 2: 69}
+    assert len(wide) == 247
+
+
+# ---------------------------------------------------------------------------
+# D24: the 721 list, checked against the OTHER committed files, and the 716
+# "without the five assigned" dataset for the IPA sensitivity run
+# ---------------------------------------------------------------------------
+def test_the_721_list_is_715_core_then_frzb_then_the_five_assigned(walker, results_dir, cfg, frozen_counts):
+    """Independent of the builder: compare with ipa_input.csv and regulated_up_partial.csv."""
+    assert len(walker) == 721
+    ipa = pd.read_csv(results_dir / "ipa_input.csv", dtype=str, keep_default_na=False)
+    got = pd.read_csv(results_dir / wa.WALKER_CSV_FILENAME, dtype=str, keep_default_na=False)
+    shared = list(ipa.columns)
+    assert got.iloc[:715][shared].reset_index(drop=True).equals(ipa[shared])    # rows 1-715
+    up = pd.read_csv(results_dir / "regulated_up_partial.csv", dtype=str, keep_default_na=False)
+    frzb = up[up[ID] == "P97401"].iloc[0]
+    row = got.iloc[715]                                                           # row 716
+    assert (row[ID], row["Gene names"], row["tier"], row["value_source"]) == (
+        "P97401", "Frzb", "partial", "measured")
+    for col in ("log2FC", "p_value", "adj_p_value"):
+        assert row[col] == frzb[col], col                                         # real values
+    tail = got.iloc[716:]                                                         # rows 717-721
+    assert list(tail[ID]) == ["P01132", "Q61521", "O08542", "P55144", "Q9D1H9"]
+    assert list(tail[ID]) == [e["accession"] for e in cfg["assigned_proteins"]]
+    assert (tail["log2FC"] == "-6.643856").all() and (tail["regulated"] == "DOWN").all()
+    assert (tail["p_value"] == "").all() and (tail["adj_p_value"] == "").all()
+    assert (tail["value_source"] == "assigned").all() and (tail["tier"] == "qualitative").all()
+    assert walker["regulated"].value_counts().to_dict() == {"UP": 510, "DOWN": 211}
+    assert (frozen_counts["n_up"] + 1, frozen_counts["n_down"] + 5) == (510, 211)
+
+
+def test_the_walker_manifest_has_six_rows_and_names_no_dropped_protein(manifest_df, cfg):
+    assert list(manifest_df[ID]) == ["P97401"] + [e["accession"] for e in cfg["assigned_proteins"]]
+    assert len(manifest_df) == 6
+    text = " ".join(manifest_df["reason"].astype(str)).lower()
+    assert "recovered" not in text and "widened" not in text
+    assert "technical replicate" not in text and "one biological replicate" not in text
+
+
+def test_the_without_assigned_list_is_the_721_minus_the_five_assigned(walker, without, frozen_counts):
+    assert len(without) == frozen_counts["n_ipa_walker_without_assigned"] == 716
+    assert len(without) == len(walker) - frozen_counts["n_walker_assigned"]
+    assert list(without.columns) == wa.WALKER_COLS == list(walker.columns)
+    pd.testing.assert_frame_equal(without, walker[walker["value_source"] != "assigned"].reset_index(drop=True))
+    assert (without["value_source"] == "measured").all()
+    assert without["regulated"].value_counts().to_dict() == {"UP": 510, "DOWN": 206}
+    assert list(without[ID].iloc[:715]) == list(walker[ID].iloc[:715])
+    assert without[ID].iloc[715] == "P97401"                   # the last row is FRZB
+    assert not {"P01132", "Q61521", "O08542", "P55144", "Q9D1H9"} & set(without[ID])
+    assert (without["adj_p_value"].notna() & without["p_value"].notna()).all()
+
+
+def test_the_without_assigned_files_are_byte_for_byte_the_walker_rows_and_their_twins_agree(results_dir):
+    full = (results_dir / wa.WALKER_CSV_FILENAME).read_text(encoding="utf-8").splitlines()
+    no = (results_dir / wa.WALKER_NOASSIGNED_CSV_FILENAME).read_text(encoding="utf-8").splitlines()
+    kept = [full[0]] + [ln for ln in full[1:] if not ln.endswith(",qualitative,assigned")]
+    assert no == kept and len(no) == 717                        # header + 716
+    txt = pd.read_csv(results_dir / wa.WALKER_NOASSIGNED_TXT_FILENAME, sep="\t", dtype=str,
+                      keep_default_na=False)
+    csv_ = pd.read_csv(results_dir / wa.WALKER_NOASSIGNED_CSV_FILENAME, dtype=str, keep_default_na=False)
+    pd.testing.assert_frame_equal(txt, csv_)
+    for name in (wa.WALKER_NOASSIGNED_CSV_FILENAME, wa.WALKER_NOASSIGNED_TXT_FILENAME):
+        raw = (results_dir / name).read_bytes()
+        assert not raw.startswith(b"\xef\xbb\xbf") and b"\r" not in raw
+
+
+def test_all_721_and_all_716_accessions_are_in_the_ipa_reference_set(walker, without, results_dir):
+    background = set((results_dir / "ipa_background_measured.txt").read_text(encoding="utf-8").split("\n")[1:]) - {""}
+    assert len(background) == 2552
+    assert set(walker[ID]) <= background and len(set(walker[ID])) == 721
+    assert set(without[ID]) <= background and len(set(without[ID])) == 716
+
+
+def test_the_pipeline_check_for_counts_is_consistent_for_the_new_key(frozen_counts):
+    assert frozen_counts["n_ipa_walker_without_assigned"] == (
+        frozen_counts["n_ipa_walker"] - frozen_counts["n_walker_assigned"])
+    assert frozen_counts["n_ipa_walker"] == (
+        frozen_counts["ipa_input_rows"] + frozen_counts["n_walker_measured_added"]
+        + frozen_counts["n_walker_assigned"] + frozen_counts["n_walker_recovered"])

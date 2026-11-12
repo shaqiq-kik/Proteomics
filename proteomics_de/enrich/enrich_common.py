@@ -59,7 +59,7 @@ def load_frozen_counts():
 
 ORGANISM_GPROFILER = "mmusculus"
 CAVEAT_ENRICHMENT = (
-    "n=2 technical replicates; 0/1938 proteins survive per-protein FDR<0.05 "
+    "n=2 biological replicates per group (low power); 0/1938 proteins survive per-protein FDR<0.05 "
     "(limma). ORA/GSEA below are HYPOTHESIS-GENERATING: pathway-level enrichment "
     "p-values (g:Profiler g:SCS / GSEA FDR) are a SEPARATE statistical test from "
     "the non-significant per-protein FDR -- a pathway can show up here among "

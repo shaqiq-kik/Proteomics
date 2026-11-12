@@ -1,6 +1,6 @@
 """Tests for :mod:`proteomics_de.provenance`.
 
-The gap being closed: research1.md line 245 says the n=2 technical-replicate
+The gap being closed: research1.md line 245 says the n=2 (low-power)
 caveat "must be stated on every output", and it was on every *figure* and no
 *CSV*. The CSV is the artifact that actually leaves the repo.
 
@@ -101,8 +101,13 @@ def test_caveat_is_carried_verbatim(sample_csv):
     record = json.loads(sidecar(sample_csv).read_text(encoding="utf-8"))
     assert record["caveat"] == CAVEAT_TEXT
     assert "—" in record["caveat"], "the em dash must survive the JSON round-trip"
-    assert "n = 2 technical replicates" in record["caveat"]
-    assert "hypothesis-generating only" in record["caveat"]
+    # D23: Dr. Walker stated the design is 2 biological replicates per group from
+    # 2 separate experiments; the old technical-replicate claims must be gone.
+    assert "n = 2 biological replicates per group, from 2 separate experiments" in record["caveat"]
+    assert "n = 2 is low power" in record["caveat"]
+    assert "exploratory / hypothesis-generating" in record["caveat"]
+    assert "technical" not in record["caveat"].lower()
+    assert "no biological replication" not in record["caveat"].lower()
 
 
 def test_caveat_names_its_single_source(sample_csv):

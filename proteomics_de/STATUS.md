@@ -3,8 +3,8 @@
 > **This file is GENERATED. Do not hand-edit.**
 > Regenerate with `.venv/bin/python tools/status.py` (source: `tools/status.py`). Every number below is read off the filesystem at generation time, so it cannot silently go stale.
 
-* Generated: **2026-11-10 12:18:41 EST**
-* Git HEAD: **`3169b20`**
+* Generated: **2026-11-11 21:48:14 EST**
+* Git HEAD: **`9e345d9`**
 * Repo root: `/Users/abrarshakik/Documents/Proteomics`
 
 Companions: `DECISIONS_LOG.md` (human decisions D1–D6) · `BUILD_LOG.md` (per-work-package history) · `../research1.md` §Build Log (per-bug narrative).
@@ -44,7 +44,7 @@ Companions: `DECISIONS_LOG.md` (human decisions D1–D6) · `BUILD_LOG.md` (per-
 
 ## b) Artifact inventory (`proteomics_de/results/`)
 
-**169 files**, 37.6 MB total, 44 tabular (`.csv`/`.tsv`).
+**178 files**, 37.0 MB total, 45 tabular (`.csv`/`.tsv`).
 
 Row counts EXCLUDE the header. Three files are header-only **by design** — they are the honest scientific result, not a failure. See `DECISIONS_LOG.md` D2 and D6.
 
@@ -53,7 +53,7 @@ Row counts EXCLUDE the header. Three files are header-only **by design** — the
 | `results/de/design.tsv` | 69 B | 4 |  |
 | `results/de/intensity_matrix.tsv` | 110.8 KB | 1,938 |  |
 | `results/de/limma_results.tsv` | 272.5 KB | 1,938 |  |
-| `results/enrichment/gsea_meta.json` | 1.5 KB | — |  |
+| `results/enrichment/gsea_meta.json` | 1.6 KB | — |  |
 | `results/enrichment/gsea_results.csv` | 114.1 KB | 568 | matches expected 568 |
 | `results/enrichment/ora_down.csv` | 91 B | **0 rows (expected -- 0 GO/KEGG/Reactome terms survive the honest detected-proteome background (DECISIONS_LOG D6))** |  |
 | `results/enrichment/ora_meta.json` | 5.4 KB | — |  |
@@ -70,10 +70,10 @@ Row counts EXCLUDE the header. Three files are header-only **by design** — the
 | `results/enrichment/raw/string_network.tsv` | 574.3 KB | 5,962 |  |
 | `results/enrichment/raw/string_version.json` | 100 B | — |  |
 | `results/enrichment/string_edges.tsv` | 103.9 KB | 5,963 |  |
-| `results/enrichment/string_meta.json` | 760 B | — |  |
+| `results/enrichment/string_meta.json` | 770 B | — |  |
 | `results/enrichment/string_node_metrics.csv` | 57.5 KB | 694 | matches expected 694 |
-| `results/enrichment_walker/README.md` | 11.8 KB | — |  |
-| `results/enrichment_walker/comparison_vs_715.csv` | 9.0 KB | 66 |  |
+| `results/enrichment_walker/README.md` | 12.9 KB | — |  |
+| `results/enrichment_walker/comparison_vs_715.csv` | 6.4 KB | 47 |  |
 | `results/enrichment_walker/comparison_vs_715.csv.provenance.json` | 1.7 KB | — |  |
 | `results/enrichment_walker/control_715_same_version/ora_down.csv` | 91 B | **0 rows (expected -- 0 terms survive on the 715 list re-run at today's database versions either (DECISIONS_LOG D21))** |  |
 | `results/enrichment_walker/control_715_same_version/ora_meta.json` | 5.7 KB | — |  |
@@ -92,67 +92,67 @@ Row counts EXCLUDE the header. Three files are header-only **by design** — the
 | `results/enrichment_walker/control_715_same_version/string_edges.tsv` | 118.6 KB | 6,796 |  |
 | `results/enrichment_walker/control_715_same_version/string_meta.json` | 1.6 KB | — |  |
 | `results/enrichment_walker/control_715_same_version/string_node_metrics.csv` | 58.0 KB | 694 |  |
-| `results/enrichment_walker/ora_down.csv` | 91 B | **0 rows (expected -- 0 GO/KEGG/Reactome terms survive on the 968-protein walker list either (DECISIONS_LOG D21))** |  |
-| `results/enrichment_walker/ora_down.csv.provenance.json` | 1.6 KB | — |  |
+| `results/enrichment_walker/ora_down.csv` | 91 B | **0 rows (expected -- 0 GO/KEGG/Reactome terms survive on the 721-protein walker list either (DECISIONS_LOG D21))** |  |
+| `results/enrichment_walker/ora_down.csv.provenance.json` | 1.7 KB | — |  |
 | `results/enrichment_walker/ora_meta.json` | 5.6 KB | — |  |
-| `results/enrichment_walker/ora_top_terms_detail.json` | 4.6 KB | — |  |
-| `results/enrichment_walker/ora_up.csv` | 91 B | **0 rows (expected -- 0 GO/KEGG/Reactome terms survive on the 968-protein walker list either (DECISIONS_LOG D21))** |  |
-| `results/enrichment_walker/ora_up.csv.provenance.json` | 1.6 KB | — |  |
-| `results/enrichment_walker/raw/gprofiler_down.json` | 40.4 KB | — |  |
-| `results/enrichment_walker/raw/gprofiler_down_all.json.gz` | 491.2 KB | — |  |
-| `results/enrichment_walker/raw/gprofiler_down_all_evidence.json.gz` | 822.4 KB | — |  |
-| `results/enrichment_walker/raw/gprofiler_up.json` | 81.7 KB | — |  |
-| `results/enrichment_walker/raw/gprofiler_up_all.json.gz` | 667.4 KB | — |  |
-| `results/enrichment_walker/raw/gprofiler_up_all_evidence.json.gz` | 1.3 MB | — |  |
+| `results/enrichment_walker/ora_top_terms_detail.json` | 4.3 KB | — |  |
+| `results/enrichment_walker/ora_up.csv` | 91 B | **0 rows (expected -- 0 GO/KEGG/Reactome terms survive on the 721-protein walker list either (DECISIONS_LOG D21))** |  |
+| `results/enrichment_walker/ora_up.csv.provenance.json` | 1.7 KB | — |  |
+| `results/enrichment_walker/raw/gprofiler_down.json` | 28.0 KB | — |  |
+| `results/enrichment_walker/raw/gprofiler_down_all.json.gz` | 430.4 KB | — |  |
+| `results/enrichment_walker/raw/gprofiler_down_all_evidence.json.gz` | 672.8 KB | — |  |
+| `results/enrichment_walker/raw/gprofiler_up.json` | 63.3 KB | — |  |
+| `results/enrichment_walker/raw/gprofiler_up_all.json.gz` | 612.3 KB | — |  |
+| `results/enrichment_walker/raw/gprofiler_up_all_evidence.json.gz` | 1.1 MB | — |  |
 | `results/enrichment_walker/raw/request_manifest.json` | 1.9 KB | — |  |
-| `results/enrichment_walker/raw/string_get_ids.json` | 518.8 KB | — |  |
-| `results/enrichment_walker/raw/string_network.tsv` | 1.0 MB | 10,695 |  |
+| `results/enrichment_walker/raw/string_get_ids.json` | 390.3 KB | — |  |
+| `results/enrichment_walker/raw/string_network.tsv` | 663.1 KB | 6,869 |  |
 | `results/enrichment_walker/raw/string_version.json` | 100 B | — |  |
 | `results/enrichment_walker/string_comparison_vs_715.json` | 1.1 KB | — |  |
-| `results/enrichment_walker/string_edges.tsv` | 186.5 KB | 10,696 |  |
+| `results/enrichment_walker/string_edges.tsv` | 119.8 KB | 6,870 |  |
 | `results/enrichment_walker/string_edges.tsv.provenance.json` | 1.7 KB | — |  |
-| `results/enrichment_walker/string_focus_proteins.csv` | 2.0 KB | 6 |  |
+| `results/enrichment_walker/string_focus_proteins.csv` | 1.6 KB | 6 |  |
 | `results/enrichment_walker/string_focus_proteins.csv.provenance.json` | 1.7 KB | — |  |
-| `results/enrichment_walker/string_meta.json` | 2.0 KB | — |  |
-| `results/enrichment_walker/string_node_metrics.csv` | 89.8 KB | 937 |  |
+| `results/enrichment_walker/string_meta.json` | 1.8 KB | — |  |
+| `results/enrichment_walker/string_node_metrics.csv` | 68.1 KB | 700 |  |
 | `results/enrichment_walker/string_node_metrics.csv.provenance.json` | 1.7 KB | — |  |
-| `results/figures/figures_manifest.json` | 8.2 KB | — |  |
+| `results/figures/figures_manifest.json` | 8.3 KB | — |  |
 | `results/figures/figures_manifest_enrich.json` | 13.2 KB | — |  |
 | `results/figures/figures_manifest_gated.json` | 2.9 KB | — |  |
 | `results/figures/figures_manifest_network.json` | 3.5 KB | — |  |
-| `results/figures/gsea_top.png` | 376.9 KB | — |  |
+| `results/figures/gsea_top.png` | 381.4 KB | — |  |
 | `results/figures/gsea_top.svg` | 27.3 KB | — |  |
-| `results/figures/heatmap_top_de.png` | 163.9 KB | — |  |
+| `results/figures/heatmap_top_de.png` | 169.1 KB | — |  |
 | `results/figures/heatmap_top_de.svg` | 89.4 KB | — |  |
 | `results/figures/intensity_distributions.png` | 99.1 KB | — |  |
 | `results/figures/intensity_distributions.svg` | 34.3 KB | — |  |
-| `results/figures/ma_plot.png` | 248.6 KB | — |  |
-| `results/figures/ma_plot.svg` | 226.7 KB | — |  |
-| `results/figures/missing_values.png` | 204.1 KB | — |  |
+| `results/figures/ma_plot.png` | 256.0 KB | — |  |
+| `results/figures/ma_plot.svg` | 226.8 KB | — |  |
+| `results/figures/missing_values.png` | 207.1 KB | — |  |
 | `results/figures/missing_values.svg` | 32.3 KB | — |  |
-| `results/figures/ora_dotplot.png` | 214.4 KB | — |  |
-| `results/figures/ora_dotplot.svg` | 25.6 KB | — |  |
-| `results/figures/pca_qc.png` | 134.4 KB | — |  |
+| `results/figures/ora_dotplot.png` | 220.0 KB | — |  |
+| `results/figures/ora_dotplot.svg` | 25.7 KB | — |  |
+| `results/figures/pca_qc.png` | 139.0 KB | — |  |
 | `results/figures/pca_qc.svg` | 18.3 KB | — |  |
 | `results/figures/ppi_network.png` | 1.2 MB | — |  |
 | `results/figures/ppi_network.svg` | 1.4 MB | — |  |
 | `results/figures/rank_abundance.png` | 101.0 KB | — |  |
 | `results/figures/rank_abundance.svg` | 155.7 KB | — |  |
-| `results/figures/sample_correlation.png` | 121.0 KB | — |  |
+| `results/figures/sample_correlation.png` | 126.2 KB | — |  |
 | `results/figures/sample_correlation.svg` | 20.3 KB | — |  |
-| `results/figures/sample_dendrogram.png` | 112.3 KB | — |  |
-| `results/figures/sample_dendrogram.svg` | 12.4 KB | — |  |
-| `results/figures/upset.png` | 271.5 KB | — |  |
-| `results/figures/upset.svg` | 43.6 KB | — |  |
-| `results/figures/volcano.png` | 208.4 KB | — |  |
-| `results/figures/volcano.svg` | 230.4 KB | — |  |
+| `results/figures/sample_dendrogram.png` | 116.8 KB | — |  |
+| `results/figures/sample_dendrogram.svg` | 12.5 KB | — |  |
+| `results/figures/upset.png` | 278.2 KB | — |  |
+| `results/figures/upset.svg` | 43.8 KB | — |  |
+| `results/figures/volcano.png` | 215.3 KB | — |  |
+| `results/figures/volcano.svg` | 230.6 KB | — |  |
 | `results/foldchange_all.csv` | 281.6 KB | 1,948 | matches expected 1,948 |
-| `results/foldchange_all.csv.provenance.json` | 806 B | — |  |
+| `results/foldchange_all.csv.provenance.json` | 837 B | — |  |
 | `results/foldchange_all_centered.csv` | 327.7 KB | 1,948 |  |
 | `results/gated/pca_coords.csv` | 287 B | 4 |  |
 | `results/gated/pca_variance.csv` | 93 B | 3 |  |
 | `results/gated/skip_log.csv` | 1.2 KB | 6 |  |
-| `results/ipa_analysis/README.md` | 9.9 KB | — |  |
+| `results/ipa_analysis/README.md` | 10.0 KB | — |  |
 | `results/ipa_analysis/core963_canonical_pathways.txt` | 110.1 KB | — |  |
 | `results/ipa_analysis/core963_diseases_and_functions.txt` | 1.0 MB | — |  |
 | `results/ipa_analysis/core963_networks.txt` | 11.9 KB | — |  |
@@ -165,8 +165,13 @@ Row counts EXCLUDE the header. Three files are header-only **by design** — the
 | `results/ipa_analysis/qualitative_down242_canonical_pathways.txt` | 51.4 KB | — |  |
 | `results/ipa_analysis/qualitative_up372_canonical_pathways.txt` | 63.6 KB | — |  |
 | `results/ipa_analysis/qualitative_up372_summary.txt` | 1.5 MB | — |  |
-| `results/ipa_analysis_walker/README.md` | 5.3 KB | — |  |
-| `results/ipa_analysis_walker/UPLOAD_STEPS.md` | 6.4 KB | — |  |
+| `results/ipa_analysis_walker/README.md` | 5.8 KB | — |  |
+| `results/ipa_analysis_walker/UPLOAD_STEPS.md` | 6.9 KB | — |  |
+| `results/ipa_analysis_walker/figures/make_walker_figures.py` | 10.1 KB | — |  |
+| `results/ipa_analysis_walker/figures/run2_top_pathways.png` | 184.9 KB | — |  |
+| `results/ipa_analysis_walker/figures/run2_top_pathways.svg` | 21.4 KB | — |  |
+| `results/ipa_analysis_walker/figures/walker_string_focus_network.png` | 225.5 KB | — |  |
+| `results/ipa_analysis_walker/figures/walker_string_focus_network.svg` | 33.7 KB | — |  |
 | `results/ipa_analysis_walker/run1_assigned_dropped_canonical_pathways.txt` | 114.2 KB | — |  |
 | `results/ipa_analysis_walker/run1_assigned_dropped_diseases_and_functions.txt` | 1.1 MB | — |  |
 | `results/ipa_analysis_walker/run1_assigned_dropped_networks.txt` | 13.4 KB | — |  |
@@ -176,25 +181,29 @@ Row counts EXCLUDE the header. Three files are header-only **by design** — the
 | `results/ipa_analysis_walker/run2_assigned_included_networks.txt` | 13.5 KB | — |  |
 | `results/ipa_analysis_walker/run2_assigned_included_upstream_regulators.txt` | 273.5 KB | — |  |
 | `results/ipa_background_measured.txt` | 18.7 KB | — |  |
-| `results/ipa_background_measured.txt.provenance.json` | 815 B | — |  |
+| `results/ipa_background_measured.txt.provenance.json` | 846 B | — |  |
 | `results/ipa_input.csv` | 25.3 KB | 715 | matches expected 715 |
-| `results/ipa_input.csv.provenance.json` | 800 B | — |  |
+| `results/ipa_input.csv.provenance.json` | 831 B | — |  |
 | `results/ipa_input_extended.csv` | 71.1 KB | 963 |  |
-| `results/ipa_input_extended.csv.provenance.json` | 809 B | — |  |
+| `results/ipa_input_extended.csv.provenance.json` | 840 B | — |  |
 | `results/ipa_input_extended.txt` | 71.1 KB | — |  |
-| `results/ipa_input_extended.txt.provenance.json` | 809 B | — |  |
+| `results/ipa_input_extended.txt.provenance.json` | 840 B | — |  |
 | `results/ipa_input_full.csv` | 50.5 KB | 715 |  |
-| `results/ipa_input_full.csv.provenance.json` | 805 B | — |  |
+| `results/ipa_input_full.csv.provenance.json` | 836 B | — |  |
 | `results/ipa_input_full.txt` | 50.5 KB | — |  |
-| `results/ipa_input_significant.csv` | 65 B | **0 rows (expected -- 0/1938 proteins pass FDR<0.05 at n=2 technical replicates (DECISIONS_LOG D2))** |  |
-| `results/ipa_input_walker.csv` | 79.8 KB | 968 |  |
-| `results/ipa_input_walker.csv.provenance.json` | 2.6 KB | — |  |
-| `results/ipa_input_walker.txt` | 79.8 KB | — |  |
-| `results/ipa_input_walker.txt.provenance.json` | 2.6 KB | — |  |
+| `results/ipa_input_significant.csv` | 65 B | **0 rows (expected -- 0/1938 proteins pass FDR<0.05 at n=2 per group (low power) (DECISIONS_LOG D2))** |  |
+| `results/ipa_input_walker.csv` | 60.6 KB | 721 |  |
+| `results/ipa_input_walker.csv.provenance.json` | 2.7 KB | — |  |
+| `results/ipa_input_walker.txt` | 60.6 KB | — |  |
+| `results/ipa_input_walker.txt.provenance.json` | 2.7 KB | — |  |
+| `results/ipa_input_walker_without_assigned.csv` | 60.4 KB | 716 |  |
+| `results/ipa_input_walker_without_assigned.csv.provenance.json` | 3.0 KB | — |  |
+| `results/ipa_input_walker_without_assigned.txt` | 60.4 KB | — |  |
+| `results/ipa_input_walker_without_assigned.txt.provenance.json` | 3.0 KB | — |  |
 | `results/ipa_qualitative_down.txt` | 2.0 KB | — |  |
-| `results/ipa_qualitative_down.txt.provenance.json` | 811 B | — |  |
+| `results/ipa_qualitative_down.txt.provenance.json` | 842 B | — |  |
 | `results/ipa_qualitative_up.txt` | 3.0 KB | — |  |
-| `results/ipa_qualitative_up.txt.provenance.json` | 809 B | — |  |
+| `results/ipa_qualitative_up.txt.provenance.json` | 840 B | — |  |
 | `results/onoff_proteins.csv` | 620 B | 10 | matches expected 10 |
 | `results/qc/qc_boundaries.json` | 4.6 KB | — |  |
 | `results/qc/qc_report.json` | 5.7 KB | — |  |
@@ -202,23 +211,23 @@ Row counts EXCLUDE the header. Three files are header-only **by design** — the
 | `results/qc/quarantine_accessions.csv` | 33.3 KB | 2 |  |
 | `results/qc_centering.csv` | 110 B | 1 |  |
 | `results/qc_limma.csv` | 319.8 KB | 1,938 | matches expected 1,938 |
-| `results/qc_limma.csv.provenance.json` | 800 B | — |  |
+| `results/qc_limma.csv.provenance.json` | 831 B | — |  |
 | `results/qc_limma_vanilla.csv` | 317.9 KB | 1,938 |  |
 | `results/qc_replicate_correlation.csv` | 179 B | 1 |  |
 | `results/qualitative_changes.csv` | 164.5 KB | 614 |  |
-| `results/qualitative_changes.csv.provenance.json` | 810 B | — |  |
+| `results/qualitative_changes.csv.provenance.json` | 841 B | — |  |
 | `results/regulated_down.csv` | 17.9 KB | 206 |  |
-| `results/regulated_down.csv.provenance.json` | 805 B | — |  |
+| `results/regulated_down.csv.provenance.json` | 836 B | — |  |
 | `results/regulated_down_partial.csv` | 7.7 KB | 96 |  |
-| `results/regulated_down_partial.csv.provenance.json` | 812 B | — |  |
+| `results/regulated_down_partial.csv.provenance.json` | 843 B | — |  |
 | `results/regulated_up.csv` | 43.2 KB | 509 |  |
-| `results/regulated_up.csv.provenance.json` | 803 B | — |  |
+| `results/regulated_up.csv.provenance.json` | 834 B | — |  |
 | `results/regulated_up_partial.csv` | 11.8 KB | 152 |  |
-| `results/regulated_up_partial.csv.provenance.json` | 811 B | — |  |
+| `results/regulated_up_partial.csv.provenance.json` | 842 B | — |  |
 | `results/replicate_correlation.png` | 98.4 KB | — |  |
 | `results/single_condition_proteins.csv` | 28.8 KB | 604 | matches expected 604 |
-| `results/walker_additions_manifest.csv` | 99.6 KB | 253 |  |
-| `results/walker_additions_manifest.csv.provenance.json` | 2.6 KB | — |  |
+| `results/walker_additions_manifest.csv` | 1.3 KB | 6 |  |
+| `results/walker_additions_manifest.csv.provenance.json` | 2.7 KB | — |  |
 
 All 7 headline row counts match the contract in `config/config.yaml`.
 
@@ -226,9 +235,9 @@ All 7 headline row counts match the contract in `config/config.yaml`.
 
 ## c) Byte-freeze drift
 
-Manifest: `proteomics_de/tests/expected/outputs.sha256` (126 files).
+Manifest: `proteomics_de/tests/expected/outputs.sha256` (128 files).
 
-**126 OK · 0 CHANGED · 0 MISSING**
+**128 OK · 0 CHANGED · 0 MISSING**
 
 ✅ **No drift.** Every frozen file is byte-identical to its baseline.
 
@@ -255,17 +264,18 @@ Manifest: `proteomics_de/tests/expected/outputs.sha256` (126 files).
 | `tests/test_merge_guard.py` | 16 |
 | `tests/test_provenance.py` | 30 |
 | `tests/test_regulated_lists.py` | 19 |
+| `tests/test_replicate_wording.py` | 3 |
 | `tests/test_report_facts.py` | 24 |
 | `tests/test_run_pipeline.py` | 43 |
 | `tests/test_schemas.py` | 18 |
 | `tests/test_string_ppi.py` | 36 |
 | `tests/test_style_samples.py` | 18 |
 | `tests/test_supplementary_lists.py` | 23 |
-| `tests/test_walker_additions.py` | 57 |
-| `tests/test_walker_adversarial_additions.py` | 58 |
-| `tests/test_walker_enrichment.py` | 39 |
+| `tests/test_walker_additions.py` | 65 |
+| `tests/test_walker_adversarial_additions.py` | 69 |
+| `tests/test_walker_enrichment.py` | 41 |
 
-**26 test files · 742 test functions.**
+**27 test files · 766 test functions.**
 
 Module coverage — a module counts as covered if a test file is named after it (`test_<module>.py`) or mentions it in its filename:
 

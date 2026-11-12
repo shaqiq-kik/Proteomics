@@ -7,7 +7,7 @@ proteomics_de/results/figures/heatmap_top_de.png + .svg.
 Method (documented, as required by the task spec): the top 40 proteins are
 selected by SMALLEST RAW p_value, not by largest |log2FC|. Rationale: limma's
 moderated t-statistic already balances effect size against the precision
-available from the two technical replicates, so ranking on p_value is a less
+available from the two replicates per group, so ranking on p_value is a less
 noise-prone selection than ranking on raw fold-change magnitude alone (a huge
 log2FC estimated from very low/near-zero intensities is often the least
 reliable, not the most interesting, protein - see e.g. the -10 log2FC outliers
@@ -166,7 +166,7 @@ def main():
             "see script docstring for rationale), clustered by protein only; "
             "sample columns stay in a fixed control/treated order. The row-color "
             "sidebar marks each protein's UP/DOWN call. As with all statistical "
-            "figures here, n=2 technical replicates means none of these proteins "
+            "figures here, n=2 biological replicates per group means none of these proteins "
             "are FDR-significant; this view is for pattern inspection only."
         ),
         "key_numbers": key_numbers,

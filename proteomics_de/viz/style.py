@@ -157,7 +157,7 @@ def derive_sample_maps(sheet=None):
     sample id is hardwired to a group: DECISIONS_LOG D7 records that the
     control/treated assignment is inverted and will be flipped by editing the
     TSV, and that flip propagates through here (and thus through every figure)
-    with no code change. Adding biological replicates likewise only means adding
+    with no code change. Adding more replicates likewise only means adding
     rows -- the maps grow to match.
 
     Parameters

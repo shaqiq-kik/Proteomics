@@ -1571,3 +1571,41 @@ re-baselined alongside it.
 5. ⚪ These e2e tests write to shared paths under `proteomics_de/` and must not run
    concurrently with themselves. The default invocation is serial; anyone adding
    `-n` for xdist needs `--dist loadfile`.
+
+---
+
+## P11 — D23: replicate design corrected to 2 biological replicates from 2 separate experiments (2026-11-11)
+**Commit:** (this commit) · **Status:** ✅ done · **Decision:** `DECISIONS_LOG.md` D23
+
+**What changed.** Words only. Dr. Walker stated that the four samples are 2
+biological replicates per group from 2 separate experiments, so every "technical
+replicates only / one biological replicate" statement was corrected: `config.yaml`
+(design block, design-matrix note, caveat), `config/constants.py::CAVEAT_TEXT`
+(the single source for the figure footers and all 23 `.provenance.json` sidecars),
+docstrings and strings in the code, both READMEs, the three walker docs, the
+report template. No statistic, threshold, fold change or p-value moved; the limma
+model stays `~group` (a paired / blocked model is an open question in D23).
+
+**Regenerated, by the repo's own mechanism.** `run_pipeline.py --only
+ipa_export,regulated_lists,regulated_lists_supplementary,ipa_export_extended,ipa_export_walker,qc_validate,viz_*,enrich_network_figure,enrich_upset,enrich_walker,gated_pca_cluster`
+then `report/build_facts.py` and `--only report`, then `tools/status.py`. The three
+network stages (`enrich_string_ppi`, `enrich_ora`, `enrich_gsea`) were not re-run:
+their caveat/note strings in `results/enrichment/{string,gsea}_meta.json` were
+patched in place, and `ora_dotplot` / `gsea_top` were re-rendered offline from the
+committed tables with the repo's own `make_dotplot` / `make_barplot` (control: the
+same call under the HEAD code reproduced the committed PNGs byte for byte).
+
+**Refrozen (32 of 126 entries in `tests/expected/outputs.sha256`).** Only text-bearing
+outputs: 11 figure PNG/SVG pairs (22 files, `ora_dotplot` and `gsea_top`
+included), the three `figures_manifest*.json` captions, the two walker `string_meta.json` and the two
+`results/enrichment/*_meta.json` caveats, `gated/skip_log.csv` (one reason cell),
+`walker_additions_manifest.csv` (the `reason` column of 247 rows) and
+`enrichment_walker/README.md`. All other numeric result files are byte-identical.
+
+**Not regenerated on purpose.** `gated/pca_coords.csv` and `pca_variance.csv`
+differ in the 14th decimal when the stage is re-run here (BLAS drift, also at
+HEAD); they were restored from git, not refrozen. `qc/qc_report.*` differ only in
+timestamp and Python version; restored.
+
+**Guard.** `tests/test_replicate_wording.py` fails if the retired phrases return in
+any live file.

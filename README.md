@@ -2,7 +2,10 @@
 
 A quantitative proteomics analysis of a **mouse** SILAC experiment comparing
 **testosterone-treated** against **vehicle-control** samples, with **n = 2
-technical replicates per condition** (no biological replication).
+biological replicates per group, from 2 separate experiments** (each
+experiment gave one control and one treated sample; which treated sample pairs
+with which control is not yet confirmed, and the model does not use the
+pairing).
 
 The analysis lives in [`proteomics_de/`](proteomics_de/README.md). It takes the
 two SILAC channel sheets in `Copy of General Sheet.xlsx`, computes per-protein
@@ -24,14 +27,20 @@ finding.**
 * **0** GO / KEGG / Reactome terms survive over-representation testing against
   the detected proteome, and **0 of 568** GSEA gene sets pass FDR < 0.05.
 * This is the expected ceiling of the design, not a bug and not a processing
-  error. Two **technical** replicates measure instrument reproducibility. They
-  do not measure biological variability, so there is no denominator from which
-  a per-protein p-value could reach significance.
+  error. n = 2 per group is **low statistical power**: with two values per
+  group a per-protein variance is barely estimable, so a per-protein p-value
+  cannot reach significance. (Dr. Walker confirmed on 2026-11-11 that the two
+  replicates per group are biological, from 2 separate experiments; see
+  `proteomics_de/DECISIONS_LOG.md` D23. This corrects the earlier
+  "technical replicates" description. No number changed.)
 
 Everything the pipeline emits — every fold change, every "UP"/"DOWN" call,
-every network hub, every pathway — is therefore **hypothesis-generating only**.
-Treat the outputs as a ranked list of candidates worth a properly replicated
-follow-up, never as confirmed differential expression.
+every network hub, every pathway — is therefore **exploratory /
+hypothesis-generating**. Treat the outputs as a ranked list of candidates
+worth a better-powered follow-up, never as confirmed differential expression.
+What the biological design does give you: a change (or an absence) seen in
+**both** experiments is a reproduced biological observation, not just a
+repeated instrument reading.
 
 There is a second, sharper lesson buried in the enrichment layer. Running the
 same gene list against g:Profiler's *default whole-genome* background returns

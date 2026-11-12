@@ -176,7 +176,13 @@ def test_report_has_no_unresolved_tokens_including_lowercase(report_html):
 def test_caveat_ribbon_is_present_and_prominent(report_html):
     assert 'class="caveat"' in report_html
     assert 'aria-label="Interpretation caveat"' in report_html
-    assert "technical replicates" in report_html
+    # D23: the ribbon states the corrected design (2 biological replicates per
+    # group, 2 separate experiments) and no longer claims technical replicates.
+    ribbon = re.search(r'class="caveat".*?</div>', report_html, re.S).group(0)
+    assert "2 biological replicates per group" in ribbon
+    assert "2 separate experiments" in ribbon
+    assert "technical replicates" not in ribbon
+    assert "no biological replication" not in ribbon
     assert "hypothesis-generating" in report_html
     # The ribbon must still carry the headline null verbatim.
     assert re.search(r"0\s*of\s*1,938", report_html), "headline null missing from ribbon"

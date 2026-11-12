@@ -39,23 +39,28 @@ fold-change column. D18 rejected a sentinel +/-1 log2FC for the qualitative
 lists; D20 supersedes that for these five proteins only, on the professor's
 explicit decision, with the labelling above as the price.
 
-The "recovered" rule (widened by the user's decision)
------------------------------------------------------
+The "recovered" rule (strict again since D24)
+---------------------------------------------
 D17/D18 recovered 862 proteins (248 tier-3 partial + 614 tier-1/2 qualitative).
 Dr. Walker asked for only those altered by at least 50% with "no problems". The
 user first chose a strict rule (``|log2FC| >= 0.585`` AND seen in all four
 readings AND ``n_imputed == 0``), which admits NOTHING: every tier-3 row is in
 that tier because a reading is missing, and no qualitative row has a fold change.
-The user then WIDENED it: a recovered protein is added if it is a partial-tier
-row with a real log2FC, ``|log2FC| >= 0.585``, and not already listed. The two
-"no problems" conditions are kept as config switches
-(``require_all_replicates_seen``, ``require_no_imputed_values``), now ``false``;
-flipping them to ``true`` restores the strict rule. The added proteins DO have a
-problem -- a missing replicate imputed by the pipeline (``n_imputed`` 1 or 2) --
-so each rests on one biological replicate with an imputed technical replicate;
-their real limma ``p_value``/``adj_p_value`` are copied unchanged, and the
-manifest says so per protein. :func:`apply_recovered_rule` reports the rows
-surviving each active filter.
+D20 WIDENED it (a partial-tier row with a real log2FC, ``|log2FC| >= 0.585``, not
+already listed), which admitted 247 proteins that each carry an imputed replicate.
+Dr. Walker's final answer (D24) is to DROP those 247, so the two "no problems"
+switches (``require_all_replicates_seen``, ``require_no_imputed_values``) are
+``true`` again: the strict rule, which admits zero. The machinery is kept -- set
+both switches to ``false`` and the 247 return; the recovered rows would then rest
+on the samples that were measured, with the missing value imputed, and carry their
+real limma ``p_value``/``adj_p_value`` unchanged. :func:`apply_recovered_rule`
+reports the rows surviving each active filter.
+
+``ipa_input_walker_without_assigned.csv`` / ``.txt``
+    The same list MINUS the ``value_source == assigned`` rows (D24): the dataset
+    for the IPA run "without the five assigned values", a sensitivity check on how
+    much the assigned -6.643856 values drive the IPA result. Same columns, same row
+    order, every remaining row byte-identical to its row in ``ipa_input_walker.csv``.
 
 Additive only
 -------------
@@ -108,6 +113,9 @@ from proteomics_de.export.ipa_extended import (  # noqa: E402
 WALKER_CSV_FILENAME = "ipa_input_walker.csv"
 WALKER_TXT_FILENAME = "ipa_input_walker.txt"
 WALKER_MANIFEST_FILENAME = "walker_additions_manifest.csv"
+#: The list without the ASSIGNED rows (D24): the IPA "without the five" run.
+WALKER_NOASSIGNED_CSV_FILENAME = "ipa_input_walker_without_assigned.csv"
+WALKER_NOASSIGNED_TXT_FILENAME = "ipa_input_walker_without_assigned.txt"
 
 #: ``value_source`` vocabulary. ``assigned`` is the label that must never be
 #: dropped: it is the only thing telling a reader the number was not measured.
@@ -151,6 +159,7 @@ COUNT_KEYS = {
     "recovered": "n_walker_recovered",
     "total": "n_ipa_walker",
     "additions_listed": "n_walker_additions_listed",
+    "without_assigned": "n_ipa_walker_without_assigned",
 }
 
 #: Files read by this module and never written. Re-hashed around every build.
@@ -484,8 +493,8 @@ _RECOVERED_REASON = (
     "Added by the recovered-protein rule, WIDENED by the user's decision "
     "(Dr. Walker said 'no problems'; this protein has one: a missing replicate "
     "imputed by the pipeline, n_imputed={n}). Real limma log2FC, p_value and "
-    "adj_p_value copied from {src}; rests on one biological replicate with an "
-    "imputed technical replicate.")
+    "adj_p_value copied from {src}; rests on the samples that were measured, "
+    "with the missing value imputed by the pipeline.")
 
 
 def build_recovered_rows(passed):
@@ -571,6 +580,26 @@ def check_walker_frame(frame):
         raise WalkerAdditionsError("a measured row is missing its p-value / adj p-value")
 
 
+def drop_assigned(frame):
+    """The Walker frame minus every ``value_source == assigned`` row (D24).
+
+    Used for the IPA "without the five assigned values" run. It is a pure row
+    filter: the surviving rows keep their order and values, so each one is
+    byte-identical to its row in the full list, and nothing is re-derived. The
+    result is checked as a Walker frame in its own right (and must contain no
+    assigned row, otherwise the file would not be what its name says).
+    """
+    check_walker_frame(frame)
+    keep = frame["value_source"] != VALUE_ASSIGNED
+    out = frame.loc[keep].reset_index(drop=True)
+    if (out["value_source"] == VALUE_ASSIGNED).any():   # pragma: no cover - defensive
+        raise WalkerAdditionsError("an assigned row survived drop_assigned")
+    if len(out) != len(frame) - int((~keep).sum()):      # pragma: no cover - defensive
+        raise WalkerAdditionsError("drop_assigned lost or invented rows")
+    check_walker_frame(out)
+    return out
+
+
 # ---------------------------------------------------------------------------
 # Writers
 # ---------------------------------------------------------------------------
@@ -622,6 +651,7 @@ def assert_frozen_inputs_untouched(results_dir, before):
 class WalkerResult:
     frame: pd.DataFrame
     manifest: pd.DataFrame
+    frame_without_assigned: pd.DataFrame = None
     steps: list = field(default_factory=list)
     counts: dict = field(default_factory=dict)
     paths: list = field(default_factory=list)
@@ -669,6 +699,7 @@ def compute_walker(results_dir, cfg):
     recovered = build_recovered_rows(passed)
 
     frame = build_walker_frame(df_full, [measured, assigned, recovered])
+    frame_without_assigned = drop_assigned(frame)
     manifest = pd.concat(
         [f[MANIFEST_COLS].astype({"n_imputed": "Int64"})
          for f in (measured, assigned, recovered) if len(f)],
@@ -681,19 +712,23 @@ def compute_walker(results_dir, cfg):
         "recovered": len(recovered),
         "total": len(frame),
         "additions_listed": len(manifest),
+        "without_assigned": len(frame_without_assigned),
         "recovered_pool": len(pool),
     }
-    return WalkerResult(frame=frame, manifest=manifest, steps=steps, counts=counts)
+    return WalkerResult(frame=frame, manifest=manifest,
+                        frame_without_assigned=frame_without_assigned,
+                        steps=steps, counts=counts)
 
 
 def build_walker_from_results(results_dir=None, *, validate=True, counts_path=None,
                               config_path=None):
-    """Build the three Walker files from the committed results directory.
+    """Build the Walker files from the committed results directory.
 
     Returns
     -------
     WalkerResult
-        With ``.paths`` = ``[walker.csv, walker.txt, manifest.csv]``.
+        With ``.paths`` = ``[walker.csv, walker.txt, manifest.csv,
+        without_assigned.csv, without_assigned.txt]``.
     """
     results_dir = Path(results_dir) if results_dir else _PKG_DIR / "results"
     cfg = load_config(config_path)
@@ -709,6 +744,8 @@ def build_walker_from_results(results_dir=None, *, validate=True, counts_path=No
     csv_path = results_dir / WALKER_CSV_FILENAME
     txt_path = results_dir / WALKER_TXT_FILENAME
     manifest_path = results_dir / WALKER_MANIFEST_FILENAME
+    na_csv_path = results_dir / WALKER_NOASSIGNED_CSV_FILENAME
+    na_txt_path = results_dir / WALKER_NOASSIGNED_TXT_FILENAME
 
     # Stage in a scratch directory INSIDE results_dir (same filesystem, so the
     # final os.replace is an atomic rename), validate the staged files under
@@ -721,6 +758,9 @@ def build_walker_from_results(results_dir=None, *, validate=True, counts_path=No
         staged_csv, staged_txt = write_walker(
             result.frame, stage / WALKER_CSV_FILENAME, stage / WALKER_TXT_FILENAME)
         staged_manifest = write_manifest(result.manifest, stage / WALKER_MANIFEST_FILENAME)
+        staged_na_csv, staged_na_txt = write_walker(
+            result.frame_without_assigned, stage / WALKER_NOASSIGNED_CSV_FILENAME,
+            stage / WALKER_NOASSIGNED_TXT_FILENAME)
 
         if validate:
             for p in (staged_csv, staged_txt):
@@ -729,15 +769,39 @@ def build_walker_from_results(results_dir=None, *, validate=True, counts_path=No
                              measurement_columns=IPA_MEASUREMENT_COLS)
             assert_core_rows_are_verbatim(staged_csv, results_dir / "ipa_input_full.csv")
             assert_twins_agree(staged_csv, staged_txt)
+            for p in (staged_na_csv, staged_na_txt):
+                validate_ipa(p, expected_rows=int(counts[COUNT_KEYS["without_assigned"]]),
+                             required_columns=WALKER_COLS,
+                             measurement_columns=IPA_MEASUREMENT_COLS)
+            assert_twins_agree(staged_na_csv, staged_na_txt)
+            assert_without_assigned_is_the_list_minus_assigned(staged_csv, staged_na_csv)
             assert_frozen_inputs_untouched(results_dir, before)
 
         for staged, final in ((staged_csv, csv_path), (staged_txt, txt_path),
-                              (staged_manifest, manifest_path)):
+                              (staged_manifest, manifest_path),
+                              (staged_na_csv, na_csv_path), (staged_na_txt, na_txt_path)):
             os.replace(staged, final)
     finally:
         shutil.rmtree(stage, ignore_errors=True)
-    result.paths = [csv_path, txt_path, manifest_path]
+    result.paths = [csv_path, txt_path, manifest_path, na_csv_path, na_txt_path]
     return result
+
+
+def assert_without_assigned_is_the_list_minus_assigned(full_csv, without_csv):
+    """Re-read both written CSVs and prove the second is the first minus assigned rows.
+
+    Compares the FILES (as text, so a formatting difference counts), not the
+    in-memory frames: the guarantee is about what a reader of the two files sees.
+    """
+    full = pd.read_csv(full_csv, dtype=str, keep_default_na=False, float_precision="round_trip")
+    wout = pd.read_csv(without_csv, dtype=str, keep_default_na=False, float_precision="round_trip")
+    expected = full.loc[full["value_source"] != VALUE_ASSIGNED].reset_index(drop=True)
+    if not expected.equals(wout):
+        raise WalkerAdditionsError(
+            f"{Path(without_csv).name} is not {Path(full_csv).name} minus its "
+            "value_source=assigned rows")
+    if (wout["value_source"] == VALUE_ASSIGNED).any():
+        raise WalkerAdditionsError(f"{Path(without_csv).name} still has an assigned row")
 
 
 def _check_counts(result, counts):
@@ -754,6 +818,10 @@ def _check_counts(result, counts):
             int(counts[COUNT_KEYS[k]]) for k in ("measured", "assigned", "recovered")):
         raise WalkerAdditionsError(
             "frozen_counts n_walker_additions_listed is not measured + assigned + recovered")
+    if int(counts[COUNT_KEYS["without_assigned"]]) != int(counts[COUNT_KEYS["total"]]) - int(
+            counts[COUNT_KEYS["assigned"]]):
+        raise WalkerAdditionsError(
+            "frozen_counts n_ipa_walker_without_assigned is not n_ipa_walker - n_walker_assigned")
 
 
 def _n_imputed_counts(rows):
@@ -765,22 +833,47 @@ def sidecar_facts(result, cfg, which="list"):
     """Extra provenance fields: what is assigned, and how the rule narrowed.
 
     `which` scopes the per-file facts to the file the sidecar describes:
-    ``"list"`` (``ipa_input_walker.csv``/``.txt``: every row of the list) or
-    ``"manifest"`` (``walker_additions_manifest.csv``: only the additions). A
-    count taken from the wrong frame would describe a different file.
+    ``"list"`` (``ipa_input_walker.csv``/``.txt``: every row of the list),
+    ``"manifest"`` (``walker_additions_manifest.csv``: only the additions) or
+    ``"without_assigned"`` (``ipa_input_walker_without_assigned.*``: the list minus
+    the assigned rows). A count taken from the wrong frame would describe a
+    different file.
     """
-    if which not in ("list", "manifest"):
-        raise WalkerAdditionsError(f"sidecar scope must be 'list' or 'manifest', got {which!r}")
+    if which not in ("list", "manifest", "without_assigned"):
+        raise WalkerAdditionsError(
+            f"sidecar scope must be 'list', 'manifest' or 'without_assigned', got {which!r}")
     block = cfg["assigned_fold_change"]
-    scoped = result.frame if which == "list" else result.manifest
+    scoped = {"list": result.frame, "manifest": result.manifest,
+              "without_assigned": result.frame_without_assigned}[which]
+    scope_text = {
+        "list": "all rows of ipa_input_walker.csv/.txt",
+        "manifest": "all rows of walker_additions_manifest.csv (the additions only)",
+        "without_assigned": ("all rows of ipa_input_walker_without_assigned.csv/.txt "
+                             "(the list minus its value_source=assigned rows)"),
+    }[which]
     measured_acc = {e["accession"] for e in cfg["measured_additions"]}
     man = result.manifest
     is_measured = man["value_source"] == VALUE_MEASURED
     is_listed_measured = man[IPA_ID_COL].isin(measured_acc) & is_measured
-    return {
-        "value_source_counts_scope": (
-            "all rows of ipa_input_walker.csv/.txt" if which == "list"
-            else "all rows of walker_additions_manifest.csv (the additions only)"),
+    rule = cfg["recovered_rule"]
+    strict = bool(rule["require_all_replicates_seen"] or rule["require_no_imputed_values"])
+    n_recovered = int(result.counts["recovered"])
+    if strict:
+        rule_note = (
+            "The recovered-protein rule is STRICT (Dr. Walker's original 'no problems' "
+            "wording, restored by his final answer, DECISIONS_LOG D24): a protein must be "
+            "seen in all four readings with n_imputed == 0. That admits "
+            f"{n_recovered} proteins on the committed data, so the recovered pool is empty; "
+            "the 247 proteins the widened rule had admitted (D20) were dropped at his request.")
+    else:
+        rule_note = (
+            "The recovered-protein rule is WIDENED (both 'no problems' switches false): "
+            "partial-tier proteins with |log2FC| >= the cutoff are added although one "
+            "replicate was imputed by the pipeline. They rest on the samples that were "
+            "measured, with the missing value imputed. Real limma p_value / adj_p_value are "
+            "kept; see the manifest's n_imputed and reason columns.")
+    facts = {
+        "value_source_counts_scope": scope_text,
         "value_source_counts": {k: int(v) for k, v in
                                 scoped["value_source"].value_counts().items()},
         "assigned_values_are_not_measurements": True,
@@ -793,15 +886,9 @@ def sidecar_facts(result, cfg, which="list"):
             "both control readings and in neither testosterone reading; 'not detected' may "
             "mean below the detection limit. p_value / adj_p_value are blank on those rows "
             "on purpose (DECISIONS_LOG D20)."),
-        "recovered_rule": cfg["recovered_rule"],
+        "recovered_rule": rule,
         "recovered_rule_steps": [{"step": s, "n": n} for s, n in result.steps],
-        "recovered_rule_note": (
-            "The recovered-protein rule was WIDENED by the user's decision: Dr. Walker asked "
-            "for proteins with 'no problems', but the strict rule (all four readings seen, "
-            "n_imputed == 0) admits nothing, so partial-tier proteins with |log2FC| >= the "
-            "cutoff are added although one replicate was imputed by the pipeline. They rest "
-            "on one biological replicate with an imputed technical replicate. Real limma "
-            "p_value / adj_p_value are kept; see the manifest's n_imputed and reason columns."),
+        "recovered_rule_note": rule_note,
         # FRZB (a measured addition) and the rule-recovered proteins are reported
         # separately so neither count silently includes the other.
         "measured_additions_n_imputed": {
@@ -809,8 +896,15 @@ def sidecar_facts(result, cfg, which="list"):
             man.loc[is_listed_measured].set_index(IPA_ID_COL)["n_imputed"].items()},
         "recovered_n_imputed_counts": _n_imputed_counts(
             man.loc[is_measured & ~is_listed_measured]),
-        "decision": "DECISIONS_LOG D20",
+        "decision": "DECISIONS_LOG D20; D24 (Dr. Walker's final answers)",
     }
+    if which == "without_assigned":
+        facts["without_assigned_note"] = (
+            "This file is ipa_input_walker.csv minus its value_source=assigned rows (the "
+            f"{int(result.counts['assigned'])} control-only proteins whose "
+            f"{assigned_log2fc(cfg)} is assigned, not measured). It exists for the IPA sensitivity run 'without the "
+            "assigned values' (D24); every row is a measured row, unchanged.")
+    return facts
 
 
 # ---------------------------------------------------------------------------
@@ -833,6 +927,7 @@ def main(argv=None):
     print(f"core {c['core']} -> +{c['measured']} measured -> +{c['assigned']} assigned "
           f"(value_source=assigned, NOT measured) -> +{c['recovered']} recovered "
           f"= {c['total']} rows")
+    print(f"without the {c['assigned']} assigned rows: {c['without_assigned']} rows")
     print("recovered-protein rule, rows surviving each step:")
     for label, n in result.steps:
         print(f"  {n:>5}  {label}")
@@ -843,13 +938,19 @@ def main(argv=None):
         from proteomics_de.provenance import sidecar
 
         for p in result.paths:
-            which = "manifest" if p.name == WALKER_MANIFEST_FILENAME else "list"
+            if p.name == WALKER_MANIFEST_FILENAME:
+                which = "manifest"
+            elif p.name.startswith("ipa_input_walker_without_assigned"):
+                which = "without_assigned"
+            else:
+                which = "list"
             print(f"Saved {sidecar(p, **sidecar_facts(result, cfg, which))}")
     return 0
 
 
 __all__ = [
     "WALKER_CSV_FILENAME", "WALKER_TXT_FILENAME", "WALKER_MANIFEST_FILENAME",
+    "WALKER_NOASSIGNED_CSV_FILENAME", "WALKER_NOASSIGNED_TXT_FILENAME",
     "VALUE_MEASURED", "VALUE_ASSIGNED", "VALUE_SOURCES",
     "TIER_CORE", "TIER_PARTIAL", "TIER_QUALITATIVE",
     "WALKER_COLS", "MANIFEST_COLS", "COUNT_KEYS", "BYTE_FROZEN_INPUTS",
@@ -857,7 +958,8 @@ __all__ = [
     "load_config", "assigned_log2fc", "assigned_fold_change",
     "build_measured_rows", "verify_control_only", "build_assigned_rows",
     "build_recovered_pool", "apply_recovered_rule", "build_recovered_rows",
-    "build_walker_frame", "check_walker_frame",
+    "build_walker_frame", "check_walker_frame", "drop_assigned",
+    "assert_without_assigned_is_the_list_minus_assigned",
     "write_walker", "write_manifest",
     "assert_frozen_inputs_untouched",
     "compute_walker", "build_walker_from_results", "sidecar_facts", "main",

@@ -245,7 +245,7 @@ SECTION6 = [
 # proteomics_de/.
 EXPECTED_EMPTY = {
     "results/ipa_input_significant.csv":
-        "expected -- 0/1938 proteins pass FDR<0.05 at n=2 technical replicates "
+        "expected -- 0/1938 proteins pass FDR<0.05 at n=2 per group (low power) "
         "(DECISIONS_LOG D2)",
     "results/enrichment/ora_up.csv":
         "expected -- 0 GO/KEGG/Reactome terms survive the honest detected-proteome "
@@ -253,13 +253,13 @@ EXPECTED_EMPTY = {
     "results/enrichment/ora_down.csv":
         "expected -- 0 GO/KEGG/Reactome terms survive the honest detected-proteome "
         "background (DECISIONS_LOG D6)",
-    # D21: the same null on Dr. Walker's 968-protein list and on the same-version
+    # D21: the same null on Dr. Walker's 721-protein list and on the same-version
     # re-run of the 715.
     "results/enrichment_walker/ora_up.csv":
-        "expected -- 0 GO/KEGG/Reactome terms survive on the 968-protein walker list "
+        "expected -- 0 GO/KEGG/Reactome terms survive on the 721-protein walker list "
         "either (DECISIONS_LOG D21)",
     "results/enrichment_walker/ora_down.csv":
-        "expected -- 0 GO/KEGG/Reactome terms survive on the 968-protein walker list "
+        "expected -- 0 GO/KEGG/Reactome terms survive on the 721-protein walker list "
         "either (DECISIONS_LOG D21)",
     "results/enrichment_walker/control_715_same_version/ora_up.csv":
         "expected -- 0 terms survive on the 715 list re-run at today's database "

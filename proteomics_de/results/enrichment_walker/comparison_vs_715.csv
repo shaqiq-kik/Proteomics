@@ -1,67 +1,48 @@
-direction,source,term_id,term_name,committed715_adj_p,committed715_hypergeom_p,committed715_rank,committed715_intersection_size,control715_adj_p,control715_hypergeom_p,control715_rank,control715_intersection_size,walker968_adj_p,walker968_hypergeom_p,walker968_rank,walker968_intersection_size,sig_flag_vs_committed,top20_flag_vs_committed,sig_flag_vs_control,top20_flag_vs_control
-UP,REAC,REAC:R-MMU-72702,Ribosomal scanning and start codon recognition,1,0.0003441942817,3,21,1,0.0003441942817,3,21,1,3.046493501e-05,1,27,,kept,,kept
-UP,REAC,REAC:R-MMU-72649,Translation initiation complex formation,1,0.0003441942817,2,21,1,0.0003441942817,2,21,1,9.884524715e-05,2,26,,kept,,kept
-UP,REAC,REAC:R-MMU-72662,"Activation of the mRNA upon binding of the cap-binding complex and eIFs, and subsequent binding to 43S",1,0.0004688956226,4,21,1,0.0004688956226,4,21,1,0.0001483346492,3,26,,kept,,kept
-UP,REAC,REAC:R-MMU-72695,"Formation of the ternary complex, and subsequently, the 43S complex",1,0.002972726615,16,17,1,0.002972726615,16,17,1,0.0005117071051,4,22,,kept,,kept
-UP,REAC,REAC:R-MMU-204005,COPII-mediated vesicle transport,1,0.004200713019,21,11,1,0.004200713019,21,11,1,0.001013047908,5,14,,gained,,gained
-UP,GO:CC,GO:0030127,COPII vesicle coat,1,0.0002718845751,1,5,1,0.0002718845751,1,5,1,0.001040369617,6,5,,kept,,kept
-UP,GO:CC,GO:0071013,catalytic step 2 spliceosome,1,0.0004962828837,5,16,1,0.0004962828837,5,16,1,0.001186560704,7,18,,kept,,kept
-UP,GO:BP,GO:0006099,tricarboxylic acid cycle,1,0.003334669144,19,9,1,0.003334669144,19,9,1,0.00136572745,8,11,,kept,,kept
-UP,GO:CC,GO:0015935,small ribosomal subunit,1,0.00316788731,18,13,1,0.00316788731,18,13,1,0.001443559088,9,16,,kept,,kept
-UP,REAC,REAC:R-MMU-72706,GTP hydrolysis and joining of the 60S ribosomal subunit,1,0.009911817943,54,25,1,0.009911817943,54,25,1,0.001888784465,10,33,,gained,,gained
-UP,GO:CC,GO:0022627,cytosolic small ribosomal subunit,1,0.005175872001,26,12,1,0.005175872001,26,12,1,0.001975521559,11,15,,gained,,gained
-UP,GO:BP,GO:0006900,vesicle budding from membrane,1,0.02976766039,172,9,1,0.02976766039,172,9,1,0.002309020839,12,13,,gained,,gained
-UP,GO:MF,GO:0003697,single-stranded DNA binding,1,0.005265137748,28,9,1,0.005265137748,28,9,1,0.002509376355,13,11,,gained,,gained
-UP,REAC,REAC:R-MMU-156827,L13a-mediated translational silencing of Ceruloplasmin expression,1,0.008372940242,47,25,1,0.008372940242,47,25,1,0.003131314999,14,32,,gained,,gained
-UP,GO:BP,GO:0006637,acyl-CoA metabolic process,1,0.004749530473,24,10,1,0.004749530473,24,10,1,0.003155801117,15,12,,gained,,gained
-UP,REAC,REAC:R-MMU-72766,Translation,1,0.007462032719,45,30,1,0.007462032719,45,30,1,0.003697255204,16,38,,gained,,gained
-UP,REAC,REAC:R-MMU-72613,Eukaryotic Translation Initiation,1,0.01595235722,79,25,1,0.01595235722,79,25,1,0.003769680112,17,33,,gained,,gained
-UP,REAC,REAC:R-MMU-72737,Cap-dependent Translation Initiation,1,0.01595235722,80,25,1,0.01595235722,80,25,1,0.003769680112,18,33,,gained,,gained
-UP,GO:BP,GO:0022613,ribonucleoprotein complex biogenesis,1,0.001539213461,12,34,1,0.001539213461,12,34,1,0.00405915868,19,40,,kept,,kept
-UP,GO:MF,GO:0070402,NADPH binding,1,0.001409278043,11,4,1,0.001409278043,11,4,1,0.00411911814,20,4,,kept,,kept
-UP,GO:MF,GO:0031072,heat shock protein binding,1,0.001019011202,7,13,1,0.001019011202,7,13,1,0.004174033549,22,14,,lost,,lost
-UP,GO:CC,GO:0012507,ER to Golgi transport vesicle membrane,1,0.001369492675,9,5,1,0.001369492675,9,5,1,0.004929981949,23,5,,lost,,lost
-UP,REAC,REAC:R-MMU-4085001,Sialic acid metabolism,1,0.001369492675,10,5,1,0.001369492675,10,5,1,0.004929981949,25,5,,lost,,lost
-UP,REAC,REAC:0000000,REACTOME root term,1,0.003039093285,17,335,1,0.003039093285,17,335,1,0.006111792453,29,430,,lost,,lost
-UP,GO:BP,GO:0000338,protein deneddylation,1,0.002568402515,15,6,1,0.002568402515,15,6,1,0.01067334338,33,6,,lost,,lost
-UP,GO:BP,GO:0000956,nuclear-transcribed mRNA catabolic process,1,0.001106955828,8,12,1,0.001106955828,8,12,1,0.01175490275,37,12,,lost,,lost
-UP,GO:MF,GO:0051536,iron-sulfur cluster binding,1,0.002007382743,13,9,1,0.002007382743,13,9,1,0.01341475583,43,9,,lost,,lost
-UP,GO:MF,GO:0051540,metal cluster binding,1,0.002007382743,14,9,1,0.002007382743,14,9,1,0.01341475583,44,9,,lost,,lost
-UP,KEGG,KEGG:01100,Metabolic pathways,1,0.0005877997071,6,99,1,0.0005877997071,6,99,1,0.01702808422,86,115,,lost,,lost
-UP,GO:CC,GO:0008180,COP9 signalosome,1,0.003399583031,20,8,1,0.003399583031,20,8,1,0.01863252941,89,8,,lost,,lost
-DOWN,GO:BP,GO:0048511,rhythmic process,1,0.02459327449,173,8,1,0.02459327449,173,8,1,0.0001379842228,1,15,,gained,,gained
-DOWN,GO:BP,GO:0046660,female sex differentiation,1,0.02118322446,152,6,1,0.02118322446,152,6,1,0.0002127974906,2,11,,gained,,gained
-DOWN,GO:BP,GO:0030177,positive regulation of Wnt signaling pathway,1,0.02729717288,184,5,1,0.02729717288,184,5,1,0.0005739025925,3,9,,gained,,gained
-DOWN,GO:BP,GO:0016311,dephosphorylation,0.7029801001,1.4059602e-05,1,11,0.7029801001,1.4059602e-05,1,11,1,0.0005997912477,4,11,,kept,,kept
-DOWN,GO:BP,GO:0042752,regulation of circadian rhythm,1,0.0002912277816,2,7,1,0.0002912277816,2,7,1,0.0006043324928,5,8,,kept,,kept
-DOWN,GO:BP,GO:0051783,regulation of nuclear division,1,0.0605522706,399,4,1,0.0605522706,399,4,1,0.0009358604634,6,8,,gained,,gained
-DOWN,GO:BP,GO:0001541,ovarian follicle development,1,0.02743186423,191,4,1,0.02743186423,191,4,1,0.0009480627433,7,7,,gained,,gained
-DOWN,KEGG,KEGG:05323,Rheumatoid arthritis,1,0.002085467089,10,7,1,0.002085467089,10,7,1,0.001210190246,8,9,,kept,,kept
-DOWN,GO:BP,GO:0009189,deoxyribonucleoside diphosphate biosynthetic process,1,0.2226465838,1863,1,1,0.2226465838,1863,1,1,0.001744360139,9,3,,gained,,gained
-DOWN,GO:BP,GO:0035860,glial cell-derived neurotrophic factor receptor signaling pathway,1,0.2226465838,1918,1,1,0.2226465838,1918,1,1,0.001744360139,10,3,,gained,,gained
-DOWN,GO:BP,GO:0038134,ERBB2-EGFR signaling pathway,,,,,,,,,1,0.001744360139,11,3,,gained,,gained
-DOWN,REAC,REAC:R-MMU-1250196,SHC1 events in ERBB2 signaling,,,,,,,,,1,0.001744360139,12,3,,gained,,gained
-DOWN,REAC,REAC:R-MMU-212718,EGFR interacts with phospholipase C-gamma,,,,,,,,,1,0.001744360139,13,3,,gained,,gained
-DOWN,REAC,REAC:R-MMU-5423646,Aflatoxin activation and detoxification,1,0.0183176572,146,2,1,0.0183176572,146,2,1,0.001744360139,14,3,,gained,,gained
-DOWN,REAC,REAC:R-MMU-8847993,ERBB2 Activates PTK6 Signaling,,,,,,,,,1,0.001744360139,15,3,,gained,,gained
-DOWN,GO:BP,GO:0048145,regulation of fibroblast proliferation,1,0.02252369884,164,5,1,0.02252369884,164,5,1,0.00202629523,16,8,,gained,,gained
-DOWN,GO:BP,GO:0070050,neuron cellular homeostasis,1,0.1516754386,1199,3,1,0.1516754386,1199,3,1,0.002310552809,17,7,,gained,,gained
-DOWN,GO:BP,GO:0007623,circadian rhythm,1,0.003450379733,16,7,1,0.003450379733,16,7,1,0.002321338607,18,9,,kept,,kept
-DOWN,GO:BP,GO:0001764,neuron migration,1,0.006452896737,75,8,1,0.006452896737,75,8,1,0.002436952965,19,11,,gained,,gained
-DOWN,GO:CC,GO:0090443,FAR/SIN/STRIPAK complex,1,0.07792252256,514,2,1,0.07792252256,514,2,1,0.002562851556,20,4,,gained,,gained
-DOWN,GO:MF,GO:0004722,protein serine/threonine phosphatase activity,1,0.002085467089,9,7,1,0.002085467089,9,7,1,0.0052887107,28,8,,lost,,lost
-DOWN,GO:BP,GO:0061158,3'-UTR-mediated mRNA destabilization,1,0.001934375671,8,3,1,0.001934375671,8,3,1,0.006351278384,35,3,,lost,,lost
-DOWN,GO:MF,GO:0004723,calcium-dependent protein serine/threonine phosphatase activity,1,0.003746207089,19,6,1,0.003746207089,19,6,1,0.006680120786,39,7,,lost,,lost
-DOWN,GO:MF,GO:0140789,histone phosphatase activity,1,0.001899979824,7,8,1,0.001899979824,7,8,1,0.006860724173,50,9,,lost,,lost
-DOWN,GO:BP,GO:0006470,protein dephosphorylation,1,0.0004992003556,3,8,1,0.0004992003556,3,8,1,0.006980340918,51,8,,lost,,lost
-DOWN,KEGG,KEGG:04390,Hippo signaling pathway,1,0.0004992003556,4,8,1,0.0004992003556,4,8,1,0.006980340918,53,8,,lost,,lost
-DOWN,GO:CC,GO:0005832,chaperonin-containing T-complex,1,0.002202316533,11,4,1,0.002202316533,11,4,1,0.009807533637,69,4,,lost,,lost
-DOWN,KEGG,KEGG:04062,Chemokine signaling pathway,1,0.002967385098,15,8,1,0.002967385098,15,8,1,0.01081641167,84,9,,lost,,lost
-DOWN,GO:BP,GO:0098771,inorganic ion homeostasis,1,0.001323715258,5,11,1,0.001323715258,5,11,1,0.01125552399,86,12,,lost,,lost
-DOWN,GO:MF,GO:0004721,phosphoprotein phosphatase activity,1,0.002456158817,14,9,1,0.002456158817,14,9,1,0.01204045914,92,10,,lost,,lost
-DOWN,GO:CC,GO:0101031,protein folding chaperone complex,1,0.001583452694,6,7,1,0.001583452694,6,7,1,0.0153547455,157,7,,lost,,lost
-DOWN,GO:BP,GO:0007006,mitochondrial membrane organization,1,0.0037162431,17,4,1,0.0037162431,17,4,1,0.01599723707,160,4,,lost,,lost
-DOWN,GO:BP,GO:2001222,regulation of neuron migration,1,0.0037162431,18,4,1,0.0037162431,18,4,1,0.01599723707,169,4,,lost,,lost
-DOWN,GO:BP,GO:0006874,intracellular calcium ion homeostasis,1,0.003746207089,20,6,1,0.003746207089,20,6,1,0.02619225397,208,6,,lost,,lost
-DOWN,KEGG,KEGG:04060,Cytokine-cytokine receptor interaction,1,0.002387233881,12,8,1,0.002387233881,12,8,1,0.02672227983,226,8,,lost,,lost
-DOWN,GO:BP,GO:0048878,chemical homeostasis,1,0.002432441526,13,20,1,0.002432441526,13,20,1,0.05078083004,389,22,,lost,,lost
+direction,source,term_id,term_name,committed715_adj_p,committed715_hypergeom_p,committed715_rank,committed715_intersection_size,control715_adj_p,control715_hypergeom_p,control715_rank,control715_intersection_size,walker721_adj_p,walker721_hypergeom_p,walker721_rank,walker721_intersection_size,sig_flag_vs_committed,top20_flag_vs_committed,sig_flag_vs_control,top20_flag_vs_control
+UP,GO:CC,GO:0030127,COPII vesicle coat,1,0.0002718845751,1,5,1,0.0002718845751,1,5,1,0.0002747831313,1,5,,kept,,kept
+UP,REAC,REAC:R-MMU-72649,Translation initiation complex formation,1,0.0003441942817,2,21,1,0.0003441942817,2,21,1,0.0003548933988,2,21,,kept,,kept
+UP,REAC,REAC:R-MMU-72702,Ribosomal scanning and start codon recognition,1,0.0003441942817,3,21,1,0.0003441942817,3,21,1,0.0003548933988,3,21,,kept,,kept
+UP,REAC,REAC:R-MMU-72662,"Activation of the mRNA upon binding of the cap-binding complex and eIFs, and subsequent binding to 43S",1,0.0004688956226,4,21,1,0.0004688956226,4,21,1,0.0004832474464,4,21,,kept,,kept
+UP,GO:CC,GO:0071013,catalytic step 2 spliceosome,1,0.0004962828837,5,16,1,0.0004962828837,5,16,1,0.0005088635554,5,16,,kept,,kept
+UP,KEGG,KEGG:01100,Metabolic pathways,1,0.0005877997071,6,99,1,0.0005877997071,6,99,1,0.0006379203092,6,99,,kept,,kept
+UP,GO:MF,GO:0031072,heat shock protein binding,1,0.001019011202,7,13,1,0.001019011202,7,13,1,0.001040593437,7,13,,kept,,kept
+UP,GO:BP,GO:0000956,nuclear-transcribed mRNA catabolic process,1,0.001106955828,8,12,1,0.001106955828,8,12,1,0.001129031567,8,12,,kept,,kept
+UP,GO:CC,GO:0012507,ER to Golgi transport vesicle membrane,1,0.001369492675,9,5,1,0.001369492675,9,5,1,0.001383527412,9,5,,kept,,kept
+UP,REAC,REAC:R-MMU-4085001,Sialic acid metabolism,1,0.001369492675,10,5,1,0.001369492675,10,5,1,0.001383527412,10,5,,kept,,kept
+UP,GO:MF,GO:0070402,NADPH binding,1,0.001409278043,11,4,1,0.001409278043,11,4,1,0.001421271898,11,4,,kept,,kept
+UP,GO:BP,GO:0022613,ribonucleoprotein complex biogenesis,1,0.001539213461,12,34,1,0.001539213461,12,34,1,0.00159942602,12,34,,kept,,kept
+UP,GO:MF,GO:0051536,iron-sulfur cluster binding,1,0.002007382743,13,9,1,0.002007382743,13,9,1,0.002039042786,13,9,,kept,,kept
+UP,GO:MF,GO:0051540,metal cluster binding,1,0.002007382743,14,9,1,0.002007382743,14,9,1,0.002039042786,14,9,,kept,,kept
+UP,GO:BP,GO:0000338,protein deneddylation,1,0.002568402515,15,6,1,0.002568402515,15,6,1,0.0025980666,15,6,,kept,,kept
+UP,REAC,REAC:R-MMU-72695,"Formation of the ternary complex, and subsequently, the 43S complex",1,0.002972726615,16,17,1,0.002972726615,16,17,1,0.003043503868,16,17,,kept,,kept
+UP,GO:CC,GO:0015935,small ribosomal subunit,1,0.00316788731,18,13,1,0.00316788731,18,13,1,0.003230694282,17,13,,kept,,kept
+UP,GO:BP,GO:0006099,tricarboxylic acid cycle,1,0.003334669144,19,9,1,0.003334669144,19,9,1,0.00338581229,18,9,,kept,,kept
+UP,GO:CC,GO:0008180,COP9 signalosome,1,0.003399583031,20,8,1,0.003399583031,20,8,1,0.00344747507,19,8,,kept,,kept
+UP,REAC,REAC:0000000,REACTOME root term,1,0.003039093285,17,335,1,0.003039093285,17,335,1,0.003799430515,20,335,,kept,,kept
+DOWN,GO:BP,GO:0016311,dephosphorylation,0.7029801001,1.4059602e-05,1,11,0.7029801001,1.4059602e-05,1,11,0.8972116018,1.794423204e-05,1,11,,kept,,kept
+DOWN,GO:BP,GO:0042752,regulation of circadian rhythm,1,0.0002912277816,2,7,1,0.0002912277816,2,7,1,0.000341080174,2,7,,kept,,kept
+DOWN,GO:BP,GO:0006470,protein dephosphorylation,1,0.0004992003556,3,8,1,0.0004992003556,3,8,1,0.0005930035486,3,8,,kept,,kept
+DOWN,KEGG,KEGG:04390,Hippo signaling pathway,1,0.0004992003556,4,8,1,0.0004992003556,4,8,1,0.0005930035486,4,8,,kept,,kept
+DOWN,GO:BP,GO:0046660,female sex differentiation,1,0.02118322446,152,6,1,0.02118322446,152,6,1,0.001371637305,5,8,,gained,,gained
+DOWN,GO:BP,GO:0098771,inorganic ion homeostasis,1,0.001323715258,5,11,1,0.001323715258,5,11,1,0.001630504643,6,11,,kept,,kept
+DOWN,GO:CC,GO:0101031,protein folding chaperone complex,1,0.001583452694,6,7,1,0.001583452694,6,7,1,0.001837221684,7,7,,kept,,kept
+DOWN,KEGG,KEGG:05210,Colorectal cancer,1,0.03266961165,215,5,1,0.03266961165,215,5,1,0.001837221684,8,7,,gained,,gained
+DOWN,GO:BP,GO:0001764,neuron migration,1,0.006452896737,75,8,1,0.006452896737,75,8,1,0.001953957108,9,9,,gained,,gained
+DOWN,GO:BP,GO:0061158,3'-UTR-mediated mRNA destabilization,1,0.001934375671,8,3,1,0.001934375671,8,3,1,0.00208360273,10,3,,kept,,kept
+DOWN,GO:MF,GO:0140789,histone phosphatase activity,1,0.001899979824,7,8,1,0.001899979824,7,8,1,0.002235737797,11,8,,kept,,kept
+DOWN,KEGG,KEGG:05212,Pancreatic cancer,1,0.01155721373,91,5,1,0.01155721373,91,5,1,0.002343965719,12,6,,gained,,gained
+DOWN,GO:MF,GO:0004722,protein serine/threonine phosphatase activity,1,0.002085467089,9,7,1,0.002085467089,9,7,1,0.002415203834,13,7,,kept,,kept
+DOWN,KEGG,KEGG:05323,Rheumatoid arthritis,1,0.002085467089,10,7,1,0.002085467089,10,7,1,0.002415203834,14,7,,kept,,kept
+DOWN,GO:CC,GO:0005832,chaperonin-containing T-complex,1,0.002202316533,11,4,1,0.002202316533,11,4,1,0.002420734621,15,4,,kept,,kept
+DOWN,GO:BP,GO:0051128,regulation of cellular component organization,1,0.004592234726,40,48,1,0.004592234726,40,48,1,0.002696341997,16,50,,gained,,gained
+DOWN,KEGG,KEGG:04060,Cytokine-cytokine receptor interaction,1,0.002387233881,12,8,1,0.002387233881,12,8,1,0.002803827414,17,8,,kept,,kept
+DOWN,GO:BP,GO:0048511,rhythmic process,1,0.02459327449,173,8,1,0.02459327449,173,8,1,0.002870763964,18,10,,gained,,gained
+DOWN,GO:MF,GO:0004721,phosphoprotein phosphatase activity,1,0.002456158817,14,9,1,0.002456158817,14,9,1,0.002925355322,19,9,,kept,,kept
+DOWN,GO:BP,GO:0140352,export from cell,1,0.005754459256,45,17,1,0.005754459256,45,17,1,0.003147497354,20,18,,gained,,gained
+DOWN,GO:BP,GO:0048878,chemical homeostasis,1,0.002432441526,13,20,1,0.002432441526,13,20,1,0.003291846099,23,20,,lost,,lost
+DOWN,KEGG,KEGG:04062,Chemokine signaling pathway,1,0.002967385098,15,8,1,0.002967385098,15,8,1,0.003478699684,24,8,,lost,,lost
+DOWN,GO:BP,GO:0007623,circadian rhythm,1,0.003450379733,16,7,1,0.003450379733,16,7,1,0.003981192438,27,7,,lost,,lost
+DOWN,GO:BP,GO:0007006,mitochondrial membrane organization,1,0.0037162431,17,4,1,0.0037162431,17,4,1,0.004077803028,28,4,,lost,,lost
+DOWN,GO:BP,GO:2001222,regulation of neuron migration,1,0.0037162431,18,4,1,0.0037162431,18,4,1,0.004077803028,30,4,,lost,,lost
+DOWN,GO:MF,GO:0004723,calcium-dependent protein serine/threonine phosphatase activity,1,0.003746207089,19,6,1,0.003746207089,19,6,1,0.004254045346,31,6,,lost,,lost
+DOWN,GO:BP,GO:0006874,intracellular calcium ion homeostasis,1,0.003746207089,20,6,1,0.003746207089,20,6,1,0.004254045346,32,6,,lost,,lost

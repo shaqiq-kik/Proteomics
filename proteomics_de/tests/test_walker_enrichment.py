@@ -1,5 +1,5 @@
 """Contract for ``enrich/walker_enrichment.py`` (DECISIONS_LOG D21): ORA and STRING
-over Dr. Walker's 968-protein list.
+over Dr. Walker's 721-protein list (D24: the first 968-protein version was superseded).
 
 Offline by default. The stage REPLAYS the committed ``raw/`` API cache; every test
 that runs it first makes ``requests.get/post`` raise, so a network call is a test
@@ -11,7 +11,7 @@ What these tests exist to catch:
 1. **The 715 results being disturbed.** The walker analysis is additive. The old
    ``results/enrichment/`` files must be byte-identical before and after a run, and
    the new code must reproduce the old outputs when fed the old inputs (the
-   equivalence test): if it does, differences between the 715 and the 968 runs are
+   equivalence test): if it does, differences between the 715 and the 721 runs are
    the list, not the code.
 2. **A cache that answers a different question.** Replay must refuse a cached
    response whose request fingerprint differs, and must never go live by itself.
@@ -105,15 +105,16 @@ def test_config_section_is_load_bearing_and_names_the_six_proteins():
     assert cfg["comparison"]["top_n"] == 20
 
 
-def test_walker_list_is_the_968_and_its_up_down_split_is_frozen(walker_df, frozen_counts):
-    assert len(walker_df) == frozen_counts["n_ipa_walker"] == 968
+def test_walker_list_is_the_721_and_its_up_down_split_is_frozen(walker_df, frozen_counts):
+    assert len(walker_df) == frozen_counts["n_ipa_walker"] == 721
     up, down, meta = we.build_queries(walker_df)
     assert (len(up), len(down)) == (frozen_counts["n_walker_ora_up"],
-                                    frozen_counts["n_walker_ora_down"])
-    assert len(up) + len(down) == 968
-    # UP = core UP + FRZB + 151 recovered UP ; DOWN = core DOWN + 5 assigned + 96 recovered DOWN
-    assert len(up) == frozen_counts["n_up"] + frozen_counts["n_walker_measured_added"] + 151
-    assert len(down) == frozen_counts["n_down"] + frozen_counts["n_walker_assigned"] + 96
+                                    frozen_counts["n_walker_ora_down"]) == (510, 211)
+    assert len(up) + len(down) == 721
+    # UP = core UP + FRZB ; DOWN = core DOWN + the 5 assigned (no recovered protein since D24)
+    assert frozen_counts["n_walker_recovered"] == 0
+    assert len(up) == frozen_counts["n_up"] + frozen_counts["n_walker_measured_added"]
+    assert len(down) == frozen_counts["n_down"] + frozen_counts["n_walker_assigned"]
     assert meta["up_n"] == len(up) and meta["down_n"] == len(down)
     assert set(up).isdisjoint(down)
 
@@ -126,14 +127,29 @@ def test_the_five_assigned_proteins_are_in_the_down_query(walker_df):
     assert {"Egf", "Ereg", "Efna4", "Tyro3", "Mfap4"} <= set(down)
 
 
-def test_committed_gprofiler_responses_carry_the_968_queries(walker_df):
-    """The cached responses must have been asked about THIS list, not the 715."""
+def test_committed_gprofiler_responses_carry_the_721_queries(walker_df):
+    """The cached responses must have been asked about THIS list, not the 715 or the old 968."""
     up, down, _ = we.build_queries(walker_df)
     for d, q in (("up", up), ("down", down)):
         resp = json.loads((NEW / "raw" / f"gprofiler_{d}.json").read_text())
         assert resp["meta"]["query_metadata"]["queries"]["query_1"] == q
         assert resp["meta"]["query_metadata"]["domain_scope"] == "custom"
         assert resp["meta"]["query_metadata"]["significance_threshold_method"] == "g_SCS"
+
+
+def test_the_cached_string_response_answers_exactly_the_721_accessions(walker_df):
+    """No response of the superseded 968 run may be left in the cache (it would be stale)."""
+    ids = json.loads((NEW / "raw" / "string_get_ids.json").read_text())
+    assert {r["queryItem"] for r in ids} <= set(walker_df[we.ACC_COL])
+    manifest = json.loads((NEW / "raw" / we.MANIFEST_NAME).read_text())
+    assert set(manifest) == {
+        "gprofiler_up.json", "gprofiler_up_all.json.gz", "gprofiler_up_all_evidence.json.gz",
+        "gprofiler_down.json", "gprofiler_down_all.json.gz", "gprofiler_down_all_evidence.json.gz",
+        "string_get_ids.json", "string_network.tsv", "string_version.json"}
+    up = json.loads((NEW / "raw" / "gprofiler_up.json").read_text())
+    down = json.loads((NEW / "raw" / "gprofiler_down.json").read_text())
+    assert len(up["meta"]["query_metadata"]["queries"]["query_1"]) == 510
+    assert len(down["meta"]["query_metadata"]["queries"]["query_1"]) == 211
 
 
 # --------------------------------------------------------------------------
@@ -155,7 +171,7 @@ def test_a_query_outside_the_background_is_refused_not_absorbed(walker_df):
         we.assert_queries_in_background(up + ["NotAGeneInTheUniverse"], down, background)
 
 
-def test_all_968_accessions_are_in_the_ipa_reference_set(walker_df):
+def test_all_721_accessions_are_in_the_ipa_reference_set(walker_df):
     ref = (RESULTS / "ipa_background_measured.txt").read_text().splitlines()[1:]
     assert set(walker_df[we.ACC_COL]) <= set(ref)
     assert len(ref) == 2552
@@ -166,7 +182,7 @@ def test_all_968_accessions_are_in_the_ipa_reference_set(walker_df):
 # --------------------------------------------------------------------------
 def test_ora_outputs_record_the_list_the_versions_and_the_unmapped_symbols(walker_df, frozen_counts):
     meta = json.loads((NEW / "ora_meta.json").read_text())
-    assert meta["list"] == "walker968"
+    assert meta["list"] == "walker721"
     assert meta["gprofiler_version"]
     assert meta["domain_scope"] == "custom"
     assert meta["background_extended"] is False and meta["n_query_not_in_background"] == 0
@@ -185,12 +201,12 @@ def test_string_outputs_match_the_frozen_counts(walker_df, frozen_counts):
     meta = json.loads((NEW / "string_meta.json").read_text())
     nodes = pd.read_csv(NEW / "string_node_metrics.csv")
     edges = pd.read_csv(NEW / "string_edges.tsv", sep="\t")
-    assert meta["n_seeds"] == 968 and meta["species"] == 10090
+    assert meta["n_seeds"] == 721 and meta["species"] == 10090
     assert meta["string_version"] and meta["string_stable_address"]
     assert meta["n_mapped"] == frozen_counts["n_walker_string_mapped"] == len(nodes)
     assert meta["n_nodes_in_network"] == frozen_counts["n_walker_string_nodes"] == len(nodes)
     assert meta["n_edges"] == frozen_counts["n_walker_string_edges"] == len(edges)
-    assert meta["n_mapped"] + meta["n_unmapped"] == 968
+    assert meta["n_mapped"] + meta["n_unmapped"] == 721
     # nodes are a subset of the list; direction and tier agree with the list
     lst = walker_df.set_index(we.ACC_COL)
     assert set(nodes["accession"]) <= set(lst.index)
@@ -378,7 +394,7 @@ def comparison():
 
 def test_comparison_schema(comparison, frozen_counts):
     cols = ["direction", "source", "term_id", "term_name"]
-    for run in ("committed715", "control715", "walker968"):
+    for run in ("committed715", "control715", "walker721"):
         cols += [f"{run}_adj_p", f"{run}_hypergeom_p", f"{run}_rank",
                  f"{run}_intersection_size"]
     cols += ["sig_flag_vs_committed", "top20_flag_vs_committed",
@@ -389,7 +405,7 @@ def test_comparison_schema(comparison, frozen_counts):
     assert not comparison.duplicated(["direction", "term_id"]).any()
     for c in cols[-4:]:
         assert set(comparison[c].fillna("")) <= FLAGS
-    assert ((comparison["walker968_adj_p"].dropna() >= 0) & (comparison["walker968_adj_p"].dropna() <= 1)).all()
+    assert ((comparison["walker721_adj_p"].dropna() >= 0) & (comparison["walker721_adj_p"].dropna() <= 1)).all()
 
 
 def test_comparison_flags_follow_the_ranks(comparison):
@@ -397,7 +413,7 @@ def test_comparison_flags_follow_the_ranks(comparison):
     for tag, run in (("committed", "committed715"), ("control", "control715")):
         for _, r in comparison.iterrows():
             a = pd.notna(r[f"{run}_rank"]) and r[f"{run}_rank"] <= top
-            b = pd.notna(r["walker968_rank"]) and r["walker968_rank"] <= top
+            b = pd.notna(r["walker721_rank"]) and r["walker721_rank"] <= top
             expected = we._flag(bool(a), bool(b))
             got = r[f"top{top}_flag_vs_{tag}"]
             assert (got if isinstance(got, str) else "") == expected, (r["term_id"], tag)
@@ -405,9 +421,9 @@ def test_comparison_flags_follow_the_ranks(comparison):
 
 def test_comparison_lists_a_term_only_if_it_is_a_lead_in_some_run(comparison):
     for _, r in comparison.iterrows():
-        ranks = [r[f"{x}_rank"] for x in ("committed715", "control715", "walker968")
+        ranks = [r[f"{x}_rank"] for x in ("committed715", "control715", "walker721")
                  if pd.notna(r[f"{x}_rank"])]
-        assert (ranks and min(ranks) <= 20) or r["walker968_adj_p"] < 0.05
+        assert (ranks and min(ranks) <= 20) or r["walker721_adj_p"] < 0.05
 
 
 def test_comparison_ranks_agree_with_the_raw_responses(comparison):
@@ -423,8 +439,12 @@ def test_comparison_ranks_agree_with_the_raw_responses(comparison):
     assert allt["rank"].tolist() == list(range(1, len(allt) + 1))
 
 
-def test_twelve_of_the_top_twenty_down_leads_contain_an_assigned_protein():
-    """Why the DOWN leads are fragile: the README's headline caveat, recomputed from the cache."""
+def test_seven_of_the_top_twenty_down_leads_contain_an_assigned_protein(comparison):
+    """Why the DOWN leads are fragile: the README's headline caveat, recomputed from the cache.
+
+    (The first 968-protein run had 12 of 20; the 721 run has 7, and they are exactly the
+    terms the comparison flags as gained against the same-version control.)
+    """
     import gzip
 
     assigned = {"Egf", "Ereg", "Efna4", "Tyro3", "Mfap4"}
@@ -432,12 +452,52 @@ def test_twelve_of_the_top_twenty_down_leads_contain_an_assigned_protein():
     order = ora._query_order(resp)
     by_id = {t["native"]: t for t in resp["result"]}
     top = we.all_terms_table(NEW / "raw", "down").head(20)
-    n = 0
+    n, with_assigned = 0, set()
     for tid in top["term_id"]:
         genes = {g for g, e in zip(order, by_id[tid]["intersections"]) if e}
         n += bool(genes & assigned)
-    assert n == 12
+        if genes & assigned:
+            with_assigned.add(tid)
+    assert n == 7
     assert assigned <= set(order), "the five assigned proteins are in the mapped DOWN query"
+    down = comparison[comparison["direction"] == "DOWN"]
+    gained = set(down.loc[down["top20_flag_vs_control"] == "gained", "term_id"])
+    assert gained == with_assigned, "every gained DOWN lead contains an assigned protein, and vice versa"
+
+
+def test_leave_the_five_out_recomputation_reproduces_the_same_version_control():
+    """Validates the README's approximate leave-five-out ranks.
+
+    Removing the five assigned proteins from the 721 DOWN list leaves exactly the 715 control's
+    DOWN list, so the approximate recomputation (uncorrected hypergeometric p with the intersection
+    reduced by the assigned hits, query size by 5, background unchanged) must reproduce the
+    control run's own ranks of the seven assigned-containing leads. It does, to the rank.
+    """
+    import gzip
+
+    from scipy.stats import hypergeom
+
+    assigned = {"Egf", "Ereg", "Efna4", "Tyro3", "Mfap4"}
+    resp = json.loads(gzip.open(NEW / "raw" / "gprofiler_down_all_evidence.json.gz", "rt").read())
+    order = ora._query_order(resp)
+    n_assigned = len(assigned & set(order))
+    recs = []
+    for t in resp["result"]:
+        genes = {g for g, e in zip(order, t["intersections"]) if e}
+        k, K, M = t["intersection_size"] - len(genes & assigned), t["term_size"], t["effective_domain_size"]
+        n = t["query_size"] - n_assigned
+        recs.append((float(hypergeom.sf(k - 1, M, K, n)) if k > 0 else 1.0, t["native"], genes & assigned))
+    recs.sort(key=lambda r: (r[0], r[1]))
+    approx_rank = {tid: i + 1 for i, (_p, tid, _g) in enumerate(recs)}
+    control = we.all_terms_table(CONTROL / "raw", "down").set_index("term_id")
+    top = we.all_terms_table(NEW / "raw", "down").head(20)
+    checked = 0
+    for tid in top["term_id"]:
+        hit = next(g for _p, t, g in recs if t == tid)
+        if hit:
+            assert approx_rank[tid] == control.loc[tid, "rank"], tid
+            checked += 1
+    assert checked == 7
 
 
 def test_no_term_is_called_significant_when_none_passes(comparison):
@@ -459,7 +519,7 @@ def test_versions_are_recorded_and_the_drift_against_the_committed_run_is_stated
     control_ora = json.loads((CONTROL / "ora_meta.json").read_text())
     control_str = json.loads((CONTROL / "string_meta.json").read_text())
     assert sc["gprofiler_version_committed_715"] == committed_ora["gprofiler_version"]
-    assert sc["gprofiler_version_walker_968"] == walker_ora["gprofiler_version"]
+    assert sc["gprofiler_version_walker_721"] == walker_ora["gprofiler_version"]
     assert sc["same_gprofiler_version_as_committed"] == (
         committed_ora["gprofiler_version"] == walker_ora["gprofiler_version"])
     assert sc["same_string_version_as_committed"] == (
@@ -473,13 +533,13 @@ def test_versions_are_recorded_and_the_drift_against_the_committed_run_is_stated
 def test_string_comparison_counts_agree_with_the_meta_files():
     sc = json.loads((NEW / we.STRING_COMPARISON_NAME).read_text())
     for key, path in (("committed_715", OLD), ("control_715_same_version", CONTROL),
-                      ("walker_968", NEW)):
+                      ("walker_721", NEW)):
         m = json.loads((path / "string_meta.json").read_text())
         assert sc[key]["n_edges"] == m["n_edges"]
         assert sc[key]["n_nodes_in_network"] == m["n_nodes_in_network"]
     assert sc["core_core_edges_equal_control"] is True
     assert (sc["walker_edges_between_two_core_proteins"]
-            + sc["walker_edges_touching_an_added_protein"]) == sc["walker_968"]["n_edges"]
+            + sc["walker_edges_touching_an_added_protein"]) == sc["walker_721"]["n_edges"]
 
 
 def test_the_control_is_the_715_list_and_carries_no_assigned_rows():
@@ -527,11 +587,19 @@ def test_ipa_analysis_walker_is_outside_the_freeze_by_policy():
 def test_readme_states_the_list_and_the_caveats():
     text = (NEW / "README.md").read_text(encoding="utf-8")
     low = text.lower()
-    assert "968" in text and "ipa_input_walker" in text
-    assert "661" in text and "307" in text
+    assert "721" in text and "ipa_input_walker" in text
+    assert "510 UP / 211 DOWN" in text
+    # D24: the 968-protein numbers must not be carried over into the live README.
+    for stale in ("661", "937 ", "10,696", "618 UP", "12 of the 20", "66 terms"):
+        assert stale not in text, stale
+    assert "git history" in low and "D24" in text
     assert "assigned" in low and "not measurements" in low or "not a measurement" in low
     assert "membership" in low
-    assert "single biological replicate" in low or "one biological replicate" in low
+    # D23: the walker README states the corrected design and the imputed-value
+    # caveat, and must not claim a single/one biological replicate any more.
+    assert "2 biological replicates per group" in low and "2 separate experiments" in low
+    assert "single biological replicate" not in low and "one biological replicate" not in low
+    assert "technical replicates only" not in low
     assert "imputed" in low and "fdr" in low
     meta = json.loads((NEW / "ora_meta.json").read_text())
     smeta = json.loads((NEW / "string_meta.json").read_text())
@@ -549,10 +617,17 @@ def test_walker_upload_has_the_extended_upload_format(walker_df):
     raw = (RESULTS / "ipa_input_walker.txt").read_bytes()
     assert not raw.startswith(b"\xef\xbb\xbf") and b"\r" not in raw
     assert w.columns[0] == "UniProt Accession Number"
-    # sensitivity check in UPLOAD_STEPS: walker minus the 5 assigned == ipa_input_extended
+    # D24: walker minus the 5 assigned (716) is a subset of ipa_input_extended (963); the 247
+    # proteins the extended file has beyond it are the recovered partial-tier proteins Dr. Walker
+    # asked to drop. The sensitivity dataset is its own file, ipa_input_walker_without_assigned.txt.
     kept = w[w["value_source"] != "assigned"].drop(columns="value_source")
-    assert len(kept) == 963
-    assert set(kept["UniProt Accession Number"]) == set(e["UniProt Accession Number"])
+    assert len(kept) == 716
+    assert set(kept["UniProt Accession Number"]) <= set(e["UniProt Accession Number"])
+    assert len(set(e["UniProt Accession Number"]) - set(kept["UniProt Accession Number"])) == 247
+    na = pd.read_csv(RESULTS / "ipa_input_walker_without_assigned.txt", sep="\t", dtype=str,
+                     keep_default_na=False)
+    assert list(na.columns) == list(w.columns) and len(na) == 716
+    assert na.drop(columns="value_source").equals(kept.reset_index(drop=True))
     merged = kept.merge(e, on="UniProt Accession Number", suffixes=("_w", "_e"))
     for c in ("log2FC", "regulated", "p_value", "adj_p_value", "tier"):
         a, b = merged[f"{c}_w"], merged[f"{c}_e"]
@@ -566,9 +641,13 @@ def test_upload_steps_cover_what_the_user_must_do_and_warns_about_zscores():
     low = text.lower()
     for needle in ("ipa_input_walker.txt", "ipa_background_measured.txt", "reference set",
                    "canonical pathways", "upstream regulators", "diseases and functions",
-                   "networks", "z-score", "-6.64", "sensitivity", "ipa_input_extended.txt",
+                   "networks", "z-score", "-6.64", "sensitivity",
+                   "ipa_input_walker_without_assigned.txt", "721", "716",
                    "log2fc", "ignore", "export"):
         assert needle in low, needle
+    # D24: the old 968 / 963 row counts and the extended file must not be instructions any more.
+    for stale in ("968", "963 rows"):
+        assert stale not in text.replace("968-protein", "").replace("D24", ""), stale
     assert "assigned" in low and "not a measurement" in low or "not measurements" in low
 
 

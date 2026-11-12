@@ -1,7 +1,9 @@
-"""Bug 6 — Replicate correlation check (do the two technical runs agree?).
+"""Bug 6 — Replicate correlation check (do the two replicates agree?).
 
-Everything was measured twice (two technical replicates). This module asks, in
-two complementary ways, whether the two runs agree:
+Everything was measured twice: two biological replicates per group, from two
+separate experiments (DECISIONS_LOG D23; this module predates that correction
+and its code and output labels are unchanged). It asks, in two complementary
+ways, whether the two replicates agree:
 
   A. Fold-change agreement (the Bug 6 headline) — do the two runs' treated-vs-
      control answers (``log2_rep1`` vs ``log2_rep2``) line up? This is what drives
@@ -131,7 +133,7 @@ def _make_figure(rep1, rep2, fc_pearson_r, results_dir):
 
 
 def run_replicate_correlation(foldchange_csv_path, results_dir):
-    """Measure whether the two technical runs agree; record a QC note + figure.
+    """Measure whether the two replicates (separate experiments) agree; record a QC note + figure.
 
     Reads ``foldchange_csv_path`` (pure read). Always writes
     ``qc_replicate_correlation.csv``; also writes ``replicate_correlation.png``.

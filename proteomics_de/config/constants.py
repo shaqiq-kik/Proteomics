@@ -45,14 +45,19 @@ MINPROB_TUNE_SIGMA = 1
 # ---------------------------------------------------------------------------
 # Figure caveat
 # ---------------------------------------------------------------------------
-# VERBATIM copy of ``viz/style.py:137-141``. This string is stamped onto 10+
-# committed figures; changing a single character (including the em dash) changes
-# those figures' bytes and breaks the protected-file check below. If the design
-# ever gains biological replicates, this text is regenerated, not hand-edited.
+# Single source of the caveat text. It is stamped onto 10+ committed figures and
+# written into every output's .provenance.json sidecar; changing a single
+# character (including the em dash) changes those figures' bytes, so the frozen
+# hashes in tests/expected/outputs.sha256 must be refrozen with it.
+# Corrected by DECISIONS_LOG D23 (2026-11-11): Dr. Walker stated the four samples
+# are 2 BIOLOGICAL replicates per group from 2 separate experiments, replacing the
+# earlier technical-replicate wording. If the design changes again, this
+# text is regenerated, not hand-edited.
 CAVEAT_TEXT = (
-    "SILAC design: n = 2 technical replicates per condition (no biological "
-    "replication) — 0 / 1938 proteins pass FDR < 0.05 (limma); results below "
-    "are hypothesis-generating only, not confirmed significant."
+    "SILAC design: n = 2 biological replicates per group, from 2 separate "
+    "experiments — 0 / 1938 proteins pass FDR < 0.05 (limma); n = 2 is low "
+    "power, so results below are exploratory / hypothesis-generating, not "
+    "confirmed significant."
 )
 
 # NOTE: this module used to also expose PROTECTED_FILES, parsed from a

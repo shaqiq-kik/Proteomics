@@ -46,6 +46,8 @@ than rewritten, as with D5/D8. D9 already recorded the 0.305 → 0.116 move, and
 `README.md` § "Reproducing the trend/robust limma variant" already quotes
 0.116/55 correctly, so this log was the last place still carrying the old pair.
 
+**⚪ D2 — SUPERSEDED in part by D23 (2026-11-11):** the replicate design is 2 biological replicates per group from 2 separate experiments, not technical replicates; the original text above is left as written.
+
 **🔵 D3 — Enrichment layer (items 15–18) needs a data-source choice.**
 GO/KEGG/Reactome ORA+GSEA and STRING PPI are not yet built. Two routes:
 (a) **R Bioconductor** (clusterProfiler/fgsea/ReactomePA + org.Hs.eg.db) — all
@@ -616,6 +618,10 @@ the manifest says so per protein; (3) the same n=2 technical-replicate caveat
 applies to everything on this list: 0 of the core 715, of FRZB and of the 247
 pass FDR < 0.05, and the five assigned rows have no p-value at all.
 
+**⚪ D20 — SUPERSEDED in part by D23 (2026-11-11):** the replicate design is 2 biological replicates per group from 2 separate experiments, not technical replicates; the original text above is left as written.
+
+**⚪ D20 — SUPERSEDED in part by D24 (2026-11-11):** the walker list is now 721 proteins (the 247 recovered proteins were dropped at Dr. Walker's request); the 968-protein numbers above are history, kept as written.
+
 ---
 
 ## ORA and STRING on Dr. Walker's list (2026-11-09)
@@ -702,6 +708,10 @@ map (46 of the 968 here, plus 10 ambiguous); querying by UniProt accession inste
 method too and was not done; (4) all caveats of D20 and D2 apply: 0 of 968 pass FDR < 0.05.
 
 
+**⚪ D21 — SUPERSEDED in part by D23 (2026-11-11):** the replicate design is 2 biological replicates per group from 2 separate experiments, not technical replicates; the original text above is left as written.
+
+**⚪ D21 — SUPERSEDED in part by D24 (2026-11-11):** the walker list is now 721 proteins (the 247 recovered proteins were dropped at Dr. Walker's request); the 968-protein numbers above are history, kept as written.
+
 ---
 
 ## IPA on Dr. Walker's list (2026-11-10)
@@ -746,3 +756,119 @@ shape 6 + 16 + 79 of the z-scored results (report run 1, the without-assigned an
 version, with run 2 as a sensitivity result, or the reverse); (2) whether to rerun IPA with a log2FC cutoff so
 the measured-proteome reference is accepted (this changes the analysed set and was not done); (3) all caveats of
 D20, D21 and D2 apply: 0 of 968 pass FDR < 0.05, n = 2 technical replicates, one biological replicate.
+
+**⚪ D22 — SUPERSEDED in part by D23 (2026-11-11):** the replicate design is 2 biological replicates per group from 2 separate experiments, not technical replicates; the original text above is left as written.
+
+**⚪ D22 — SUPERSEDED in part by D24 (2026-11-11):** the walker list is now 721 proteins (the 247 recovered proteins were dropped at Dr. Walker's request); the 968-protein numbers above are history, kept as written.
+
+---
+
+## Replicate design corrected (2026-11-11)
+
+**🔴 D23 — Dr. Walker corrected the replicate design: 2 biological replicates from 2 separate experiments (2026-11-11).**
+*What he wrote:* "there were 2 biological replicates. Each pair of control and testosterone treated were from separate
+experiments. Two replicates may not be enough statistical power, but at least more than one experiment was tested."
+So control 31579/31581 and testosterone 31578/31580 are 2 **biological** replicates per group from 2 **separate
+experiments**; each experiment gave one control and one treated sample. He did not say which treated sample goes with
+which control; by replicate index in `config/sample_sheet.tsv` the assumed (UNCONFIRMED) pairs are 31579 with 31578 and
+31581 with 31580. The investigator's statement is final.
+
+*What it supersedes.* D2's "n=2 technical-replicate ceiling" and "technical replicates -> hypothesis-generating only"
+caveat, and every later "technical replicates only / one biological replicate / no biological replication" statement
+(D20, D21 and D22 included, and the same words in the config, docs, report, figure footers and sidecars). The original
+log entries are left as written and carry a one-line pointer to this entry.
+
+*What changed (words only).* `config.yaml` (design block: `n_biological_replicates_per_group` 1 -> 2,
+`n_technical_replicates_per_group` set to 1 because the readings per sample were not stated, new `experiments: 2` and
+`pairing_confirmed: false`; the caveat note and the design-matrix note), `config/constants.py` `CAVEAT_TEXT` (the single
+source for every figure footer and every `.provenance.json` sidecar), docstrings and strings in `provenance.py`,
+`config/design.py`, `viz/*`, `gated/pca_cluster.py`, `enrich/*`, `export/walker_additions.py`, `export/ipa_export.py`,
+`replicate_check.py`, `run_pipeline.py`, `tools/status.py`, the report template, `build_facts.py`, both READMEs and
+the walker READMEs; the figures' footers and captions were regenerated, the sidecars, the report and STATUS.md were
+rebuilt, and the frozen hashes of exactly the text-bearing outputs were refrozen. A test now fails if the old
+phrases return in the live files.
+
+*What did NOT change.* Every number: the fold changes, the limma p-values and FDR, the thresholds, the regulated lists,
+the IPA inputs, the enrichment tables. The limma design stays `~group`; the 715/968 lists and the 0 of 1938 result are
+untouched.
+
+*What is better.* A change or an absence seen in **both** experiments is a reproduced biological observation, not just a
+repeated instrument reading. In particular the control-only "zero" proteins (EGF, EREG, EFNA4, TYRO3, MFAP4 and the other
+control-only ones) are present in both control experiments and absent in both treated ones (absence can still mean below
+the detection limit).
+
+*What stays true.* n = 2 per group is low statistical power. 0 proteins pass FDR < 0.05 (min adj.p 0.116), so every
+result stays exploratory / hypothesis-generating at this n.
+
+**🔵 Still needs YOU / him:** (1) confirm which treated sample pairs with which control (31579 with 31578 and
+31581 with 31580 is assumed); (2) decide whether to refit limma with an experiment (paired / blocked) term, which would
+change the p-values and FDR but not the fold-change based regulated lists; (3) the number of readings per sample (technical
+replicates) was not stated and is unknown; the pipeline treats each channel as one biological sample.
+
+**🔴 D24 — Dr. Walker's answers: keep EFNA4/TYRO3/MFAP4, drop the 247, report the IPA run with the five assigned proteins included; the list is now 721 (2026-11-11).**
+*What he answered (final):* (1) EFNA4, TYRO3 and MFAP4 are the genes he meant, so they stay with EGF and EREG as the 5 assigned
+proteins. (2) The 247 recovered proteins: **drop them**. (3) IPA: report the run that includes the five assigned proteins, with
+every result that depends on them flagged. The IPA reruns are manual and later; this entry only prepares the files.
+
+*Decision.* The list shrinks from 968 to **721 = 715 core + FRZB (real values, partial tier) + 5 assigned control-only DOWN
+proteins** (UP 510 = 509 core + FRZB; DOWN 211 = 206 core + 5 assigned). A new file holds the same list without the five
+assigned rows (**716**: 715 core + FRZB; 510 UP / 206 DOWN) for the IPA sensitivity run "without the assigned values".
+
+*Alternatives rejected.* (a) Deleting the recovered-protein rule from the code: rejected, because the answer could change
+again and the widened path stays tested. The two switches are simply `true` again (the strict rule = his original "no
+problems" wording, which admits zero). (b) Reusing the 968 ORA/STRING outputs and subtracting the 247: rejected, because
+ORA and STRING are not additive; the analysis was re-run on the new list. (c) Building the without-assigned dataset by hand
+or reusing `ipa_input_extended.txt`: rejected, because that file also carries the dropped 247; a build function plus
+validation cannot drift from the 721 file.
+
+*What changed.* `config.yaml: walker_additions.recovered_rule` `require_all_replicates_seen` and `require_no_imputed_values`
+-> `true` (comment cites this answer; the rule machinery is untouched). `export/walker_additions.py`: new `drop_assigned()`
+and `assert_without_assigned_is_the_list_minus_assigned()`, new outputs `results/ipa_input_walker_without_assigned.csv`/`.txt`
+(+ provenance sidecars) written atomically with the other walker files and validated like them, sidecar notes now say STRICT
+or WIDENED according to the switches. `run_pipeline.py` stage `ipa_export_walker` registers the two new outputs;
+`frozen_counts.json`: `n_ipa_walker` 968 -> 721, `n_walker_recovered` 247 -> 0, `n_walker_additions_listed` 253 -> 6, new
+`n_ipa_walker_without_assigned` 716, `n_walker_ora_up/down` 661/307 -> 510/211, `n_walker_string_mapped/nodes/edges`
+937/937/10,696 -> 700/700/6,870, `n_walker_comparison_rows` 66 -> 47 (and a `_d24_note`). `walker_enrichment.py` labels
+`walker968` -> `walker721` (comparison columns and JSON keys follow). The manifest is 6 rows (FRZB + the five). The recovered
+pool is 862, 856 not already listed, 247 clear the cutoff, 0 pass the strict rule. Rows 1-715 of the 721 equal `ipa_input.csv`,
+row 716 is FRZB with its real values, rows 717-721 are the five assigned (checked independently of the builder); all 721 and
+all 716 accessions are in `ipa_background_measured.txt`. Tests: the widened-rule tests now set the switches to `false` in a
+tmp config (the 247/968 path is still exercised) and the default config must yield 0 recovered; new tests cover the 716 file,
+`drop_assigned`, the 721 layout and the new count key. Full default suite: 944 passed (885 before; 59 more, new and split
+tests), 1 failed (`test_e2e_smoke.py::test_committed_fixture_regenerates_byte_for_byte`, which also fails at HEAD), 5
+deselected (network/slow). Freeze: 126 -> 128 entries; only the walker/ORA/STRING files
+that depend on the list changed hash (plus the two new files); every other hash is unchanged.
+
+*ORA and STRING on the 721 (re-run live 2026-11-11 with the user's approval; recomputed, nothing copied from the 968 run).*
+g:Profiler `e114_eg62_p19_9dc92ac8` and STRING 12.5, **both unchanged** from the 968 run, so the same-version 715 control
+(fetched 2026-11-09) was kept, not refreshed. Queries UP 510 / DOWN 211, all inside the measured-proteome background (2530
+symbols, not extended). g:Profiler mapped 474 and 201 (31 + 5 and 7 + 3 lost, as in the 715 control). **0 significant terms in
+either direction** (best corrected p: UP 1.0, DOWN 0.897 "dephosphorylation", 0.703 in the 715 runs). STRING: 700 of 721 map
+(the 21 unmapped are core protein-group accessions), 700 nodes, 6,870 edges (6,796 core-core, identical to the control, + 74
+touching an added protein), 35 communities, 25 isolated nodes. Where the six sit (degree, rank of 700): Egf 51 (61st), Ereg 8
+(441st), Efna4 1 (653rd, only neighbour Efnb1), Tyro3 6 (496th), Mfap4 8 (441st), Frzb 2 (624th). Seven of the top 20 DOWN
+leads contain an assigned protein and they are exactly the seven that are new against the control; the approximate
+leave-the-five-out ranks (uncorrected hypergeometric p, intersection reduced by the assigned hits, query size by 5) equal the
+control's ranks to the rank (this is checkable because removing the five leaves the control's DOWN list). No ERBB/EGFR term is
+among the DOWN leads any more (Egfr was among the dropped proteins).
+
+*Against the 968 run.* The 968 run had UP 661 / DOWN 307, 937 nodes and 10,696 edges (3,900 touching an added protein),
+66 comparison rows, 12 of the top 20 DOWN leads with an assigned protein (four ERBB/EGFR 3-gene leads that existed only
+through the assigned and recovered proteins) and an all-1.0 corrected-p table. Dropping the 247 removes most of the
+network growth (74 instead of 3,900 added edges), most of the DOWN lead movement (7 instead of 12) and the ERBB/EGFR
+leads; the UP leads stay the control's, and nothing is significant in either version.
+
+*Superseded but kept.* The 968-protein outputs and cache (commits `b9c75b9`, `9e345d9` hold them), the two IPA runs
+(`run1_*`, `run2_*` exports) and the two figures in `results/ipa_analysis_walker/figures/` are SUPERSEDED by the 721 list.
+The old files stay as the record, with a banner in `ipa_analysis_walker/README.md`; the 968-specific raw cache was removed
+from `results/enrichment_walker/raw/` (it would have been stale: the request fingerprints no longer match) and the file
+`results/ipa_analysis_walker/figures/make_walker_figures.py` would now draw the 721 network if re-run.
+
+*What stays true.* n = 2 biological replicates per group from 2 separate experiments (D23); 0 of 1938 pass FDR < 0.05; the
+five assigned values are assignments, not measurements; everything is exploratory.
+
+**🔵 Still needs YOU:** (1) new IPA runs (manual): the 721 list (`ipa_input_walker.txt`, the run to report, five assigned
+included) and the 716 list (`ipa_input_walker_without_assigned.txt`), then flag every z-score that depends on the assigned
+values (steps in `results/ipa_analysis_walker/UPLOAD_STEPS.md`); (2) a v2 of the emailable report page (the 11 Nov page
+still describes the 968 list and the first IPA runs); (3) D23's open question: which treated sample pairs with which
+control (and whether to refit limma with an experiment term).

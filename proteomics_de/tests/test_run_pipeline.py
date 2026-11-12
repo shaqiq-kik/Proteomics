@@ -226,7 +226,7 @@ def test_the_three_by_design_empty_outputs_are_declared_with_reasons(frozen):
         "proteomics_de/results/ipa_input_significant.csv",
         "proteomics_de/results/enrichment/ora_up.csv",
         "proteomics_de/results/enrichment/ora_down.csv",
-        # D21: the same null on the 968-protein walker list (enrich_walker stage).
+        # D21: the same null on the 721-protein walker list (enrich_walker stage; D24).
         "proteomics_de/results/enrichment_walker/ora_up.csv",
         "proteomics_de/results/enrichment_walker/ora_down.csv",
     }

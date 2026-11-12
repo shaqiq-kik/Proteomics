@@ -61,7 +61,7 @@ def plot(df):
     ax.set_title("MA plot — treated vs. control (SILAC)")
     ax.legend(loc="upper right", markerscale=1.6)
     fig.suptitle(
-        "n = 2 technical replicates; color = regulated call at |log2FC| >= 0.585",
+        "n = 2 biological replicates per group; color = regulated call at |log2FC| >= 0.585",
         fontsize=9.5, color=style.CHROME["ink_secondary"], y=0.955,
     )
     style.add_caveat(fig)
@@ -95,7 +95,7 @@ def main():
             "fold change (y) for the 1938 both-condition proteins; per-sample "
             "zero/absent intensities are treated as missing before averaging. "
             "Colored UP/DOWN/NO CHANGE at |log2FC| >= 0.585, dashed reference "
-            "lines at 0 and +/-0.585. Same n=2 technical-replicate caveat as "
+            "lines at 0 and +/-0.585. Same n=2 low-power caveat as "
             "the volcano plot applies — no FDR-significant calls exist in this "
             "dataset."
         ),

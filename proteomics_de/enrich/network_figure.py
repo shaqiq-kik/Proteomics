@@ -241,7 +241,7 @@ def main():
             f"node size is proportional to STRING degree; the top {N_HUB_LABELS} hub genes by "
             f"degree are labeled. IMPORTANT: this is an exploratory network over the "
             f"hypothesis-generating |log2FC|>=0.585 candidate set from an n=2 "
-            f"technical-replicate SILAC design (no biological replication) in which 0/1938 "
+            f"per group SILAC design (2 biological replicates, 2 separate experiments; low power) in which 0/1938 "
             f"proteins pass FDR<0.05 (limma) — network structure reflects STRING's curated "
             f"evidence, not statistical significance in this dataset, and should not be read "
             f"as confirmed findings."

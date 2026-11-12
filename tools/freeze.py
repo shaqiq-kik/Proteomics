@@ -81,7 +81,7 @@ FROZEN_EXCLUDE_SUFFIXES = (".provenance.json",)
 # pipeline outputs, live one directory up, and stay frozen.
 #
 # D21 adds `results/ipa_analysis_walker/` on the same grounds: it is where the
-# manual IPA exports for Dr. Walker's 968-protein list land (plus the hand-written
+# manual IPA exports for Dr. Walker's 721-protein list land (plus the hand-written
 # UPLOAD_STEPS.md checklist). The prefix test below is `startswith(d + "/")`, so
 # `ipa_analysis` does NOT already cover it.
 FROZEN_EXCLUDE_DIRS = (

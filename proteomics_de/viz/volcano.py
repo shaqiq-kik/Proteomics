@@ -16,7 +16,7 @@ Design notes (see style.py for the shared system):
     made eBayes(trend, robust) the default (it is 0.116 under that model).
   - Top 10 proteins by smallest p_value are labeled with gene names using a
     small deterministic manual-offset scheme (no adjustText dependency).
-  - Carries the n=2 technical-replicate caveat (style.add_caveat).
+  - Carries the n=2 low-power / exploratory caveat (style.add_caveat).
 """
 
 import numpy as np
@@ -112,7 +112,7 @@ def plot(df):
     ax.legend(loc="upper left", bbox_to_anchor=(1.01, 1.0), markerscale=1.6,
               borderaxespad=0.0, title="Regulated call")
     fig.suptitle(
-        f"n = 2 technical replicates — 0/{len(df)} proteins significant at "
+        f"n = 2 biological replicates per group — 0/{len(df)} proteins significant at "
         f"FDR < 0.05 (min adj. p = {min_adj_p:.3f}); no FDR line is drawn "
         f"because nothing crosses it",
         fontsize=9.3, color=style.CHROME["ink_secondary"], y=0.965,
@@ -148,14 +148,14 @@ def main():
         "caption": (
             f"limma log2 fold change vs. -log10(raw p-value) for the {len(df)} "
             "proteins tested in both conditions, colored UP/DOWN/NO CHANGE at "
-            f"|log2FC| >= {style.FC_THRESHOLD}. With n=2 technical replicates "
-            f"per condition (no biological replication), {n_fdr_sig} of "
+            f"|log2FC| >= {style.FC_THRESHOLD}. With n=2 biological replicates "
+            f"per group (low power), {n_fdr_sig} of "
             f"{len(df)} proteins pass FDR < 0.05 (minimum adjusted p = "
             f"{min_adj_p:.3f}) — no dashed FDR line is drawn because nothing "
             "crosses it; the raw p = 0.05 line is shown instead for "
             "orientation only. Top 10 proteins by smallest raw p-value are "
-            "labeled; treat all calls here as hypothesis-generating, not "
-            "confirmed significant."
+            "labeled; treat all calls here as exploratory / hypothesis-generating, "
+            "not confirmed significant."
         ),
         "key_numbers": key_numbers,
     }])

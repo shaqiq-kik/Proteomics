@@ -13,7 +13,7 @@
     ],
     "n_samples": 4,
     "replicates_per_group": 2,
-    "replicates": "n=2 TECHNICAL replicates per group (no biological replication)",
+    "replicates": "n=2 biological replicates per group, from 2 separate experiments (D23); low power, so results are exploratory / hypothesis-generating",
     "design_source": "config/sample_sheet.tsv",
     "channel_note": "The workbook's 'Protein Report L' / 'Protein Report H' sheets are row residency, not condition: 31578/31580 live in sheet L and 31579/31581 in sheet H, but which of those is control is set by the sample sheet alone. Every sample is itself a complete SILAC run; the pipeline analyses the combined Intensity and never the native H/L ratio (DECISIONS_LOG D8, open)."
   },
@@ -183,7 +183,7 @@
     "network_batched": false,
     "network_n_batches": 1,
     "rate_limit_seconds_between_calls": 1.2,
-    "caveat": "n=2 technical replicates per condition (no biological replication); 0/1938 proteins survive FDR<0.05 (limma). The 715 seed proteins are the |log2FC|>=0.585 HYPOTHESIS-GENERATING set, not confirmed significant hits. This PPI network shows structure among candidate proteins and is exploratory."
+    "caveat": "n=2 biological replicates per group, from 2 separate experiments (low power); 0/1938 proteins survive FDR<0.05 (limma). The 715 seed proteins are the |log2FC|>=0.585 HYPOTHESIS-GENERATING set, not confirmed significant hits. This PPI network shows structure among candidate proteins and is exploratory."
   },
   "ora": {
     "gprofiler_version": "e114_eg62_p19_27110d83",
@@ -386,7 +386,7 @@
     "n_fdr_lt_0.25": 6,
     "n_nom_p_lt_0.05": 38,
     "min_fdr_q_value": 0.12668414154652688,
-    "note": "No gene set passes FDR q < 0.05 (min FDR q = 0.127), consistent with the weak per-protein signal (0/1938 proteins at limma FDR<0.05). This is expected given n=2 technical replicates and is reported honestly, not tuned away. 38 terms have nominal (uncorrected) NOM p-value < 0.05 and are listed as hypothesis-generating leads only -- this GSEA FDR is a SEPARATE test from per-protein FDR and neither should be read as confirming the other.",
+    "note": "No gene set passes FDR q < 0.05 (min FDR q = 0.127), consistent with the weak per-protein signal (0/1938 proteins at limma FDR<0.05). This is expected given n=2 biological replicates per group (low power) and is reported honestly, not tuned away. 38 terms have nominal (uncorrected) NOM p-value < 0.05 and are listed as hypothesis-generating leads only -- this GSEA FDR is a SEPARATE test from per-protein FDR and neither should be read as confirming the other.",
     "score_min": -3.8003692604238344,
     "score_max": 4.185158385833153,
     "semicolon_split_n": 45,
@@ -413,7 +413,7 @@
       "min_samples": 6,
       "have_samples": 4,
       "status": "QC_ONLY",
-      "reason": "n=4 < trustworthy gate n>=6 (research1.md SS5): the sample covariance matrix is rank-deficient (rank<=n-1=3, exactly 3 PCs exist by construction), eigenvalues are biased, and PC1 can be driven by a single sample. Runs for QC purposes only (e.g. do technical replicate pairs land near each other); NOT evidence of biological structure."
+      "reason": "n=4 < trustworthy gate n>=6 (research1.md SS5): the sample covariance matrix is rank-deficient (rank<=n-1=3, exactly 3 PCs exist by construction), eigenvalues are biased, and PC1 can be driven by a single sample. Runs for QC purposes only (e.g. do replicate pairs land near each other); NOT evidence of biological structure."
     },
     {
       "analysis": "hierarchical_clustering",
@@ -455,7 +455,7 @@
     {
       "file": "figures/volcano.png",
       "title": "Volcano plot — treated vs. control (SILAC)",
-      "caption": "limma log2 fold change vs. -log10(raw p-value) for the 1938 proteins tested in both conditions, colored UP/DOWN/NO CHANGE at |log2FC| >= 0.585. With n=2 technical replicates per condition (no biological replication), 0 of 1938 proteins pass FDR < 0.05 (minimum adjusted p = 0.116) — no dashed FDR line is drawn because nothing crosses it; the raw p = 0.05 line is shown instead for orientation only. Top 10 proteins by smallest raw p-value are labeled; treat all calls here as hypothesis-generating, not confirmed significant.",
+      "caption": "limma log2 fold change vs. -log10(raw p-value) for the 1938 proteins tested in both conditions, colored UP/DOWN/NO CHANGE at |log2FC| >= 0.585. With n=2 biological replicates per group (low power), 0 of 1938 proteins pass FDR < 0.05 (minimum adjusted p = 0.116) — no dashed FDR line is drawn because nothing crosses it; the raw p = 0.05 line is shown instead for orientation only. Top 10 proteins by smallest raw p-value are labeled; treat all calls here as exploratory / hypothesis-generating, not confirmed significant.",
       "key_numbers": {
         "n_points": 1938,
         "n_up": 509,
@@ -494,7 +494,7 @@
     {
       "file": "figures/ma_plot.png",
       "title": "MA plot — treated vs. control (SILAC)",
-      "caption": "Mean log2 intensity across the 4 raw samples (x) vs. limma log2 fold change (y) for the 1938 both-condition proteins; per-sample zero/absent intensities are treated as missing before averaging. Colored UP/DOWN/NO CHANGE at |log2FC| >= 0.585, dashed reference lines at 0 and +/-0.585. Same n=2 technical-replicate caveat as the volcano plot applies — no FDR-significant calls exist in this dataset.",
+      "caption": "Mean log2 intensity across the 4 raw samples (x) vs. limma log2 fold change (y) for the 1938 both-condition proteins; per-sample zero/absent intensities are treated as missing before averaging. Colored UP/DOWN/NO CHANGE at |log2FC| >= 0.585, dashed reference lines at 0 and +/-0.585. Same n=2 low-power caveat as the volcano plot applies — no FDR-significant calls exist in this dataset.",
       "key_numbers": {
         "n_points_total": 1938,
         "n_points_plotted": 1938,
@@ -512,7 +512,7 @@
     {
       "file": "figures/heatmap_top_de.png",
       "title": "Clustered heatmap — top 40 DE proteins by raw p-value",
-      "caption": "Row-standardized (z-scored) log2 intensities for the 40 proteins with the smallest raw limma p-values (not the largest |log2FC| — see script docstring for rationale), clustered by protein only; sample columns stay in a fixed control/treated order. The row-color sidebar marks each protein's UP/DOWN call. As with all statistical figures here, n=2 technical replicates means none of these proteins are FDR-significant; this view is for pattern inspection only.",
+      "caption": "Row-standardized (z-scored) log2 intensities for the 40 proteins with the smallest raw limma p-values (not the largest |log2FC| — see script docstring for rationale), clustered by protein only; sample columns stay in a fixed control/treated order. The row-color sidebar marks each protein's UP/DOWN call. As with all statistical figures here, n=2 biological replicates per group means none of these proteins are FDR-significant; this view is for pattern inspection only.",
       "key_numbers": {
         "n_proteins": 40,
         "selection_method": "smallest raw p_value (limma), NOT largest |log2FC|",
@@ -571,7 +571,7 @@
     {
       "file": "figures/sample_correlation.png",
       "title": "Sample correlation matrix (log2 intensity)",
-      "caption": "Pairwise Pearson correlation of log2 intensity across the 4 raw samples, computed over the full 2554-protein identified universe (pairwise-complete, zero/absent treated as missing). Within-condition replicate pairs (control_1 vs control_2; treated_1 vs treated_2) are the QC check for technical reproducibility; cf. qc_replicate_correlation.csv, which reports a similar check on the derived fold-change ratios rather than raw intensities.",
+      "caption": "Pairwise Pearson correlation of log2 intensity across the 4 raw samples, computed over the full 2554-protein identified universe (pairwise-complete, zero/absent treated as missing). Within-condition replicate pairs (control_1 vs control_2; treated_1 vs treated_2) are the QC check for reproducibility between the two separate experiments (DECISIONS_LOG D23); cf. qc_replicate_correlation.csv, which reports a similar check on the derived fold-change ratios rather than raw intensities.",
       "key_numbers": {
         "n_proteins_used": 1578,
         "n_proteins_universe": 2552,
@@ -1070,7 +1070,7 @@
     {
       "file": "figures/pca_qc.png",
       "title": "PCA of 4 samples (QC only)",
-      "caption": "PC1 vs PC2 from PCA on the 4 SILAC samples (2 control, 2 treated), standardized per-protein across samples before decomposition. QC-ONLY / NOT INTERPRETABLE AS BIOLOGICAL STRUCTURE: at n=4 the sample covariance matrix is rank-deficient (rank<=n-1=3, exactly 3 PCs exist by construction), eigenvalues are biased, and PC1 can be driven by a single sample (research1.md SS5). The trustworthy gate is n>=6 samples; this dataset is below it, so PCA is shown only as a QC sanity check (do technical replicate pairs sit near each other), not as evidence of biological grouping.",
+      "caption": "PC1 vs PC2 from PCA on the 4 SILAC samples (2 control, 2 treated), standardized per-protein across samples before decomposition. QC-ONLY / NOT INTERPRETABLE AS BIOLOGICAL STRUCTURE: at n=4 the sample covariance matrix is rank-deficient (rank<=n-1=3, exactly 3 PCs exist by construction), eigenvalues are biased, and PC1 can be driven by a single sample (research1.md SS5). The trustworthy gate is n>=6 samples; this dataset is below it, so PCA is shown only as a QC sanity check (do the replicates of each group sit near each other), not as evidence of biological grouping.",
       "key_numbers": {
         "n_proteins_used": 1578,
         "n_proteins_total_qc_limma": 1938,
@@ -1097,7 +1097,7 @@
     {
       "file": "figures/sample_dendrogram.png",
       "title": "Hierarchical clustering of 4 samples (QC only)",
-      "caption": "Dendrogram of the 4 SILAC samples, average-linkage clustering on 1-minus-Pearson-correlation distance of log2 intensity (complete proteins only). QC-ONLY / NOT INTERPRETABLE: no bootstrap support is possible with 4 observations, so dendrogram topology is not statistically stable (research1.md SS5). The trustworthy gate is n>=6 samples; shown only as a QC sanity check that technical replicate pairs are each other's nearest neighbor, not as a claim of reproducible clusters.",
+      "caption": "Dendrogram of the 4 SILAC samples, average-linkage clustering on 1-minus-Pearson-correlation distance of log2 intensity (complete proteins only). QC-ONLY / NOT INTERPRETABLE: no bootstrap support is possible with 4 observations, so dendrogram topology is not statistically stable (research1.md SS5). The trustworthy gate is n>=6 samples; shown only as a QC sanity check that the replicates of each group are each other's nearest neighbor, not as a claim of reproducible clusters.",
       "key_numbers": {
         "n_proteins_used": 1578,
         "n_proteins_total_qc_limma": 1938,
@@ -1147,7 +1147,7 @@
     {
       "file": "figures/ppi_network.png",
       "title": "STRING PPI network of DE-regulated proteins (mouse) — largest connected component",
-      "caption": "Protein-protein interaction network from STRING v12.0 (species=10090, Mus musculus, required_score=400) built from the 715 DE-\"regulated\" seed proteins (509 UP, 206 DOWN; |log2FC|>=0.585). 694/715 seeds (97.1%) mapped to a STRING identifier, yielding a 694-node / 5963-edge network with 57 greedy-modularity communities. Only the largest connected component (645 nodes, 5960 edges) is drawn for legibility; 49 nodes across 46 smaller components are omitted. Node color = log2 fold change (blue = down, red = up); node size is proportional to STRING degree; the top 15 hub genes by degree are labeled. IMPORTANT: this is an exploratory network over the hypothesis-generating |log2FC|>=0.585 candidate set from an n=2 technical-replicate SILAC design (no biological replication) in which 0/1938 proteins pass FDR<0.05 (limma) — network structure reflects STRING's curated evidence, not statistical significance in this dataset, and should not be read as confirmed findings.",
+      "caption": "Protein-protein interaction network from STRING v12.0 (species=10090, Mus musculus, required_score=400) built from the 715 DE-\"regulated\" seed proteins (509 UP, 206 DOWN; |log2FC|>=0.585). 694/715 seeds (97.1%) mapped to a STRING identifier, yielding a 694-node / 5963-edge network with 57 greedy-modularity communities. Only the largest connected component (645 nodes, 5960 edges) is drawn for legibility; 49 nodes across 46 smaller components are omitted. Node color = log2 fold change (blue = down, red = up); node size is proportional to STRING degree; the top 15 hub genes by degree are labeled. IMPORTANT: this is an exploratory network over the hypothesis-generating |log2FC|>=0.585 candidate set from an n=2 per group SILAC design (2 biological replicates, 2 separate experiments; low power) in which 0/1938 proteins pass FDR<0.05 (limma) — network structure reflects STRING's curated evidence, not statistical significance in this dataset, and should not be read as confirmed findings.",
       "key_numbers": {
         "n_seeds": 715,
         "n_seeds_up": 509,

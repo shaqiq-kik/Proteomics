@@ -1,4 +1,8 @@
+> **These exports and the two figures are from the earlier 968-protein list (superseded by the 721-protein list, D24; the 247 recovered proteins were dropped at Dr. Walker's request). New IPA runs on the 721 list are pending.**
+
 # IPA runs on Dr. Walker's 968-protein list (D20 / D21)
+
+> Replicate design corrected on 2026-11-11 (D23): the samples are 2 biological replicates from 2 separate experiments, not technical replicates; the numbers below are unchanged.
 
 This folder holds IPA exports for `results/ipa_input_walker.txt`. Upload steps are in
 `UPLOAD_STEPS.md`. This folder is outside the byte-freeze, like `results/ipa_analysis/`.
@@ -74,8 +78,8 @@ The only difference in input is the 5 rows, so every difference below comes from
 
 ## Caveats that apply to every number here
 
-* 0 of 968 proteins pass FDR < 0.05; n = 2 technical replicates, one biological replicate (D2).
-* 247 + FRZB rest on one biological replicate with an imputed replicate (D20); they are not the "no
+* 0 of 968 proteins pass FDR < 0.05; n = 2 biological replicates per group from 2 separate experiments (D23), which is low power (D2).
+* 247 + FRZB rest on the measured samples with an imputed value (D20); they are not the "no
   problems" set Dr. Walker asked for.
 * The 5 assigned values are not measurements. Never read a fold change of -6.64 for Egf, Ereg, Efna4,
   Tyro3 or Mfap4 as a result.

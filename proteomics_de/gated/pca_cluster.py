@@ -11,7 +11,8 @@ SCOPE -- read this before trusting anything this script prints
 -----------------------------------------------------------------------------
 The design is read from config/sample_sheet.tsv via config.design -- nothing
 about the sample count is hardcoded here. For the committed sheet that is a
-SILAC design with n=2 technical replicates per condition, 4 samples total, and
+SILAC design with n=2 biological replicates per group (2 separate experiments),
+4 samples total, and
 the paragraphs below describe that case. Per research1.md SS5 ("Limitations as
 Engineering Constraints"):
 
@@ -26,7 +27,7 @@ Engineering Constraints"):
 
 At n=4 we are BELOW that gate. This script still RUNS PCA and hierarchical
 clustering -- they are useful as a QC sanity check (e.g. "do the two
-technical replicates of each condition sit near each other?") -- but every
+replicates of each group sit near each other?") -- but every
 output is tagged QC_ONLY and captioned accordingly. Nothing here should be
 read as evidence of biological structure or reproducible clusters.
 
@@ -193,7 +194,7 @@ def build_registry(n_groups=None):
                 "covariance matrix is rank-deficient (rank<=n-1={rank}, exactly {rank} PCs "
                 "exist by construction), eigenvalues are biased, and PC1 can be "
                 "driven by a single sample. Runs for QC purposes only (e.g. do "
-                "technical replicate pairs land near each other); NOT evidence "
+                "replicate pairs land near each other); NOT evidence "
                 "of biological structure."
             ),
             reason_skip=None,
@@ -642,7 +643,7 @@ def record_manifest_entries(n_complete, n_total, pct, dist_df, skip_rows):
             f"construction), eigenvalues are biased, and PC1 can be driven "
             f"by a single sample (research1.md SS5). The trustworthy gate is "
             f"n>={TRUSTWORTHY_MIN_SAMPLES} samples; this dataset is below it, so PCA is shown only "
-            f"as a QC sanity check (do technical replicate pairs sit near "
+            f"as a QC sanity check (do the replicates of each group sit near "
             f"each other), not as evidence of biological grouping."
         )
 
@@ -678,7 +679,7 @@ def record_manifest_entries(n_complete, n_total, pct, dist_df, skip_rows):
             f"bootstrap support is possible with {N_SAMPLES} observations, so "
             f"dendrogram topology is not statistically stable (research1.md "
             f"SS5). The trustworthy gate is n>={TRUSTWORTHY_MIN_SAMPLES} samples; shown only as a QC "
-            f"sanity check that technical replicate pairs are each other's "
+            f"sanity check that the replicates of each group are each other's "
             f"nearest neighbor, not as a claim of reproducible clusters."
         )
 

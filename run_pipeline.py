@@ -16,7 +16,8 @@ Three of this pipeline's outputs are header-only *on purpose* and a naive
 "the file is non-empty, ship it" check would false-positive on all three:
 
   * `results/ipa_input_significant.csv` — 0/1938 proteins pass FDR<0.05
-    (min adj.p = 0.305). The expected n=2 technical-replicate ceiling. See
+    (min adj.p = 0.305). The expected ceiling at n = 2 per group (low power;
+    2 biological replicates from 2 separate experiments, D23). See
     DECISIONS_LOG D2.
   * `results/enrichment/ora_up.csv`, `ora_down.csv` — 0 GO/KEGG/Reactome terms
     survive the honest detected-proteome background. See DECISIONS_LOG D6. This
@@ -147,7 +148,7 @@ class Stage:
 # Reasons for the three by-design header-only outputs. Written out here rather
 # than inline so the wording is identical everywhere it is printed.
 _WHY_NO_SIG = (
-    "0/1938 proteins pass FDR<0.05 at n=2 technical replicates "
+    "0/1938 proteins pass FDR<0.05 at n=2 per group (low power) "
     "(min adj.p = 0.305) — DECISIONS_LOG D2"
 )
 _WHY_NO_ORA = (
@@ -155,7 +156,7 @@ _WHY_NO_ORA = (
     "— DECISIONS_LOG D6; this is the report's headline finding"
 )
 _WHY_NO_ORA_WALKER = (
-    "0 GO/KEGG/Reactome terms pass g:SCS<0.05 on Dr. Walker's 968-protein list "
+    "0 GO/KEGG/Reactome terms pass g:SCS<0.05 on Dr. Walker's 721-protein list "
     "either, against the same measured-proteome background — DECISIONS_LOG D21 "
     "(the same null as D6)"
 )
@@ -294,10 +295,11 @@ STAGES: tuple[Stage, ...] = (
         description=(
             "Dr. Walker's regulated list: the 715 core rows + FRZB (real "
             "values) + 5 control-only proteins with an ASSIGNED 100-fold "
-            "decrease (value_source=assigned, not measured, p-values blank) + "
-            "the 247 partial-tier proteins admitted by the user's widened "
-            "recovered rule (real values, one imputed replicate each); plus a "
-            "manifest of every addition (DECISIONS_LOG D20)"
+            "decrease (value_source=assigned, not measured, p-values blank) = "
+            "721 rows (the recovered-protein rule is strict again, so it adds "
+            "none; D24); plus a manifest of every addition and the same list "
+            "WITHOUT the 5 assigned rows (716, for the IPA sensitivity run) "
+            "(DECISIONS_LOG D20, D24)"
         ),
         # Registered for the same reason as ipa_export_extended (D13): a file
         # that is not a stage goes stale when an upstream stage re-runs. Reads
@@ -317,6 +319,14 @@ STAGES: tuple[Stage, ...] = (
             Output("proteomics_de/results/walker_additions_manifest.csv",
                    kind="table",
                    expected_rows="n_walker_additions_listed"),
+            # D24: the list minus the 5 assigned rows (716), the dataset for the
+            # IPA run "without the assigned values". Same convention as the
+            # full list: the CSV is row-counted, the tab-delimited twin is
+            # checked by assert_twins_agree.
+            Output("proteomics_de/results/ipa_input_walker_without_assigned.csv",
+                   kind="table", expected_rows="n_ipa_walker_without_assigned"),
+            Output("proteomics_de/results/ipa_input_walker_without_assigned.txt",
+                   kind="text"),
         ),
     ),
     Stage(
@@ -432,7 +442,7 @@ STAGES: tuple[Stage, ...] = (
     Stage(
         id="enrich_walker",
         description=(
-            "ORA (g:Profiler) + STRING over Dr. Walker's 968-protein list, plus a "
+            "ORA (g:Profiler) + STRING over Dr. Walker's 721-protein list, plus a "
             "same-version re-run of the 715 list and a term-level comparison; "
             "REPLAYS the committed raw/ API cache offline (live calls only with "
             "`walker_enrichment.py --fetch`) (DECISIONS_LOG D21)"

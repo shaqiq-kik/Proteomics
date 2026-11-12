@@ -39,7 +39,11 @@ def test_manifest_exists_and_parses():
     # 88 -> 126: D21's ORA/STRING over the 968 list (results/enrichment_walker/:
     # 6 tables/JSONs + README per run dir, raw API cache of both runs, comparison
     # files). Purely additive -- the other 88 hashes are unchanged (diffed).
-    assert len(entries) == 126, f"expected 126 frozen artifacts, got {len(entries)}"
+    # 126 -> 128: D24 (list is now 721; the 968 cache was replaced file for file, so
+    # the count there is unchanged) adds ipa_input_walker_without_assigned.csv/.txt,
+    # the 716-row IPA sensitivity dataset. The other 126 entries keep their names; only
+    # the walker/ORA/STRING hashes that depend on the list changed.
+    assert len(entries) == 128, f"expected 128 frozen artifacts, got {len(entries)}"
     modes = {mode for _sha, mode in entries.values()}
     assert modes <= {"raw", "svg-canon", "ts-canon"}, modes
 
@@ -67,7 +71,8 @@ def test_tree_matches_manifest():
     # See FROZEN_EXCLUDE_DIRS in tools/freeze.py.
     # 85 -> 88: D20's three Walker-additions files.
     # 88 -> 126: D21's results/enrichment_walker/ (38 files).
-    assert len(ok) == 126
+    # 126 -> 128: D24's ipa_input_walker_without_assigned.csv/.txt.
+    assert len(ok) == 128
 
 
 def test_ipa_analysis_is_excluded_by_policy_and_says_so():

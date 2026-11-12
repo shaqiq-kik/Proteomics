@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nothing Crosses the Line — A Mouse SILAC Proteomics Ledger</title>
-<meta name="description" content="A rigorous, reproducible differential-expression pipeline for a mouse SILAC proteome (testosterone vs vehicle, n=2 technical replicates) and the ranked hypotheses it leaves behind.">
+<meta name="description" content="A rigorous, reproducible differential-expression pipeline for a mouse SILAC proteome (testosterone vs vehicle, n=2 biological replicates per group from 2 separate experiments) and the ranked hypotheses it leaves behind.">
 <style>
 /* ============================================================= FONTS ==== */
 @font-face{
@@ -419,7 +419,7 @@ section{transition:opacity .4s,filter .4s}
   <div class="cwrap">
     <span class="pulse" aria-hidden="true"></span>
     <span class="clabel">Caveat</span>
-    <span><b>n&nbsp;=&nbsp;2 technical replicates</b>, no biological replication — <b>0 of 1,938</b> proteins survive FDR&nbsp;&lt;&nbsp;0.05. Every call here is <b>hypothesis-generating</b>, not a confirmed finding.</span>
+    <span><b>n&nbsp;=&nbsp;2 biological replicates per group</b>, from 2 separate experiments — low power; <b>0 of 1,938</b> proteins survive FDR&nbsp;&lt;&nbsp;0.05. Every call here is <b>exploratory / hypothesis-generating</b>, not a confirmed finding.</span>
   </div>
 </div>
 
@@ -457,7 +457,7 @@ section{transition:opacity .4s,filter .4s}
     <li><a href="#s13" data-track="B"><span class="fn">13</span><span class="ft">Pathway themes</span></a></li>
     <li><a href="#s14" data-track="B"><span class="fn">14</span><span class="ft">Candidate pools</span></a></li>
     <li class="grp">Close</li>
-    <li><a href="#s15" data-track="ALL"><span class="fn">15</span><span class="ft">If replicates arrive</span></a></li>
+    <li><a href="#s15" data-track="ALL"><span class="fn">15</span><span class="ft">With more replicates</span></a></li>
     <li><a href="#s16" data-track="ALL"><span class="fn">16</span><span class="ft">Methods &amp; provenance</span></a></li>
   </ol>
 </nav>
@@ -481,7 +481,7 @@ section{transition:opacity .4s,filter .4s}
       <span><b>Mus&nbsp;musculus</b> · taxid 10090</span>
       <span>SILAC label-free</span>
       <span><span class="chip-h">testosterone-treated</span> vs <span class="chip-l">vehicle control</span></span>
-      <span><b>n&nbsp;=&nbsp;2</b> technical replicates / group</span>
+      <span><b>n&nbsp;=&nbsp;2</b> biological replicates / group (2 experiments)</span>
     </div>
 
     <div class="hero-ledger">
@@ -520,7 +520,7 @@ section{transition:opacity .4s,filter .4s}
     <div class="lane A">
       <div class="lhead"><span class="dot"></span>Track A — What the method delivers</div>
       <h3>Rigor you can audit</h3>
-      <p>A corrected, statistically defensible pipeline. Its most important output is an honest <em>null</em>: at n&nbsp;=&nbsp;2 technical replicates, nothing survives multiple-testing correction — and the pipeline is built to say so out loud.</p>
+      <p>A corrected, statistically defensible pipeline. Its most important output is an honest <em>null</em>: at n&nbsp;=&nbsp;2 per group (low power), nothing survives multiple-testing correction — and the pipeline is built to say so out loud.</p>
       <ul>
         <li>Three fold-change bugs found in the legacy script, then fixed</li>
         <li>limma + MinProb, QC that surfaces its own limitations</li>
@@ -531,7 +531,7 @@ section{transition:opacity .4s,filter .4s}
     <div class="lane B">
       <div class="lhead"><span class="dot"></span>Track B — Biological leads to follow up</div>
       <h3>Hypotheses, clearly labelled</h3>
-      <p>The same data, mined for structure worth a second experiment. Every item here is <em>hypothesis-generating only</em> — a ranked to-do list for when biological replicates exist, never a claim of significance.</p>
+      <p>The same data, mined for structure worth a second experiment. Every item here is <em>hypothesis-generating only</em> — a ranked to-do list for confirming with more replicates, never a claim of significance.</p>
       <ul>
         <li>Top candidate proteins by ranked p-value</li>
         <li>Cytoskeletal, chaperone &amp; ribosomal interaction hubs</li>
@@ -550,15 +550,15 @@ section{transition:opacity .4s,filter .4s}
     <div class="htext">
       <span class="trackchip both"><span class="dot"></span>Framing spine · both tracks</span>
       <h2 class="stitle">The experiment, and its hard ceiling</h2>
-      <p class="deck">A SILAC comparison in <em>mouse</em>: testosterone-treated material against vehicle control. Two runs per condition — <em>technical</em> replicates of one biological sample, not a population.</p>
+      <p class="deck">A SILAC comparison in <em>mouse</em>: testosterone-treated material against vehicle control. Two <em>biological</em> replicates per condition, from two separate experiments — each experiment gave one control and one treated sample. Two is low power, but a change seen in both experiments is a reproduced biological observation, not just a repeated instrument reading.</p>
     </div>
   </div>
 
   <div class="prose reveal">
-    <p>The four measured channels are <span class="mono">31579, 31581</span> (vehicle control) and <span class="mono">31578, 31580</span> (testosterone-treated). Because both replicates re-measure the same biological material, their p-values describe <em>“is this ratio reproducible on this instrument,”</em> not <em>“does testosterone change this protein in the population.”</em> That distinction is the governing constraint of the entire analysis, and it is why the significance line is never reached.</p>
+    <p>The four measured channels are <span class="mono">31579, 31581</span> (vehicle control) and <span class="mono">31578, 31580</span> (testosterone-treated). The two replicates per group come from separate experiments, so a change seen in both is a reproduced biological observation. But two per group is very little: the p-values have almost no power to say <em>“does testosterone change this protein in the population,”</em> and that is the governing constraint of the entire analysis and the reason the significance line is never reached. Which treated sample was paired with which control inside an experiment has not yet been confirmed; the model treats the two groups as unpaired (<span class="mono">~group</span>), and a paired / blocked model is an open question.</p>
     <p><strong>A correction worth flagging.</strong> The original design document assumed a human system (taxid 9606). Inspection of the committed data showed otherwise: 99.7% of gene symbols are title-case MGI nomenclature (<em>Lama1, Sptan1, Cryab</em>), and <span class="mono">H2-K1</span> is a mouse MHC class-I gene. The organism was corrected to <mark class="b">Mus&nbsp;musculus, taxid&nbsp;10090</mark>, and every organism-specific step — STRING, g:Profiler, Enrichr libraries — was re-pointed to mouse. Human parameters would have returned meaningless mappings.</p>
     <p><strong>A second correction, and a bigger one: the treatment assignment was inverted.</strong> This pipeline originally read <span class="mono">31578, 31580</span> as control and <span class="mono">31579, 31581</span> as treated, inherited from the design document. The lab's own earlier Pilot Project says the opposite — its cleaned tables and cleaning script name the columns <span class="mono">Vehicle_Rep1_31579</span>, <span class="mono">Vehicle_Rep2_31581</span>, <span class="mono">Testosterone_Rep1_31578</span>, <span class="mono">Testosterone_Rep2_31580</span>. The check that settled it: on the 30 proteins common to the pilot's cleaned table and this pipeline's output, the two log₂ fold changes correlate at <mark>r = −0.82</mark> with sign agreement of <strong>2/30</strong>. Mirror images. The pipeline was flipped to match the lab.</p>
-    <p>Every direction in this report is therefore the <em>corrected</em> one, and the numbers below are not the ones an earlier draft carried: <span class="inline-r">509 up</span> / <span class="inline-b">206 down</span> is the reverse of the 206/509 that shipped before. Three things are worth stating plainly. The replicate <em>pairing</em> never changed — rep 1 is <span class="mono">31578/31579</span>, rep 2 is <span class="mono">31580/31581</span>, as it always was; only the direction inverts. Every p-value is <strong>unchanged</strong>, because swapping two group labels negates log₂FC and <span class="mono">t</span> but leaves <span class="mono">|t|</span> and therefore <span class="mono">p</span> exactly invariant — the headline null is untouched by this correction. And the fix itself was a one-line edit to <span class="mono">config/sample_sheet.tsv</span>, which is precisely the payoff of having made that sheet load-bearing.</p>
+    <p>Every direction in this report is therefore the <em>corrected</em> one, and the numbers below are not the ones an earlier draft carried: <span class="inline-r">509 up</span> / <span class="inline-b">206 down</span> is the reverse of the 206/509 that shipped before. Three things are worth stating plainly. The replicate <em>pairing</em> never changed — rep 1 is <span class="mono">31578/31579</span>, rep 2 is <span class="mono">31580/31581</span>, as it always was (the pipeline pairs by replicate index; the true within-experiment pairing is still unconfirmed); only the direction inverts. Every p-value is <strong>unchanged</strong>, because swapping two group labels negates log₂FC and <span class="mono">t</span> but leaves <span class="mono">|t|</span> and therefore <span class="mono">p</span> exactly invariant — the headline null is untouched by this correction. And the fix itself was a one-line edit to <span class="mono">config/sample_sheet.tsv</span>, which is precisely the payoff of having made that sheet load-bearing.</p>
     <p class="note">A note on the isotope labels, since SILAC invites the assumption: the workbook's <em>Protein Report L</em> and <em>Protein Report H</em> sheets record which sheet a channel's row lives in, <strong>not</strong> which condition it belongs to. All four samples are complete SILAC runs carrying their own Light, Heavy and H/L columns, and this pipeline analyses the combined <span class="mono">Intensity</span> — it never uses the native H/L ratio. Whether that is the right quantity is an open question filed for the lab, not a settled one.</p>
   </div>
 
@@ -666,7 +666,7 @@ section{transition:opacity .4s,filter .4s}
   </div>
 
   <div class="prose reveal">
-    <p><strong>The honest limitation, surfaced.</strong> Raw intensities reproduce well between runs (Pearson <span class="mono">r</span> = 0.84 control, 0.86 treated). But the fold-change — a <em>difference</em> of two large, similar numbers — is noisy: replicate <span class="mono">r</span> = <mark>0.27</mark>, below the 0.50 gate, so the check returns <strong>WARN</strong>. Subtracting two near-equal quantities amplifies small wobbles, so per-protein up/down calls at n&nbsp;=&nbsp;2 are not individually trustworthy. This is not a failure to hide; it is precisely the on-paper justification for limma, which borrows information across all ~1,938 proteins to stabilise each estimate when single-protein replicates cannot.</p>
+    <p><strong>The honest limitation, surfaced.</strong> Raw intensities reproduce well between the two experiments (Pearson <span class="mono">r</span> = 0.84 control, 0.86 treated). But the fold-change — a <em>difference</em> of two large, similar numbers — is noisy: replicate <span class="mono">r</span> = <mark>0.27</mark>, below the 0.50 gate, so the check returns <strong>WARN</strong>. Subtracting two near-equal quantities amplifies small wobbles, so per-protein up/down calls at n&nbsp;=&nbsp;2 are not individually trustworthy. This is not a failure to hide; it is precisely the on-paper justification for limma, which borrows information across all ~1,938 proteins to stabilise each estimate when single-protein replicates cannot.</p>
     <p>The centering check likewise returns <strong>WARN</strong> (mean log₂FC = +0.28 against a ±0.10 tolerance) and writes a centered copy for inspection, without overriding the “no normalization” rule that the recipe calls for. Per-sample intensity distributions are near-identical (medians 27.4–27.8 log₂), which is the basis for <em>not</em> adding a cross-sample normalization step; and most “missingness” is structural — proteins genuinely absent from one condition — rather than random dropout.</p>
     <p class="note">One loose end, stated rather than hidden: the standalone <span class="mono">qc_replicate_correlation.csv</span> still labels those two raw-<span class="mono">r</span> values with the pre-correction assignment, because <span class="mono">replicate_check.py</span> hardcodes its channel pairs instead of reading the sample sheet and so was not carried along by the treatment-assignment flip. The values are right and the pairing is right; only the two column <em>names</em> in that one QC file are swapped. The figures on this page, which do read the sheet, are correct — and the numbers quoted above are the corrected ones.</p>
   </div>
@@ -758,7 +758,7 @@ section{transition:opacity .4s,filter .4s}
   </div>
 
   <div class="prose reveal">
-    <p>At n&nbsp;=&nbsp;4 the sample covariance matrix is rank-deficient: exactly three principal components exist by construction, eigenvalues are biased, and PC1 can be driven by a single sample. So PCA and hierarchical clustering run in <strong>QC-only</strong> mode — a sanity check that technical replicate pairs sit near each other — below the trustworthy gate of n&nbsp;≥&nbsp;6. Heavier methods are skipped outright, each with its reason recorded in a machine-readable registry.</p>
+    <p>At n&nbsp;=&nbsp;4 the sample covariance matrix is rank-deficient: exactly three principal components exist by construction, eigenvalues are biased, and PC1 can be driven by a single sample. So PCA and hierarchical clustering run in <strong>QC-only</strong> mode — a sanity check that the two replicates of each group sit near each other — below the trustworthy gate of n&nbsp;≥&nbsp;6. Heavier methods are skipped outright, each with its reason recorded in a machine-readable registry.</p>
   </div>
 
   <div class="figrow reveal">
@@ -930,7 +930,7 @@ section{transition:opacity .4s,filter .4s}
     <div class="lane B" style="background:linear-gradient(180deg,var(--up-wash),transparent 60%);border-right:0">
       <div class="lhead"><span class="dot"></span>Single-condition · 604 proteins</div>
       <h3>Present in only one arm</h3>
-      <p>Identified in control-only or treated-only, with no cross-condition ratio to compute. Excluded from limma by design — imputing an entire missing condition manufactures data — but retained as a rich, separate follow-up pool once biological replicates make their presence/absence pattern testable.</p>
+      <p>Identified in control-only or treated-only, with no cross-condition ratio to compute. Excluded from limma by design — imputing an entire missing condition manufactures data — but retained as a rich, separate follow-up pool. A control-only protein here is present in both control experiments and absent in both treated ones (absence can still mean below the detection limit), so the pattern is reproduced; more replicates would make it testable.</p>
     </div>
   </div>
   <p class="note">Together these two pools account for the gap between the 1,938 tested and the 2,552 detected. Nothing is deleted silently; everything is filed where it can be picked up again — including the two quarantined junk accessions, which are written to their own file rather than dropped on the floor.</p>
@@ -942,16 +942,16 @@ section{transition:opacity .4s,filter .4s}
     <div class="folionum">15</div>
     <div class="htext">
       <span class="trackchip both"><span class="dot"></span>Forward path · both tracks</span>
-      <h2 class="stitle">What unlocks with biological replicates</h2>
+      <h2 class="stitle">What unlocks with more replicates</h2>
       <p class="deck">The ceiling here is replication, not architecture. Growing the study starts with a config change — but it is not <em>only</em> a config change, and the honest version of that claim is worth more than the tidy one.</p>
     </div>
   </div>
 
   <div class="prose reveal">
-    <p>Adding biological replicates starts by appending rows to <span class="mono">sample_sheet.tsv</span> (new sample IDs, replicate index 3, 4, …). From there the pipeline splits cleanly into two halves, and it is worth being precise about which is which.</p>
+    <p>Adding more replicates (further experiments) starts by appending rows to <span class="mono">sample_sheet.tsv</span> (new sample IDs, replicate index 3, 4, …). From there the pipeline splits cleanly into two halves, and it is worth being precise about which is which.</p>
     <p><strong>Genuinely automatic.</strong> The statistical core re-derives itself from the sheet with no code change at all: <span class="mono">etl/build_matrix.py</span> regenerates the intensity-matrix and design contracts, and <span class="mono">limma_test.R --design</span> builds <span class="mono">model.matrix(~group)</span> from whatever that file says — the design matrix really does regenerate. <span class="mono">viz/style.py</span> derives its sample maps the same way, so every figure relabels itself. And <span class="mono">gated/pca_cluster.py</span> hardcodes nothing about sample count: its gates re-evaluate against the sheet and flip themselves on, verified at n&nbsp;=&nbsp;6 and n&nbsp;=&nbsp;20. This is also what made the treatment-assignment correction above a one-line edit rather than a hunt through nine files.</p>
     <p><strong>Guarded, but not automatic.</strong> Three stages do <em>not</em> generalise: <span class="mono">foldchange.py</span>, <span class="mono">replicate_check.py</span> and <span class="mono">qc/schema.py</span>. They pair replicate <em>i</em> of control with replicate <em>i</em> of treated, split the workbook by its two raw sheets, and restore a specific left-row-order and column dtype after the merge — none of which has a meaning at N replicates. They read the sheet to learn <em>which</em> samples are which, and they assert against it, so a changed design fails loudly with “this stage is 2-channel SILAC-specific” rather than silently analysing the wrong columns. That is a tripwire, not an adaptation: those three stages must be rewritten for a new design, and the error message says so instead of pretending otherwise.</p>
-    <p>So: the inference layer scales on a config change, the ingest layer needs work, and the pipeline is built to tell you which is which at runtime. Once the replicates exist, the p-values graduate from “technical reproducibility” to “population-level biological significance” — and only then does the caveat ribbon come off. Each gated analysis switches itself on as its sample threshold is met:</p>
+    <p>So: the inference layer scales on a config change, the ingest layer needs work, and the pipeline is built to tell you which is which at runtime. Once more replicates exist, the p-values gain the power to graduate from “n = 2, low power” to firmer population-level evidence — and only then does the caveat ribbon come off. Each gated analysis switches itself on as its sample threshold is met:</p>
   </div>
 
   <ul class="unlock reveal">
@@ -1011,13 +1011,13 @@ section{transition:opacity .4s,filter .4s}
   <div class="fwrap">
     <div class="colophon">
       <h4>A null result, honestly kept.</h4>
-      <p>The deliverable is not a list of significant proteins — there are none. It is a corrected, reproducible, self-auditing pipeline, a ranked set of hypotheses filed for the day biological replicates arrive, and a documented refusal to manufacture a story the data cannot support. At n&nbsp;=&nbsp;2, that is the most useful thing the analysis can be.</p>
+      <p>The deliverable is not a list of significant proteins — there are none. It is a corrected, reproducible, self-auditing pipeline, a ranked set of hypotheses filed for the day more replicates are added, and a documented refusal to manufacture a story the data cannot support. At n&nbsp;=&nbsp;2, that is the most useful thing the analysis can be.</p>
     </div>
     <div class="meta">
       <b>REPORT</b> · Item 20 — final interactive report<br>
       <b>ORGANISM</b> · Mus musculus (taxid 10090)<br>
       <b>DESIGN</b> · SILAC · testosterone (H) vs vehicle (L)<br>
-      <b>REPLICATES</b> · n = 2 technical / group<br>
+      <b>REPLICATES</b> · n = 2 biological / group (2 experiments)<br>
       <b>HEADLINE</b> · 0 / 1,938 at FDR &lt; 0.05<br>
       <b>LEADS</b> · 715 regulated · hypothesis-generating<br>
       <b>BUILD</b> · single self-contained HTML · figures embedded<br>

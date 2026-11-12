@@ -598,7 +598,8 @@ _HEADER_ONLY_REASON = {
     "ipa_input_significant.csv": (
         "DECISIONS_LOG D2: 0 of 1938 proteins pass FDR<0.05 (min adj.p = 0.116 "
         "under the D9 trend/robust default). That is the expected ceiling of an "
-        "n=2 TECHNICAL-replicate design, not a bug and not a missing file."
+        "n=2-per-group design (low power; 2 biological replicates from 2 "
+        "separate experiments, D23), not a bug and not a missing file."
     ),
     "enrichment/ora_up.csv": (
         "DECISIONS_LOG D6: 0 GO/KEGG/Reactome terms survive g:Profiler g:SCS "

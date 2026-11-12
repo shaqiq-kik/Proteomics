@@ -8,7 +8,8 @@ The figures comply -- :data:`config.constants.CAVEAT_TEXT` is stamped onto 10+
 committed PNG/SVGs. **The CSVs did not.** ``results/ipa_input.csv`` is the file
 that actually leaves this repo (it gets uploaded to QIAGEN IPA and mailed to
 collaborators) and it carried no indication that its 715 "regulated" proteins
-are hypothesis-generating leads from two technical replicates, none of which
+are hypothesis-generating leads from n = 2 biological replicates per group
+(2 separate experiments, DECISIONS_LOG D23), none of which
 survive FDR correction.
 
 The obvious fix -- a ``#`` comment header inside the CSV -- is unavailable. IPA's
@@ -28,7 +29,7 @@ What a sidecar carries
     :data:`config.constants.CAVEAT_TEXT`, **verbatim**. Deliberately not
     reworded here -- it is the same string stamped on the figures, so a reader
     comparing a CSV to a plot sees identical wording, and there is exactly one
-    place to edit if the design ever gains biological replicates.
+    place to edit if the design ever changes.
 ``git_commit`` / ``git_dirty``
     HEAD of the tree that produced the file, and whether that tree had
     uncommitted changes (a clean sha alone would be a false promise otherwise).

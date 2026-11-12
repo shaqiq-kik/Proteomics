@@ -477,7 +477,7 @@ def validate_ipa_significant(path, *, counts_path=None, strict=True):
     """Assert the header-only contract of ``ipa_input_significant.csv``.
 
     **This file being empty is the result, not a defect.** 0 of 1938 proteins
-    pass FDR < 0.05 -- the expected n=2 technical-replicate ceiling
+    pass FDR < 0.05 -- the expected ceiling at n = 2 per group (low power)
     (DECISIONS_LOG D2, research1.md SECTION 5). So the contract is: correct
     header, exactly ``frozen_counts["n_significant_fdr05"]`` data rows. If that
     number is ever non-zero the JSON changes with the data, not this code, and

@@ -72,10 +72,10 @@ PRE_D7_SAMPLE_CONDITION = {
     "Intensity 31581": "treated",
 }
 
-#: sha256 of the caveat string as stamped on the committed figures (202 bytes,
-#: em dash intact). Compared as a digest so an invisible character swap -- an
+#: sha256 of the caveat string as stamped on the committed figures (232 bytes,
+#: em dash intact; text corrected by D23). Compared as a digest so an invisible character swap -- an
 #: en dash for the em dash, say -- cannot pass review by eye.
-CAVEAT_SHA256 = "02edd2eb390439ebef05126c0551c12de5d52092c1cdb6e5d122fd74e44f5446"
+CAVEAT_SHA256 = "c23d4845b3bcb13b8a45529a198da05a96f57686ad71fcf810792216dac28cb3"
 
 
 @pytest.fixture(scope="module")
@@ -157,7 +157,7 @@ def test_caveat_text_is_the_constants_object(style):
 def test_caveat_text_digest_is_unchanged(style):
     digest = hashlib.sha256(style.CAVEAT_TEXT.encode("utf-8")).hexdigest()
     assert digest == CAVEAT_SHA256
-    assert len(style.CAVEAT_TEXT.encode("utf-8")) == 202
+    assert len(style.CAVEAT_TEXT.encode("utf-8")) == 232
     assert "—" in style.CAVEAT_TEXT  # em dash, not en dash or hyphen
 
 
@@ -309,7 +309,7 @@ def test_bare_import_style_from_various_cwds(cwd, label):
         assert style.SAMPLE_COLS == {D7_SAMPLE_COLS!r}, style.SAMPLE_COLS
         assert style.SAMPLE_LABELS == {D7_SAMPLE_LABELS!r}, style.SAMPLE_LABELS
         assert style.SAMPLE_CONDITION == {D7_SAMPLE_CONDITION!r}, style.SAMPLE_CONDITION
-        assert len(style.CAVEAT_TEXT.encode()) == 202
+        assert len(style.CAVEAT_TEXT.encode()) == 232
         print("OK")
         """
     )
@@ -329,7 +329,7 @@ def test_qualified_viz_style_import_still_works():
         sys.path.insert(0, {str(_PKG_DIR)!r})    # what network_figure.py adds
         sys.path.insert(0, {str(_REPO_ROOT)!r})
         from viz.style import CAVEAT_TEXT, add_caveat, SAMPLE_COLS
-        assert len(CAVEAT_TEXT.encode()) == 202
+        assert len(CAVEAT_TEXT.encode()) == 232
         assert SAMPLE_COLS == {D7_SAMPLE_COLS!r}
         print("OK")
         """

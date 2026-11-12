@@ -8,8 +8,8 @@ Seed set: the "regulated" proteins from `results/foldchange_all.csv` (rows where
 DECISIONS_LOG D7 correction of the inverted control/treated assignment (the seed
 SET is unchanged by D7; only the direction labels swapped). Those three counts
 are asserted against `tests/expected/frozen_counts.json`, never typed here.
-These are the +/-0.585 log2FC HYPOTHESIS-GENERATING set from a n=2 technical-replicate
-SILAC experiment where 0/1938 proteins survive FDR < 0.05 (see
+These are the +/-0.585 log2FC HYPOTHESIS-GENERATING set from a SILAC experiment with n=2
+biological replicates per group (2 separate experiments, low power) where 0/1938 proteins survive FDR < 0.05 (see
 `proteomics_de/results/de_stats.json` / the limma report). The PPI network
 below shows structure among *candidate* proteins only -- it is exploratory
 and must not be read as a network of statistically confirmed hits.
@@ -419,7 +419,7 @@ def main():
         "network_n_batches": net_n_batches,
         "rate_limit_seconds_between_calls": RATE_LIMIT_SECONDS,
         "caveat": (
-            "n=2 technical replicates per condition (no biological replication); "
+            "n=2 biological replicates per group, from 2 separate experiments (low power); "
             "0/1938 proteins survive FDR<0.05 (limma). The 715 seed proteins are "
             "the |log2FC|>=0.585 HYPOTHESIS-GENERATING set, not confirmed "
             "significant hits. This PPI network shows structure among candidate "

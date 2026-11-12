@@ -99,7 +99,8 @@ def fig_sample_correlation(universe):
             "samples, computed over the full 2554-protein identified universe "
             "(pairwise-complete, zero/absent treated as missing). Within-"
             "condition replicate pairs (control_1 vs control_2; treated_1 vs "
-            "treated_2) are the QC check for technical reproducibility; "
+            "treated_2) are the QC check for reproducibility between the two "
+            "separate experiments (DECISIONS_LOG D23); "
             "cf. qc_replicate_correlation.csv, which reports a similar check "
             "on the derived fold-change ratios rather than raw intensities."
         ),

@@ -14,16 +14,24 @@
 # proteomics_de/qc/schema.py + validate.py, and (b) read by a human or a future
 # script without re-deriving the design from source code.
 #
-# FORWARD-PATH PIVOT POINT: per research1.md's "FORWARD-PATH SECTION — If
-# biological replicates arrive", the design is meant to become a config change,
-# not a rewrite. The mechanism is `config/sample_sheet.tsv`: it is
-# replicate-count-agnostic by construction (sample, group, channel, replicate).
-# Adding biological replicates means appending rows to that sheet (new sample
-# IDs, replicate index 3, 4, ...) and regenerating `design.tsv` / the limma
+# FORWARD-PATH PIVOT POINT: per research1.md's "FORWARD-PATH SECTION" (written
+# before D23, when the samples were thought to be technical replicates), the
+# design is meant to become a config change, not a rewrite. The mechanism is
+# `config/sample_sheet.tsv`: it is replicate-count-agnostic by construction
+# (sample, group, channel, replicate). Adding more replicates (further
+# experiments) means appending rows to that sheet (new sample IDs, replicate
+# index 3, 4, ...) and regenerating `design.tsv` / the limma
 # `model.matrix(~group)` from it — not editing this file's structure or the
-# scripts' logic by hand. When that happens, thresholds.n_technical_replicates
-# below changes from 2 to reflect the new design, and the
-# "technical-replicates-only" caveat (see notes.caveat) is lifted.
+# scripts' logic by hand. When that happens, design.n_biological_replicates_per_group
+# below changes from 2 to reflect the new design, and the low-power wording
+# (see notes.caveat) is revisited.
+#
+# REPLICATE DESIGN (DECISIONS_LOG D23, 2026-11-11; stated by the investigator,
+# Dr. Walker): 2 BIOLOGICAL replicates per group (control and testosterone-
+# treated), from 2 SEPARATE experiments; each experiment gave one control and
+# one treated sample. Pairing not yet confirmed (assumed 31579/31578 and
+# 31581/31580). A paired / blocked limma model is an OPEN question; the model
+# stays ~group.
 # =============================================================================
 
 organism:
@@ -40,11 +48,15 @@ organism:
 
 design:
   assay: "SILAC (Stable Isotope Labeling by Amino acids in Cell culture)"
-  # n=2 TECHNICAL replicates per group; NOT biological replicates. This is a
-  # hard ceiling on statistical inference (see notes.caveat) until the sample
-  # sheet grows per the FORWARD-PATH note above.
-  n_technical_replicates_per_group: 2
-  n_biological_replicates_per_group: 1
+  # n=2 BIOLOGICAL replicates per group, from 2 separate experiments (D23).
+  # n = 2 is low statistical power: it caps what can be inferred (see
+  # notes.caveat) until the sample sheet grows per the FORWARD-PATH note above.
+  # The number of technical readings per sample was NOT stated by the
+  # investigator; each channel is treated as one biological sample (1).
+  n_technical_replicates_per_group: 1   # not stated by the investigator; each channel is treated as one biological sample
+  n_biological_replicates_per_group: 2
+  experiments: 2   # each experiment gave one control and one treated sample
+  pairing_confirmed: false   # assumed 31579/31578 and 31581/31580; limma stays ~group (open question, D23)
   sample_sheet: "proteomics_de/config/sample_sheet.tsv"
   # CORRECTED by DECISIONS_LOG D7 (2026-08-01). This block previously read
   # control = 31578/31580, treated = 31579/31581 -- the inverted assignment.
@@ -80,7 +92,7 @@ thresholds:
 
 statistics:
   engine: "limma 3.68.4 (R 4.6.1)"
-  design_matrix: "~group (two-group contrast; no batch/covariate terms at n=2 technical replicates)"
+  design_matrix: "~group (two-group contrast; no batch/experiment/covariate terms at n=2 per group; a paired/blocked model is an open question, D23)"
   # DECISIONS_LOG D9: the default is trend=TRUE, robust=TRUE (research1.md
   # line 124). The vanilla run is retained as results/qc_limma_vanilla.csv so
   # the two flavours stay comparable; the conclusion is unchanged either way
@@ -211,12 +223,15 @@ qc:
 
 notes:
   caveat: >
-    n=2 is a TECHNICAL, not biological, replicate count. Per research1.md and
-    DECISIONS_LOG.md D2, 0/1938 proteins survive adj.P.Val<0.05 (min adj.p =
-    0.305) -- the expected ceiling at this replicate count, not a bug (corr of
-    limma log2FC vs. pipeline log2FC = 1.0000). Every downstream figure/table
-    must carry a "technical replicates -> hypothesis-generating only" caveat
-    until biological replicates are added per the FORWARD-PATH section.
+    n=2 BIOLOGICAL replicates per group, from 2 separate experiments (D23,
+    stated by Dr. Walker; each experiment gave one control and one treated
+    sample; pairing unconfirmed). n = 2 per group is low statistical power:
+    0/1938 proteins survive adj.P.Val<0.05 (min adj.p = 0.305; see D2 and D9) --
+    the expected ceiling at this n, not a bug (corr of limma log2FC vs.
+    pipeline log2FC = 1.0000). Results stay exploratory and
+    hypothesis-generating at this n, and every downstream figure/table must
+    carry that caveat until more replicates are added per the FORWARD-PATH
+    section.
 
 # -----------------------------------------------------------------------------
 # walker_additions -- DECISIONS_LOG D20.
@@ -262,31 +277,33 @@ walker_additions:
   # "no problems". The user first chose a STRICT rule (|log2FC| >= 0.585 AND all
   # four readings seen AND n_imputed == 0), which admits nothing -- every
   # tier-3 row is in that tier because a reading is missing -- and then WIDENED
-  # it (DECISIONS_LOG D20): add every partial-tier protein with a real log2FC
-  # and |log2FC| >= min_abs_log2fc, even though one replicate was imputed by the
-  # pipeline (n_imputed 1 or 2). Set the two "require_*" switches back to true to
-  # restore the strict rule. Qualitative rows have no log2FC and never qualify.
-  # Proteins already on the list (core, measured additions, assigned) are never
-  # duplicated.
+  # it (DECISIONS_LOG D20), which admitted 247 partial-tier proteins.
+  # DR. WALKER'S FINAL ANSWER (DECISIONS_LOG D24): DROP THOSE 247. Both "require_*"
+  # switches below are therefore true again = the strict rule = exactly his
+  # original "no problems" wording, and it admits ZERO recovered proteins. The
+  # rule machinery stays (nothing is deleted): setting both switches back to
+  # false re-admits the 247 (the unit tests exercise that path from a tmp config).
+  # Qualitative rows have no log2FC and never qualify. Proteins already on the
+  # list (core, measured additions, assigned) are never duplicated.
   recovered_rule:
     min_abs_log2fc: 0.585          # = thresholds.log2fc_regulation_cutoff
     require_partial_tier: true     # tier-3 rows with a real log2FC only
-    require_all_replicates_seen: false   # strict rule: all 4 readings present and > 0
-    require_no_imputed_values: false     # strict rule: n_imputed == 0
+    require_all_replicates_seen: true    # strict rule: all 4 readings present and > 0 (D24: true)
+    require_no_imputed_values: true      # strict rule: n_imputed == 0 (D24: true)
 
 # -----------------------------------------------------------------------------
 # walker_enrichment -- DECISIONS_LOG D21.
 #
 # LOAD-BEARING: read at run time by enrich/walker_enrichment.py (the keys below
 # are the only place these values live). ORA and STRING over Dr. Walker's
-# 968-protein list (results/ipa_input_walker.csv, D20), written ADDITIVELY to
+# 721-protein list (results/ipa_input_walker.csv, D20/D24), written ADDITIVELY to
 # results/enrichment_walker/; results/enrichment/ (the 715 run) is read-only here.
 #
 # Everything the 715 run fixes in code stays there and is reused, not copied:
 # g:Profiler sources / g:SCS / user_threshold 0.05 / domain_scope=custom (ora.py),
 # STRING species 10090 / required_score 400 (string_ppi.py). The BACKGROUND is the
 # same measured-proteome universe (2552 rows / 2530 unique symbols, also the IPA
-# Reference Set, D19); it already contains all 968 query symbols, so it is NOT
+# Reference Set, D19); it already contains all 721 query symbols, so it is NOT
 # extended -- enrich/walker_enrichment.py refuses to run if that stops being true.
 # -----------------------------------------------------------------------------
 walker_enrichment:

@@ -11,6 +11,13 @@ the source and now run as ordinary tests. The recovered-protein tests encode the
 user's WIDENED rule (partial-tier proteins with |log2FC| >= 0.585 are added even
 with imputed values); the strict rule is exercised by flipping the two config
 switches ``require_all_replicates_seen`` / ``require_no_imputed_values``.
+
+D24: Dr. Walker's final answer is to DROP the 247 recovered proteins, so the
+committed config now has both switches ``true`` (the strict rule; zero recovered).
+The widened code path must stay covered, so the ``cfg`` fixture below is the
+committed config with the two switches set back to ``false`` IN A COPY (a "tmp
+config"); ``default_cfg`` is the committed config untouched, and the tests that
+name it assert the strict default yields no recovered protein.
 """
 
 from __future__ import annotations
@@ -42,7 +49,8 @@ ID = "UniProt Accession Number"
 CTRL = design.control_columns()
 TRT = design.treated_columns()
 READINGS = CTRL + TRT
-OUTPUT_NAMES = (wa.WALKER_CSV_FILENAME, wa.WALKER_TXT_FILENAME, wa.WALKER_MANIFEST_FILENAME)
+OUTPUT_NAMES = (wa.WALKER_CSV_FILENAME, wa.WALKER_TXT_FILENAME, wa.WALKER_MANIFEST_FILENAME,
+                wa.WALKER_NOASSIGNED_CSV_FILENAME, wa.WALKER_NOASSIGNED_TXT_FILENAME)
 REAL_PROTECTED = ("ipa_input.csv", "ipa_input_extended.csv", "ipa_input_extended.txt",
                   "ipa_input_full.csv", "ipa_input_full.txt")
 
@@ -59,8 +67,32 @@ def _sha(path):
 
 
 @pytest.fixture
-def cfg():
+def default_cfg():
+    """The committed config, untouched: the strict recovered rule (D24)."""
     return wa.load_config()
+
+
+@pytest.fixture
+def cfg(default_cfg):
+    """The committed config with the two 'no problems' switches OFF (the D20 widened rule).
+
+    A copy, never the committed file: the committed config is strict since D24, and
+    the widened code path (which admits the 247) must stay covered.
+    """
+    widened = copy.deepcopy(default_cfg)
+    widened["recovered_rule"].update(require_all_replicates_seen=False,
+                                     require_no_imputed_values=False)
+    return widened
+
+
+def _widened_yaml(tmp_path):
+    """A tmp config.yaml equal to the committed one but with the widened recovered rule."""
+    full = yaml.safe_load(wa._PKG_DIR.joinpath("config", "config.yaml").read_text(encoding="utf-8"))
+    full["walker_additions"]["recovered_rule"].update(
+        require_all_replicates_seen=False, require_no_imputed_values=False)
+    path = tmp_path / "widened_config.yaml"
+    path.write_text(yaml.safe_dump(full), encoding="utf-8")
+    return path
 
 
 @pytest.fixture
@@ -617,13 +649,24 @@ def test_recovered_rows_are_ordered_by_abs_log2fc_with_stable_ties(inputs_dir, c
     assert list(_recovered(wa.compute_walker(inputs_dir, cfg))[ID]) == list(rec[ID])
 
 
-def test_the_n_imputed_cap_is_not_a_config_key_any_more_only_the_two_switches(cfg):
-    assert set(cfg["recovered_rule"]) == {
+def test_the_n_imputed_cap_is_not_a_config_key_any_more_only_the_two_switches(default_cfg):
+    assert set(default_cfg["recovered_rule"]) == {
         "min_abs_log2fc", "require_partial_tier",
         "require_all_replicates_seen", "require_no_imputed_values"}
-    assert cfg["recovered_rule"]["require_all_replicates_seen"] is False
-    assert cfg["recovered_rule"]["require_no_imputed_values"] is False
-    assert cfg["recovered_rule"]["require_partial_tier"] is True
+    # D24 (Dr. Walker: drop the 247): the committed config is the STRICT rule again.
+    assert default_cfg["recovered_rule"]["require_all_replicates_seen"] is True
+    assert default_cfg["recovered_rule"]["require_no_imputed_values"] is True
+    assert default_cfg["recovered_rule"]["require_partial_tier"] is True
+
+
+def test_the_committed_default_config_admits_no_recovered_protein_end_to_end(inputs_dir, default_cfg):
+    res = wa.compute_walker(inputs_dir, default_cfg)
+    assert res.counts["recovered"] == 0 and res.counts["total"] == 721
+    assert res.counts["without_assigned"] == 716
+    assert len(res.manifest) == res.counts["additions_listed"] == 6
+    assert [n for _l, n in res.steps] == [862, 856, 247, 247, 0, 0]
+    assert list(res.frame[ID].iloc[715:716]) == ["P97401"]
+    assert (res.frame["value_source"] == "assigned").sum() == 5
 
 
 def test_the_widened_rule_adds_only_measured_rows_and_never_touches_the_assigned_set(inputs_dir, cfg):
@@ -649,14 +692,33 @@ def _counts_file(tmp_path, **overrides):
 
 
 def test_recovered_rows_failing_the_frozen_count_check_raise(inputs_dir, tmp_path):
-    counts = _counts_file(tmp_path, n_walker_recovered=0)
+    counts = _counts_file(tmp_path, n_walker_recovered=247)
     with pytest.raises(WalkerAdditionsError, match="recovered"):
-        wa.build_walker_from_results(inputs_dir, counts_path=counts)   # data says 247
+        wa.build_walker_from_results(inputs_dir, counts_path=counts)   # strict default: data says 0
+
+
+def test_the_widened_rule_fails_the_committed_frozen_counts_loudly(inputs_dir, tmp_path):
+    """Switching the rule back to widened without re-deriving the counts is an error."""
+    conf = _widened_yaml(tmp_path)
+    with pytest.raises(WalkerAdditionsError, match="recovered: 247 rows, expected 0"):
+        wa.build_walker_from_results(inputs_dir, config_path=conf)
+    assert _no_outputs(inputs_dir) == []
+
+
+def test_the_widened_rule_builds_when_the_counts_are_rederived(inputs_dir, tmp_path):
+    """The widened path stays buildable end to end (968 rows) once the counts agree."""
+    conf = _widened_yaml(tmp_path)
+    counts = _counts_file(tmp_path, n_walker_recovered=247, n_walker_additions_listed=253,
+                          n_ipa_walker=968, n_ipa_walker_without_assigned=963)
+    res = wa.build_walker_from_results(inputs_dir, counts_path=counts, config_path=conf)
+    assert res.counts["total"] == 968 and res.counts["without_assigned"] == 963
+    assert len(_read(inputs_dir / wa.WALKER_CSV_FILENAME)) == 968
+    assert len(_read(inputs_dir / wa.WALKER_NOASSIGNED_CSV_FILENAME)) == 963
 
 
 def test_a_failed_validation_leaves_no_deliverable_behind(inputs_dir, tmp_path):
     """A rejected count check must not leave a deliverable (or scratch dir) behind."""
-    counts = _counts_file(tmp_path, n_walker_recovered=0)
+    counts = _counts_file(tmp_path, n_walker_recovered=247)
     with pytest.raises(WalkerAdditionsError):
         wa.build_walker_from_results(inputs_dir, counts_path=counts)
     assert _no_outputs(inputs_dir) == []
@@ -664,7 +726,8 @@ def test_a_failed_validation_leaves_no_deliverable_behind(inputs_dir, tmp_path):
 
 
 @pytest.mark.parametrize("failing", ["validate_ipa", "assert_twins_agree",
-                                     "assert_core_rows_are_verbatim"])
+                                     "assert_core_rows_are_verbatim",
+                                     "assert_without_assigned_is_the_list_minus_assigned"])
 def test_a_failure_after_staging_leaves_no_deliverable_and_no_scratch_dir(
         inputs_dir, monkeypatch, failing):
     """The files are staged and validated BEFORE any rename into the official names."""
@@ -681,7 +744,7 @@ def test_a_failure_after_staging_leaves_no_deliverable_and_no_scratch_dir(
 def test_a_failed_rebuild_does_not_clobber_the_previous_good_deliverables(inputs_dir, tmp_path):
     wa.build_walker_from_results(inputs_dir)
     before = {n: (inputs_dir / n).read_bytes() for n in OUTPUT_NAMES}
-    counts = _counts_file(tmp_path, n_walker_recovered=0)
+    counts = _counts_file(tmp_path, n_walker_recovered=247)
     with pytest.raises(WalkerAdditionsError):
         wa.build_walker_from_results(inputs_dir, counts_path=counts)
     assert before == {n: (inputs_dir / n).read_bytes() for n in OUTPUT_NAMES}
@@ -875,7 +938,7 @@ class _WriteSpy:
             monkeypatch.setattr(Path, attr, make(real))
 
 
-def test_a_build_writes_exactly_the_three_new_files_and_nothing_else(inputs_dir, monkeypatch):
+def test_a_build_writes_exactly_the_five_new_files_and_nothing_else(inputs_dir, monkeypatch):
     spy = _WriteSpy(monkeypatch)
     wa.build_walker_from_results(inputs_dir)
     here = inputs_dir.resolve()
@@ -953,3 +1016,105 @@ def test_write_walker_can_skip_the_txt_twin(tmp_path):
         "p_value": [0.1], "adj_p_value": [0.9]}), [])
     written = wa.write_walker(frame, tmp_path / "w.csv", txt_path=False)
     assert [p.name for p in written] == ["w.csv"] and not (tmp_path / "w.txt").exists()
+
+
+# ---------------------------------------------------------------------------
+# 10. The list WITHOUT the assigned rows (D24): the IPA sensitivity dataset
+# ---------------------------------------------------------------------------
+def test_drop_assigned_removes_exactly_the_assigned_rows_and_keeps_order():
+    core = pd.DataFrame({ID: ["C1", "C2"], "Gene names": ["a", "b"], "log2FC": [1.0, -1.0],
+                         "regulated": ["UP", "DOWN"], "p_value": [0.1, 0.2],
+                         "adj_p_value": [0.9, 0.9]})
+    add = pd.DataFrame({
+        ID: ["A1", "M1", "A2"], "Gene names": ["x", "m", "y"],
+        "log2FC": [-6.643856, 2.0, -6.643856], "regulated": ["DOWN", "UP", "DOWN"],
+        "p_value": [np.nan, 0.3, np.nan], "adj_p_value": [np.nan, 0.8, np.nan],
+        "tier": ["qualitative", "partial", "qualitative"],
+        "value_source": ["assigned", "measured", "assigned"]})
+    frame = wa.build_walker_frame(core, [add])
+    out = wa.drop_assigned(frame)
+    assert list(out[ID]) == ["C1", "C2", "M1"]                 # order kept, nothing re-sorted
+    assert (out["value_source"] == "measured").all()
+    assert list(out.columns) == wa.WALKER_COLS
+    assert list(out.index) == [0, 1, 2]                        # reset index
+    pd.testing.assert_frame_equal(out, frame[frame["value_source"] != "assigned"].reset_index(drop=True))
+    assert len(frame) == 5                                     # the input is not mutated
+
+
+def test_drop_assigned_on_a_list_without_assigned_rows_is_the_identity():
+    frame = wa.build_walker_frame(pd.DataFrame({
+        ID: ["C1"], "Gene names": ["a"], "log2FC": [1.0], "regulated": ["UP"],
+        "p_value": [0.1], "adj_p_value": [0.9]}), [])
+    pd.testing.assert_frame_equal(wa.drop_assigned(frame), frame)
+
+
+def test_drop_assigned_refuses_an_invalid_frame():
+    bad = pd.DataFrame({ID: ["C1"], "Gene names": ["a"], "log2FC": [1.0], "regulated": ["DOWN"],
+                        "p_value": [0.1], "adj_p_value": [0.9], "tier": ["core"],
+                        "value_source": ["measured"]})
+    with pytest.raises(WalkerAdditionsError, match="disagrees with the sign"):
+        wa.drop_assigned(bad)
+
+
+def test_the_without_assigned_files_are_the_list_minus_the_assigned_rows_end_to_end(inputs_dir):
+    res = wa.build_walker_from_results(inputs_dir)
+    full = pd.read_csv(inputs_dir / wa.WALKER_CSV_FILENAME, dtype=str, keep_default_na=False)
+    for name in (wa.WALKER_NOASSIGNED_CSV_FILENAME, wa.WALKER_NOASSIGNED_TXT_FILENAME):
+        sep = "," if name.endswith("csv") else "\t"
+        got = pd.read_csv(inputs_dir / name, sep=sep, dtype=str, keep_default_na=False)
+        want = full[full["value_source"] != "assigned"].reset_index(drop=True)
+        pd.testing.assert_frame_equal(got, want)
+        assert "assigned" not in set(got["value_source"])
+    assert res.counts["without_assigned"] == len(full) - 5
+    assert [p.name for p in res.paths] == list(OUTPUT_NAMES)
+
+
+def test_the_without_assigned_check_catches_a_row_that_was_changed_or_left_in(tmp_path):
+    full = pd.DataFrame({ID: ["C1", "A1"], "Gene names": ["a", "x"], "log2FC": ["1", "-6.643856"],
+                         "regulated": ["UP", "DOWN"], "p_value": ["0.1", ""],
+                         "adj_p_value": ["0.9", ""], "tier": ["core", "qualitative"],
+                         "value_source": ["measured", "assigned"]})
+    full.to_csv(tmp_path / "full.csv", index=False)
+    full.iloc[:1].to_csv(tmp_path / "ok.csv", index=False)
+    wa.assert_without_assigned_is_the_list_minus_assigned(tmp_path / "full.csv", tmp_path / "ok.csv")
+    full.to_csv(tmp_path / "left_in.csv", index=False)                      # assigned row kept
+    with pytest.raises(WalkerAdditionsError, match="minus its"):
+        wa.assert_without_assigned_is_the_list_minus_assigned(tmp_path / "full.csv",
+                                                              tmp_path / "left_in.csv")
+    changed = full.iloc[:1].copy()
+    changed["log2FC"] = "1.0000001"                                          # one value altered
+    changed.to_csv(tmp_path / "changed.csv", index=False)
+    with pytest.raises(WalkerAdditionsError, match="minus its"):
+        wa.assert_without_assigned_is_the_list_minus_assigned(tmp_path / "full.csv",
+                                                              tmp_path / "changed.csv")
+
+
+def test_the_without_assigned_count_must_equal_total_minus_assigned(inputs_dir, tmp_path):
+    counts = _counts_file(tmp_path, n_ipa_walker_without_assigned=715)
+    with pytest.raises(WalkerAdditionsError, match="without_assigned"):
+        wa.build_walker_from_results(inputs_dir, counts_path=counts)
+    assert _no_outputs(inputs_dir) == []
+
+
+def test_the_without_assigned_sidecar_describes_its_own_rows(inputs_dir, default_cfg):
+    res = wa.compute_walker(inputs_dir, default_cfg)
+    facts = wa.sidecar_facts(res, default_cfg, "without_assigned")
+    assert facts["value_source_counts"] == {"measured": 716}
+    assert "without_assigned" in facts["value_source_counts_scope"]
+    assert "minus" in facts["without_assigned_note"]
+    assert "STRICT" in facts["recovered_rule_note"]
+    # the full list and the manifest are scoped to their own frames
+    assert wa.sidecar_facts(res, default_cfg, "list")["value_source_counts"] == {
+        "measured": 716, "assigned": 5}
+    assert wa.sidecar_facts(res, default_cfg, "manifest")["value_source_counts"] == {
+        "measured": 1, "assigned": 5}
+    assert "without_assigned_note" not in wa.sidecar_facts(res, default_cfg, "list")
+
+
+def test_the_widened_sidecar_note_says_widened_and_the_strict_one_says_strict(inputs_dir, cfg, default_cfg):
+    widened = wa.sidecar_facts(wa.compute_walker(inputs_dir, cfg), cfg, "list")
+    strict = wa.sidecar_facts(wa.compute_walker(inputs_dir, default_cfg), default_cfg, "list")
+    assert "WIDENED" in widened["recovered_rule_note"] and "STRICT" not in widened["recovered_rule_note"]
+    assert "STRICT" in strict["recovered_rule_note"] and "WIDENED" not in strict["recovered_rule_note"]
+    assert widened["value_source_counts"] == {"measured": 963, "assigned": 5}
+    assert strict["value_source_counts"] == {"measured": 716, "assigned": 5}

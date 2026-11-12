@@ -26,7 +26,7 @@ To make them comparable, upload the full measured proteome (the 2,552-row backgr
 **not** been done here.
 
 Second caveat, from D2: **nothing in this dataset is statistically significant.** 0 of 1,938
-proteins pass FDR < 0.05 (minimum adjusted p = 0.116) with n = 2 technical replicates. The uploaded
+proteins pass FDR < 0.05 (minimum adjusted p = 0.116) with n = 2 biological replicates per group (2 separate experiments; D23: the earlier "technical replicates" wording was corrected). The uploaded
 963 are fold-change calls (|log2FC| >= 0.585), not significance calls.
 
 ## Files

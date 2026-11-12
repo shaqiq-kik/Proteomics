@@ -282,7 +282,7 @@ def main():
             "No gene set passes FDR q < 0.05 (min FDR q = "
             f"{min_fdr:.3f}), consistent with the weak per-protein signal "
             "(0/1938 proteins at limma FDR<0.05). This is expected given n=2 "
-            "technical replicates and is reported honestly, not tuned away. "
+            "biological replicates per group (low power) and is reported honestly, not tuned away. "
             f"{n_nom_05} terms have nominal (uncorrected) NOM p-value < 0.05 "
             "and are listed as hypothesis-generating leads only -- this GSEA "
             "FDR is a SEPARATE test from per-protein FDR and neither should "

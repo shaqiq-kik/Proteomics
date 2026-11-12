@@ -43,5 +43,5 @@
   "n_residual_duplicate_symbols": 0,
   "rate_limit_seconds_between_calls": 1.2,
   "uses_values": "list membership and UP/DOWN direction only; node log2FC is blank on value_source=assigned rows and no p-value is attached to any node",
-  "caveat": "n=2 technical replicates per condition (no biological replication); 0/1938 proteins survive FDR<0.05 (limma). The 715 seed proteins are the |log2FC|>=0.585 HYPOTHESIS-GENERATING set. Same-version CONTROL run of the committed 715 list; exploratory."
+  "caveat": "n=2 biological replicates per group, from 2 separate experiments (low power); 0/1938 proteins survive FDR<0.05 (limma). The 715 seed proteins are the |log2FC|>=0.585 HYPOTHESIS-GENERATING set. Same-version CONTROL run of the committed 715 list; exploratory."
 }

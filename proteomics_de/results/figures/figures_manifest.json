@@ -2,7 +2,7 @@
   {
     "file": "figures/volcano.png",
     "title": "Volcano plot \u2014 treated vs. control (SILAC)",
-    "caption": "limma log2 fold change vs. -log10(raw p-value) for the 1938 proteins tested in both conditions, colored UP/DOWN/NO CHANGE at |log2FC| >= 0.585. With n=2 technical replicates per condition (no biological replication), 0 of 1938 proteins pass FDR < 0.05 (minimum adjusted p = 0.116) \u2014 no dashed FDR line is drawn because nothing crosses it; the raw p = 0.05 line is shown instead for orientation only. Top 10 proteins by smallest raw p-value are labeled; treat all calls here as hypothesis-generating, not confirmed significant.",
+    "caption": "limma log2 fold change vs. -log10(raw p-value) for the 1938 proteins tested in both conditions, colored UP/DOWN/NO CHANGE at |log2FC| >= 0.585. With n=2 biological replicates per group (low power), 0 of 1938 proteins pass FDR < 0.05 (minimum adjusted p = 0.116) \u2014 no dashed FDR line is drawn because nothing crosses it; the raw p = 0.05 line is shown instead for orientation only. Top 10 proteins by smallest raw p-value are labeled; treat all calls here as exploratory / hypothesis-generating, not confirmed significant.",
     "key_numbers": {
       "n_points": 1938,
       "n_up": 509,
@@ -41,7 +41,7 @@
   {
     "file": "figures/ma_plot.png",
     "title": "MA plot \u2014 treated vs. control (SILAC)",
-    "caption": "Mean log2 intensity across the 4 raw samples (x) vs. limma log2 fold change (y) for the 1938 both-condition proteins; per-sample zero/absent intensities are treated as missing before averaging. Colored UP/DOWN/NO CHANGE at |log2FC| >= 0.585, dashed reference lines at 0 and +/-0.585. Same n=2 technical-replicate caveat as the volcano plot applies \u2014 no FDR-significant calls exist in this dataset.",
+    "caption": "Mean log2 intensity across the 4 raw samples (x) vs. limma log2 fold change (y) for the 1938 both-condition proteins; per-sample zero/absent intensities are treated as missing before averaging. Colored UP/DOWN/NO CHANGE at |log2FC| >= 0.585, dashed reference lines at 0 and +/-0.585. Same n=2 low-power caveat as the volcano plot applies \u2014 no FDR-significant calls exist in this dataset.",
     "key_numbers": {
       "n_points_total": 1938,
       "n_points_plotted": 1938,
@@ -59,7 +59,7 @@
   {
     "file": "figures/heatmap_top_de.png",
     "title": "Clustered heatmap \u2014 top 40 DE proteins by raw p-value",
-    "caption": "Row-standardized (z-scored) log2 intensities for the 40 proteins with the smallest raw limma p-values (not the largest |log2FC| \u2014 see script docstring for rationale), clustered by protein only; sample columns stay in a fixed control/treated order. The row-color sidebar marks each protein's UP/DOWN call. As with all statistical figures here, n=2 technical replicates means none of these proteins are FDR-significant; this view is for pattern inspection only.",
+    "caption": "Row-standardized (z-scored) log2 intensities for the 40 proteins with the smallest raw limma p-values (not the largest |log2FC| \u2014 see script docstring for rationale), clustered by protein only; sample columns stay in a fixed control/treated order. The row-color sidebar marks each protein's UP/DOWN call. As with all statistical figures here, n=2 biological replicates per group means none of these proteins are FDR-significant; this view is for pattern inspection only.",
     "key_numbers": {
       "n_proteins": 40,
       "selection_method": "smallest raw p_value (limma), NOT largest |log2FC|",
@@ -118,7 +118,7 @@
   {
     "file": "figures/sample_correlation.png",
     "title": "Sample correlation matrix (log2 intensity)",
-    "caption": "Pairwise Pearson correlation of log2 intensity across the 4 raw samples, computed over the full 2554-protein identified universe (pairwise-complete, zero/absent treated as missing). Within-condition replicate pairs (control_1 vs control_2; treated_1 vs treated_2) are the QC check for technical reproducibility; cf. qc_replicate_correlation.csv, which reports a similar check on the derived fold-change ratios rather than raw intensities.",
+    "caption": "Pairwise Pearson correlation of log2 intensity across the 4 raw samples, computed over the full 2554-protein identified universe (pairwise-complete, zero/absent treated as missing). Within-condition replicate pairs (control_1 vs control_2; treated_1 vs treated_2) are the QC check for reproducibility between the two separate experiments (DECISIONS_LOG D23); cf. qc_replicate_correlation.csv, which reports a similar check on the derived fold-change ratios rather than raw intensities.",
     "key_numbers": {
       "n_proteins_used": 1578,
       "n_proteins_universe": 2552,

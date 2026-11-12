@@ -21,6 +21,13 @@ pipeline's original (incorrect) assumption::
     31578     treated  Intensity 31578     1
     31580     treated  Intensity 31580     2
 
+Biological design (DECISIONS_LOG D23, stated by the investigator, Dr. Walker):
+each group has 2 BIOLOGICAL replicates, from 2 separate experiments; each
+experiment gave one control and one treated sample. Which treated sample pairs
+with which control was not stated; the ``replicate`` index assumes 31579 with
+31578 and 31581 with 31580 (UNCONFIRMED). The model stays ``~group``; a paired /
+blocked (experiment) term is an open question pending his confirmation.
+
 ``channel`` is the literal intensity column name as it appears in the input
 workbook, so ``sample_columns()`` is just the ``channel`` column read out in the
 canonical order.
@@ -30,7 +37,7 @@ downstream handoff): control group first, treated group second; within a group,
 ascending ``replicate``. The order is derived from the ``group`` column, not from
 file row order, so re-sorting the TSV cannot silently permute the design matrix.
 
-**Forward path.** Adding biological replicates means appending rows to the sheet
+**Forward path.** Adding more replicates (further experiments) means appending rows to the sheet
 (new sample ids, ``replicate`` 3, 4, ...). Every function here is
 replicate-count- and group-count-agnostic; nothing needs editing. Stages that
 still carry hardcoded literals should call :func:`assert_matches` so that they
@@ -307,7 +314,7 @@ def assert_matches(expected_columns, sheet=None, stage=None) -> None:
         f"  {stage_name} : {expected}\n"
         f"{detail}"
         f"{stage_name} is 2-channel-SILAC-specific: it assumes exactly two "
-        f"groups of two technical replicates, in control-then-treated order, "
+        f"groups of two replicates each, in control-then-treated order, "
         f"and it must be REGENERATED for a new design -- do not patch the "
         f"literal list to silence this error. See "
         f"proteomics_de/config/design.py and research1.md's FORWARD-PATH "

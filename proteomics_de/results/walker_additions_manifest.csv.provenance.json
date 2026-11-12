@@ -1,12 +1,12 @@
 {
   "describes": "proteomics_de/results/walker_additions_manifest.csv",
-  "caveat": "SILAC design: n = 2 technical replicates per condition (no biological replication) — 0 / 1938 proteins pass FDR < 0.05 (limma); results below are hypothesis-generating only, not confirmed significant.",
+  "caveat": "SILAC design: n = 2 biological replicates per group, from 2 separate experiments — 0 / 1938 proteins pass FDR < 0.05 (limma); n = 2 is low power, so results below are exploratory / hypothesis-generating, not confirmed significant.",
   "caveat_source": "proteomics_de/config/constants.py::CAVEAT_TEXT",
-  "git_commit": "3169b20338cbce2b6ab3241e6c50fd410bfed099",
+  "git_commit": "9e345d9ec98de1f1929e4761431739cebb416ec9",
   "git_dirty": true,
-  "sha256": "7430e32c2406c217626417c12ce4ea9c9b8be9b2df11a6394d5808da413d3102",
-  "n_rows": 253,
-  "generated_at": "2026-11-09T19:59:36+00:00",
+  "sha256": "57a9c0e19cbf2f526a44709103fb3bce988559ccc8481427ac45eacf3fea25e1",
+  "n_rows": 6,
+  "generated_at": "2026-11-12T02:48:35+00:00",
   "tool_versions": {
     "python": "3.13.16",
     "pandas": "2.3.3",
@@ -20,8 +20,8 @@
   },
   "value_source_counts_scope": "all rows of walker_additions_manifest.csv (the additions only)",
   "value_source_counts": {
-    "measured": 248,
-    "assigned": 5
+    "assigned": 5,
+    "measured": 1
   },
   "assigned_values_are_not_measurements": true,
   "assigned_fold_change": 0.01,
@@ -37,8 +37,8 @@
   "recovered_rule": {
     "min_abs_log2fc": 0.585,
     "require_partial_tier": true,
-    "require_all_replicates_seen": false,
-    "require_no_imputed_values": false
+    "require_all_replicates_seen": true,
+    "require_no_imputed_values": true
   },
   "recovered_rule_steps": [
     {
@@ -56,15 +56,20 @@
     {
       "step": "|log2FC| >= 0.585",
       "n": 247
+    },
+    {
+      "step": "seen in all 4 readings (both replicates of both groups)",
+      "n": 0
+    },
+    {
+      "step": "n_imputed == 0",
+      "n": 0
     }
   ],
-  "recovered_rule_note": "The recovered-protein rule was WIDENED by the user's decision: Dr. Walker asked for proteins with 'no problems', but the strict rule (all four readings seen, n_imputed == 0) admits nothing, so partial-tier proteins with |log2FC| >= the cutoff are added although one replicate was imputed by the pipeline. They rest on one biological replicate with an imputed technical replicate. Real limma p_value / adj_p_value are kept; see the manifest's n_imputed and reason columns.",
+  "recovered_rule_note": "The recovered-protein rule is STRICT (Dr. Walker's original 'no problems' wording, restored by his final answer, DECISIONS_LOG D24): a protein must be seen in all four readings with n_imputed == 0. That admits 0 proteins on the committed data, so the recovered pool is empty; the 247 proteins the widened rule had admitted (D20) were dropped at his request.",
   "measured_additions_n_imputed": {
     "P97401": 1
   },
-  "recovered_n_imputed_counts": {
-    "1": 178,
-    "2": 69
-  },
-  "decision": "DECISIONS_LOG D20"
+  "recovered_n_imputed_counts": {},
+  "decision": "DECISIONS_LOG D20; D24 (Dr. Walker's final answers)"
 }
