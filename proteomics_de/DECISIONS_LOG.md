@@ -872,3 +872,28 @@ included) and the 716 list (`ipa_input_walker_without_assigned.txt`), then flag 
 values (steps in `results/ipa_analysis_walker/UPLOAD_STEPS.md`); (2) a v2 of the emailable report page (the 11 Nov page
 still describes the 968 list and the first IPA runs); (3) D23's open question: which treated sample pairs with which
 control (and whether to refit limma with an experiment term).
+
+## IPA exports, sample pairing and the paired model (2026-11-16)
+
+**🔴 D25 — The pairing is known; the main analysis stays unpaired; the paired model is reported only as a sensitivity check (2026-11-16).**
+
+*What happened.* QIAGEN's server recovered, so all eight IPA tables were exported (721 run with the five assigned
+proteins, 716 comparison run without them) and every result that lists an assigned protein or whose z-score moved
+between the runs was flagged (`results/ipa_analysis_walker/flagged_dependent_results.csv`, 1231 rows). The cleaned data
+sheet (`Pilot Project/CLEANED Silac Proteomics Soluble Factors.xlsx`) labels the samples Rep1 = control 31579 with
+testosterone 31578 and Rep2 = control 31581 with testosterone 31580, which matches the earlier assumption. It is a label in
+the data sheet, not a statement from the lab, so the report asks Dr. Walker to correct it if wrong.
+
+*Decision.* Keep limma `~group` (unpaired) as the main analysis. Report the paired fit (`~experiment + group`, same imputed
+values) only as a labelled sensitivity check. Scratch refit reproduced the committed unpaired output exactly (difference 0).
+
+*What the pairing changes.* Nothing in the list (721, chosen by |log2FC| and "seen in all four samples"), the fold changes,
+ORA, STRING or the IPA uploads. It changes only p-value numbers: FDR < 0.05 goes from 0 to 4 proteins (Hist1h2bc, Hist1h2ba,
+Abhd14b in the list; Tuba1a not in the list and partly imputed); raw p < 0.05 from 55 to 158; FRZB p 0.0203 to 0.0070
+(adjusted 0.998 to 0.524). With plain eBayes the paired fit still gives 0 FDR hits.
+
+*Why not switch.* With 2 pairs the paired model has 1 residual degree of freedom, so the 4 hits are leads, not findings,
+and switching would turn "0 pass FDR" into "4 pass" on a very thin model before Dr. Walker has seen it. Rejected: making
+the paired model the main analysis. Tradeoff: the volcano plot and heatmap pages stay on the unpaired p-values.
+
+*Open.* Ask Dr. Walker whether to adopt the paired model (D23's open question). Files: `results/ipa_analysis_walker/pairing_sensitivity/`.
