@@ -1,0 +1,1232 @@
+table,name,z_with_assigned_721,z_without_assigned_716,delta_z,lists_assigned_protein,z_changed_or_new,crosses_abs_z_2,sign_flip,depends_on_assigned
+canonical_pathways,Actin Cytoskeleton Signaling,0.471,0.471,0.0,EGF,no,no,no,yes
+canonical_pathways,Autophagy,1.414,1.134,0.28,EGF,yes,no,no,yes
+canonical_pathways,Axonal Guidance Signaling,nan,nan,nan,"EFNA4,EGF",no,no,no,yes
+canonical_pathways,Bladder Cancer Signaling,nan,nan,nan,EGF,no,no,no,yes
+canonical_pathways,Breast Cancer Regulation by Stathmin1,0.302,0.632,-0.33,EGF,yes,no,no,yes
+canonical_pathways,CLEAR Signaling Pathway,1.961,1.8,0.161,EGF,yes,no,no,yes
+canonical_pathways,CREB Signaling in Neurons,0.0,nan,nan,EGF,no,no,no,yes
+canonical_pathways,Cardiac Valve Formation Signaling Pathway,0.816,0.447,0.369,EGF,yes,no,no,yes
+canonical_pathways,Cargo recognition for clathrin-mediated endocytosis,1.265,2.121,-0.856,"EGF,EREG",yes,yes,no,yes
+canonical_pathways,Caveolar-mediated Endocytosis Signaling,-0.447,0.0,-0.447,EGF,yes,no,no,yes
+canonical_pathways,Cilia Biogenesis Signaling Pathway,-0.277,-0.577,0.3,EGF,yes,no,no,yes
+canonical_pathways,Clathrin-mediated Endocytosis Signaling,nan,nan,nan,EGF,no,no,no,yes
+canonical_pathways,Clathrin-mediated endocytosis,0.632,1.414,-0.782,"EGF,EREG",yes,no,no,yes
+canonical_pathways,Colorectal Cancer Metastasis Signaling,0.0,0.447,-0.447,EGF,yes,no,no,yes
+canonical_pathways,Docosahexaenoic Acid (DHA) Signaling,0.0,0.333,-0.333,EGF,yes,no,no,yes
+canonical_pathways,EGF Signaling,0.0,nan,nan,EGF,no,no,no,yes
+canonical_pathways,EPH-Ephrin signaling,1.941,2.309,-0.368,EFNA4,yes,yes,no,yes
+canonical_pathways,ERBB Signaling,0.0,nan,nan,"EGF,EREG",no,no,no,yes
+canonical_pathways,ERK5 Signaling,-1.342,-1.0,-0.342,EGF,yes,no,no,yes
+canonical_pathways,Elastic fibre formation,-1.134,-0.816,-0.318,MFAP4,yes,no,no,yes
+canonical_pathways,Ephrin A Signaling,0.0,0.0,0.0,"EFNA4,EGF",no,no,no,yes
+canonical_pathways,Ephrin Receptor Signaling,2.111,2.111,0.0,"EFNA4,EGF",no,no,no,yes
+canonical_pathways,Epithelial Adherens Junction Signaling,0.832,0.577,0.255,EGF,yes,no,no,yes
+canonical_pathways,Estrogen Receptor Signaling,2.111,2.53,-0.419,EGF,yes,no,no,yes
+canonical_pathways,Exocyst Signaling Pathway,1.667,2.121,-0.454,EGF,yes,yes,no,yes
+canonical_pathways,Extra-nuclear estrogen signaling,0.0,1.0,-1.0,"EGF,EREG",yes,no,no,yes
+canonical_pathways,FAK Signaling,1.5,2.138,-0.638,"EFNA4,EGF",yes,yes,no,yes
+canonical_pathways,Gap Junction Signaling,0.333,0.0,0.333,EGF,yes,no,no,yes
+canonical_pathways,Glioblastoma Multiforme Signaling,nan,nan,nan,EGF,no,no,no,yes
+canonical_pathways,Glioma Signaling,nan,nan,nan,EGF,no,no,no,yes
+canonical_pathways,Glucocorticoid Receptor Signaling,nan,nan,nan,EGF,no,no,no,yes
+canonical_pathways,HER-2 Signaling in Breast Cancer,0.0,0.378,-0.378,EGF,yes,no,no,yes
+canonical_pathways,HIF1α Signaling,-0.333,0.0,-0.333,EGF,yes,no,no,yes
+canonical_pathways,Hepatic Fibrosis / Hepatic Stellate Cell Activation,nan,nan,nan,EGF,no,no,no,yes
+canonical_pathways,Hereditary Breast Cancer Signaling,-2.449,-2.236,-0.213,EGF,yes,no,no,yes
+canonical_pathways,Huntington's Disease Signaling,0.816,1.342,-0.526,EGF,yes,no,no,yes
+canonical_pathways,ID1 Signaling Pathway,-2.53,-2.333,-0.197,EGF,yes,no,no,yes
+canonical_pathways,ID3 Signaling Pathway,-1.0,nan,nan,EGF,no,no,no,yes
+canonical_pathways,IL-15 Production,nan,nan,nan,TYRO3,no,no,no,yes
+canonical_pathways,Iron homeostasis signaling pathway,nan,nan,nan,EGF,no,no,no,yes
+canonical_pathways,Lysosome Positioning Signaling Pathway,-1.414,-1.134,-0.28,EGF,yes,no,no,yes
+canonical_pathways,Macropinocytosis Signaling,nan,nan,nan,EGF,no,no,no,yes
+canonical_pathways,MicroRNA Biogenesis Signaling Pathway,1.213,1.5,-0.287,EGF,yes,no,no,yes
+canonical_pathways,Molecular Mechanisms of Cancer,0.5,0.775,-0.275,EGF,yes,no,no,yes
+canonical_pathways,Myocardin Signaling Pathway,-1.342,-1.0,-0.342,EGF,yes,no,no,yes
+canonical_pathways,NAD Signaling Pathway,0.0,nan,nan,EGF,no,no,no,yes
+canonical_pathways,NF-κB Signaling,nan,nan,nan,EGF,no,no,no,yes
+canonical_pathways,NF1 RAS Signaling Pathway,-0.333,-0.707,0.374,EGF,yes,no,no,yes
+canonical_pathways,NFE2L2 regulating tumorigenic genes,nan,,,EGF,yes,no,no,yes
+canonical_pathways,Necroptosis Signaling Pathway,-1.633,-1.342,-0.291,TYRO3,yes,no,no,yes
+canonical_pathways,Neuregulin Signaling,-1.0,nan,nan,"EGF,EREG",no,no,no,yes
+canonical_pathways,Neuron Navigator Signaling Pathway,0.378,0.816,-0.438,EGF,yes,no,no,yes
+canonical_pathways,Non-Small Cell Lung Cancer Signaling,nan,nan,nan,EGF,no,no,no,yes
+canonical_pathways,Ovarian Cancer Signaling,nan,nan,nan,EGF,no,no,no,yes
+canonical_pathways,Ovarian Folliculogenesis Signaling Pathway,-0.378,0.0,-0.378,EGF,yes,no,no,yes
+canonical_pathways,PIP3 activates AKT signaling,-0.447,nan,nan,"EGF,EREG",no,no,no,yes
+canonical_pathways,Pancreatic Adenocarcinoma Signaling,nan,nan,nan,EGF,no,no,no,yes
+canonical_pathways,Pancreatic Secretion Signaling Pathway,0.707,1.134,-0.427,EGF,yes,no,no,yes
+canonical_pathways,Proteasomal PSMD10 Signaling Pathway,0.0,nan,nan,EGF,no,no,no,yes
+canonical_pathways,Pulmonary Healing Signaling Pathway,1.633,2.236,-0.603,EGF,yes,yes,no,yes
+canonical_pathways,RAF/MAP kinase cascade,0.0,0.392,-0.392,"EGF,EREG",yes,no,no,yes
+canonical_pathways,RAR Activation,0.775,1.069,-0.294,EGF,yes,no,no,yes
+canonical_pathways,Regulation of Cellular Mechanics by Calpain Protease,0.0,nan,nan,EGF,no,no,no,yes
+canonical_pathways,Regulation of the Epithelial Mesenchymal Transition by Growth Factors Pathway,-0.447,0.0,-0.447,EGF,yes,no,no,yes
+canonical_pathways,Regulation of the Epithelial-Mesenchymal Transition Pathway,nan,nan,nan,EGF,no,no,no,yes
+canonical_pathways,Response to elevated platelet cytosolic Ca2+,0.775,1.069,-0.294,EGF,yes,no,no,yes
+canonical_pathways,Role of Tissue Factor in Cancer,-0.258,0.0,-0.258,EGF,yes,no,no,yes
+canonical_pathways,S100 Family Signaling Pathway,-0.447,-0.471,0.024,"EGF,EREG",yes,no,no,yes
+canonical_pathways,STAT3 Pathway,0.0,nan,nan,EGF,no,no,no,yes
+canonical_pathways,Signaling by EGFR,nan,nan,nan,"EGF,EREG",no,no,no,yes
+canonical_pathways,Signaling by ERBB2,0.447,nan,nan,"EGF,EREG",no,no,no,yes
+canonical_pathways,Signaling by ERBB4,-0.447,nan,nan,"EGF,EREG",no,no,no,yes
+canonical_pathways,Signaling by NOTCH3,0.447,1.0,-0.553,EGF,yes,no,no,yes
+canonical_pathways,Signaling by PTK6,nan,,,"EGF,EREG",yes,no,no,yes
+canonical_pathways,Sperm Motility,nan,nan,nan,TYRO3,no,no,no,yes
+canonical_pathways,Synaptogenesis Signaling Pathway,2.668,3.0,-0.332,EFNA4,yes,no,no,yes
+canonical_pathways,Telomerase Signaling,0.378,0.816,-0.438,EGF,yes,no,no,yes
+canonical_pathways,Thrombin Signaling,1.0,nan,nan,EGF,no,no,no,yes
+canonical_pathways,Tumor Microenvironment Pathway,0.333,0.707,-0.374,EGF,yes,no,no,yes
+canonical_pathways,Warburg Effect Signaling Pathway,-0.333,0.0,-0.333,EGF,yes,no,no,yes
+canonical_pathways,Wound Healing Signaling Pathway,-0.218,0.0,-0.218,EGF,yes,no,no,yes
+upstream_regulators,"(20S,23)-dihydroxyvitamin D3",,,,,yes,no,no,yes
+upstream_regulators,"1,1-bis(3'-indolyl)-1-(4-chlorophenyl)methane",,,,,yes,no,no,yes
+upstream_regulators,"1,10-Bis(carboxymethylthiodecane)",,,,,yes,no,no,yes
+upstream_regulators,"14,15-epoxyeicosa-5(Z)-enoic acid",,,,,yes,no,no,yes
+upstream_regulators,"1R,20,23-trihydroxyvitamin D3",,,,,yes,no,no,yes
+upstream_regulators,"1alpha,20-dihydroxyvitamin D3",,,,,yes,no,no,yes
+upstream_regulators,"2,2,2-trichloroethanol",,,,,yes,no,no,yes
+upstream_regulators,"2,3,4,7,8-pentachlorodibenzofuran",0.0,,,EGF,yes,no,no,yes
+upstream_regulators,2-methoxycinnamaldehyde,,,,,yes,no,no,yes
+upstream_regulators,22-hydroxycholesterol,,,,,yes,no,no,yes
+upstream_regulators,26S PROTEASOME (complex),0.169,-0.286,0.455,"EGF,EREG",yes,no,yes,yes
+upstream_regulators,3-hydroxymorphinan,,,,EGF,no,no,no,yes
+upstream_regulators,"4-aminopyrazolo(3,4-d)pyrimidine",,,,,yes,no,no,yes
+upstream_regulators,4-nitrophenol,,,,,yes,no,no,yes
+upstream_regulators,5-thio-D-glucose,,,,,yes,no,no,yes
+upstream_regulators,"9,10-dimethyl-1,2-benzanthracene",,,,EGF,no,no,no,yes
+upstream_regulators,ADAMTS5,,,,,yes,no,no,yes
+upstream_regulators,AGRO 100,,,,,yes,no,no,yes
+upstream_regulators,AGT,1.051,1.378,-0.327,"EGF,EREG,MFAP4",yes,no,no,yes
+upstream_regulators,AHR,-0.322,-0.322,0.0,EREG,no,no,no,yes
+upstream_regulators,AKT inhibitor VII,,,,,yes,no,no,yes
+upstream_regulators,ALPHA CATENIN (family),-1.779,-2.045,0.266,EREG,yes,yes,no,yes
+upstream_regulators,AN-207,,,,,yes,no,no,yes
+upstream_regulators,ANKS1A,,,,,yes,no,no,yes
+upstream_regulators,AP1M1,,,,,yes,no,no,yes
+upstream_regulators,AP2S1,,,,,yes,no,no,yes
+upstream_regulators,APBA1,,,,,yes,no,no,yes
+upstream_regulators,AQP11,,,,EGF,no,no,no,yes
+upstream_regulators,ARID1A,1.001,0.863,0.138,EREG,yes,no,no,yes
+upstream_regulators,ARNT2,2.183,2.5,-0.317,EGF,yes,no,no,yes
+upstream_regulators,ATN1,,,,TYRO3,no,no,no,yes
+upstream_regulators,Afm,,,,,yes,no,no,yes
+upstream_regulators,B7-33,,,,,yes,no,no,yes
+upstream_regulators,BAY-u9773,,,,,yes,no,no,yes
+upstream_regulators,BCAT1,,,,,yes,no,no,yes
+upstream_regulators,BCL2,0.262,0.262,0.0,EREG,no,no,no,yes
+upstream_regulators,BCL2L2-PABPN1,,,,,yes,no,no,yes
+upstream_regulators,BHLHE40,1.053,1.292,-0.239,EREG,yes,no,no,yes
+upstream_regulators,BMP2,-0.167,0.035,-0.202,EGF,yes,no,yes,yes
+upstream_regulators,BMP7,-0.57,-0.291,-0.279,EREG,yes,no,no,yes
+upstream_regulators,BRAF,,,,EREG,no,no,no,yes
+upstream_regulators,BRD4,2.479,2.937,-0.458,TYRO3,yes,no,no,yes
+upstream_regulators,Bay 11-7082,1.403,,,EREG,yes,no,no,yes
+upstream_regulators,CA1,,,,,yes,no,no,yes
+upstream_regulators,CALU,,,,,yes,no,no,yes
+upstream_regulators,CAMSAP1,,,,,yes,no,no,yes
+upstream_regulators,CCL5,-1.331,-1.127,-0.204,EGF,yes,no,no,yes
+upstream_regulators,CCS,,,,,yes,no,no,yes
+upstream_regulators,CCT3,,,,,yes,no,no,yes
+upstream_regulators,CDC42,1.364,1.069,0.295,EREG,yes,no,no,yes
+upstream_regulators,CDH11,-1.633,-1.342,-0.291,EGF,yes,no,no,yes
+upstream_regulators,CE3F4,,,,,yes,no,no,yes
+upstream_regulators,CELA1,,,,,yes,no,no,yes
+upstream_regulators,CG (complex),0.749,1.035,-0.286,EREG,yes,no,no,yes
+upstream_regulators,CHUK,-0.811,-0.393,-0.418,"EGF,EREG",yes,no,no,yes
+upstream_regulators,CLDN7,,-0.342,,,yes,no,no,yes
+upstream_regulators,CNR1,-0.351,-0.053,-0.298,EGF,yes,no,no,yes
+upstream_regulators,COMMD3,,,,,yes,no,no,yes
+upstream_regulators,COMP,,,,,yes,no,no,yes
+upstream_regulators,"CP-724,714",,,,,yes,no,no,yes
+upstream_regulators,CRADD,,,,,yes,no,no,yes
+upstream_regulators,CSRP1,,,,,yes,no,no,yes
+upstream_regulators,CTNNB1,0.519,0.319,0.2,EREG,yes,no,no,yes
+upstream_regulators,CYP19A1,1.593,1.293,0.3,EGF,yes,no,no,yes
+upstream_regulators,CYRIA,,,,,yes,no,no,yes
+upstream_regulators,DMD,,,,EGF,no,no,no,yes
+upstream_regulators,E-4031,,,,,yes,no,no,yes
+upstream_regulators,EDN1,0.368,0.68,-0.312,EREG,yes,no,no,yes
+upstream_regulators,EGF,0.818,1.114,-0.296,"EGF,EREG",yes,no,no,yes
+upstream_regulators,EGFR,1.602,1.632,-0.03,"EGF,EREG",yes,no,no,yes
+upstream_regulators,EGLN1,1.501,1.172,0.329,EREG,yes,no,no,yes
+upstream_regulators,EGR1,-1.047,-0.868,-0.179,EREG,yes,no,no,yes
+upstream_regulators,EHF,1.718,,,EREG,yes,no,no,yes
+upstream_regulators,EIF4E,1.02,1.02,0.0,EREG,no,no,no,yes
+upstream_regulators,EIF4H,,,,,yes,no,no,yes
+upstream_regulators,ENKUR,,,,,yes,no,no,yes
+upstream_regulators,EPN3,,,,,yes,no,no,yes
+upstream_regulators,ERBB2,0.147,0.309,-0.162,EREG,yes,no,no,yes
+upstream_regulators,ERK (family),0.098,0.45,-0.352,EREG,yes,no,no,yes
+upstream_regulators,ESR1,2.674,2.813,-0.139,"EGF,EREG",yes,no,no,yes
+upstream_regulators,ESR2,1.957,1.957,0.0,EREG,no,no,no,yes
+upstream_regulators,ESRRA,1.755,1.993,-0.238,EGF,yes,no,no,yes
+upstream_regulators,ESTROGEN RECEPTOR (family),-0.243,-0.5,0.257,EREG,yes,no,no,yes
+upstream_regulators,EXTL2,,,,,yes,no,no,yes
+upstream_regulators,EZH2,-0.182,0.006,-0.188,EREG,yes,no,yes,yes
+upstream_regulators,F2,2.424,2.73,-0.306,EREG,yes,no,no,yes
+upstream_regulators,FGF2,1.527,1.832,-0.305,EREG,yes,no,no,yes
+upstream_regulators,FGFR1,-0.249,0.088,-0.337,MFAP4,yes,no,yes,yes
+upstream_regulators,FHL2,0.677,1.132,-0.455,EGF,yes,no,no,yes
+upstream_regulators,FLCN,-1.54,-1.896,0.356,EGF,yes,no,no,yes
+upstream_regulators,FNDC5,-0.2,,,EGF,yes,no,no,yes
+upstream_regulators,FOS,0.923,0.923,0.0,EREG,no,no,no,yes
+upstream_regulators,FOXA2,,0.342,,,yes,no,no,yes
+upstream_regulators,FSH (complex),0.205,0.503,-0.298,"EREG,TYRO3",yes,no,no,yes
+upstream_regulators,G-1,-1.177,,,EREG,yes,no,no,yes
+upstream_regulators,GABA,-2.429,-2.598,0.169,EGF,yes,no,no,yes
+upstream_regulators,GCN2iA,,,,EGF,yes,no,no,yes
+upstream_regulators,GMDS-DT,-0.378,,,"EGF,EREG",yes,no,no,yes
+upstream_regulators,GPER1,0.022,,,EREG,yes,no,no,yes
+upstream_regulators,GREB1,,,,,yes,no,no,yes
+upstream_regulators,GZMK,,,,,yes,no,no,yes
+upstream_regulators,GnRH analog,0.299,0.48,-0.181,EGF,yes,no,no,yes
+upstream_regulators,H60a,,,,,yes,no,no,yes
+upstream_regulators,HBEGF,0.647,1.195,-0.548,EREG,yes,no,no,yes
+upstream_regulators,HES1,,1.566,,,yes,no,no,yes
+upstream_regulators,HIF1A,0.465,0.638,-0.173,EREG,yes,no,no,yes
+upstream_regulators,HIRA,-2.0,,,EREG,yes,yes,no,yes
+upstream_regulators,HMG20A,0.707,1.134,-0.427,EREG,yes,no,no,yes
+upstream_regulators,HNF4A,0.931,0.732,0.199,EREG,yes,no,no,yes
+upstream_regulators,HNRNPU,-1.195,-0.896,-0.299,TYRO3,yes,no,no,yes
+upstream_regulators,HPS1,,,,,yes,no,no,yes
+upstream_regulators,HRAS,-0.722,-0.722,0.0,"EREG,TYRO3",no,no,no,yes
+upstream_regulators,HSP-990,,,,,yes,no,no,yes
+upstream_regulators,HSPA1B,,,,,yes,no,no,yes
+upstream_regulators,HTT,1.155,1.508,-0.353,"MFAP4,TYRO3",yes,no,no,yes
+upstream_regulators,IACS-010759,0.152,,,EREG,yes,no,no,yes
+upstream_regulators,IFNG,1.601,1.601,0.0,EGF,no,no,no,yes
+upstream_regulators,IFNGR1,2.236,2.236,0.0,EGF,no,no,no,yes
+upstream_regulators,IGF1,0.099,0.347,-0.248,EGF,yes,no,no,yes
+upstream_regulators,IGF2BP3,,,,,yes,no,no,yes
+upstream_regulators,IGK,,,,,yes,no,no,yes
+upstream_regulators,IHH,1.969,,,EREG,yes,no,no,yes
+upstream_regulators,IKBKB,-0.135,0.053,-0.188,EREG,yes,no,yes,yes
+upstream_regulators,IKBKG,0.471,0.762,-0.291,EREG,yes,no,no,yes
+upstream_regulators,IL10RA,0.434,,,EGF,yes,no,no,yes
+upstream_regulators,IL13,-0.334,-0.334,0.0,TYRO3,no,no,no,yes
+upstream_regulators,IL17A,-1.229,-0.966,-0.263,EREG,yes,no,no,yes
+upstream_regulators,IL4,2.732,2.732,0.0,TYRO3,no,no,no,yes
+upstream_regulators,IL6,-0.109,0.326,-0.435,"EREG,MFAP4",yes,no,yes,yes
+upstream_regulators,ING2,,,,,yes,no,no,yes
+upstream_regulators,INHA,-1.984,-2.357,0.373,EREG,yes,yes,no,yes
+upstream_regulators,INSR,2.126,2.126,0.0,EREG,no,no,no,yes
+upstream_regulators,INTEGRIN ALPHA V BETA 3 (complex),,,,,yes,no,no,yes
+upstream_regulators,IRF1,,0.755,,,yes,no,no,yes
+upstream_regulators,ITGA7,,,,,yes,no,no,yes
+upstream_regulators,Ifitm3,0.447,,,EREG,yes,no,no,yes
+upstream_regulators,JUN,-0.655,-0.655,0.0,EREG,no,no,no,yes
+upstream_regulators,KAT5,0.036,0.261,-0.225,EREG,yes,no,no,yes
+upstream_regulators,KCN1,,,,,yes,no,no,yes
+upstream_regulators,KCNJ5,,,,MFAP4,no,no,no,yes
+upstream_regulators,KHDRBS2,,,,,yes,no,no,yes
+upstream_regulators,KL,0.641,,,TYRO3,yes,no,no,yes
+upstream_regulators,KLF11,-1.732,-1.732,0.0,EGF,no,no,no,yes
+upstream_regulators,KRAS,-0.273,-0.122,-0.151,EREG,yes,no,no,yes
+upstream_regulators,KRP-297,,,,,yes,no,no,yes
+upstream_regulators,KRT17,-1.89,-1.633,-0.257,EREG,yes,no,no,yes
+upstream_regulators,KU (complex),,,,,yes,no,no,yes
+upstream_regulators,L-leucine,,,,,yes,no,no,yes
+upstream_regulators,L-triiodothyronine,-0.342,-0.08,-0.262,EGF,yes,no,no,yes
+upstream_regulators,LARP1,-2.995,-3.281,0.286,EFNA4,yes,no,no,yes
+upstream_regulators,LATS1,-2.0,,,EREG,yes,yes,no,yes
+upstream_regulators,LCMT1,,,,,yes,no,no,yes
+upstream_regulators,LGALS9,0.647,1.026,-0.379,TYRO3,yes,no,no,yes
+upstream_regulators,LH (complex),2.585,3.076,-0.491,"EREG,TYRO3",yes,no,no,yes
+upstream_regulators,LILRB2,,,,,yes,no,no,yes
+upstream_regulators,LINC02154,,,,,yes,no,no,yes
+upstream_regulators,LY294002,-1.112,-1.309,0.197,EREG,yes,no,no,yes
+upstream_regulators,MAGEA2,,,,,yes,no,no,yes
+upstream_regulators,MAPK14,-1.15,-1.289,0.139,EREG,yes,no,no,yes
+upstream_regulators,MAPK8,0.396,0.684,-0.288,EGF,yes,no,no,yes
+upstream_regulators,MAPK9,0.471,0.726,-0.255,EGF,yes,no,no,yes
+upstream_regulators,MAPT,1.117,1.117,0.0,EGF,no,no,no,yes
+upstream_regulators,MARVELD1,,,,,yes,no,no,yes
+upstream_regulators,MBTPS2,,,,,yes,no,no,yes
+upstream_regulators,MEK (family),-0.579,-0.289,-0.29,EREG,yes,no,no,yes
+upstream_regulators,MGC70870,,,,,yes,no,no,yes
+upstream_regulators,MIR4443,,,,,yes,no,no,yes
+upstream_regulators,MMP10,,,,,yes,no,no,yes
+upstream_regulators,MTAP,,,,,yes,no,no,yes
+upstream_regulators,MYF6,-1.083,-0.828,-0.255,EGF,yes,no,no,yes
+upstream_regulators,MYLK,,,,,yes,no,no,yes
+upstream_regulators,Mellitin,,,,,yes,no,no,yes
+upstream_regulators,"N-[N-(3,5-difluorophenacetyl-L-Ala)]-S-phenylglycine t-butyl ester",1.201,,,EREG,yes,no,no,yes
+upstream_regulators,NAA15,,,,,yes,no,no,yes
+upstream_regulators,NDUFV2P1,,,,,yes,no,no,yes
+upstream_regulators,NEIL2,,,,,yes,no,no,yes
+upstream_regulators,NFAT5,0.584,0.819,-0.235,EREG,yes,no,no,yes
+upstream_regulators,NFKB (complex),0.603,0.603,0.0,EREG,no,no,no,yes
+upstream_regulators,NFKBIA,0.598,0.802,-0.204,EREG,yes,no,no,yes
+upstream_regulators,NLRX1,0.699,0.152,0.547,"EFNA4,EGF",yes,no,no,yes
+upstream_regulators,NOL3,,,,,yes,no,no,yes
+upstream_regulators,NPNT,,,,,yes,no,no,yes
+upstream_regulators,NRG1,0.798,1.039,-0.241,EREG,yes,no,no,yes
+upstream_regulators,NUP210,,,,,yes,no,no,yes
+upstream_regulators,NUPR1,-1.279,-1.091,-0.188,EREG,yes,no,no,yes
+upstream_regulators,NVP-AEW541,,,,TYRO3,yes,no,no,yes
+upstream_regulators,OSM,0.222,0.075,0.147,TYRO3,yes,no,no,yes
+upstream_regulators,P144,,,,,yes,no,no,yes
+upstream_regulators,PAX3,,,,TYRO3,no,no,no,yes
+upstream_regulators,PCDH9,,,,,yes,no,no,yes
+upstream_regulators,PCED1B-AS1,,,,,yes,no,no,yes
+upstream_regulators,PCSK9,0.358,0.358,0.0,MFAP4,no,no,no,yes
+upstream_regulators,PD98059,-1.168,-1.323,0.155,EREG,yes,no,no,yes
+upstream_regulators,PDGF-BB (complex),0.076,0.284,-0.208,EREG,yes,no,no,yes
+upstream_regulators,PDGFRA/PDGFRB (complex),,,,,yes,no,no,yes
+upstream_regulators,PFDN1,,,,,yes,no,no,yes
+upstream_regulators,PFK-15,,,,,yes,no,no,yes
+upstream_regulators,PHOSPHO1,,,,,yes,no,no,yes
+upstream_regulators,PIAS1,,1.4,,,yes,no,no,yes
+upstream_regulators,PIN1P1,,,,,yes,no,no,yes
+upstream_regulators,PKC delta V1-1 peptide 8-17,,,,,yes,no,no,yes
+upstream_regulators,PLIN3,,,,,yes,no,no,yes
+upstream_regulators,POR,-0.146,-0.456,0.31,EREG,yes,no,no,yes
+upstream_regulators,PRIMA1,,,,,yes,no,no,yes
+upstream_regulators,PRKN,-1.067,,,"EGF,EREG",yes,no,no,yes
+upstream_regulators,PRL,0.835,0.835,0.0,EGF,no,no,no,yes
+upstream_regulators,PRPH,,,,,yes,no,no,yes
+upstream_regulators,PRR15,,,,,yes,no,no,yes
+upstream_regulators,PSG1,,,,,yes,no,no,yes
+upstream_regulators,PTEN,-1.589,-1.78,0.191,EGF,yes,no,no,yes
+upstream_regulators,PX-866,,,,,yes,no,no,yes
+upstream_regulators,Pick1,,,,TYRO3,no,no,no,yes
+upstream_regulators,R1D2-10,,,,,yes,no,no,yes
+upstream_regulators,RAB37,,,,,yes,no,no,yes
+upstream_regulators,RAD51,-1.265,-1.667,0.402,EREG,yes,no,no,yes
+upstream_regulators,RAMAC,,,,,yes,no,no,yes
+upstream_regulators,RBPJ,0.377,0.13,0.247,EGF,yes,no,no,yes
+upstream_regulators,RC3H2,1.973,1.781,0.192,EGF,yes,no,no,yes
+upstream_regulators,RECQL5,,,,,yes,no,no,yes
+upstream_regulators,RETREG3,,,,,yes,no,no,yes
+upstream_regulators,RETSAT,,,,,yes,no,no,yes
+upstream_regulators,RGL1,,,,,yes,no,no,yes
+upstream_regulators,RILP,,,,,yes,no,no,yes
+upstream_regulators,RP101075,,,,,yes,no,no,yes
+upstream_regulators,RPLP0,,,,,yes,no,no,yes
+upstream_regulators,RPN1,,,,,yes,no,no,yes
+upstream_regulators,RPS19,,,,,yes,no,no,yes
+upstream_regulators,Raet1a,,,,,yes,no,no,yes
+upstream_regulators,Rose Bengal,,,,,yes,no,no,yes
+upstream_regulators,S29,,,,,yes,no,no,yes
+upstream_regulators,S7,,,,,yes,no,no,yes
+upstream_regulators,SALL2,,,,,yes,no,no,yes
+upstream_regulators,SCRN1,,,,,yes,no,no,yes
+upstream_regulators,SELENOH,,,,,yes,no,no,yes
+upstream_regulators,SI163,,,,,yes,no,no,yes
+upstream_regulators,SIM1,2.0,2.324,-0.324,EGF,yes,no,no,yes
+upstream_regulators,SMAD3,0.544,0.802,-0.258,EREG,yes,no,no,yes
+upstream_regulators,SMAD4,1.252,1.313,-0.061,"EFNA4,EREG",yes,no,no,yes
+upstream_regulators,SMARCA4,0.052,0.237,-0.185,EREG,yes,no,no,yes
+upstream_regulators,SNCA,-0.026,-0.026,0.0,EGF,no,no,no,yes
+upstream_regulators,SORL1,0.688,0.943,-0.255,EFNA4,yes,no,no,yes
+upstream_regulators,SP1,0.636,0.905,-0.269,EREG,yes,no,no,yes
+upstream_regulators,SP2509,-2.041,-2.132,0.091,"EFNA4,TYRO3",yes,no,no,yes
+upstream_regulators,SP3,-1.432,-1.067,-0.365,EREG,yes,no,no,yes
+upstream_regulators,SPP1,-0.134,0.064,-0.198,EGF,yes,no,yes,yes
+upstream_regulators,SR4835,,,,,yes,no,no,yes
+upstream_regulators,SRF,0.872,1.1,-0.228,EGF,yes,no,no,yes
+upstream_regulators,SSR180575,,,,,yes,no,no,yes
+upstream_regulators,STK11,0.214,0.388,-0.174,EREG,yes,no,no,yes
+upstream_regulators,STK38L,,,,,yes,no,no,yes
+upstream_regulators,STXBP4,,,,,yes,no,no,yes
+upstream_regulators,SUCLG2,,,,,yes,no,no,yes
+upstream_regulators,T-5224,-1.667,-1.414,-0.253,EREG,yes,no,no,yes
+upstream_regulators,TALDO1,,,,,yes,no,no,yes
+upstream_regulators,TAP1,0.97,1.432,-0.462,EREG,yes,no,no,yes
+upstream_regulators,TAT,,,,,yes,no,no,yes
+upstream_regulators,TERT,-1.188,-0.863,-0.325,EREG,yes,no,no,yes
+upstream_regulators,TFAP2A,1.118,1.118,0.0,EREG,no,no,no,yes
+upstream_regulators,TFCP2,,,,EGF,yes,no,no,yes
+upstream_regulators,TFEB,2.523,2.523,0.0,EREG,no,no,no,yes
+upstream_regulators,TGFA,-0.179,,,EREG,yes,no,no,yes
+upstream_regulators,TGFB1,2.128,2.428,-0.3,"EGF,EREG,MFAP4",yes,no,no,yes
+upstream_regulators,THBS4,1.0,,,EREG,yes,no,no,yes
+upstream_regulators,THRB,0.724,1.035,-0.311,EGF,yes,no,no,yes
+upstream_regulators,TLR4,-0.422,-0.639,0.217,"EGF,EREG",yes,no,no,yes
+upstream_regulators,TNC,-1.067,,,EREG,yes,no,no,yes
+upstream_regulators,TNF,-1.475,-1.364,-0.111,EREG,yes,no,no,yes
+upstream_regulators,TP-10,,,,,yes,no,no,yes
+upstream_regulators,TP53,-0.569,-0.573,0.004,"EGF,EREG",yes,no,no,yes
+upstream_regulators,TP53BP1,,,,,yes,no,no,yes
+upstream_regulators,TP63,0.278,0.278,0.0,EFNA4,no,no,no,yes
+upstream_regulators,TP73,0.248,0.054,0.194,EREG,yes,no,no,yes
+upstream_regulators,TRAF3IP2,-2.389,-2.194,-0.195,EGF,yes,no,no,yes
+upstream_regulators,TUBB3,,,,,yes,no,no,yes
+upstream_regulators,U0126,-0.127,-0.47,0.343,"EGF,EREG",yes,no,no,yes
+upstream_regulators,VAV3,,,,EGF,yes,no,no,yes
+upstream_regulators,VIP,0.72,,,EGF,yes,no,no,yes
+upstream_regulators,VPS18,,,,,yes,no,no,yes
+upstream_regulators,VX-944,,,,,yes,no,no,yes
+upstream_regulators,WASF2,,,,,yes,no,no,yes
+upstream_regulators,WT1,1.27,1.6,-0.33,EREG,yes,no,no,yes
+upstream_regulators,YAP1,0.552,0.69,-0.138,EREG,yes,no,no,yes
+upstream_regulators,YBX1,-0.138,0.09,-0.228,EREG,yes,no,yes,yes
+upstream_regulators,Z-WEHD-FMK,,,,,yes,no,no,yes
+upstream_regulators,ZC3H12A,0.542,0.318,0.224,EREG,yes,no,no,yes
+upstream_regulators,ZNF76,,,,,yes,no,no,yes
+upstream_regulators,adezmapimod,0.992,0.694,0.298,"EGF,EREG",yes,no,no,yes
+upstream_regulators,aflatoxin B1,0.258,0.0,0.258,EGF,yes,no,no,yes
+upstream_regulators,alpha-zearalenol,,,,,yes,no,no,yes
+upstream_regulators,ampelopsin,-0.199,-0.718,0.519,"EGF,EREG",yes,no,no,yes
+upstream_regulators,asoprisnil,1.432,1.067,0.365,EGF,yes,no,no,yes
+upstream_regulators,asparaginase,,,,EGF,yes,no,no,yes
+upstream_regulators,atiprimod,,,,,yes,no,no,yes
+upstream_regulators,baicalin,-0.294,0.2,-0.494,EGF,yes,no,yes,yes
+upstream_regulators,batimastat,,,,EGF,yes,no,no,yes
+upstream_regulators,benzo(a)pyrene,0.592,0.592,0.0,EREG,no,no,no,yes
+upstream_regulators,beta-estradiol,2.424,2.604,-0.18,"EGF,EREG,TYRO3",yes,no,no,yes
+upstream_regulators,betulinic acid,-0.095,,,EREG,yes,no,no,yes
+upstream_regulators,bisphenol A,0.172,0.41,-0.238,EREG,yes,no,no,yes
+upstream_regulators,bleomycin,1.049,1.376,-0.327,"EGF,EREG",yes,no,no,yes
+upstream_regulators,bromobenzene,0.581,0.581,0.0,EGF,no,no,no,yes
+upstream_regulators,bucillamine,,,,,yes,no,no,yes
+upstream_regulators,bucladesine,0.358,,,TYRO3,yes,no,no,yes
+upstream_regulators,budesonide,-1.462,-1.739,0.277,EREG,yes,no,no,yes
+upstream_regulators,carbon tetrachloride,0.831,0.831,0.0,EGF,no,no,no,yes
+upstream_regulators,cardiotoxin,0.378,0.378,0.0,EGF,no,no,no,yes
+upstream_regulators,cisplatin,1.65,1.523,0.127,EGF,yes,no,no,yes
+upstream_regulators,clodronic acid,,-0.555,,,yes,no,no,yes
+upstream_regulators,coomassie brilliant blue G-250,,,,EGF,yes,no,no,yes
+upstream_regulators,cyclo(iso-Asp-GR)-LLIIKLAKLAKKLAKLAK,,,,,yes,no,no,yes
+upstream_regulators,cycloartenol,,,,,yes,no,no,yes
+upstream_regulators,cyclopentenylcytosine,,,,,yes,no,no,yes
+upstream_regulators,cyclosporin A,0.118,-0.133,0.251,EGF,yes,no,yes,yes
+upstream_regulators,decitabine,-0.735,-0.747,0.012,"EFNA4,TYRO3",yes,no,no,yes
+upstream_regulators,dexamethasone,1.513,1.561,-0.048,"EGF,EREG",yes,no,no,yes
+upstream_regulators,dexmedetomidine,-1.191,-0.951,-0.24,EGF,yes,no,no,yes
+upstream_regulators,dextran sulfate,-0.667,-0.667,0.0,EGF,no,no,no,yes
+upstream_regulators,diethylstilbestrol,-1.142,-0.947,-0.195,"EGF,EREG,MFAP4",yes,no,no,yes
+upstream_regulators,dihydrotestosterone,1.333,1.636,-0.303,EGF,yes,no,no,yes
+upstream_regulators,diphtheria toxin,0.0,0.447,-0.447,EGF,yes,no,no,yes
+upstream_regulators,dofetilide,,,,,yes,no,no,yes
+upstream_regulators,doxorubicin,-0.048,0.119,-0.167,EREG,yes,no,yes,yes
+upstream_regulators,estradiol-17beta-benzoate,-0.508,-0.853,0.345,TYRO3,yes,no,no,yes
+upstream_regulators,estrogen,0.058,0.341,-0.283,EGF,yes,no,no,yes
+upstream_regulators,fertirelin,,,,,yes,no,no,yes
+upstream_regulators,forskolin,0.371,0.631,-0.26,EREG,yes,no,no,yes
+upstream_regulators,gamitrinib-TPP-OH,,,,,yes,no,no,yes
+upstream_regulators,gemcitabine,-0.743,-0.332,-0.411,EGF,yes,no,no,yes
+upstream_regulators,genistein,0.784,0.961,-0.177,EREG,yes,no,no,yes
+upstream_regulators,gentamicin,0.72,0.583,0.137,EGF,yes,no,no,yes
+upstream_regulators,gentamicin C1,,,,,yes,no,no,yes
+upstream_regulators,ginkgetin,,,,,yes,no,no,yes
+upstream_regulators,ginseng extract,,,,,yes,no,no,yes
+upstream_regulators,glyoxal,,,,,yes,no,no,yes
+upstream_regulators,halofuginone,-0.6,-0.6,0.0,TYRO3,no,no,no,yes
+upstream_regulators,hgd40,,,,,yes,no,no,yes
+upstream_regulators,iodine,,,,EGF,no,no,no,yes
+upstream_regulators,isoalantolactone,,,,,yes,no,no,yes
+upstream_regulators,isobutylmethylxanthine,-1.093,-0.822,-0.271,TYRO3,yes,no,no,yes
+upstream_regulators,isoproterenol,0.232,0.496,-0.264,TYRO3,yes,no,no,yes
+upstream_regulators,kainic acid,0.747,1.01,-0.263,EGF,yes,no,no,yes
+upstream_regulators,lactic acid,-1.26,-1.26,0.0,MFAP4,no,no,no,yes
+upstream_regulators,leteprinim,,,,,yes,no,no,yes
+upstream_regulators,levomenthol,,,,,yes,no,no,yes
+upstream_regulators,lipopolysaccharide,2.081,2.216,-0.135,EREG,yes,no,no,yes
+upstream_regulators,losartan potassium,-0.52,-0.52,0.0,EGF,no,no,no,yes
+upstream_regulators,lynestrenol,,,,,yes,no,no,yes
+upstream_regulators,metformin,-0.394,-0.734,0.34,"EFNA4,EREG",yes,no,no,yes
+upstream_regulators,methylprednisolone,-0.479,-0.629,0.15,TYRO3,yes,no,no,yes
+upstream_regulators,miR-122b-3p (and other miRNAs w/seed AACACCA),,,,,yes,no,no,yes
+upstream_regulators,miR-1253 inhibitor,,,,,yes,no,no,yes
+upstream_regulators,miR-127-5p inhibitor,,,,,yes,no,no,yes
+upstream_regulators,miR-155-3p (miRNAs w/seed UCCUACC),,,,,yes,no,no,yes
+upstream_regulators,miR-30c-1-3p (and other miRNAs w/seed UGGGAGA),,,,,yes,no,no,yes
+upstream_regulators,miR-3180-5p (miRNAs w/seed UUCCAGA),,,,,yes,no,no,yes
+upstream_regulators,miR-495-3p (and other miRNAs w/seed AACAAAC),,,,EREG,yes,no,no,yes
+upstream_regulators,miR-582-3p (miRNAs w/seed AACUGGU),,,,,yes,no,no,yes
+upstream_regulators,mir-223,0.063,-0.162,0.225,"EGF,EREG",yes,no,yes,yes
+upstream_regulators,mir-3180 (includes others),,,,,yes,no,no,yes
+upstream_regulators,mir-330,,,,EREG,yes,no,no,yes
+upstream_regulators,mir-346,,,,,yes,no,no,yes
+upstream_regulators,mir-878,,,,,yes,no,no,yes
+upstream_regulators,mir-880,,,,,yes,no,no,yes
+upstream_regulators,mirdametinib,-2.137,-1.915,-0.222,TYRO3,yes,yes,no,yes
+upstream_regulators,mitoxantrone,-1.062,-0.594,-0.468,EREG,yes,no,no,yes
+upstream_regulators,monooleylphosphatidic acid,,,,EREG,no,no,no,yes
+upstream_regulators,naftopidil,,,,,yes,no,no,yes
+upstream_regulators,napabucasin,-0.426,-0.788,0.362,EGF,yes,no,no,yes
+upstream_regulators,nastorazepide,,,,,yes,no,no,yes
+upstream_regulators,nedocromil sodium,,,,,yes,no,no,yes
+upstream_regulators,nonylphenol,0.152,,,EREG,yes,no,no,yes
+upstream_regulators,octanal,,,,,yes,no,no,yes
+upstream_regulators,oxazepam,,,,,yes,no,no,yes
+upstream_regulators,paclitaxel,0.311,0.311,0.0,EREG,no,no,no,yes
+upstream_regulators,poly rI:rC-RNA,-1.124,-0.99,-0.134,EREG,yes,no,no,yes
+upstream_regulators,poly-L-glutamic acid-peptoid 1 conjugate QM56,,,,,yes,no,no,yes
+upstream_regulators,polyinosinic acid,,,,,yes,no,no,yes
+upstream_regulators,pracinostat,,,,,yes,no,no,yes
+upstream_regulators,probenecid,0.927,,,EREG,yes,no,no,yes
+upstream_regulators,progesterone,0.156,0.351,-0.195,EGF,yes,no,no,yes
+upstream_regulators,prostaglandin E2 glyceryl ester,,,,,yes,no,no,yes
+upstream_regulators,quercetin,1.393,1.393,0.0,EGF,no,no,no,yes
+upstream_regulators,reactive nitrogen species,,,,,yes,no,no,yes
+upstream_regulators,repaglinide,,,,,yes,no,no,yes
+upstream_regulators,safflor yellow B,,,,,yes,no,no,yes
+upstream_regulators,streptozocin,-0.036,-0.216,0.18,EGF,yes,no,no,yes
+upstream_regulators,swainsonine,,,,,yes,no,no,yes
+upstream_regulators,takinib,,,,,yes,no,no,yes
+upstream_regulators,tazemetostat,-1.8,-1.877,0.077,"EFNA4,TYRO3",yes,no,no,yes
+upstream_regulators,telocinobufagin,,,,EGF,yes,no,no,yes
+upstream_regulators,terpenoid,,,,,yes,no,no,yes
+upstream_regulators,testosterone,0.356,0.663,-0.307,EGF,yes,no,no,yes
+upstream_regulators,tetrabromobisphenol A,-0.277,0.0,-0.277,EGF,yes,no,no,yes
+upstream_regulators,tetrachlorodibenzodioxin,0.474,0.211,0.263,"EGF,EREG",yes,no,no,yes
+upstream_regulators,tetradecanoylphorbol acetate,0.303,0.541,-0.238,"EGF,EREG",yes,no,no,yes
+upstream_regulators,thioacetamide,0.913,0.913,0.0,TYRO3,no,no,no,yes
+upstream_regulators,thyroid hormone,-0.478,-0.478,0.0,EGF,no,no,no,yes
+upstream_regulators,tolimidone,,,,,yes,no,no,yes
+upstream_regulators,topiramate,-1.387,-1.067,-0.32,TYRO3,yes,no,no,yes
+upstream_regulators,trametinib,0.879,0.667,0.212,EREG,yes,no,no,yes
+upstream_regulators,trans-4-phenylbut-3-en-2-one,,,,,yes,no,no,yes
+upstream_regulators,tretinoin,-1.144,-1.241,0.097,EREG,yes,no,no,yes
+upstream_regulators,trichosanthin,,,,,yes,no,no,yes
+upstream_regulators,trichostatin A,-0.424,-0.564,0.14,"EFNA4,EREG,TYRO3",yes,no,no,yes
+upstream_regulators,trilostane,,,,,yes,no,no,yes
+upstream_regulators,tunicamycin,0.399,0.63,-0.231,EREG,yes,no,no,yes
+upstream_regulators,tyrphostin AG 1295,,,,,yes,no,no,yes
+upstream_regulators,valsartan,-0.422,-0.113,-0.309,EGF,yes,no,no,yes
+upstream_regulators,vasoactive intestinal peptide,,,,EGF,yes,no,no,yes
+upstream_regulators,veliparib,,,,,yes,no,no,yes
+upstream_regulators,wax ester,,,,,yes,no,no,yes
+diseases_and_functions,Amino Acid Metabolism | Quantity of amino acids,0.698,0.549,0.149,EGF,yes,no,no,yes
+diseases_and_functions,"Amino Acid Metabolism,Small Molecule Biochemistry | Metabolism of amino acid analogs",2.2,1.964,0.236,EGF,yes,yes,no,yes
+diseases_and_functions,"Amino Acid Metabolism,Small Molecule Biochemistry | Metabolism of amino acids",0.93,0.717,0.213,EGF,yes,no,no,yes
+diseases_and_functions,"Amino Acid Metabolism,Small Molecule Biochemistry | Synthesis of amino acids",0.022,-0.323,0.345,EGF,yes,no,yes,yes
+diseases_and_functions,Cancer | Cell transformation,0.393,0.769,-0.376,"EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Cell Death and Survival,Organismal Injury and Abnormalities | Cell death of tumor",-3.725,-3.67,-0.055,EGF,yes,no,no,yes
+diseases_and_functions,"Cancer,Cell Death and Survival,Organismal Injury and Abnormalities,Tumor Morphology | Cell death of tumor cells",-4.104,-4.048,-0.056,EGF,yes,no,no,yes
+diseases_and_functions,"Cancer,Cell Death and Survival,Organismal Injury and Abnormalities,Tumor Morphology | Necrosis of tumor",-3.945,-3.89,-0.055,EGF,yes,no,no,yes
+diseases_and_functions,"Cancer,Cellular Development,Cellular Growth and Proliferation,Organismal Injury and Abnormalities,Tumor Morphology | Proliferation of tumor cells",0.532,0.63,-0.098,EGF,yes,no,no,yes
+diseases_and_functions,"Cancer,Dental Disease,Gastrointestinal Disease,Organismal Injury and Abnormalities | Keratocystic odontogenic tumor",,,,EREG,no,no,no,yes
+diseases_and_functions,"Cancer,Dental Disease,Gastrointestinal Disease,Organismal Injury and Abnormalities | Odontogenic tumor",,,,EREG,no,no,no,yes
+diseases_and_functions,"Cancer,Dermatological Diseases and Conditions,Organismal Injury and Abnormalities | Cutaneous melanoma",,,,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Dermatological Diseases and Conditions,Organismal Injury and Abnormalities | Skin cancer",,,,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Dermatological Diseases and Conditions,Organismal Injury and Abnormalities | Skin tumor",0.867,0.867,0.0,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Endocrine System Disorders,Organismal Injury and Abnormalities | Endocrine carcinoma",,,,"EFNA4,EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Endocrine System Disorders,Organismal Injury and Abnormalities | Endocrine gland tumor",0.378,0.0,0.378,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Endocrine System Disorders,Organismal Injury and Abnormalities | Nonpituitary endocrine tumor",-0.447,-0.447,0.0,"EFNA4,EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Endocrine System Disorders,Organismal Injury and Abnormalities | Thyroid carcinoma",,,,"EFNA4,EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Endocrine System Disorders,Organismal Injury and Abnormalities | Thyroid gland tumor",,,,"EFNA4,EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Endocrine System Disorders,Organismal Injury and Abnormalities,Reproductive System Disease | Gonadal germ cell tumor",,,,,yes,no,no,yes
+diseases_and_functions,"Cancer,Endocrine System Disorders,Organismal Injury and Abnormalities,Reproductive System Disease | Gonadal tumor",-0.555,-0.555,0.0,"EGF,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Endocrine System Disorders,Organismal Injury and Abnormalities,Reproductive System Disease | Ovarian cancer",,,,"EGF,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Endocrine System Disorders,Organismal Injury and Abnormalities,Reproductive System Disease | Ovarian tumor",-0.447,-0.447,0.0,"EGF,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Hepatic System Disease,Organismal Injury and Abnormalities | Bile duct adenocarcinoma",0.132,0.132,0.0,"EFNA4,EGF",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Hepatic System Disease,Organismal Injury and Abnormalities | Bile duct cancer",0.132,,,"EFNA4,EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Hepatic System Disease,Organismal Injury and Abnormalities | Bile duct carcinoma",0.132,0.132,0.0,"EFNA4,EGF",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Hepatic System Disease,Organismal Injury and Abnormalities | Biliary tract adenocarcinoma",0.132,0.132,0.0,"EFNA4,EGF",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Hepatic System Disease,Organismal Injury and Abnormalities | Biliary tract cancer",0.132,,,"EFNA4,EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Hepatic System Disease,Organismal Injury and Abnormalities | Biliary tract carcinoma",0.132,0.132,0.0,"EFNA4,EGF",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Hepatic System Disease,Organismal Injury and Abnormalities | Cholangiocarcinoma",0.132,0.132,0.0,EGF,no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Hepatic System Disease,Organismal Injury and Abnormalities | Hepatobiliary carcinoma",0.02,0.02,0.0,"EFNA4,EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Hepatic System Disease,Organismal Injury and Abnormalities | Hepatobiliary system cancer",0.295,0.295,0.0,"EFNA4,EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Hepatic System Disease,Organismal Injury and Abnormalities | Hepatocellular carcinoma",-0.053,-0.053,0.0,"EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Hepatic System Disease,Organismal Injury and Abnormalities | Liver cancer",0.11,0.11,0.0,"EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Hepatic System Disease,Organismal Injury and Abnormalities | Liver carcinoma",-0.251,-0.251,0.0,"EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Hepatic System Disease,Organismal Injury and Abnormalities | Liver tumor",-0.054,0.08,-0.134,"EFNA4,EGF,MFAP4,TYRO3",yes,no,yes,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Colon cancer",-0.849,,,"EFNA4,EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Colon tumor",-1.004,-0.52,-0.484,"EFNA4,EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Colorectal cancer",0.436,0.555,-0.119,"EFNA4,EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Colorectal tumor",0.168,0.314,-0.146,"EFNA4,EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Development of digestive organ tumor",0.161,0.487,-0.326,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Digestive organ tumor",1.333,1.407,-0.074,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Digestive system cancer",1.276,1.311,-0.035,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Gastric adenocarcinoma",,,,"MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Gastric cancer",,,,"MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Gastric carcinoma",,,,"MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Gastroesophageal adenocarcinoma",,,,"MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Gastroesophageal cancer",,,,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Gastroesophageal carcinoma",,,,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Gastrointestinal adenocarcinoma",,,,"EFNA4,EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Gastrointestinal carcinoma",1.178,1.741,-0.563,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Gastrointestinal tract cancer",2.031,2.254,-0.223,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Gastrointestinal tumor",1.896,2.124,-0.228,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,yes,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Hepato-pancreato-biliary cancer",0.238,0.238,0.0,"EFNA4,EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Hepatobiliary neoplasm",-0.018,0.115,-0.133,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,yes,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Intestinal tumor",0.732,0.939,-0.207,"EFNA4,EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Large intestine adenocarcinoma",,,,"EFNA4,EGF,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Large intestine carcinoma",,,,"EFNA4,EGF,EREG,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Large intestine neoplasm",0.168,0.314,-0.146,"EFNA4,EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Malignant hepatobiliary neoplasm",0.295,0.295,0.0,"EFNA4,EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Malignant neoplasm of large intestine",0.436,0.555,-0.119,"EFNA4,EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Non-colon gastrointestinal cancer",2.423,2.423,0.0,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Non-colorectal gastrointestinal cancer",2.423,2.423,0.0,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Pancreaticobiliary cancer",-0.577,-0.577,0.0,"EFNA4,EGF,EREG,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Pancreaticobiliary carcinoma",0.132,0.132,0.0,"EFNA4,EGF,EREG",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Pancreaticobiliary neoplasm",0.346,0.346,0.0,"EFNA4,EGF,EREG,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Pancreatobiliary adenocarcinoma",0.132,0.132,0.0,"EFNA4,EGF",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Stomach tumor",,,,"MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Upper gastrointestinal carcinoma",1.969,1.969,0.0,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Upper gastrointestinal tract cancer",2.207,2.207,0.0,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Gastrointestinal Disease,Organismal Injury and Abnormalities | Upper gastrointestinal tract tumor",2.0,2.0,0.0,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Hematological Disease,Immunological Disease,Organismal Injury and Abnormalities | B cell cancer",,,,EGF,no,no,no,yes
+diseases_and_functions,"Cancer,Hematological Disease,Immunological Disease,Organismal Injury and Abnormalities | Lymphocytic cancer",-1.463,-1.463,0.0,EGF,no,no,no,yes
+diseases_and_functions,"Cancer,Hematological Disease,Immunological Disease,Organismal Injury and Abnormalities | Lymphoma",-1.195,-1.195,0.0,EGF,no,no,no,yes
+diseases_and_functions,"Cancer,Hematological Disease,Immunological Disease,Organismal Injury and Abnormalities | Mature B cell malignant tumor",,,,EGF,no,no,no,yes
+diseases_and_functions,"Cancer,Hematological Disease,Immunological Disease,Organismal Injury and Abnormalities | Mature B-cell neoplasm",,,,EGF,no,no,no,yes
+diseases_and_functions,"Cancer,Hematological Disease,Immunological Disease,Organismal Injury and Abnormalities | Neoplasia of leukocytes",-1.32,-1.32,0.0,EGF,no,no,no,yes
+diseases_and_functions,"Cancer,Hematological Disease,Immunological Disease,Organismal Injury and Abnormalities | Non-Hodgkin lymphoma",,,,EGF,no,no,no,yes
+diseases_and_functions,"Cancer,Hematological Disease,Immunological Disease,Organismal Injury and Abnormalities | Tumorigenesis of lymphocytes",-1.463,-1.463,0.0,EGF,no,no,no,yes
+diseases_and_functions,"Cancer,Hematological Disease,Organismal Injury and Abnormalities | Hematologic cancer",-1.744,-1.744,0.0,EGF,no,no,no,yes
+diseases_and_functions,"Cancer,Hematological Disease,Organismal Injury and Abnormalities | Hematologic cancer of cells",-1.195,-1.195,0.0,EGF,no,no,no,yes
+diseases_and_functions,"Cancer,Hematological Disease,Organismal Injury and Abnormalities | Hematopoietic neoplasm",-0.577,-0.577,0.0,EGF,no,no,no,yes
+diseases_and_functions,"Cancer,Hematological Disease,Organismal Injury and Abnormalities | Malignant lymphocytic neoplasm",-1.463,-1.463,0.0,EGF,no,no,no,yes
+diseases_and_functions,"Cancer,Hematological Disease,Organismal Injury and Abnormalities | Mature lymphocytic neoplasm",,,,EGF,no,no,no,yes
+diseases_and_functions,"Cancer,Hematological Disease,Organismal Injury and Abnormalities | Myeloid or lymphoid neoplasm",-1.772,-1.772,0.0,EGF,no,no,no,yes
+diseases_and_functions,"Cancer,Hematological Disease,Organismal Injury and Abnormalities | Neoplasia of blood cells",-1.437,-1.437,0.0,EGF,no,no,no,yes
+diseases_and_functions,"Cancer,Hereditary Disorder,Organismal Injury and Abnormalities | Hereditary cancer-predisposing syndrome",,,,"EGF,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Hereditary Disorder,Organismal Injury and Abnormalities,Renal and Urological Disease | Familial renal cell carcinoma",,,,EGF,no,no,no,yes
+diseases_and_functions,"Cancer,Neurological Disease,Organismal Injury and Abnormalities | Astrocytoma",,,,"EFNA4,EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Cancer,Neurological Disease,Organismal Injury and Abnormalities | Brain cancer",-0.784,-0.784,0.0,"EFNA4,EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Cancer,Neurological Disease,Organismal Injury and Abnormalities | Brain glioma",,,,"EFNA4,EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Cancer,Neurological Disease,Organismal Injury and Abnormalities | Brain tumor",-0.099,-0.099,0.0,"EFNA4,EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Cancer,Neurological Disease,Organismal Injury and Abnormalities | Central nervous system cancer",-0.365,-0.365,0.0,"EFNA4,EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Cancer,Neurological Disease,Organismal Injury and Abnormalities | Central nervous system solid tumor",-0.484,-0.484,0.0,"EFNA4,EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Cancer,Neurological Disease,Organismal Injury and Abnormalities | Glioblastoma",,,,"EFNA4,EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Cancer,Neurological Disease,Organismal Injury and Abnormalities | Glioma",-0.378,-0.378,0.0,"EFNA4,EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Cancer,Neurological Disease,Organismal Injury and Abnormalities | Glioma cancer",,,,"EFNA4,EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Cancer,Neurological Disease,Organismal Injury and Abnormalities | High grade glioma",,,,"EFNA4,EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Cancer,Neurological Disease,Organismal Injury and Abnormalities | Malignant brain glioma",,,,"EFNA4,EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Cancer,Neurological Disease,Organismal Injury and Abnormalities | Nervous system neoplasm",0.137,0.137,0.0,"EFNA4,EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Abdominal adenocarcinoma",0.726,0.726,0.0,"EFNA4,EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Abdominal cancer",0.71,0.727,-0.017,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Abdominal carcinoma",0.032,0.254,-0.222,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Abdominal neoplasm",0.452,0.497,-0.045,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Adenocarcinoma",0.84,0.84,0.0,"EFNA4,EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Adenoma",-0.728,-0.277,-0.451,EGF,yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Advanced extracranial solid tumor",0.852,0.994,-0.142,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Advanced malignant solid tumor",1.37,1.498,-0.128,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Advanced malignant tumor",1.503,1.638,-0.135,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Anogenital cancer",,,,"EFNA4,EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Benign connective or soft tissue neoplasm",,,,"EGF,EREG",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Benign head and neck neoplasm",,,,EREG,no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Benign solid tumor",0.121,0.519,-0.398,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Breast or colorectal cancer",0.383,0.437,-0.054,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Breast or gastric cancer",0.946,0.946,0.0,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Breast or ovarian neoplasm",1.189,0.949,0.24,"EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Breast or pancreatic cancer",-0.647,-0.647,0.0,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Cancer",0.365,0.32,0.045,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Cancer of cells",0.445,0.593,-0.148,"EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Cancer of head",-0.365,-0.365,0.0,"EFNA4,EGF,EREG,MFAP4",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Cancer of secretory structure",-1.698,-1.698,0.0,"EFNA4,EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Carcinoma",0.485,0.558,-0.073,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Clear-cell adenocarcinoma",,,,"EGF,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Connective tissue tumor",-0.593,-0.36,-0.233,"EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Development of adenocarcinoma",0.684,0.684,0.0,"EFNA4,EGF,EREG,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Development of benign tumor",-0.475,-0.103,-0.372,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Development of carcinoma",0.209,0.464,-0.255,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Development of head and neck tumor",0.216,0.216,0.0,EREG,no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Development of malignant tumor",1.074,1.287,-0.213,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Embryonal tumor",2.105,2.105,0.0,"EFNA4,EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Endometrioid carcinoma",,,,"EFNA4,EGF,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Epithelial neoplasm",0.463,0.6,-0.137,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Extraadrenal retroperitoneal tumor",0.353,0.353,0.0,"EGF,EREG,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Extrahepatic metastasis",1.634,1.772,-0.138,EGF,yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Extrapulmonary squamous cell carcinoma",,,,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Familial tumor",,,,"EGF,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Formation of epithelial neoplasm",0.042,0.326,-0.284,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Formation of solid tumor",0.833,1.057,-0.224,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Frequency of tumor",0.945,1.183,-0.238,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Generation of tumor",1.177,1.381,-0.204,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Genitourinary adenocarcinoma",0.928,0.928,0.0,"EFNA4,EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Genitourinary carcinoma",-0.143,-0.143,0.0,"EFNA4,EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Genitourinary tumor",0.641,0.433,0.208,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Growth of malignant tumor",1.084,1.084,0.0,EGF,no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Growth of solid tumor",1.95,2.113,-0.163,"EGF,TYRO3",yes,yes,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Growth of subcutaneous tumor",1.387,1.763,-0.376,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Growth of tumor",2.924,3.057,-0.133,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Head and neck cancer",0.0,0.0,0.0,"EFNA4,EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Head and neck carcinoma",,,,"EFNA4,EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Head and neck tumor",0.584,0.584,0.0,"EFNA4,EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Hematological or lymphatic system tumor",0.713,0.713,0.0,"EGF,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Incidence of tumor",0.477,0.687,-0.21,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Intraabdominal organ tumor",0.51,0.559,-0.049,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Intrathoracic malignant tumor",0.837,0.919,-0.082,"EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Invasive cancer",1.579,1.715,-0.136,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Invasive tumor",1.655,1.791,-0.136,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Lymphatic system tumor",0.414,0.414,0.0,"EGF,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Lymphohematopoietic cancer",0.108,0.108,0.0,EGF,no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Lymphohematopoietic neoplasia",0.713,0.713,0.0,EGF,no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Lymphoid cancer",0.414,0.414,0.0,EGF,no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Lymphoreticular neoplasm",-1.554,-1.554,0.0,"EGF,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Malignant genitourinary solid tumor",0.036,0.036,0.0,"EFNA4,EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Malignant neoplasm of aerodigestive tract",,,,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Malignant neoplasm of retroperitoneum",0.0,0.0,0.0,"EGF,EREG,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Malignant solid organ tumor",,,,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Melanoma",0.35,0.35,0.0,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Mesenchymal tumor",0.577,,,EGF,yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Metastasis",1.503,1.638,-0.135,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Metastasis of carcinoma cell lines",0.625,0.847,-0.222,EGF,yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Metastasis of cells",0.741,0.9,-0.159,EGF,yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Metastasis of tumor cell lines",0.503,0.647,-0.144,EGF,yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Metastatic solid tumor",1.353,1.482,-0.129,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Neck neoplasm",,,,"EFNA4,EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Neoplasia of cells",0.027,0.36,-0.333,"EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Neoplasia of tumor cell lines",0.269,0.628,-0.359,"EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Neuroepithelial tumor",-0.378,-0.378,0.0,"EFNA4,EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Non rhabdoid tumor",1.179,1.389,-0.21,"EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Non-ocular melanoma",,,,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Osteogenic neoplasm",,,,"EREG,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Papillary adenocarcinoma",,,,"EFNA4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Papillary carcinoma",,,,"EFNA4,EGF,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Papillary neoplasm",0.415,0.415,0.0,"EFNA4,EGF,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Pelvic adenocarcinoma",,,,"EFNA4,EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Pelvic cancer",,,,"EFNA4,EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Pelvic carcinoma",,,,"EFNA4,EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Pelvic serous carcinoma",,,,MFAP4,no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Pelvic tumor",-0.187,-0.187,0.0,"EFNA4,EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Solid tumor",2.321,2.4,-0.079,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Squamous-cell carcinoma",0.686,0.686,0.0,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Subcutaneous tumor",1.542,1.957,-0.415,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Thoracic carcinoma",-0.447,-1.0,0.553,"EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Thoracic neoplasm",0.664,0.744,-0.08,"EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Tubular adenocarcinoma",,,,TYRO3,no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Tumorigenesis of epithelial neoplasm",0.042,0.326,-0.284,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Upper abdominal cancer",0.334,0.334,0.0,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Upper aerodigestive tract carcinoma",,,,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Urogenital cancer",0.036,0.036,0.0,"EFNA4,EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Uveal or cutaneous melanoma",,,,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities | Visceral metastasis",1.399,1.532,-0.133,EGF,yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Renal and Urological Disease | Bladder cancer",,,,"EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Renal and Urological Disease | Bladder carcinoma",,,,"EGF,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Renal and Urological Disease | Bladder tumor",,,,"EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Renal and Urological Disease | Development of urinary tract tumor",-0.555,-0.555,0.0,"EGF,EREG,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Renal and Urological Disease | Kidney carcinoma",0.0,0.0,0.0,"EGF,EREG,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Renal and Urological Disease | Papillary renal cell carcinoma",,,,TYRO3,no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Renal and Urological Disease | Renal cancer",0.577,0.577,0.0,"EGF,EREG,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Renal and Urological Disease | Renal cell carcinoma",,,,"EGF,EREG,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Renal and Urological Disease | Renal clear cell adenocarcinoma",,,,"EGF,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Renal and Urological Disease | Renal tumor",0.18,0.18,0.0,"EGF,EREG,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Renal and Urological Disease | Urinary tract cancer",0.277,0.277,0.0,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Renal and Urological Disease | Urinary tract carcinoma",-0.447,-0.447,0.0,"EGF,EREG,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Renal and Urological Disease | Urinary tract tumor",-0.41,-0.41,0.0,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Renal and Urological Disease | Urothelial cancer",,,,,yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Breast cancer",0.068,0.068,0.0,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Breast or gynecological cancer",-0.314,-0.314,0.0,"EFNA4,EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Breast or ovarian cancer",-0.314,-0.314,0.0,"EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Development of genital tumor",,,,"EFNA4,EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Endometrial adenocarcinoma",,,,"EFNA4,EGF",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Endometrial cancer",,,,"EFNA4,EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Endometrial carcinoma",,,,"EFNA4,EGF",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Female genital carcinoma",,,,"EFNA4,EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Female genital neoplasm",0.128,0.128,0.0,"EFNA4,EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Female genital tract adenocarcinoma",,,,"EFNA4,EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Female genital tract cancer",,,,"EFNA4,EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Female genital tract serous carcinoma",,,,MFAP4,no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Genital carcinoma",,,,"EFNA4,EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Genital tract cancer",,,,"EFNA4,EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Genital tumor",0.222,0.222,0.0,"EFNA4,EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Germ cell tumor",,,,EGF,no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Male genital neoplasm",-0.228,-0.228,0.0,"EGF,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Malignant neoplasm of male genital organ",,,,,yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Mammary tumor",1.618,1.383,0.235,"EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Prostate cancer",,,,"EGF,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Prostatic tumor",0.068,0.068,0.0,"EGF,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Tumorigenesis of reproductive tract",0.128,0.128,0.0,"EFNA4,EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Uterine cancer",,,,"EFNA4,EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Uterine carcinoma",,,,"EFNA4,EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Reproductive System Disease | Uterine tumor",,,,"EFNA4,EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Respiratory Disease | Advanced lung cancer",0.9,1.043,-0.143,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Respiratory Disease | Lung cancer",0.837,0.919,-0.082,"EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Respiratory Disease | Lung metastasis of carcinoma cell lines",0.407,,,EGF,yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Respiratory Disease | Lung metastasis of cells",0.237,0.398,-0.161,EGF,yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Respiratory Disease | Lung metastasis of tumor cell lines",-0.191,-0.029,-0.162,EGF,yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Respiratory Disease | Lung tumor",0.664,0.744,-0.08,"EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Respiratory Disease | Malignant neoplasm of respiratory system",0.926,1.009,-0.083,"EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Respiratory Disease | Pulmonary metastasis",0.9,1.043,-0.143,EGF,yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Respiratory Disease | Respiratory system tumor",0.751,0.832,-0.081,"EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cancer,Organismal Injury and Abnormalities,Skeletal and Muscular Disorders | Muscle tumor",,,,EGF,no,no,no,yes
+diseases_and_functions,Carbohydrate Metabolism | Accumulation of carbohydrate,-2.111,-2.111,0.0,EGF,no,no,no,yes
+diseases_and_functions,Carbohydrate Metabolism | Catabolism of carbohydrate,1.625,1.32,0.305,EGF,yes,no,no,yes
+diseases_and_functions,Carbohydrate Metabolism | Catabolism of polysaccharide,1.405,1.066,0.339,EGF,yes,no,no,yes
+diseases_and_functions,Carbohydrate Metabolism | Interaction of carbohydrate,,1.257,,,yes,no,no,yes
+diseases_and_functions,Carbohydrate Metabolism | Metabolism of carbohydrate,0.604,0.696,-0.092,EGF,yes,no,no,yes
+diseases_and_functions,Carbohydrate Metabolism | Metabolism of polysaccharide,0.705,0.705,0.0,EGF,no,no,no,yes
+diseases_and_functions,Carbohydrate Metabolism | Quantity of carbohydrate,1.002,1.231,-0.229,EGF,yes,no,no,yes
+diseases_and_functions,"Cardiovascular Disease,Connective Tissue Disorders,Dermatological Diseases and Conditions,Immunological Disease,Inflammatory Disease,Organismal Injury and Abnormalities,Skeletal and Muscular Disorders | Systemic sclerosis",,,,MFAP4,no,no,no,yes
+diseases_and_functions,"Cardiovascular Disease,Organismal Injury and Abnormalities | Abnormal morphology of cardiovascular system",-0.436,-0.604,0.168,"MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cardiovascular Disease,Organismal Injury and Abnormalities | Abnormal morphology of heart",-0.501,-0.667,0.166,MFAP4,yes,no,no,yes
+diseases_and_functions,"Cardiovascular Disease,Organismal Injury and Abnormalities | Abnormality of heart ventricle",-0.198,-0.449,0.251,MFAP4,yes,no,no,yes
+diseases_and_functions,"Cardiovascular Disease,Organismal Injury and Abnormalities | Abnormality of left ventricle",0.744,0.449,0.295,MFAP4,yes,no,no,yes
+diseases_and_functions,"Cardiovascular Disease,Organismal Injury and Abnormalities | Arterial lesion",0.182,0.182,0.0,EGF,no,no,no,yes
+diseases_and_functions,"Cardiovascular Disease,Organismal Injury and Abnormalities | Atherosclerosis",0.012,0.012,0.0,"EGF,EREG",no,no,no,yes
+diseases_and_functions,"Cardiovascular Disease,Organismal Injury and Abnormalities | Dysfunction of heart",0.042,-0.311,0.353,MFAP4,yes,no,yes,yes
+diseases_and_functions,"Cardiovascular Disease,Organismal Injury and Abnormalities | Hypertension",-1.534,-1.534,0.0,MFAP4,no,no,no,yes
+diseases_and_functions,"Cardiovascular Disease,Organismal Injury and Abnormalities | Left ventricular heart disease",0.798,0.516,0.282,MFAP4,yes,no,no,yes
+diseases_and_functions,"Cardiovascular Disease,Organismal Injury and Abnormalities | Occlusion of artery",0.18,0.18,0.0,"EGF,EREG",no,no,no,yes
+diseases_and_functions,"Cardiovascular Disease,Organismal Injury and Abnormalities | Occlusion of blood vessel",0.18,0.18,0.0,"EGF,EREG",no,no,no,yes
+diseases_and_functions,"Cardiovascular Disease,Organismal Injury and Abnormalities | Thoracic aortic aneurysms and dissections",,,,,yes,no,no,yes
+diseases_and_functions,"Cardiovascular Disease,Organismal Injury and Abnormalities | Vascular lesion",-0.07,-0.07,0.0,EGF,no,no,no,yes
+diseases_and_functions,"Cardiovascular Disease,Organismal Injury and Abnormalities | Vaso-occlusion",0.179,0.179,0.0,"EGF,EREG",no,no,no,yes
+diseases_and_functions,"Cardiovascular Disease,Organismal Injury and Abnormalities,Skeletal and Muscular Disorders | Cardiomyopathy",-1.369,-1.583,0.214,MFAP4,yes,no,no,yes
+diseases_and_functions,"Cardiovascular Disease,Organismal Injury and Abnormalities,Skeletal and Muscular Disorders | Left ventricular dysfunction",0.277,-0.152,0.429,MFAP4,yes,no,yes,yes
+diseases_and_functions,"Cardiovascular Disease,Organismal Injury and Abnormalities,Skeletal and Muscular Disorders | Myocardial dysfunction",0.24,-0.156,0.396,MFAP4,yes,no,yes,yes
+diseases_and_functions,"Cardiovascular Disease,Organismal Injury and Abnormalities,Skeletal and Muscular Disorders | Ventricular dysfunction",0.531,0.224,0.307,MFAP4,yes,no,no,yes
+diseases_and_functions,Cardiovascular System Development and Function | Neovascularization,0.369,0.662,-0.293,EGF,yes,no,no,yes
+diseases_and_functions,Cardiovascular System Development and Function | Vascularization,1.041,1.311,-0.27,EGF,yes,no,no,yes
+diseases_and_functions,"Cardiovascular System Development and Function,Cellular Development,Cellular Function and Maintenance,Cellular Growth and Proliferation,Hair and Skin Development and Function,Organ Development,Organismal Development,Tissue Development | Proliferation of HMEC cells",1.666,2.012,-0.346,EGF,yes,yes,no,yes
+diseases_and_functions,"Cardiovascular System Development and Function,Cellular Development,Cellular Function and Maintenance,Cellular Growth and Proliferation,Organismal Development,Tissue Development | Endothelial cell development",1.531,1.794,-0.263,EGF,yes,no,no,yes
+diseases_and_functions,"Cardiovascular System Development and Function,Cellular Development,Cellular Function and Maintenance,Cellular Growth and Proliferation,Organismal Development,Tissue Development | Proliferation of endothelial cells",1.616,1.889,-0.273,EGF,yes,no,no,yes
+diseases_and_functions,"Cardiovascular System Development and Function,Cellular Development,Cellular Growth and Proliferation,Connective Tissue Development and Function,Digestive System Development and Function,Hepatic System Development and Function,Organ Development,Organismal Development,Tissue Development | Proliferation of hepatic stellate cells",1.618,,,EGF,yes,no,no,yes
+diseases_and_functions,"Cardiovascular System Development and Function,Cellular Movement | Cell movement of endothelial cells",1.206,1.472,-0.266,EGF,yes,no,no,yes
+diseases_and_functions,"Cardiovascular System Development and Function,Cellular Movement | Migration of endothelial cells",0.929,1.189,-0.26,EGF,yes,no,no,yes
+diseases_and_functions,"Cardiovascular System Development and Function,Cellular Movement | Migration of vascular endothelial cells",1.024,1.289,-0.265,EGF,yes,no,no,yes
+diseases_and_functions,"Cardiovascular System Development and Function,Cellular Movement | Movement of vascular endothelial cells",1.335,1.633,-0.298,EGF,yes,no,no,yes
+diseases_and_functions,"Cardiovascular System Development and Function,Hematological System Development and Function | Blood pressure",-0.575,-0.411,-0.164,MFAP4,yes,no,no,yes
+diseases_and_functions,"Cardiovascular System Development and Function,Organismal Development | Angiogenesis",2.281,2.55,-0.269,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Cardiovascular System Development and Function,Organismal Development | Vascularization of absolute anatomical region",1.243,1.559,-0.316,EGF,yes,no,no,yes
+diseases_and_functions,"Cardiovascular System Development and Function,Organismal Development | Vasculogenesis",2.158,2.368,-0.21,EGF,yes,no,no,yes
+diseases_and_functions,"Cardiovascular System Development and Function,Organismal Development,Tissue Development | Development of endothelial tissue",1.325,1.584,-0.259,EGF,yes,no,no,yes
+diseases_and_functions,"Cardiovascular System Development and Function,Organismal Development,Visual System Development and Function | Neovascularization of eye",0.488,0.814,-0.326,EGF,yes,no,no,yes
+diseases_and_functions,"Cardiovascular System Development and Function,Organismal Development,Visual System Development and Function | Vascularization of eye",0.763,1.084,-0.321,EGF,yes,no,no,yes
+diseases_and_functions,"Cardiovascular System Development and Function,Tissue Morphology | Morphology of blood vessel",,,,,yes,no,no,yes
+diseases_and_functions,"Cardiovascular System Development and Function,Tissue Morphology | Permeability of vascular system",1.637,1.495,0.142,TYRO3,yes,no,no,yes
+diseases_and_functions,Cell Cycle | Cell cycle progression,0.962,1.469,-0.507,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,Cell Cycle | G2 phase,0.711,0.711,0.0,EGF,no,no,no,yes
+diseases_and_functions,Cell Cycle | Interaction of DNA,1.819,2.024,-0.205,EGF,yes,yes,no,yes
+diseases_and_functions,Cell Cycle | Interphase,1.209,1.567,-0.358,EGF,yes,no,no,yes
+diseases_and_functions,Cell Cycle | Mitosis,-0.519,0.171,-0.69,"EGF,EREG",yes,no,yes,yes
+diseases_and_functions,Cell Cycle | Senescence of cells,1.056,0.629,0.427,"EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cell Cycle,Embryonic Development | G2/M phase of embryonic cell lines",,,,,yes,no,no,yes
+diseases_and_functions,"Cell Cycle,Gene Expression | Binding of DNA",1.916,2.123,-0.207,EGF,yes,yes,no,yes
+diseases_and_functions,Cell Death and Survival | Apoptosis,-4.777,-5.033,0.256,"EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,Cell Death and Survival | Apoptosis of somatic cells,-1.342,-1.576,0.234,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,Cell Death and Survival | Apoptosis of vascular cells,0.141,0.141,0.0,EGF,no,no,no,yes
+diseases_and_functions,Cell Death and Survival | Cell death of brain,-0.186,-0.363,0.177,EGF,yes,no,no,yes
+diseases_and_functions,Cell Death and Survival | Cell death of somatic cells,-1.59,-1.721,0.131,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,Cell Death and Survival | Cell survival,4.268,4.391,-0.123,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,Cell Death and Survival | Cell survival of tumor cell lines,,0.038,,,yes,no,no,yes
+diseases_and_functions,Cell Death and Survival | Cell viability,4.185,4.308,-0.123,"EFNA4,EGF,EREG,MFAP4",yes,no,no,yes
+diseases_and_functions,Cell Death and Survival | Cell viability of adenocarcinoma cell lines,1.895,2.282,-0.387,EGF,yes,yes,no,yes
+diseases_and_functions,Cell Death and Survival | Cell viability of breast cancer cell lines,-0.113,0.12,-0.233,EGF,yes,no,yes,yes
+diseases_and_functions,Cell Death and Survival | Cell viability of carcinoma cell lines,2.008,2.267,-0.259,EGF,yes,no,no,yes
+diseases_and_functions,Cell Death and Survival | Cell viability of connective tissue cells,1.856,1.684,0.172,EGF,yes,no,no,yes
+diseases_and_functions,Cell Death and Survival | Cell viability of lung cancer cell lines,1.35,1.654,-0.304,EGF,yes,no,no,yes
+diseases_and_functions,Cell Death and Survival | Cell viability of tumor cell lines,2.659,2.704,-0.045,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,Cell Death and Survival | Killing of cells,-0.406,-0.622,0.216,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Gastrointestinal Disease,Hepatic System Disease,Organismal Injury and Abnormalities | Cell death of liver cells",-1.183,,,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Gastrointestinal Disease,Hepatic System Disease,Organismal Injury and Abnormalities | Necrosis of liver",-1.063,-1.093,0.03,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Neurological Disease,Organismal Injury and Abnormalities | Cell death of brain cells",-0.317,-0.497,0.18,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Apoptosis of adenocarcinoma cell lines",-3.006,-3.209,0.203,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Apoptosis of carcinoma cell lines",-4.491,-4.808,0.317,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Apoptosis of cervical cancer cell lines",-1.181,-1.346,0.165,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Apoptosis of endothelial cells",0.652,0.652,0.0,EGF,no,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Apoptosis of epithelial cells",-0.339,-0.437,0.098,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Apoptosis of lung cancer cell lines",-2.665,-2.832,0.167,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Apoptosis of neurons",-1.441,-1.624,0.183,TYRO3,yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Apoptosis of prostate cancer cell lines",-1.736,-2.054,0.318,EGF,yes,yes,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Apoptosis of tumor cell lines",-4.466,-4.729,0.263,"EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Apoptosis of vascular endothelial cells",0.19,0.19,0.0,EGF,no,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Cell death of adenocarcinoma cell lines",-2.48,-2.645,0.165,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Cell death of blood cells",-0.368,-0.527,0.159,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Cell death of carcinoma cell lines",-4.173,-4.475,0.302,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Cell death of central nervous system cells",-0.307,-0.469,0.162,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Cell death of cervical cancer cell lines",-0.403,-0.54,0.137,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Cell death of connective tissue cells",-1.81,-1.77,-0.04,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Cell death of epithelial cells",-0.773,-0.896,0.123,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Cell death of immune cells",-0.317,-0.436,0.119,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Cell death of lung cancer cell lines",-2.303,-2.439,0.136,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Cell death of neuroblastoma cell lines",0.322,0.654,-0.332,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Cell death of tumor cell lines",-4.818,-4.995,0.177,"EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Necrosis",-4.772,-4.963,0.191,"EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Necrosis of epithelial tissue",-0.45,-0.559,0.109,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Necrosis of prostate cancer cell lines",-1.541,-1.757,0.216,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities | Neuronal cell death",-0.81,-0.92,0.11,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities,Renal and Urological Disease | Necrosis of kidney",-0.232,-0.394,0.162,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities,Skeletal and Muscular Disorders | Cell death of muscle cells",-0.785,-0.656,-0.129,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Death and Survival,Organismal Injury and Abnormalities,Skeletal and Muscular Disorders | Necrosis of muscle",-0.844,-0.72,-0.124,EGF,yes,no,no,yes
+diseases_and_functions,Cell Morphology | Morphology of cellular protrusions,,,,EGF,yes,no,no,yes
+diseases_and_functions,Cell Morphology | Morphology of tumor cell lines,,,,EGF,no,no,no,yes
+diseases_and_functions,Cell Morphology | Sprouting,0.866,1.11,-0.244,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Morphology,Cell-To-Cell Signaling and Interaction,Cellular Assembly and Organization | Electrical resistance of cells",0.692,,,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Morphology,Cellular Assembly and Organization,Cellular Development,Cellular Function and Maintenance,Cellular Growth and Proliferation,Embryonic Development,Nervous System Development and Function,Organismal Development,Tissue Development | Dendritic growth/branching",,1.005,,,yes,no,no,yes
+diseases_and_functions,"Cell Morphology,Cellular Assembly and Organization,Cellular Function and Maintenance | Extension of cellular protrusions",0.541,0.894,-0.353,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Morphology,Cellular Assembly and Organization,Cellular Function and Maintenance | Formation of filopodia",0.597,0.805,-0.208,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Morphology,Cellular Assembly and Organization,Cellular Function and Maintenance | Morphogenesis of cellular protrusions",2.142,2.347,-0.205,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Morphology,Cellular Development | Branching of cells",0.669,0.926,-0.257,EGF,yes,no,no,yes
+diseases_and_functions,"Cell Morphology,Cellular Movement | Cell spreading",0.831,1.152,-0.321,EGF,yes,no,no,yes
+diseases_and_functions,Cell Signaling | Formation of protein-protein complex,0.796,1.032,-0.236,EGF,yes,no,no,yes
+diseases_and_functions,Cell Signaling | MAPKKK cascade,-0.169,0.258,-0.427,EGF,yes,no,yes,yes
+diseases_and_functions,Cell Signaling | Protein kinase cascade,0.05,0.368,-0.318,EGF,yes,no,no,yes
+diseases_and_functions,Cell Signaling | Tyrosine phosphorylation,0.14,0.605,-0.465,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Cell Signaling,Post-Translational Modification | Tyrosine phosphorylation of protein",0.047,0.516,-0.469,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Cell Signaling,Post-Translational Modification,Protein Synthesis | Assembly of protein-protein complex",1.605,1.771,-0.166,EGF,yes,no,no,yes
+diseases_and_functions,Cell-To-Cell Signaling and Interaction | Activation of cells,1.05,1.254,-0.204,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,Cell-To-Cell Signaling and Interaction | Adhesion of tumor cell lines,0.291,0.391,-0.1,EGF,yes,no,no,yes
+diseases_and_functions,Cell-To-Cell Signaling and Interaction | Attachment of cells,0.37,0.677,-0.307,EGF,yes,no,no,yes
+diseases_and_functions,Cell-To-Cell Signaling and Interaction | Binding of carcinoma cell lines,0.396,0.809,-0.413,EGF,yes,no,no,yes
+diseases_and_functions,Cell-To-Cell Signaling and Interaction | Binding of connective tissue cells,0.372,,,EGF,yes,no,no,yes
+diseases_and_functions,Cell-To-Cell Signaling and Interaction | Binding of gonadal cells,1.751,1.461,0.29,EGF,yes,no,no,yes
+diseases_and_functions,Cell-To-Cell Signaling and Interaction | Binding of somatic cells,0.542,0.578,-0.036,EGF,yes,no,no,yes
+diseases_and_functions,Cell-To-Cell Signaling and Interaction | Binding of tumor cell lines,0.466,0.626,-0.16,EGF,yes,no,no,yes
+diseases_and_functions,Cell-To-Cell Signaling and Interaction | Interaction of somatic cells,0.542,0.578,-0.036,EGF,yes,no,no,yes
+diseases_and_functions,Cell-To-Cell Signaling and Interaction | Interaction of tumor cell lines,0.63,0.772,-0.142,EGF,yes,no,no,yes
+diseases_and_functions,"Cell-To-Cell Signaling and Interaction,Cellular Assembly and Organization | Cell-cell contact",3.179,3.246,-0.067,EGF,yes,no,no,yes
+diseases_and_functions,"Cell-To-Cell Signaling and Interaction,Hematological System Development and Function,Immune Cell Trafficking,Inflammatory Response,Nervous System Development and Function | Activation of microglia",,0.263,,,yes,no,no,yes
+diseases_and_functions,"Cell-To-Cell Signaling and Interaction,Renal and Urological System Development and Function | Binding of kidney cell lines",,0.068,,,yes,no,no,yes
+diseases_and_functions,Cellular Assembly and Organization | Assembly of organelle,0.454,0.663,-0.209,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Assembly and Organization | Development of cytoplasm,-0.275,-0.064,-0.211,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Assembly and Organization | Formation of cytoskeleton,-0.806,-0.588,-0.218,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Assembly and Organization | Organization of organelle,-0.13,-0.13,0.0,MFAP4,no,no,no,yes
+diseases_and_functions,"Cellular Assembly and Organization,Cellular Function and Maintenance | Microtubule dynamics",1.617,1.776,-0.159,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Assembly and Organization,Cellular Function and Maintenance | Organization of actin cytoskeleton",-0.753,-0.428,-0.325,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Assembly and Organization,Cellular Function and Maintenance | Organization of cytoplasm",1.771,1.929,-0.158,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Assembly and Organization,Cellular Function and Maintenance | Organization of cytoskeleton",1.698,1.856,-0.158,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Assembly and Organization,Cellular Function and Maintenance | Organization of fibrils",,,,MFAP4,no,no,no,yes
+diseases_and_functions,"Cellular Assembly and Organization,Cellular Function and Maintenance | Organization of filaments",-0.699,-0.699,0.0,MFAP4,no,no,no,yes
+diseases_and_functions,"Cellular Assembly and Organization,Cellular Function and Maintenance | Quantity of cellular protrusions",0.374,0.654,-0.28,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Assembly and Organization,Cellular Function and Maintenance,Nervous System Development and Function,Tissue Morphology | Quantity of neurites",,-1.037,,,yes,no,no,yes
+diseases_and_functions,"Cellular Assembly and Organization,Cellular Function and Maintenance,Organismal Development,Tissue Development | Formation of actin filaments",-0.406,-0.153,-0.253,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Assembly and Organization,Organismal Development,Tissue Development | Fibrogenesis",0.001,0.209,-0.208,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Assembly and Organization,Organismal Development,Tissue Development | Formation of filaments",-0.164,0.051,-0.215,EGF,yes,no,yes,yes
+diseases_and_functions,Cellular Compromise | Degeneration of cells,-0.745,-0.98,0.235,TYRO3,yes,no,no,yes
+diseases_and_functions,"Cellular Compromise,Neurological Disease,Organismal Injury and Abnormalities | Damage of neurons",0.156,,,TYRO3,yes,no,no,yes
+diseases_and_functions,Cellular Development | Epithelial-mesenchymal transition of lung cell lines,,-0.659,,,yes,no,no,yes
+diseases_and_functions,Cellular Development | Epithelial-mesenchymal transition of tumor cell lines,-0.0,,,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Cellular Development,Cellular Growth and Proliferation | Cell proliferation of adenocarcinoma cell lines",2.792,3.014,-0.222,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Development,Cellular Growth and Proliferation | Cell proliferation of breast cancer cell lines",3.044,3.298,-0.254,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Development,Cellular Growth and Proliferation | Cell proliferation of carcinoma cell lines",3.895,4.212,-0.317,"EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cellular Development,Cellular Growth and Proliferation | Cell proliferation of colorectal cancer cell lines",1.623,2.169,-0.546,"EGF,EREG,TYRO3",yes,yes,no,yes
+diseases_and_functions,"Cellular Development,Cellular Growth and Proliferation | Cell proliferation of melanoma cell lines",-0.391,,,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cellular Development,Cellular Growth and Proliferation | Cell proliferation of tumor cell lines",4.517,4.792,-0.275,"EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cellular Development,Cellular Growth and Proliferation | Proliferation of lung cancer cell lines",2.037,2.376,-0.339,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Cellular Development,Cellular Growth and Proliferation | Proliferation of prostate cancer cell lines",2.084,2.318,-0.234,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Development,Cellular Growth and Proliferation,Connective Tissue Development and Function | Proliferation of fibroblast cell lines",0.601,1.205,-0.604,"EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cellular Development,Cellular Growth and Proliferation,Connective Tissue Development and Function,Tissue Development | Cell proliferation of fibroblasts",1.338,1.804,-0.466,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Cellular Development,Cellular Growth and Proliferation,Embryonic Development | Proliferation of embryonic cell lines",0.58,0.855,-0.275,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Development,Cellular Growth and Proliferation,Nervous System Development and Function,Organismal Development,Tissue Development | Development of neural cells",1.471,1.653,-0.182,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Development,Cellular Growth and Proliferation,Nervous System Development and Function,Organismal Development,Tissue Development | Development of neurons",1.571,1.734,-0.163,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Development,Cellular Growth and Proliferation,Nervous System Development and Function,Tissue Development | Growth of neurites",1.999,2.285,-0.286,EGF,yes,yes,no,yes
+diseases_and_functions,"Cellular Development,Cellular Growth and Proliferation,Nervous System Development and Function,Tissue Development | Outgrowth of neurites",1.846,2.173,-0.327,EGF,yes,yes,no,yes
+diseases_and_functions,"Cellular Development,Cellular Growth and Proliferation,Nervous System Development and Function,Tissue Development | Outgrowth of neurons",1.638,1.95,-0.312,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Development,Cellular Growth and Proliferation,Nervous System Development and Function,Tissue Development | Proliferation of neuronal cells",2.245,2.535,-0.29,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Development,Cellular Growth and Proliferation,Tissue Development | Proliferation of blood cells",1.202,1.063,0.139,TYRO3,yes,no,no,yes
+diseases_and_functions,"Cellular Development,Connective Tissue Development and Function | Differentiation of fibroblast cell lines",-0.231,-0.034,-0.197,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Development,Embryonic Development,Organismal Development,Tissue Development | Transdifferentiation of mesenchymal cells",,,,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Development,Renal and Urological System Development and Function,Tissue Development | Differentiation of kidney cells",-0.492,,,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Development,Tissue Development | Differentiation of neural cells",-0.185,-0.158,-0.027,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Function and Maintenance | Catabolism of macromolecule,1.637,1.747,-0.11,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Function and Maintenance | Cellular homeostasis,0.801,0.825,-0.024,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,Cellular Function and Maintenance | Endocytosis,1.682,2.039,-0.357,"EGF,TYRO3",yes,yes,no,yes
+diseases_and_functions,Cellular Function and Maintenance | Endocytosis by eukaryotic cells,1.146,1.382,-0.236,TYRO3,yes,no,no,yes
+diseases_and_functions,Cellular Function and Maintenance | Endocytosis by tumor cell lines,1.087,1.224,-0.137,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Function and Maintenance | Engulfment of cells,2.03,2.324,-0.294,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,Cellular Function and Maintenance | Engulfment of tumor cell lines,1.529,1.663,-0.134,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Function and Maintenance | Internalization by tumor cell lines,0.91,1.303,-0.393,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,Cellular Function and Maintenance | Metabolism of macromolecule,4.124,4.242,-0.118,"EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cellular Function and Maintenance,DNA Replication, Recombination, and Repair | Metabolism of DNA",0.572,1.075,-0.503,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Cellular Function and Maintenance,Post-Translational Modification,Protein Degradation,Protein Synthesis | Hydrolysis of protein",0.904,0.904,0.0,EGF,no,no,no,yes
+diseases_and_functions,"Cellular Function and Maintenance,Post-Translational Modification,Protein Degradation,Protein Synthesis | Proteolysis",0.244,0.293,-0.049,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Function and Maintenance,Protein Degradation,Protein Synthesis | Catabolism of protein",1.636,1.746,-0.11,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Function and Maintenance,Protein Degradation,Protein Synthesis | Stabilization of protein",3.059,3.223,-0.164,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Function and Maintenance,Protein Synthesis | Metabolism of protein",4.004,4.068,-0.064,"EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cellular Function and Maintenance,Protein Synthesis | Synthesis of protein",4.042,4.106,-0.064,"EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,Cellular Growth and Proliferation | Outgrowth of cells,2.264,2.577,-0.313,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Growth and Proliferation | Proliferation of somatic cells,2.691,2.906,-0.215,"EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cellular Growth and Proliferation,Connective Tissue Development and Function,Tissue Development | Proliferation of connective tissue cells",1.179,1.654,-0.475,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Cellular Growth and Proliferation,Tissue Development | Growth of somatic cells",2.691,2.906,-0.215,"EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cellular Growth and Proliferation,Tissue Development | Proliferation of neural cells",2.187,2.454,-0.267,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Movement | Cell movement,3.282,3.392,-0.11,"EFNA4,EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,Cellular Movement | Cell movement of blood cells,1.139,1.192,-0.053,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,Cellular Movement | Cell movement of breast cancer cell lines,1.011,1.069,-0.058,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,Cellular Movement | Cell movement of cancer cells,0.794,1.231,-0.437,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Movement | Cell movement of carcinoma cell lines,4.331,4.671,-0.34,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,Cellular Movement | Cell movement of central nervous system cells,-0.105,0.132,-0.237,EGF,yes,no,yes,yes
+diseases_and_functions,Cellular Movement | Cell movement of connective tissue cells,0.969,1.29,-0.321,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Movement | Cell movement of epithelial cells,-0.601,-0.484,-0.117,"EFNA4,EGF",yes,no,no,yes
+diseases_and_functions,Cellular Movement | Cell movement of lung cancer cell lines,2.638,2.903,-0.265,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Movement | Cell movement of myeloid cells,1.217,1.382,-0.165,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Movement | Cell movement of neuroglia,1.632,2.06,-0.428,EGF,yes,yes,no,yes
+diseases_and_functions,Cellular Movement | Cell movement of neurons,0.673,1.081,-0.408,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Movement | Cell movement of prostate cancer cell lines,0.214,0.482,-0.268,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Movement | Cell movement of sarcoma cell lines,,2.019,,,yes,yes,no,yes
+diseases_and_functions,Cellular Movement | Cell movement of tumor cell lines,3.35,3.574,-0.224,"EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,Cellular Movement | Cell movement of tumor cells,0.611,0.975,-0.364,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Movement | Cellular infiltration,1.217,1.116,0.101,TYRO3,yes,no,no,yes
+diseases_and_functions,Cellular Movement | Homing of cells,1.585,,,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Movement | Invasion of adenocarcinoma cell lines,0.911,,,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Movement | Invasion of breast cancer cell lines,2.111,2.217,-0.106,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,Cellular Movement | Invasion of carcinoma cell lines,3.566,3.92,-0.354,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,Cellular Movement | Invasion of cells,3.413,3.628,-0.215,"EFNA4,EGF,EREG",yes,no,no,yes
+diseases_and_functions,Cellular Movement | Invasion of lung cancer cell lines,1.62,1.895,-0.275,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Movement | Invasion of tumor cell lines,3.197,3.418,-0.221,"EFNA4,EGF,EREG",yes,no,no,yes
+diseases_and_functions,Cellular Movement | Migration of adenocarcinoma cell lines,2.396,2.697,-0.301,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Movement | Migration of breast cancer cell lines,0.985,1.054,-0.069,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,Cellular Movement | Migration of carcinoma cell lines,4.063,4.402,-0.339,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,Cellular Movement | Migration of cells,3.371,3.527,-0.156,"EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,Cellular Movement | Migration of cervical cancer cell lines,0.089,,,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,Cellular Movement | Migration of connective tissue cells,0.682,0.982,-0.3,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Movement | Migration of lung cancer cell lines,2.48,2.749,-0.269,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Movement | Migration of myeloid cells,0.206,0.43,-0.224,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Movement | Migration of neural cells,1.342,1.699,-0.357,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Movement | Migration of prostate cancer cell lines,-0.193,0.069,-0.262,EGF,yes,no,yes,yes
+diseases_and_functions,Cellular Movement | Migration of tumor cell lines,3.261,3.49,-0.229,"EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,Cellular Movement | Migration of vascular cells,1.088,1.343,-0.255,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Movement | Movement of adenocarcinoma cell lines,2.846,3.146,-0.3,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Movement | Scattering,0.257,0.655,-0.398,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Connective Tissue Development and Function | Cell movement of fibroblast cell lines",1.151,1.497,-0.346,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Connective Tissue Development and Function | Cell movement of fibroblasts",0.75,1.097,-0.347,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Connective Tissue Development and Function | Migration of fibroblast cell lines",0.33,0.698,-0.368,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Connective Tissue Development and Function | Migration of fibroblasts",0.259,0.578,-0.319,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Embryonic Development | Migration of embryonic cell lines",0.756,,,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Hair and Skin Development and Function | Cell movement of keratinocytes",-0.725,,,"EFNA4,EGF",yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Hematological System Development and Function,Immune Cell Trafficking | Cell movement of antigen presenting cells",1.989,2.211,-0.222,EGF,yes,yes,no,yes
+diseases_and_functions,"Cellular Movement,Hematological System Development and Function,Immune Cell Trafficking | Cell movement of leukocytes",1.432,1.493,-0.061,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Hematological System Development and Function,Immune Cell Trafficking | Cell movement of lymphocytes",1.072,0.957,0.115,TYRO3,yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Hematological System Development and Function,Immune Cell Trafficking | Cell movement of mononuclear leukocytes",1.854,1.749,0.105,TYRO3,yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Hematological System Development and Function,Immune Cell Trafficking | Cellular infiltration by leukocytes",1.371,1.271,0.1,TYRO3,yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Hematological System Development and Function,Immune Cell Trafficking | Lymphocyte migration",0.824,0.701,0.123,TYRO3,yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Hematological System Development and Function,Immune Cell Trafficking | Migration of antigen presenting cells",0.394,0.662,-0.268,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Hematological System Development and Function,Immune Cell Trafficking | Migration of mononuclear leukocytes",1.534,1.418,0.116,TYRO3,yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Hematological System Development and Function,Immune Cell Trafficking,Inflammatory Response | Cell movement of macrophages",1.475,1.703,-0.228,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Hematological System Development and Function,Immune Cell Trafficking,Inflammatory Response | Cell movement of phagocytes",2.055,2.234,-0.179,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Hematological System Development and Function,Immune Cell Trafficking,Inflammatory Response | Migration of macrophages",-0.636,-0.353,-0.283,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Hematological System Development and Function,Immune Cell Trafficking,Inflammatory Response | Migration of phagocytes",1.241,1.476,-0.235,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Immune Cell Trafficking | Cell movement of lymphatic system cells",0.964,0.853,0.111,TYRO3,yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Immune Cell Trafficking | Leukocyte migration",1.242,1.296,-0.054,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Immune Cell Trafficking | Migration of lymphatic system cells",0.943,0.825,0.118,TYRO3,yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Nervous System Development and Function | Migration of neuroglia",1.478,1.938,-0.46,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Skeletal and Muscular System Development and Function | Cell movement of smooth muscle cells",0.122,0.359,-0.237,EGF,yes,no,no,yes
+diseases_and_functions,"Cellular Movement,Skeletal and Muscular System Development and Function | Migration of smooth muscle cells",0.359,0.542,-0.183,EGF,yes,no,no,yes
+diseases_and_functions,Cellular Response to Therapeutics | Sensitivity of cells,-1.27,-1.641,0.371,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,Cellular Response to Therapeutics | Sensitivity of tumor cell lines,-0.816,-1.198,0.382,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Connective Tissue Development and Function,Tissue Development | Growth of connective tissue",1.114,1.57,-0.456,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Connective Tissue Disorders,Dermatological Diseases and Conditions,Inflammatory Disease,Organismal Injury and Abnormalities,Skeletal and Muscular Disorders | Scleroderma",,,,MFAP4,no,no,no,yes
+diseases_and_functions,"Connective Tissue Disorders,Developmental Disorder,Hereditary Disorder,Organismal Injury and Abnormalities,Skeletal and Muscular Disorders | Marfan syndrome",,,,MFAP4,no,no,no,yes
+diseases_and_functions,"Connective Tissue Disorders,Developmental Disorder,Organismal Injury and Abnormalities,Skeletal and Muscular Disorders | Altered osteogenesis",,,,,yes,no,no,yes
+diseases_and_functions,"Connective Tissue Disorders,Hereditary Disorder,Organismal Injury and Abnormalities | Hereditary connective tissue disorder",,,,MFAP4,no,no,no,yes
+diseases_and_functions,"Connective Tissue Disorders,Inflammatory Disease,Inflammatory Response,Organismal Injury and Abnormalities,Skeletal and Muscular Disorders | Inflammation of joint",0.678,0.678,0.0,"EREG,TYRO3",no,no,no,yes
+diseases_and_functions,"Connective Tissue Disorders,Inflammatory Disease,Organismal Injury and Abnormalities,Skeletal and Muscular Disorders | Rheumatic disease",,,,MFAP4,no,no,no,yes
+diseases_and_functions,"Connective Tissue Disorders,Organismal Injury and Abnormalities,Skeletal and Muscular Disorders | Non-traumatic arthropathy",,,,EREG,no,no,no,yes
+diseases_and_functions,"Dermatological Diseases and Conditions,Inflammatory Disease,Inflammatory Response,Organismal Injury and Abnormalities | Dermatitis",1.321,0.824,0.497,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Dermatological Diseases and Conditions,Organismal Injury and Abnormalities | Abnormal morphology of epidermis",-1.698,,,EGF,yes,no,no,yes
+diseases_and_functions,"Dermatological Diseases and Conditions,Organismal Injury and Abnormalities | Abnormal morphology of hair",-1.131,,,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Dermatological Diseases and Conditions,Organismal Injury and Abnormalities | Abnormal morphology of skin",-1.442,-1.442,0.0,"EGF,EREG,MFAP4",no,no,no,yes
+diseases_and_functions,"Dermatological Diseases and Conditions,Organismal Injury and Abnormalities | Androgenic alopecia",,,,"EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Dermatological Diseases and Conditions,Organismal Injury and Abnormalities | Chronic skin disorder",,,,EREG,no,no,no,yes
+diseases_and_functions,"Dermatological Diseases and Conditions,Organismal Injury and Abnormalities | Disorder of hair",-2.384,-2.384,0.0,"EGF,EREG,MFAP4",no,no,no,yes
+diseases_and_functions,"Dermatological Diseases and Conditions,Organismal Injury and Abnormalities | Loss of hair",-2.132,-2.132,0.0,"EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Dermatological Diseases and Conditions,Organismal Injury and Abnormalities | Skin lesion",-0.978,-1.049,0.071,"EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Dermatological Diseases and Conditions,Organismal Injury and Abnormalities | Ulceration of skin",,,,EGF,yes,no,no,yes
+diseases_and_functions,"Developmental Disorder,Hereditary Disorder,Neurological Disease,Organismal Injury and Abnormalities | Familial intellectual disability",,,,MFAP4,no,no,no,yes
+diseases_and_functions,"Developmental Disorder,Hereditary Disorder,Neurological Disease,Organismal Injury and Abnormalities | Familial syndromic intellectual disability",,,,MFAP4,no,no,no,yes
+diseases_and_functions,"Developmental Disorder,Hereditary Disorder,Organismal Injury and Abnormalities | Familial congenital malformation",0.282,0.282,0.0,"EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Developmental Disorder,Metabolic Disease,Organismal Injury and Abnormalities | Syndromic developmental and metabolic disorder",,,,,yes,no,no,yes
+diseases_and_functions,"Developmental Disorder,Neurological Disease,Organismal Injury and Abnormalities | Congenital encephalopathy",-2.051,-2.051,0.0,MFAP4,no,no,no,yes
+diseases_and_functions,"Developmental Disorder,Neurological Disease,Organismal Injury and Abnormalities | Congenital intellectual disability",,,,MFAP4,no,no,no,yes
+diseases_and_functions,"Developmental Disorder,Neurological Disease,Organismal Injury and Abnormalities | Congenital neurological disorder",-2.116,-2.116,0.0,MFAP4,no,no,no,yes
+diseases_and_functions,"Developmental Disorder,Neurological Disease,Organismal Injury and Abnormalities | Intellectual disability",,,,MFAP4,no,no,no,yes
+diseases_and_functions,"Developmental Disorder,Neurological Disease,Organismal Injury and Abnormalities | Syndromic intellectual disability",,,,MFAP4,no,no,no,yes
+diseases_and_functions,"Developmental Disorder,Ophthalmic Disease,Organismal Injury and Abnormalities | Congenital cataract",,,,,yes,no,no,yes
+diseases_and_functions,"Developmental Disorder,Organismal Injury and Abnormalities | Autism or intellectual disability",,,,MFAP4,no,no,no,yes
+diseases_and_functions,"Developmental Disorder,Organismal Injury and Abnormalities | Autism spectrum disorder or intellectual disability",,,,MFAP4,no,no,no,yes
+diseases_and_functions,"Developmental Disorder,Organismal Injury and Abnormalities | Growth failure",-3.879,-4.056,0.177,EGF,yes,no,no,yes
+diseases_and_functions,"Developmental Disorder,Organismal Injury and Abnormalities | Neurodevelopmental delay or intellectual disability",,,,MFAP4,no,no,no,yes
+diseases_and_functions,"Digestive System Development and Function,Hepatic System Development and Function,Organ Development | Response of liver",-0.675,-0.33,-0.345,EGF,yes,no,no,yes
+diseases_and_functions,"Drug Metabolism,Molecular Transport,Small Molecule Biochemistry | Concentration of glutathione",0.318,0.519,-0.201,EGF,yes,no,no,yes
+diseases_and_functions,"Embryonic Development,Nervous System Development and Function,Organ Development,Organismal Development,Tissue Development,Visual System Development and Function | Formation of eye",1.177,1.539,-0.362,EGF,yes,no,no,yes
+diseases_and_functions,"Embryonic Development,Organ Development,Organismal Development,Renal and Urological System Development and Function,Tissue Development | Formation of kidney",-0.656,-0.096,-0.56,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Embryonic Development,Organ Development,Organismal Development,Skeletal and Muscular System Development and Function,Tissue Development | Development of muscle tissue",,0.532,,,yes,no,no,yes
+diseases_and_functions,"Embryonic Development,Organ Development,Organismal Development,Tissue Development | Development of sensory organ",1.258,1.601,-0.343,EGF,yes,no,no,yes
+diseases_and_functions,"Embryonic Development,Organismal Development | Development of abdomen",-0.559,-0.013,-0.546,"EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,"Embryonic Development,Organismal Development | Development of body trunk",1.192,1.688,-0.496,"EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,"Embryonic Development,Organismal Development | Development of genitourinary system",-0.11,0.561,-0.671,"EGF,EREG,TYRO3",yes,no,yes,yes
+diseases_and_functions,"Embryonic Development,Organismal Development | Development of head",2.32,2.68,-0.36,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,"Embryonic Development,Organismal Development,Renal and Urological System Development and Function | Development of urinary tract",-0.656,-0.096,-0.56,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Endocrine System Disorders,Gastrointestinal Disease,Metabolic Disease,Organismal Injury and Abnormalities | Diabetes mellitus",0.788,0.788,0.0,"EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Endocrine System Disorders,Gastrointestinal Disease,Organismal Injury and Abnormalities | Endocrine pancreatic dysfunction",0.788,0.788,0.0,"EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Endocrine System Disorders,Organismal Injury and Abnormalities,Reproductive System Disease | Abnormal morphology of gonad",-0.447,-0.447,0.0,TYRO3,no,no,no,yes
+diseases_and_functions,"Endocrine System Disorders,Organismal Injury and Abnormalities,Reproductive System Disease | Abnormal morphology of testis",,,,TYRO3,no,no,no,yes
+diseases_and_functions,"Endocrine System Disorders,Organismal Injury and Abnormalities,Reproductive System Disease | Ovarian lesion",-0.447,-0.447,0.0,"EGF,TYRO3",no,no,no,yes
+diseases_and_functions,Free Radical Scavenging | Generation of reactive oxygen species,1.181,1.379,-0.198,EGF,yes,no,no,yes
+diseases_and_functions,Free Radical Scavenging | Metabolism of reactive oxygen species,0.941,1.164,-0.223,EGF,yes,no,no,yes
+diseases_and_functions,Free Radical Scavenging | Production of reactive oxygen species,0.116,0.359,-0.243,EGF,yes,no,no,yes
+diseases_and_functions,Free Radical Scavenging | Synthesis of reactive oxygen species,0.789,1.014,-0.225,EGF,yes,no,no,yes
+diseases_and_functions,"Free Radical Scavenging,Molecular Transport | Quantity of reactive oxygen species",0.8,1.067,-0.267,EGF,yes,no,no,yes
+diseases_and_functions,"Gastrointestinal Disease,Hepatic System Disease,Organismal Injury and Abnormalities | Abnormal morphology of hepatobiliary system",1.342,1.0,0.342,EGF,yes,no,no,yes
+diseases_and_functions,"Gastrointestinal Disease,Hepatic System Disease,Organismal Injury and Abnormalities | Fibrosis of liver",,-0.373,,,yes,no,no,yes
+diseases_and_functions,"Gastrointestinal Disease,Hepatic System Disease,Organismal Injury and Abnormalities | Liver lesion",-0.576,-0.442,-0.134,"EFNA4,EGF,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Gastrointestinal Disease,Organismal Injury and Abnormalities | Abnormal morphology of digestive system",0.493,0.174,0.319,EGF,yes,no,no,yes
+diseases_and_functions,Gene Expression | Activation of gene,1.341,1.505,-0.164,EGF,yes,no,no,yes
+diseases_and_functions,Gene Expression | Activation of synthetic promoter,-1.087,-0.894,-0.193,EGF,yes,no,no,yes
+diseases_and_functions,Gene Expression | Initiation of expression of RNA,-1.0,-0.655,-0.345,EGF,yes,no,no,yes
+diseases_and_functions,Gene Expression | Transactivation,0.478,0.678,-0.2,EGF,yes,no,no,yes
+diseases_and_functions,Gene Expression | Transactivation of DNA,0.305,0.508,-0.203,EGF,yes,no,no,yes
+diseases_and_functions,Gene Expression | Transactivation of RNA,0.429,0.634,-0.205,EGF,yes,no,no,yes
+diseases_and_functions,Gene Expression | Transactivation of gene,0.522,0.75,-0.228,EGF,yes,no,no,yes
+diseases_and_functions,Gene Expression | Transcription of DNA,0.227,0.29,-0.063,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,Gene Expression | Transcription of RNA,0.258,0.319,-0.061,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,Gene Expression | Transcription of gene,-0.891,-0.739,-0.152,EGF,yes,no,no,yes
+diseases_and_functions,"Gene Expression,RNA Damage and Repair,RNA Post-Transcriptional Modification | Stabilization of RNA",1.198,1.553,-0.355,EGF,yes,no,no,yes
+diseases_and_functions,"Gene Expression,RNA Damage and Repair,RNA Post-Transcriptional Modification | Stabilization of mRNA",1.105,1.47,-0.365,EGF,yes,no,no,yes
+diseases_and_functions,"Gene Expression,RNA Post-Transcriptional Modification | Binding of RNA",1.866,1.707,0.159,EGF,yes,no,no,yes
+diseases_and_functions,Hair and Skin Development and Function | Re-epithelialization,1.0,,,EGF,yes,no,no,yes
+diseases_and_functions,Hematological System Development and Function | Hemostasis,-0.303,-0.303,0.0,TYRO3,no,no,no,yes
+diseases_and_functions,"Hematological System Development and Function,Tissue Development | Accumulation of myeloid cells",-0.675,-0.869,0.194,EGF,yes,no,no,yes
+diseases_and_functions,"Hematological System Development and Function,Tissue Morphology | Quantity of blood cells",-0.065,-0.066,0.001,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,"Hematological System Development and Function,Tissue Morphology | Quantity of leukocytes",-0.167,-0.265,0.098,TYRO3,yes,no,no,yes
+diseases_and_functions,"Hereditary Disorder,Neurological Disease,Organismal Injury and Abnormalities | Familial central nervous system disease",1.172,1.172,0.0,MFAP4,no,no,no,yes
+diseases_and_functions,"Hereditary Disorder,Neurological Disease,Organismal Injury and Abnormalities | Familial encephalopathy",0.849,0.849,0.0,MFAP4,no,no,no,yes
+diseases_and_functions,"Hereditary Disorder,Neurological Disease,Organismal Injury and Abnormalities | Familial neurological disorder",0.218,0.218,0.0,MFAP4,no,no,no,yes
+diseases_and_functions,"Hereditary Disorder,Neurological Disease,Organismal Injury and Abnormalities | Nervous system heredodegenerative disorder",,,,MFAP4,no,no,no,yes
+diseases_and_functions,"Hereditary Disorder,Neurological Disease,Organismal Injury and Abnormalities,Psychological Disorders | Familial dementia",,,,,yes,no,no,yes
+diseases_and_functions,"Hereditary Disorder,Organismal Injury and Abnormalities,Psychological Disorders | Familial psychiatric disease",,,,MFAP4,no,no,no,yes
+diseases_and_functions,"Hereditary Disorder,Organismal Injury and Abnormalities,Renal and Urological Disease | Hereditary kidney disease",,,,EGF,no,no,no,yes
+diseases_and_functions,"Immunological Disease,Inflammatory Disease,Organismal Injury and Abnormalities | Immune mediated inflammatory disease",0.581,0.581,0.0,"MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,"Infectious Diseases,Organismal Injury and Abnormalities | HIV infection",4.663,4.797,-0.134,EGF,yes,no,no,yes
+diseases_and_functions,"Infectious Diseases,Organismal Injury and Abnormalities | Infection by HIV-1",4.583,4.717,-0.134,EGF,yes,no,no,yes
+diseases_and_functions,"Infectious Diseases,Organismal Injury and Abnormalities | Infection by RNA virus",4.779,5.094,-0.315,"EFNA4,EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,"Infectious Diseases,Organismal Injury and Abnormalities | Infection by Retroviridae",4.504,,,"EGF,TYRO3",yes,yes,no,yes
+diseases_and_functions,"Infectious Diseases,Organismal Injury and Abnormalities | Infection of cells",4.789,5.206,-0.417,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,"Infectious Diseases,Organismal Injury and Abnormalities | Infection of tumor cell lines",3.928,4.52,-0.592,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,"Infectious Diseases,Organismal Injury and Abnormalities | Viral Infection",4.915,5.213,-0.298,"EFNA4,EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,"Inflammatory Disease,Organismal Injury and Abnormalities | Chronic inflammatory disorder",1.195,0.882,0.313,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Inflammatory Disease,Organismal Injury and Abnormalities | Granuloma",,1.0,,,yes,no,no,yes
+diseases_and_functions,"Inflammatory Disease,Organismal Injury and Abnormalities | Sarcoidosis",,,,,yes,no,no,yes
+diseases_and_functions,Inflammatory Response | Inflammatory response,1.059,0.946,0.113,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,"Inflammatory Response,Organismal Injury and Abnormalities | Inflammation of absolute anatomical region",-0.503,-0.422,-0.081,"EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,"Inflammatory Response,Organismal Injury and Abnormalities | Inflammation of organ",-0.355,-0.336,-0.019,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Lipid Metabolism,Molecular Transport,Small Molecule Biochemistry | Accumulation of lipid",-1.513,-1.513,0.0,EGF,no,no,no,yes
+diseases_and_functions,"Lipid Metabolism,Molecular Transport,Small Molecule Biochemistry | Concentration of acylglycerol",-2.244,-2.095,-0.149,EGF,yes,no,no,yes
+diseases_and_functions,"Lipid Metabolism,Molecular Transport,Small Molecule Biochemistry | Concentration of lipid",-2.345,-2.244,-0.101,EGF,yes,no,no,yes
+diseases_and_functions,"Lipid Metabolism,Molecular Transport,Small Molecule Biochemistry | Concentration of sterol",-1.093,-0.952,-0.141,EGF,yes,no,no,yes
+diseases_and_functions,"Lipid Metabolism,Molecular Transport,Small Molecule Biochemistry | Concentration of triacylglycerol",-2.074,-1.916,-0.158,EGF,yes,yes,no,yes
+diseases_and_functions,"Lipid Metabolism,Small Molecule Biochemistry | Binding of lipid",,1.516,,,yes,no,no,yes
+diseases_and_functions,"Lipid Metabolism,Small Molecule Biochemistry | Catabolism of lipid",,1.609,,,yes,no,no,yes
+diseases_and_functions,"Lipid Metabolism,Small Molecule Biochemistry | Fatty acid metabolism",-0.135,0.21,-0.345,"EGF,EREG",yes,no,yes,yes
+diseases_and_functions,"Lipid Metabolism,Small Molecule Biochemistry | Synthesis of fatty acid",-0.505,,,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Lymphoid Tissue Structure and Development,Tissue Morphology | Quantity of lymphatic system cells",0.892,0.792,0.1,TYRO3,yes,no,no,yes
+diseases_and_functions,"Lymphoid Tissue Structure and Development,Tissue Morphology | Quantity of lymphoid cells",,1.368,,,yes,no,no,yes
+diseases_and_functions,"Metabolic Disease,Organismal Injury and Abnormalities | Glucose metabolism disorder",-1.151,-1.151,0.0,"EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,Molecular Transport | Export of molecule,2.3,2.42,-0.12,EGF,yes,no,no,yes
+diseases_and_functions,Molecular Transport | Secretion of molecule,1.046,1.149,-0.103,EGF,yes,no,no,yes
+diseases_and_functions,Molecular Transport | Transport of molecule,2.436,2.528,-0.092,EGF,yes,no,no,yes
+diseases_and_functions,"Molecular Transport,Protein Synthesis,Protein Trafficking | Co-localization of protein",0.125,0.407,-0.282,EGF,yes,no,no,yes
+diseases_and_functions,"Molecular Transport,Protein Synthesis,Protein Trafficking | Localization of asymmetric protein",2.997,3.219,-0.222,"EGF,MFAP4",yes,no,no,yes
+diseases_and_functions,"Molecular Transport,Protein Synthesis,Protein Trafficking | Localization of protein to cell junction",2.218,2.747,-0.529,EGF,yes,no,no,yes
+diseases_and_functions,"Molecular Transport,Protein Synthesis,Protein Trafficking | Localization of protein to cell periphery",1.805,2.01,-0.205,EGF,yes,yes,no,yes
+diseases_and_functions,"Molecular Transport,Protein Synthesis,Protein Trafficking | Localization of protein to cellular membrane",1.299,1.508,-0.209,EGF,yes,no,no,yes
+diseases_and_functions,"Molecular Transport,Protein Synthesis,Protein Trafficking | Localization of protein to cytoplasm",0.197,0.413,-0.216,EGF,yes,no,no,yes
+diseases_and_functions,"Molecular Transport,Protein Synthesis,Protein Trafficking | Localization of protein to cytosol",-0.447,-0.067,-0.38,EGF,yes,no,no,yes
+diseases_and_functions,"Molecular Transport,Protein Synthesis,Protein Trafficking | Localization of protein to endosomes",-0.688,-0.286,-0.402,EGF,yes,no,no,yes
+diseases_and_functions,"Molecular Transport,Protein Synthesis,Protein Trafficking | Localization of protein to intracellular structures",0.197,0.413,-0.216,EGF,yes,no,no,yes
+diseases_and_functions,"Molecular Transport,Protein Synthesis,Protein Trafficking | Localization of protein to nucleus",2.159,2.38,-0.221,"EGF,MFAP4",yes,no,no,yes
+diseases_and_functions,"Molecular Transport,Protein Synthesis,Protein Trafficking | Localization of protein to plasma membrane",1.119,1.372,-0.253,EGF,yes,no,no,yes
+diseases_and_functions,"Molecular Transport,Protein Synthesis,Protein Trafficking | Localization of protein-protein complex",-1.797,-1.603,-0.194,EGF,yes,no,no,yes
+diseases_and_functions,"Molecular Transport,Protein Trafficking | Clearance of protein",-0.108,,,EGF,yes,no,no,yes
+diseases_and_functions,"Molecular Transport,Protein Trafficking | Deposition of protein",0.886,,,TYRO3,yes,no,no,yes
+diseases_and_functions,"Molecular Transport,Protein Trafficking | Distribution of protein",-1.069,-0.905,-0.164,EGF,yes,no,no,yes
+diseases_and_functions,"Molecular Transport,Protein Trafficking | Internalization of protein",1.366,1.711,-0.345,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,"Molecular Transport,Protein Trafficking | Secretion of protein",0.833,0.966,-0.133,EGF,yes,no,no,yes
+diseases_and_functions,"Molecular Transport,Protein Trafficking | Translocation of protein",1.101,1.403,-0.302,"EGF,MFAP4",yes,no,no,yes
+diseases_and_functions,"Molecular Transport,Protein Trafficking | Translocation of protein to nucleus",0.968,1.338,-0.37,"EGF,MFAP4",yes,no,no,yes
+diseases_and_functions,"Molecular Transport,Protein Trafficking | Translocation of protein to organelle",1.003,1.347,-0.344,"EGF,MFAP4",yes,no,no,yes
+diseases_and_functions,"Molecular Transport,Protein Trafficking | Transport of protein",1.373,1.636,-0.263,EGF,yes,no,no,yes
+diseases_and_functions,"Molecular Transport,Protein Trafficking | Transport of protein to cytoplasm",-0.598,-0.247,-0.351,EGF,yes,no,no,yes
+diseases_and_functions,Nervous System Development and Function | Development of Visual system,1.411,1.765,-0.354,EGF,yes,no,no,yes
+diseases_and_functions,Nervous System Development and Function | Morphology of nervous system,,,,TYRO3,no,no,no,yes
+diseases_and_functions,Nervous System Development and Function | Sensory system development,0.729,0.972,-0.243,EGF,yes,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities | Abnormal morphology of central nervous system",-0.684,-0.684,0.0,TYRO3,no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities | Abnormal morphology of nervous system",-1.976,-1.976,0.0,TYRO3,no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities | Abnormality of cerebral cortex",-1.5,-1.5,0.0,TYRO3,no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities | Brain lesion",-0.557,-0.557,0.0,"EFNA4,EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities | Cognitive impairment",0.213,0.213,0.0,MFAP4,no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities | Damage of nervous system",-0.101,,,TYRO3,yes,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities | Damage of nervous tissue",0.536,0.289,0.247,TYRO3,yes,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities | Early-onset encephalopathy",-2.213,-2.213,0.0,MFAP4,no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities | Early-onset neurological disorder",-2.213,-2.213,0.0,MFAP4,no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities | Epilepsy or neurodevelopmental disorder",,,,TYRO3,no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities | Intracranial lesion",-0.099,-0.099,0.0,"EFNA4,EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities | Movement disorders",-2.174,-2.174,0.0,TYRO3,no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities | Neurodegeneration",-0.425,-0.642,0.217,TYRO3,yes,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities | Neurogenic lesion",-0.714,-0.714,0.0,"EFNA4,EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities | Progressive encephalopathy",-0.895,-0.895,0.0,TYRO3,no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities | Progressive motor neuropathy",-1.232,-1.232,0.0,TYRO3,no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities | Progressive neurological disorder",-0.906,-0.906,0.0,TYRO3,no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities | Progressive neuropathy",-1.523,-1.523,0.0,TYRO3,no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities | Seizure disorder",-0.925,-0.925,0.0,TYRO3,no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities | Syndromic encephalopathy",,,,MFAP4,no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities,Psychological Disorders | Disorder of basal ganglia",,,,TYRO3,no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities,Psychological Disorders | Parkinsonism",,,,TYRO3,no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities,Psychological Disorders | Progressive parkinsonism",,,,TYRO3,no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities,Psychological Disorders,Skeletal and Muscular Disorders | Parkinson's disease",,,,TYRO3,no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities,Skeletal and Muscular Disorders | Neuromuscular disease",-1.0,-1.0,0.0,TYRO3,no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities,Skeletal and Muscular Disorders | Neuromuscular disease with neuropathy",,,,TYRO3,no,no,no,yes
+diseases_and_functions,"Neurological Disease,Organismal Injury and Abnormalities,Skeletal and Muscular Disorders | Progressive neuromuscular disease",,,,TYRO3,no,no,no,yes
+diseases_and_functions,Nucleic Acid Metabolism | Metabolism of nucleic acid component or derivative,2.191,2.411,-0.22,EGF,yes,no,no,yes
+diseases_and_functions,"Nucleic Acid Metabolism,Small Molecule Biochemistry | Metabolism of nucleotide",0.972,1.19,-0.218,EGF,yes,no,no,yes
+diseases_and_functions,"Nucleic Acid Metabolism,Small Molecule Biochemistry | Metabolism of purine base",,1.934,,,yes,no,no,yes
+diseases_and_functions,"Nucleic Acid Metabolism,Small Molecule Biochemistry | Modification of NADPH",,,,,yes,no,no,yes
+diseases_and_functions,"Nucleic Acid Metabolism,Small Molecule Biochemistry | Synthesis of nucleotide",0.554,0.778,-0.224,EGF,yes,no,no,yes
+diseases_and_functions,"Ophthalmic Disease,Organismal Injury and Abnormalities | Degeneration of eye",1.44,1.213,0.227,TYRO3,yes,no,no,yes
+diseases_and_functions,"Ophthalmic Disease,Organismal Injury and Abnormalities | Disease of retina",2.051,1.886,0.165,TYRO3,yes,yes,no,yes
+diseases_and_functions,"Ophthalmic Disease,Organismal Injury and Abnormalities | Retinal degeneration",1.688,1.452,0.236,TYRO3,yes,no,no,yes
+diseases_and_functions,"Organ Development,Reproductive System Development and Function | Growth of genital organ",0.336,,,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,Organismal Development | Growth of organism,1.984,2.242,-0.258,EGF,yes,yes,no,yes
+diseases_and_functions,Organismal Development | Increased body weight,2.886,3.047,-0.161,EGF,yes,no,no,yes
+diseases_and_functions,Organismal Development | Morphology of head,,,,EGF,no,no,no,yes
+diseases_and_functions,Organismal Development | Size of body,2.601,2.718,-0.117,EGF,yes,no,no,yes
+diseases_and_functions,"Organismal Development,Tissue Development | Development of epithelial tissue",1.346,1.598,-0.252,EGF,yes,no,no,yes
+diseases_and_functions,"Organismal Functions,Organismal Injury and Abnormalities | Healing of lesion",,,,"EGF,EREG",no,no,no,yes
+diseases_and_functions,"Organismal Functions,Organismal Injury and Abnormalities,Tissue Morphology | Healing of wound",,,,"EGF,EREG",no,no,no,yes
+diseases_and_functions,Organismal Injury and Abnormalities | Abdominal lesion,-0.312,-0.306,-0.006,"EFNA4,EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,Organismal Injury and Abnormalities | Abnormal morphology of abdomen,0.139,-0.261,0.4,"EGF,TYRO3",yes,no,yes,yes
+diseases_and_functions,Organismal Injury and Abnormalities | Abnormal morphology of body cavity,-0.275,-0.538,0.263,"EGF,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,Organismal Injury and Abnormalities | Abnormal morphology of epithelial tissue,-0.555,-0.555,0.0,"EGF,TYRO3",no,no,no,yes
+diseases_and_functions,Organismal Injury and Abnormalities | Abnormal morphology of thoracic cavity,-0.241,-0.404,0.163,MFAP4,yes,no,no,yes
+diseases_and_functions,Organismal Injury and Abnormalities | Abnormal morphology of thorax,-0.241,-0.404,0.163,MFAP4,yes,no,no,yes
+diseases_and_functions,Organismal Injury and Abnormalities | Acute disease,1.325,1.325,0.0,EREG,no,no,no,yes
+diseases_and_functions,Organismal Injury and Abnormalities | Atrophy of organ,-1.719,-1.935,0.216,EGF,yes,no,no,yes
+diseases_and_functions,Organismal Injury and Abnormalities | Benign head and neck lesion,,,,EREG,no,no,no,yes
+diseases_and_functions,Organismal Injury and Abnormalities | Benign lesion,-0.691,-0.375,-0.316,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,Organismal Injury and Abnormalities | Bleeding,0.136,-0.006,0.142,TYRO3,yes,no,yes,yes
+diseases_and_functions,Organismal Injury and Abnormalities | Chronic disease,0.024,-0.188,0.212,"EGF,EREG",yes,no,yes,yes
+diseases_and_functions,Organismal Injury and Abnormalities | Fibrosis,0.075,-0.048,0.123,"EGF,EREG,MFAP4",yes,no,yes,yes
+diseases_and_functions,Organismal Injury and Abnormalities | Growth of lesion,2.913,3.045,-0.132,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,Organismal Injury and Abnormalities | Non-malignant disorder,-0.489,-0.167,-0.322,"EFNA4,EGF,EREG",yes,no,no,yes
+diseases_and_functions,Organismal Injury and Abnormalities | Noncardiac thoracic lesion,0.516,0.587,-0.071,"EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,Organismal Injury and Abnormalities | Organ Degeneration,-0.447,-0.532,0.085,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,Organismal Injury and Abnormalities | Pelvic lesion,-0.187,-0.187,0.0,"EFNA4,EGF,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,Organismal Injury and Abnormalities | Sclerosis,,,,MFAP4,no,no,no,yes
+diseases_and_functions,Organismal Injury and Abnormalities | Soft tissue lesion,-0.714,-0.714,0.0,"EFNA4,EGF,EREG,MFAP4,TYRO3",no,no,no,yes
+diseases_and_functions,Organismal Injury and Abnormalities | Visceromegaly,-0.089,-0.232,0.143,"EGF,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,Organismal Injury and Abnormalities | Wound,0.97,0.97,0.0,"EGF,EREG",no,no,no,yes
+diseases_and_functions,"Organismal Injury and Abnormalities,Organismal Survival | Organismal death",-5.993,-5.993,0.0,"EGF,EREG,TYRO3",no,no,no,yes
+diseases_and_functions,"Organismal Injury and Abnormalities,Renal and Urological Disease | Formation of renal lesion",0.0,0.0,0.0,"EGF,EREG,TYRO3",no,no,no,yes
+diseases_and_functions,"Organismal Injury and Abnormalities,Renal and Urological Disease | Renal lesion",-1.309,-1.309,0.0,"EGF,EREG,TYRO3",no,no,no,yes
+diseases_and_functions,"Organismal Injury and Abnormalities,Renal and Urological Disease | Urination disorder",-1.769,-1.769,0.0,TYRO3,no,no,no,yes
+diseases_and_functions,"Organismal Injury and Abnormalities,Reproductive System Disease | Abnormal morphology of genital organ",0.647,0.2,0.447,TYRO3,yes,no,no,yes
+diseases_and_functions,"Organismal Injury and Abnormalities,Reproductive System Disease | Abnormal morphology of internal genitalia",1.432,1.067,0.365,TYRO3,yes,no,no,yes
+diseases_and_functions,"Organismal Injury and Abnormalities,Reproductive System Disease | Abnormal morphology of male genitalia",-1.0,-1.0,0.0,TYRO3,no,no,no,yes
+diseases_and_functions,"Organismal Injury and Abnormalities,Reproductive System Disease | Abnormal morphology of reproductive system",0.605,0.251,0.354,TYRO3,yes,no,no,yes
+diseases_and_functions,"Organismal Injury and Abnormalities,Reproductive System Disease | Abnormality of endometrium",,,,"EFNA4,EGF,MFAP4",no,no,no,yes
+diseases_and_functions,"Organismal Injury and Abnormalities,Reproductive System Disease | Benign pelvic disease",,,,"EFNA4,EGF",no,no,no,yes
+diseases_and_functions,"Organismal Injury and Abnormalities,Reproductive System Disease | Benign uterine disease",,,,EGF,no,no,no,yes
+diseases_and_functions,"Organismal Injury and Abnormalities,Reproductive System Disease | Disorder of pregnancy",,,,"EGF,EREG,MFAP4",no,no,no,yes
+diseases_and_functions,"Organismal Injury and Abnormalities,Respiratory Disease | Lung lesion",0.516,0.587,-0.071,"EGF,EREG,MFAP4,TYRO3",yes,no,no,yes
+diseases_and_functions,"Organismal Injury and Abnormalities,Skeletal and Muscular Disorders | Laminopathy",,,,,yes,no,no,yes
+diseases_and_functions,"Organismal Injury and Abnormalities,Skeletal and Muscular Disorders | Muscle laminopathy",,,,,yes,no,no,yes
+diseases_and_functions,"Organismal Injury and Abnormalities,Skeletal and Muscular Disorders | Musculoskeletal lesion",-0.24,-0.002,-0.238,"EGF,EREG,TYRO3",yes,no,no,yes
+diseases_and_functions,Organismal Survival | Survival of organism,0.715,0.97,-0.255,"EREG,MFAP4",yes,no,no,yes
+diseases_and_functions,Post-Translational Modification | Aggregation of protein,-0.18,0.013,-0.193,EGF,yes,no,yes,yes
+diseases_and_functions,Post-Translational Modification | Dephosphorylation of protein,-0.204,0.017,-0.221,EGF,yes,no,yes,yes
+diseases_and_functions,Post-Translational Modification | Ubiquitination,-1.45,-1.31,-0.14,EGF,yes,no,no,yes
+diseases_and_functions,Post-Translational Modification | Ubiquitination of protein,-1.411,-1.27,-0.141,EGF,yes,no,no,yes
+diseases_and_functions,Protein Synthesis | Oligomerization,-0.035,0.181,-0.216,EGF,yes,no,yes,yes
+diseases_and_functions,Protein Synthesis | Oligomerization of protein,-0.253,-0.037,-0.216,EGF,yes,no,no,yes
+diseases_and_functions,Protein Synthesis | Polymerization of protein,0.176,0.587,-0.411,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,Protein Trafficking | Removal of protein,0.244,0.515,-0.271,EGF,yes,no,no,yes
+diseases_and_functions,RNA Post-Transcriptional Modification | Processing of RNA,0.491,0.661,-0.17,EGF,yes,no,no,yes
+diseases_and_functions,RNA Post-Transcriptional Modification | Processing of mRNA,-2.091,-1.926,-0.165,EGF,yes,yes,no,yes
+diseases_and_functions,RNA Post-Transcriptional Modification | Splicing of RNA,-2.743,-2.592,-0.151,EGF,yes,no,no,yes
+diseases_and_functions,RNA Post-Transcriptional Modification | Splicing of mRNA,-2.502,-2.345,-0.157,EGF,yes,no,no,yes
+diseases_and_functions,Reproductive System Development and Function | Fertility,0.983,1.222,-0.239,TYRO3,yes,no,no,yes
+diseases_and_functions,Small Molecule Biochemistry | Biosynthesis of carboxylic acid,-0.214,0.161,-0.375,"EGF,EREG",yes,no,yes,yes
+diseases_and_functions,Tissue Development | Accumulation of cells,-1.686,-1.842,0.156,EGF,yes,no,no,yes
+diseases_and_functions,Tissue Development | Growth of epithelial tissue,1.054,1.413,-0.359,"EGF,EREG",yes,no,no,yes
+diseases_and_functions,Tissue Development | Organization of epithelial tissue,,,,EGF,yes,no,no,yes
+diseases_and_functions,Tissue Morphology | Quantity of cells,-0.688,-0.647,-0.041,"EGF,TYRO3",yes,no,no,yes
+diseases_and_functions,Tissue Morphology | Quantity of tumor cell lines,-1.71,-1.71,0.0,EGF,no,no,no,yes
