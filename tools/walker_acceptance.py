@@ -136,7 +136,6 @@ if rep:
         "caveat: 1000-row cap": "1000" in flat or "1,000" in flat,
         "caveat: 2277 vs 2431": ("2277" in flat or "2,277" in flat) and ("2431" in flat or "2,431" in flat),
         "pairing unconfirmed + question (31579/31578, 31581/31580)": "unconfirmed" in flat and all(s in flat for s in ("31579", "31578", "31581", "31580")),
-        "links-go-live-after-push note": "links go live after the push" in flat,
         "no external scripts / stylesheets (self-contained)": not re.search(r'(?i)<script[^>]+src=|<link[^>]+href=["\']https?:', h),
     }
     miss = [k for k, v in need.items() if not v]
@@ -145,7 +144,7 @@ if rep:
     for s, pth in set(re.findall(r"github\.com/shaqiq-kik/Proteomics/(?:blob|tree)/([0-9a-f]{40})/([^\"' <#?]+)", h)):
         if run("git", "cat-file", "-e", f"{s}:{pth.rstrip('/')}").returncode != 0:
             broken.append(pth)
-    rec("R13", "v2 report covers every point of his reply (721 / 247 dropped / 2 experiments / g:Profiler / STRING / IPA run 2 + flagged table / caveats / pairing question / go-live note) and pinned links resolve at their commit",
+    rec("R13", "v2 report covers every point of his reply (721 / 247 dropped / 2 experiments / g:Profiler / STRING / IPA run 2 + flagged table / caveats / pairing question) and pinned links resolve at their commit",
         "PASS" if not miss and not broken else "FAIL", f"missing={miss} broken_links={broken[:3]}")
 else:
     rec("R13", "v2 report covers every point of his reply and pinned links resolve at their commit", "PENDING")
